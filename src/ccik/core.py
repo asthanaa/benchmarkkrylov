@@ -3,6 +3,13 @@ from __future__ import annotations
 import numpy as np
 
 from .params import CCIKParams
+from .propagation import build_next_krylov_vector, format_krylov_step_diagnostics, krylov_step_diagnostics_as_dict
+from .selection import build_projection_workspace, candidate_mode_from_params, make_full_hdiag_map
+from .sparse_ci import (
+    SparseCIVector,
+    inner_sparse,
+    make_hf_sparse_vector,
+)
 
 
 # PDF mapping note
@@ -29,8 +36,10 @@ def normalize(ci: np.ndarray) -> np.ndarray:
     return ci if nrm == 0 else (ci / nrm)
 
 
+
 def inner(ci1: np.ndarray, ci2: np.ndarray) -> float:
     return float(np.vdot(ci1.ravel(), ci2.ravel()))
+
 
 
 def compress_keep_top_mask(ci: np.ndarray, nkeep: int | None = None, min_abs: float = 0.0) -> np.ndarray:
@@ -41,8 +50,6 @@ def compress_keep_top_mask(ci: np.ndarray, nkeep: int | None = None, min_abs: fl
     if nkeep is None or nkeep >= flat.size:
         return (absflat >= min_abs).reshape(ci.shape)
 
-    # Use strict '>' so that with the default min_abs=0.0 we don't treat exact zeros
-    # as eligible and end up selecting arbitrary zero entries.
     eligible = np.where(absflat > min_abs)[0]
     if eligible.size == 0:
         idx = int(np.argmax(absflat))
@@ -62,10 +69,13 @@ def compress_keep_top_mask(ci: np.ndarray, nkeep: int | None = None, min_abs: fl
     return mask.reshape(ci.shape)
 
 
+
 def apply_mask(ci: np.ndarray, mask: np.ndarray) -> np.ndarray:
     out = np.zeros_like(ci)
     out[mask] = ci[mask]
     return out
+
+
 
 def topk_positive_flat_indices(arr: np.ndarray, k: int) -> np.ndarray:
     """Return flat indices of up to k entries with arr>0 and largest values.
@@ -87,6 +97,7 @@ def topk_positive_flat_indices(arr: np.ndarray, k: int) -> np.ndarray:
     return pos[top_local]
 
 
+
 def topk_positive_mask(arr: np.ndarray, k: int) -> np.ndarray:
     """Return a boolean mask selecting top-k entries with arr>0."""
 
@@ -98,6 +109,7 @@ def topk_positive_mask(arr: np.ndarray, k: int) -> np.ndarray:
     return mask
 
 
+
 def occ_list_to_bitstring(occ: list[int]) -> int:
     s = 0
     for p in occ:
@@ -105,20 +117,70 @@ def occ_list_to_bitstring(occ: list[int]) -> int:
     return s
 
 
+
 def generalized_eigh(H: np.ndarray, S: np.ndarray, eps: float = 1e-12) -> tuple[np.ndarray, np.ndarray]:
-    """Solve H x = e S x for symmetric H and SPD S via Cholesky."""
+    """Solve H x = e S x for symmetric H and positive-semidefinite S.
+
+    Compression can make the Krylov basis nearly linearly dependent, especially
+    in threshold mode with weak truncation. Project small-overlap directions out
+    of the generalized eigenproblem instead of relying on a fragile Cholesky of S.
+    """
     H = 0.5 * (H + H.T)
     S = 0.5 * (S + S.T)
-    try:
-        L = np.linalg.cholesky(S)
-    except np.linalg.LinAlgError:
-        L = np.linalg.cholesky(S + eps * np.eye(S.shape[0]))
 
-    Linv = np.linalg.inv(L)
-    A = Linv @ H @ Linv.T
+    s_eval, U = np.linalg.eigh(S)
+    s_scale = float(max(np.max(np.abs(s_eval)), 1.0))
+    keep = s_eval > float(eps) * s_scale
+    if not np.any(keep):
+        keep = s_eval > float(eps)
+    if not np.any(keep):
+        raise np.linalg.LinAlgError("Generalized Ritz overlap matrix is numerically singular.")
+
+    s_keep = s_eval[keep]
+    U_keep = U[:, keep]
+    Sinv_half = U_keep / np.sqrt(s_keep)
+    A = Sinv_half.T @ H @ Sinv_half
+    A = 0.5 * (A + A.T)
     evals, Y = np.linalg.eigh(A)
-    X = Linv.T @ Y
+    X = Sinv_half @ Y
     return evals, X
+
+
+
+def _ritz_energy(
+    *,
+    Q: list[SparseCIVector],
+    h1: np.ndarray,
+    eri8: np.ndarray,
+    h2eff: np.ndarray,
+    norb: int,
+    nelec: tuple[int, int],
+    params: CCIKParams,
+    hdiag_full: dict[tuple[int, int], float] | None,
+) -> tuple[float, np.ndarray, np.ndarray]:
+    m_eff = len(Q)
+    Hproj = np.zeros((m_eff, m_eff))
+    Sproj = np.zeros((m_eff, m_eff))
+    Hq = [
+        build_projection_workspace(
+            qk=Q[j],
+            h1=h1,
+            eri8=eri8,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+            params=params,
+            hdiag_full=hdiag_full,
+        ).v_proj
+        for j in range(m_eff)
+    ]
+    for i in range(m_eff):
+        for j in range(m_eff):
+            Sproj[i, j] = inner_sparse(Q[i], Q[j])
+            Hproj[i, j] = inner_sparse(Q[i], Hq[j])
+    evals, _ = generalized_eigh(Hproj, Sproj)
+    return float(evals[0]), Hproj, Sproj
+
 
 
 def ccik_ground_energy_dense(
@@ -128,147 +190,74 @@ def ccik_ground_energy_dense(
     nelec: tuple[int, int],
     *,
     params: CCIKParams | None = None,
-    stats: dict[str, float] | dict[str, int] | None = None,
+    stats: dict[str, object] | None = None,
 ) -> float:
-    """Dense CIPSI-scored inexact Krylov in a determinant basis.
-
-    PDF mapping:
-    - Build H|q_k> exactly via a dense matvec (PDF Sec. II.B, Eq. (4)).
-    - Score determinants using eta_I^(k) = |v_I^(k)|^2 / |E_k - H_II| (PDF Sec. II.C, Eq. (6)).
-    - Define the compressed image |v_tilde_k> by projecting onto selected set S_k (PDF Sec. II.C, Eq. (7)–(8)).
-    - Build the next Krylov vector by orthogonalization + normalization (PDF Sec. II.E, Eq. (11)–(12)).
-    - Finish with a (generalized) Ritz solve in the span of the Krylov basis (PDF Sec. II.F, Eq. (14)–(17)).
-
-    This implementation expects PySCF-style integrals (h1, eri8) and uses
-    `pyscf.fci.direct_spin1.contract_2e` for the matvec.
-
-    Returns: lowest electronic energy (NOT including any core/nuclear offset).
-    """
+    """Selected-space CCIK using sparse Krylov vectors over determinant pairs."""
 
     if params is None:
         params = CCIKParams()
 
-    # Local import so the package can be imported even if pyscf isn't available
-    # (only required when actually running the algorithm).
-    from pyscf.fci import cistring, direct_spin1
+    from pyscf.fci import direct_spin1
 
-    neleca, nelecb = nelec
-    na = cistring.num_strings(norb, neleca)
-    nb = cistring.num_strings(norb, nelecb)
+    mode = candidate_mode_from_params(params, default="selected_ci")
+    hdiag_full: dict[tuple[int, int], float] | None = None
+    if mode == "full":
+        hdiag_full = make_full_hdiag_map(h1=h1, eri8=eri8, norb=norb, nelec=nelec)
 
-    # H_II diagonal elements used in the selection denominator |E_k - H_II| (PDF Eq. (6))
-    hdiag = direct_spin1.make_hdiag(h1, eri8, norb, nelec)
-    hdiag = np.asarray(hdiag).reshape(na, nb)
-
-    # Build an effective 2e object so that contract_2e computes H|q_k> (PDF Eq. (4)).
-    # Note: PySCF's type hints may declare fac as int; runtime expects float values like 0.5.
     h2eff = direct_spin1.absorb_h1e(h1, eri8, norb, nelec, fac=0.5)  # type: ignore[arg-type]
+    q0 = make_hf_sparse_vector(norb=norb, nelec=nelec)
 
-    def H_contract(ci: np.ndarray) -> np.ndarray:
-        return np.asarray(direct_spin1.contract_2e(h2eff, ci, norb, nelec))
+    Q: list[SparseCIVector] = [q0]
 
-    # HF determinant in this CI tensor
-    occ_a = list(range(neleca))
-    occ_b = list(range(nelecb))
-    addr_a = cistring.str2addr(norb, neleca, occ_list_to_bitstring(occ_a))
-    addr_b = cistring.str2addr(norb, nelecb, occ_list_to_bitstring(occ_b))
-
-    q0 = np.zeros((na, nb))
-    q0[addr_a, addr_b] = 1.0
-    q0 = normalize(q0)
-
-    Q: list[np.ndarray] = [q0]
-    supports: list[np.ndarray] = [compress_keep_top_mask(q0, nkeep=params.nkeep)]
+    if stats is not None:
+        stats["step_diagnostics"] = []
 
     for k in range(params.m - 1):
         qk = Q[k]
-        supp_k = supports[k]
-
-        # Exact Hamiltonian action: v_full is the coefficient tensor v_I^(k) for H|q_k> (PDF Eq. (4)).
-        v_full = H_contract(qk)
-
-        # Rayleigh quotient E_k = <q_k|H|q_k> (PDF Eq. (5))
-        Ek = inner(qk, v_full)
-
-        # Selection score eta_I^(k) (PDF Eq. (6))
-        denom = np.abs(Ek - hdiag)
-        denom = np.where(denom < 1e-12, 1e-12, denom)
-        score = (np.abs(v_full) ** 2) / denom
-
-        score_ext = score.copy()
-        score_ext[supp_k] = 0.0
-
-        select_mask = topk_positive_mask(score_ext, int(params.nadd or 0))
-
-        topv_mask = (
-            compress_keep_top_mask(v_full, nkeep=params.Kv)
-            if (params.Kv is not None and params.Kv > 0)
-            else None
+        q_next, diag, _ = build_next_krylov_vector(
+            qk,
+            Q,
+            h1=h1,
+            eri8=eri8,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+            params=params,
+            hdiag_full=hdiag_full,
         )
-
-        supp_v = supp_k | select_mask
-        if topv_mask is not None:
-            supp_v |= topv_mask
-
         if params.verbose:
-            v2_total = float(np.sum(np.abs(v_full) ** 2))
-            v2_kept = float(np.sum(np.abs(v_full[supp_v]) ** 2))
-            tail_frac = (max(v2_total - v2_kept, 0.0)) / max(v2_total, 1e-30)
-            print(
-                f"    k={k:02d} E(q)={Ek:+.10f} tail≈{tail_frac:.2e} supp_v={int(supp_v.sum())}"
-            )
-
-        # Compressed matvec: |v_tilde_k> = P_{S_k} H|q_k> (PDF Eq. (7)–(8))
-        v = apply_mask(v_full, supp_v)
-
-        # Orthogonalization: r_k = |v_tilde_k> - sum_j |q_j><q_j|v_tilde_k> (PDF Eq. (11))
-        r = v.copy()
-        for j in range(k + 1):
-            r -= inner(Q[j], r) * Q[j]
-
-        nr = np.linalg.norm(r.ravel())
-        if nr < float(getattr(params, "orth_tol", 1e-12)):
+            print(format_krylov_step_diagnostics(f"    k={k:02d}", diag))
+        if stats is not None:
+            step_diags = stats.setdefault("step_diagnostics", [])
+            if isinstance(step_diags, list):
+                step_diags.append(krylov_step_diagnostics_as_dict(diag))
+            stats["last_step_diagnostics"] = krylov_step_diagnostics_as_dict(diag)
+        if not q_next.coeffs:
             if params.verbose:
                 print(f"[CCIK] breakdown at k={k}")
             break
-
-        # Normalize to get next Krylov basis vector q_{k+1} (PDF Eq. (12))
-        q_next = r / nr
-
-        # compress next basis vector
-        supp_next = compress_keep_top_mask(q_next, nkeep=params.nkeep)
-        q_next = normalize(apply_mask(q_next, supp_next))
-
         Q.append(q_next)
-        supports.append(supp_next)
 
-    # Ritz step in the Krylov subspace (PDF Sec. II.F, Eq. (14)–(17)).
-    # Because we compress vectors, we solve a generalized Ritz problem using the overlap Sproj.
-    m_eff = len(Q)
-    Hproj = np.zeros((m_eff, m_eff))
-    Sproj = np.zeros((m_eff, m_eff))
-
-    Hq = [H_contract(Q[j]) for j in range(m_eff)]
-    for i in range(m_eff):
-        for j in range(m_eff):
-            Sproj[i, j] = inner(Q[i], Q[j])
-            Hproj[i, j] = inner(Q[i], Hq[j])
-
-    evals, _ = generalized_eigh(Hproj, Sproj)
+    E0, _, _ = _ritz_energy(
+        Q=Q,
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=norb,
+        nelec=nelec,
+        params=params,
+        hdiag_full=hdiag_full,
+    )
 
     if stats is not None:
-        # Report how many *unique* determinants appear across all stored Krylov vectors.
-        # Because we explicitly mask vectors, exact zeros are stable and can be used for counting.
-        if len(supports) > 0:
-            union = supports[0].copy()
-            for s in supports[1:]:
-                union |= s
-            stats["m_eff"] = int(m_eff)
-            stats["ndet_union"] = int(np.sum(union))
-            stats["ndet_sum"] = int(sum(int(np.sum(s)) for s in supports))
-        else:
-            stats["m_eff"] = int(m_eff)
-            stats["ndet_union"] = 0
-            stats["ndet_sum"] = 0
+        union = set()
+        ndet_sum = 0
+        for q in Q:
+            supp = q.support()
+            union.update(supp)
+            ndet_sum += len(supp)
+        stats["m_eff"] = int(len(Q))
+        stats["ndet_union"] = int(len(union))
+        stats["ndet_sum"] = int(ndet_sum)
 
-    return float(evals[0])
+    return float(E0)

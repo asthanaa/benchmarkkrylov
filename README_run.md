@@ -1,4 +1,3 @@
-
 ## Package-style usage
 
 ## Documentation
@@ -15,6 +14,8 @@ If you just want to run the algorithms end-to-end using a TOML config, start her
 - Step-by-step run instructions: `scripts/README.md`
 - Sample N2 config used in the docs: `tests/n2_sample.toml`
 - Main driver used by that example: `scripts/n2_cas_scan.py`
+- Sparse-backend benchmark/tuning driver: `scripts/benchmark_sparse_backend.py`
+- Current benchmark summary: `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`
 
 ### Legacy scripts
 
@@ -26,8 +27,8 @@ See `src/ccik/README.md` for an algorithm description mapped to `krylov_cipsi.pd
 
 You can either:
 
-1) run scripts that add `src/` to `sys.path` (see `scripts/n2_cas_scan.py`), or
-2) install the package in editable mode (recommended for long-term use).
+1. run scripts that add `src/` to `sys.path` (see `scripts/n2_cas_scan.py`), or
+2. install the package in editable mode (recommended for long-term use).
 
 ### Run an external sweep script (no install)
 

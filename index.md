@@ -19,12 +19,15 @@ If GitHub Pages is configured for GitHub Actions, the full MkDocs site is availa
 - [`ccik_thick`](algorithms.html#ccik_thick)
 - [`ccik_stochastic`](algorithms.html#ccik_stochastic)
 
+These solvers now run on a sparse selected-determinant backend by default; the old dense full-space contraction path survives only as `selector_mode = "full"` for validation.
+
 ## What this repository contains
 
 - `src/ccik`: importable Python package
-- `scripts`: runnable drivers and scans
+- `scripts`: runnable drivers and benchmark helpers
 - `configs`: example TOML configs
-- `tests`: smoke tests and sample input
+- `tests`: smoke tests and sparse-backend tests
+- `experiments`: benchmark artifacts and notes
 
 ## Main driver
 

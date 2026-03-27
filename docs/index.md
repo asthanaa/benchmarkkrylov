@@ -2,9 +2,11 @@
 
 The importable package name is `ccik`. The active repository supports exactly three solvers:
 
-- `ccik`: dense baseline compressed Krylov
-- `ccik_thick`: dense compressed Krylov with thick restart
-- `ccik_stochastic`: dense compressed Krylov with stochastic candidate discovery
+- `ccik`: baseline selected-space CCIK
+- `ccik_thick`: selected-space CCIK with thick restart
+- `ccik_stochastic`: selected-space CCIK with multidepth stochastic candidate discovery
+
+The runtime representation is sparse over selected determinant pairs by default. Full dense `H|q_k>` formation remains available only through `selector_mode = "full"` for validation and regression checks.
 
 ## Start here
 
@@ -23,3 +25,4 @@ The importable package name is `ccik`. The active repository supports exactly th
 
 - Driver walkthrough: `scripts/README.md`
 - Equation-to-code mapping: `src/ccik/README.md`
+- Benchmark summary: `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`

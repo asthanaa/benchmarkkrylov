@@ -81,21 +81,18 @@ For singlets, the example drivers enforce `mol.nelectron == 2*ncore + nelecas`.
 
 ## `[ccik]`
 
-Parameters for baseline dense CCIK.
+Parameters for baseline sparse CCIK.
 
 - `m`: maximum Krylov dimension
 - `nadd`: number of external determinants added from the score ranking at each step
 - `nkeep`: maximum support retained in each compressed Krylov vector
-- `Kv`: stabilizer size; always retain the top-`Kv` entries of `|H q_k|`
+- `Kv`: stabilizer size; retain the top-`Kv` projected amplitudes
+- `selector_mode`: candidate-discovery / projected-matvec mode: `cipsi` (default) or `full`
+- `selector_depth`: number of repeated selected-CI expansion layers used to build each projected `H|q_k>`
+- `selector_ci_coeff_cutoff`: parent coefficient threshold used by the PySCF selected-CI expander
+- `selector_cutoff`: determinant generation threshold used by the PySCF selected-CI expander
 - `orth_tol`: residual norm threshold used to detect Krylov breakdown
 - `verbose`: print per-iteration diagnostics
-
-Interpretation:
-
-- Larger `m` gives a richer Krylov subspace but increases runtime and memory.
-- Larger `nadd` explores more external determinants each step.
-- Larger `nkeep` stores denser Krylov vectors and usually improves accuracy.
-- `Kv` keeps the matvec numerically stable when the score ranking misses large raw amplitudes.
 
 ## `[ccik_thick]`
 
@@ -105,29 +102,67 @@ Parameters for CCIK with thick restart.
 - `ncycles`: maximum number of restart cycles
 - `nroot`: number of lowest Ritz vectors reused as restart seeds
 - `tol`: convergence threshold on successive cycle energies
-- `nadd`, `nkeep`, `Kv`, `orth_tol`, `verbose`: same meanings as in `[ccik]`
-
-Interpretation:
-
-- `m_cycle` limits the size of each local Krylov solve.
-- `nroot` controls how much subspace information is carried into the next cycle.
-- `tol` determines when restart energies are considered converged.
+- `nadd`, `nkeep`, `Kv`, `selector_mode`, `selector_depth`, `selector_ci_coeff_cutoff`, `selector_cutoff`, `orth_tol`, `verbose`: same meanings as in `[ccik]`
 
 ## `[ccik_stochastic]`
 
 Parameters for CCIK-stochastic.
 
-- `m`, `nadd`, `nkeep`, `Kv`, `orth_tol`, `verbose`: same meanings as in `[ccik]`
-- `n_walkers`: number of stochastic proposals used to discover candidates
+- `m`, `nadd`, `nkeep`, `Kv`, `selector_ci_coeff_cutoff`, `selector_cutoff`, `orth_tol`, `verbose`: same meanings as in `[ccik]`
+- `selector_mode`: `stochastic` (default), `cipsi`, or `full`
+- `selector_depth`: repeated discovery / projected-contraction depth when `selector_mode = "stochastic"`
+- `n_walkers`: number of stochastic proposals used at each depth
 - `seed`: random seed for reproducibility; use `null` for nondeterministic runs
 - `parent_power`: parent sampling exponent, where parents are weighted by `|q_J|**parent_power`
 - `p_double`: probability of proposing a double excitation instead of a single excitation
 - `mixed_double_weight`: relative weight of mixed-spin doubles among all doubles
 - `eps_denom`: lower bound used in the score denominator `|E_k - H_II|`
 
-Interpretation:
+## Benchmarked sparse-backend settings
 
-- `n_walkers` is the main accuracy/runtime knob for stochastic discovery.
-- `parent_power > 1` biases proposals more strongly toward large-amplitude parents.
-- `p_double` and `mixed_double_weight` shape how the proposal budget is split across excitation types.
-- `eps_denom` prevents singular or unstable score denominators near diagonal crossings.
+From `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`, the following settings worked well on N2 / 6-31G / CAS(10,10) for the tested validation geometries:
+
+### `ccik`
+
+```toml
+[ccik]
+m = 32
+nadd = 2000
+nkeep = 12000
+Kv = 4000
+selector_mode = "cipsi"
+selector_depth = 1
+```
+
+### `ccik_thick`
+
+```toml
+[ccik_thick]
+m_cycle = 5
+ncycles = 10
+nroot = 2
+tol = 1e-6
+nadd = 4000
+nkeep = 8000
+Kv = 4000
+selector_mode = "cipsi"
+selector_depth = 1
+```
+
+### `ccik_stochastic`
+
+```toml
+[ccik_stochastic]
+m = 24
+nadd = 2000
+nkeep = 12000
+Kv = 2000
+selector_mode = "stochastic"
+selector_depth = 2
+n_walkers = 1500
+seed = 0
+```
+
+Caveat:
+
+- These CAS(10,10) settings do not transfer cleanly to stretched N2 / CAS(12,12); the larger multireference regime still needs additional algorithmic improvement.

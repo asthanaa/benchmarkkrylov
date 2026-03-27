@@ -50,6 +50,11 @@ def main() -> None:
         default=None,
         help="Path to TOML config (default: configs/config.toml if present, otherwise packaged defaults)",
     )
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="Output CSV path (default: <repo>/out_n2_cas_scan.csv)",
+    )
     args = parser.parse_args()
 
     config_path = args.config
@@ -158,7 +163,7 @@ def main() -> None:
         print(" | ".join(msg_parts))
         print(f"R={float(R):.4f} Å done in {time.perf_counter() - t_R0:.2f}s", flush=True)
 
-    out_path = _ROOT / "out_n2_cas_scan.csv"
+    out_path = Path(args.out) if args.out is not None else (_ROOT / "out_n2_cas_scan.csv")
     np.savetxt(out_path, np.asarray(rows, dtype=float), delimiter=",", header=",".join(header), comments="")
     print(f"\nWrote: {out_path}")
 

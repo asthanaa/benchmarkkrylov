@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class CCIKParams:
-    """Parameters controlling the baseline dense CCIK iteration."""
+    """Parameters controlling the baseline sparse CCIK iteration."""
 
     # Maximum number of Krylov basis vectors to build.
     m: int = 100
@@ -15,6 +15,42 @@ class CCIKParams:
     nkeep: int = 10000
     # Stabilizer support size retained from the largest |(H q_k)_I| entries.
     Kv: int = 3000
+    # Compression policy: topk (legacy), threshold, or fixed_budget.
+    compression_policy: str = "topk"
+    # Absolute threshold for storing normalized Krylov vectors in threshold mode.
+    store_abs_tol: float = 0.0
+    # Absolute threshold for using normalized q_k coefficients in H q_k propagation.
+    propagate_abs_tol: float = 0.0
+    # Fixed-budget store cap used when compression_policy="fixed_budget".
+    fixed_store_keep: int = 65_536
+    # Fixed-budget propagation cap used when compression_policy="fixed_budget".
+    fixed_propagate_keep: int = 512
+    # Candidate discovery mode: connected_sd, selected_ci (default), stochastic, or full.
+    candidate_mode: str = "selected_ci"
+    # Selector mode used to rank the projected H q_k or its orthogonal residual.
+    selector_mode: str = "abs_residual"
+    # Number of repeated selected-CI expansion layers used to build each projected H|q_k>.
+    selector_depth: int = 1
+    # Maximum number of parent determinants used to spawn candidate excitations.
+    generator_keep: int = 256
+    # Drop parent determinants smaller than this cutoff before candidate expansion.
+    generator_abs_coeff_cutoff: float = 0.0
+    # Optional hard cap applied after generator_keep.
+    max_parents_for_expansion: int | None = None
+    # Keep the current q_k support in the projected candidate pool.
+    include_current_support: bool = True
+    # Oversampling factor used before the final post-orthogonalization compression.
+    tmp_keep_factor: int = 4
+    # Preserve a capped subset of the current q_k support in the final compression when possible.
+    preserve_prev_support: bool = True
+    # If None, use min(2048, nkeep // 4) at runtime.
+    preserve_prev_support_cap: int | None = None
+    # Compute an exact H q_k for tiny validation problems and log the projection error.
+    exact_hq_diagnostics: bool = False
+    # Selected-CI parent coefficient threshold.
+    selector_ci_coeff_cutoff: float = 5e-4
+    # Selected-CI determinant generation threshold.
+    selector_cutoff: float = 5e-4
     # Emit per-iteration diagnostics.
     verbose: bool = False
     # Treat smaller orthogonalized residual norms as Krylov breakdown.
@@ -23,7 +59,7 @@ class CCIKParams:
 
 @dataclass(frozen=True)
 class CCIKThickRestartParams:
-    """Parameters for dense CCIK with thick restart."""
+    """Parameters for sparse CCIK with thick restart."""
 
     # Krylov basis size built within one restart cycle.
     m_cycle: int = 25
@@ -38,6 +74,24 @@ class CCIKThickRestartParams:
     nadd: int = 2000
     nkeep: int = 10000
     Kv: int = 3000
+    compression_policy: str = "topk"
+    store_abs_tol: float = 0.0
+    propagate_abs_tol: float = 0.0
+    fixed_store_keep: int = 65_536
+    fixed_propagate_keep: int = 512
+    candidate_mode: str = "selected_ci"
+    selector_mode: str = "abs_residual"
+    selector_depth: int = 1
+    generator_keep: int = 256
+    generator_abs_coeff_cutoff: float = 0.0
+    max_parents_for_expansion: int | None = None
+    include_current_support: bool = True
+    tmp_keep_factor: int = 4
+    preserve_prev_support: bool = True
+    preserve_prev_support_cap: int | None = None
+    exact_hq_diagnostics: bool = False
+    selector_ci_coeff_cutoff: float = 5e-4
+    selector_cutoff: float = 5e-4
     verbose: bool = False
     orth_tol: float = 1e-12
 
@@ -53,6 +107,31 @@ class CCIKStochasticParams:
     nadd: int = 2000
     nkeep: int = 10000
     Kv: int = 3000
+    compression_policy: str = "topk"
+    store_abs_tol: float = 0.0
+    propagate_abs_tol: float = 0.0
+    fixed_store_keep: int = 65_536
+    fixed_propagate_keep: int = 512
+    # Candidate discovery mode: stochastic (default), connected_sd, selected_ci, or full.
+    candidate_mode: str = "stochastic"
+    # Selector mode used to rank the projected H q_k or its orthogonal residual.
+    selector_mode: str = "abs_residual"
+    # Number of fixed-budget stochastic discovery / projected-contraction rounds
+    # when candidate_mode='stochastic', or repeated selected-CI expansion layers
+    # when candidate_mode='selected_ci'.
+    selector_depth: int = 1
+    generator_keep: int = 256
+    generator_abs_coeff_cutoff: float = 0.0
+    max_parents_for_expansion: int | None = None
+    include_current_support: bool = True
+    tmp_keep_factor: int = 4
+    preserve_prev_support: bool = True
+    preserve_prev_support_cap: int | None = None
+    exact_hq_diagnostics: bool = False
+    # Selected-CI parent coefficient threshold.
+    selector_ci_coeff_cutoff: float = 5e-4
+    # Selected-CI determinant generation threshold.
+    selector_cutoff: float = 5e-4
 
     # Number of stochastic proposals used to discover candidates for each iteration.
     n_walkers: int = 20000

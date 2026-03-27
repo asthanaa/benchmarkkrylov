@@ -36,6 +36,17 @@ Notes:
 
 - The test suite is designed to work even if the package is not installed by adding `src/` to `sys.path` from `tests/conftest.py`.
 - Some tests are expected to be skipped when optional dependencies are absent.
+- Sparse-backend coverage currently includes `tests/test_sparse_ci.py` in addition to the smoke tests.
+
+## Benchmarking
+
+To reproduce the staged sparse-backend tuning workflow used in the documentation:
+
+```bash
+python scripts/benchmark_sparse_backend.py --cases n2_cas10_10 --methods ccik ccik_thick ccik_stochastic
+```
+
+Artifacts are written under `experiments/sparse_backend_benchmark_20260312/`.
 
 ## Type checking
 

@@ -58,11 +58,22 @@ Example, two methods:
 methods = ["ccik", "ccik_stochastic"]
 ```
 
+## Benchmark the sparse backend
+
+To run the staged sparse-backend tuning workflow used for the current documentation:
+
+```bash
+python scripts/benchmark_sparse_backend.py --cases n2_cas10_10 --methods ccik ccik_thick ccik_stochastic
+```
+
+Artifacts are written under `experiments/sparse_backend_benchmark_20260312/`.
+
 ## Common gotchas
 
 - For a singlet (`spin = 0`), the drivers check `mol.nelectron == 2*ncore + nelecas`.
 - CAS-FCI is used as a reference in the example scripts and becomes expensive quickly as the active space grows.
 - `ccik_stochastic` is reproducible only when `seed` is fixed.
+- `selector_mode = "full"` is a validation fallback, not the default production path.
 
 ## Next
 

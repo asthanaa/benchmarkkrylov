@@ -5,11 +5,11 @@ The package exposes a small top-level API from `src/ccik/__init__.py`.
 ## Solvers
 
 - `ccik_ground_energy_dense(...)`
-  Meaning: baseline dense CCIK solver.
+  Meaning: baseline selected-space CCIK solver.
 - `ccik_ground_energy_dense_thick_restart(...)`
-  Meaning: dense CCIK with thick restart.
+  Meaning: selected-space CCIK with thick restart.
 - `ccik_ground_energy_stochastic(...)`
-  Meaning: dense CCIK with stochastic candidate discovery.
+  Meaning: selected-space CCIK with multidepth stochastic candidate discovery.
 
 All three return the lowest electronic CAS energy. They do not include `ecore`; the driver scripts add that offset.
 

@@ -47,13 +47,31 @@ def ccik_params_from_dict(d: dict[str, Any]) -> CCIKParams:
     """Create ``CCIKParams`` from a parsed TOML section."""
 
     base = asdict(CCIKParams())
-    for key in ("m", "nadd", "nkeep", "Kv"):
+    for key in ("m", "nadd", "nkeep", "Kv", "generator_keep", "tmp_keep_factor", "fixed_store_keep", "fixed_propagate_keep"):
         if key in d:
             base[key] = int(d[key])
+    if "max_parents_for_expansion" in d:
+        base["max_parents_for_expansion"] = None if d["max_parents_for_expansion"] is None else int(d["max_parents_for_expansion"])
+    if "preserve_prev_support_cap" in d:
+        base["preserve_prev_support_cap"] = None if d["preserve_prev_support_cap"] is None else int(d["preserve_prev_support_cap"])
     if "verbose" in d:
         base["verbose"] = bool(d["verbose"])
+    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics"):
+        if key in d:
+            base[key] = bool(d[key])
     if "orth_tol" in d:
         base["orth_tol"] = float(d["orth_tol"])
+    if "candidate_mode" in d:
+        base["candidate_mode"] = str(d["candidate_mode"]).strip()
+    if "compression_policy" in d:
+        base["compression_policy"] = str(d["compression_policy"]).strip()
+    if "selector_mode" in d:
+        base["selector_mode"] = str(d["selector_mode"]).strip()
+    if "selector_depth" in d:
+        base["selector_depth"] = int(d["selector_depth"])
+    for key in ("selector_ci_coeff_cutoff", "selector_cutoff", "generator_abs_coeff_cutoff", "store_abs_tol", "propagate_abs_tol"):
+        if key in d:
+            base[key] = float(d[key])
     return CCIKParams(**base)
 
 
@@ -61,15 +79,33 @@ def ccik_thick_restart_params_from_dict(d: dict[str, Any]) -> CCIKThickRestartPa
     """Create ``CCIKThickRestartParams`` from a parsed TOML section."""
 
     base = asdict(CCIKThickRestartParams())
-    for key in ("m_cycle", "ncycles", "nroot", "nadd", "nkeep", "Kv"):
+    for key in ("m_cycle", "ncycles", "nroot", "nadd", "nkeep", "Kv", "generator_keep", "tmp_keep_factor", "fixed_store_keep", "fixed_propagate_keep"):
         if key in d:
             base[key] = int(d[key])
     if "tol" in d:
         base["tol"] = float(d["tol"])
+    if "max_parents_for_expansion" in d:
+        base["max_parents_for_expansion"] = None if d["max_parents_for_expansion"] is None else int(d["max_parents_for_expansion"])
+    if "preserve_prev_support_cap" in d:
+        base["preserve_prev_support_cap"] = None if d["preserve_prev_support_cap"] is None else int(d["preserve_prev_support_cap"])
     if "verbose" in d:
         base["verbose"] = bool(d["verbose"])
+    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics"):
+        if key in d:
+            base[key] = bool(d[key])
     if "orth_tol" in d:
         base["orth_tol"] = float(d["orth_tol"])
+    if "candidate_mode" in d:
+        base["candidate_mode"] = str(d["candidate_mode"]).strip()
+    if "compression_policy" in d:
+        base["compression_policy"] = str(d["compression_policy"]).strip()
+    if "selector_mode" in d:
+        base["selector_mode"] = str(d["selector_mode"]).strip()
+    if "selector_depth" in d:
+        base["selector_depth"] = int(d["selector_depth"])
+    for key in ("selector_ci_coeff_cutoff", "selector_cutoff", "generator_abs_coeff_cutoff", "store_abs_tol", "propagate_abs_tol"):
+        if key in d:
+            base[key] = float(d[key])
     return CCIKThickRestartParams(**base)
 
 
@@ -77,18 +113,36 @@ def ccik_stochastic_params_from_dict(d: dict[str, Any]) -> CCIKStochasticParams:
     """Create ``CCIKStochasticParams`` from a parsed TOML section."""
 
     base = asdict(CCIKStochasticParams())
-    for key in ("m", "nadd", "nkeep", "Kv", "n_walkers"):
+    for key in ("m", "nadd", "nkeep", "Kv", "n_walkers", "generator_keep", "tmp_keep_factor", "fixed_store_keep", "fixed_propagate_keep"):
         if key in d:
             base[key] = int(d[key])
     if "seed" in d:
         base["seed"] = None if d["seed"] is None else int(d["seed"])
-    for key in ("parent_power", "p_double", "mixed_double_weight", "eps_denom"):
+    if "max_parents_for_expansion" in d:
+        base["max_parents_for_expansion"] = None if d["max_parents_for_expansion"] is None else int(d["max_parents_for_expansion"])
+    if "preserve_prev_support_cap" in d:
+        base["preserve_prev_support_cap"] = None if d["preserve_prev_support_cap"] is None else int(d["preserve_prev_support_cap"])
+    for key in ("parent_power", "p_double", "mixed_double_weight", "eps_denom", "generator_abs_coeff_cutoff"):
         if key in d:
             base[key] = float(d[key])
     if "verbose" in d:
         base["verbose"] = bool(d["verbose"])
+    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics"):
+        if key in d:
+            base[key] = bool(d[key])
     if "orth_tol" in d:
         base["orth_tol"] = float(d["orth_tol"])
+    if "candidate_mode" in d:
+        base["candidate_mode"] = str(d["candidate_mode"]).strip()
+    if "compression_policy" in d:
+        base["compression_policy"] = str(d["compression_policy"]).strip()
+    if "selector_mode" in d:
+        base["selector_mode"] = str(d["selector_mode"]).strip()
+    if "selector_depth" in d:
+        base["selector_depth"] = int(d["selector_depth"])
+    for key in ("selector_ci_coeff_cutoff", "selector_cutoff", "store_abs_tol", "propagate_abs_tol"):
+        if key in d:
+            base[key] = float(d[key])
     return CCIKStochasticParams(**base)
 
 

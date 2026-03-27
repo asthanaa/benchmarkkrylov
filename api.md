@@ -5,8 +5,11 @@ The package exposes a small top-level API from `src/ccik/__init__.py`.
 ## Solvers
 
 - `ccik_ground_energy_dense(...)`
+  - baseline selected-space CCIK solver
 - `ccik_ground_energy_dense_thick_restart(...)`
+  - selected-space CCIK with thick restart
 - `ccik_ground_energy_stochastic(...)`
+  - selected-space CCIK with multidepth stochastic candidate discovery
 
 All three return the lowest electronic CAS energy. They do not include `ecore`.
 

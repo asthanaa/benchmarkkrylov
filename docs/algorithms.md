@@ -1,6 +1,6 @@
 # Algorithms
 
-The active codebase implements three dense compressed-Krylov solvers over a CAS Hamiltonian:
+The active codebase implements three sparse selected-space compressed-Krylov solvers over a CAS Hamiltonian:
 
 - `ccik`
 - `ccik_thick`
@@ -12,14 +12,27 @@ All three operate in a determinant basis built from the CAS Hamiltonian returned
 
 Each solver repeatedly works with these objects:
 
-- `q_k`: the current Krylov basis vector as a CI coefficient tensor
-- `v_full = H q_k`: the exact dense Hamiltonian action
+- `q_k`: the current sparse Krylov vector
 - `E_k = <q_k | H | q_k>`: Rayleigh quotient for the current vector
-- `H_II`: diagonal Hamiltonian elements
-- `score_I = |(v_full)_I|^2 / |E_k - H_II|`: determinant ranking score
-- `S_k`: selected support used to compress the matvec and next basis vector
+- `H_II`: diagonal Hamiltonian elements on the selected support
+- `score_I = |(v_proj)_I|^2 / |E_k - H_II|`: determinant ranking score on the selected space
+- `S_k`: selected support used to approximate `H q_k` and compress the next basis vector
 
-Because the code compresses vectors explicitly, the Ritz solve uses a generalized eigenproblem `H c = E S c` instead of assuming an exactly orthonormal Krylov basis.
+Because the code compresses vectors explicitly, the Ritz solve uses a generalized eigenproblem `H c = E S c` rather than assuming exact orthonormality.
+
+## Selector modes
+
+The selected support is built by a selector backend:
+
+- `selector_mode = "cipsi"`
+  - default for `ccik` and `ccik_thick`
+  - uses PySCF selected-CI expansion
+- `selector_mode = "stochastic"`
+  - default for `ccik_stochastic`
+  - uses fixed-budget stochastic discovery and repeated projected contractions
+- `selector_mode = "full"`
+  - explicit validation fallback only
+  - forms the full dense `H q_k`
 
 ## `ccik`
 
@@ -32,18 +45,20 @@ Entry point:
 Workflow:
 
 1. Start from the Hartree-Fock determinant.
-2. Compute the exact dense matvec `v_full = H q_k`.
-3. Rank external determinants with the score above.
-4. Keep the selected determinants plus a `Kv`-sized stabilizer from the largest `|v_full|` entries.
-5. Orthogonalize and compress the next Krylov vector.
-6. Solve the generalized Ritz problem over the collected Krylov basis.
+2. Build a selected determinant space for the current sparse Krylov vector.
+3. Contract `H q_k` only on that selected space.
+4. Rank external determinants with the score above.
+5. Keep the selected determinants plus a `Kv`-sized stabilizer from the largest projected amplitudes.
+6. Orthogonalize and compress the next Krylov vector.
+7. Solve the generalized Ritz problem.
 
 Important knobs:
 
 - `m`: total Krylov dimension
 - `nadd`: new determinants added per step
 - `nkeep`: support retained in each basis vector
-- `Kv`: raw-amplitude stabilizer size
+- `Kv`: projected-amplitude stabilizer size
+- `selector_mode`, `selector_depth`: selector backend and depth
 
 ## `ccik_thick`
 
@@ -55,12 +70,10 @@ Entry point:
 
 Difference from baseline:
 
-- Instead of building one long Krylov chain, the solver builds a cycle of length `m_cycle`, solves Ritz, keeps the best `nroot` Ritz vectors, and starts the next cycle from those vectors.
-
-Use this variant when:
-
-- a single long Krylov chain is too large or too unstable
-- you want a bounded working subspace per cycle
+- the solver builds a cycle of length `m_cycle`
+- solves Ritz at the end of the cycle
+- keeps the best `nroot` Ritz vectors
+- starts the next cycle from those vectors
 
 Important knobs:
 
@@ -79,15 +92,24 @@ Entry point:
 
 Difference from baseline:
 
-- The score, compression, orthogonalization, and Ritz steps stay the same.
-- Only candidate discovery changes: stochastic excitation proposals identify a smaller candidate pool, and the usual score is evaluated only on that pool.
+- candidate discovery changes from deterministic selected-CI expansion to stochastic excitation proposals
+- `selector_depth` is real here: each depth performs a fixed-budget discovery round, accumulates the visited support, and recomputes a projected contraction on that support
+- score, compression, orthogonalization, and Ritz extraction remain the same as in the other solvers
 
 The stochastic discovery stage uses:
 
-- `n_walkers`: number of proposals per Krylov step
+- `n_walkers`: proposals per depth
 - `parent_power`: bias toward large-amplitude parent determinants
 - `p_double`: single vs double excitation split
 - `mixed_double_weight`: weighting of mixed-spin doubles
 - `seed`: reproducibility control
 
-This is still a dense-matvec method. The stochastic part affects candidate discovery, not the Hamiltonian contraction itself.
+## Current benchmark takeaways
+
+From `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`:
+
+- On N2 / 6-31G / CAS(10,10), tuned `ccik` and tuned `ccik_stochastic` both stayed below `1e-3 Eh` on the tested validation set.
+- Tuned `ccik_thick` remained slightly above `1e-3 Eh` at the short bond.
+- For deterministic solvers, `selector_depth = 2` was consistently harmful on the tested hard points.
+- For stochastic, `selector_depth = 2` was necessary at the tuned walker budget.
+- The tuned CAS(10,10) settings do not transfer cleanly to stretched CAS(12,12); sparse storage helps, but the harder multireference regime still needs a better selector/refinement strategy.

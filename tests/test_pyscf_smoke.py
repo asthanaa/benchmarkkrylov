@@ -13,6 +13,7 @@ from ccik import (
     exact_cas_fci_energy_pyscf,
     make_mol_pyscf,
 )
+from ccik.core import generalized_eigh
 from ccik.params import CCIKParams, CCIKStochasticParams, CCIKThickRestartParams
 from ccik.pyscf_cas import CASSpec
 
@@ -51,7 +52,18 @@ def _build_h4_chain_cas(r_ang: float = 1.5) -> tuple[np.ndarray, np.ndarray, flo
 def test_h2_all_three_solvers_close_to_fci() -> None:
     h1, eri8, ecore, ncas, nelec, e_fci_tot = _build_h2_cas()
 
-    ccik_params = CCIKParams(m=8, nadd=50, nkeep=200, Kv=50, verbose=False, orth_tol=1e-12)
+    ccik_params = CCIKParams(
+        m=8,
+        nadd=50,
+        nkeep=200,
+        Kv=50,
+        selector_mode="cipsi",
+        selector_depth=1,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
+        verbose=False,
+        orth_tol=1e-12,
+    )
     thick_params = CCIKThickRestartParams(
         m_cycle=8,
         ncycles=1,
@@ -60,6 +72,10 @@ def test_h2_all_three_solvers_close_to_fci() -> None:
         nadd=50,
         nkeep=200,
         Kv=50,
+        selector_mode="cipsi",
+        selector_depth=1,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
         verbose=False,
         orth_tol=1e-12,
     )
@@ -68,6 +84,10 @@ def test_h2_all_three_solvers_close_to_fci() -> None:
         nadd=50,
         nkeep=200,
         Kv=50,
+        selector_mode="stochastic",
+        selector_depth=2,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
         n_walkers=2000,
         seed=0,
         parent_power=1.0,
@@ -102,6 +122,10 @@ def test_stochastic_solver_is_reproducible_with_seed() -> None:
         nadd=10,
         nkeep=50,
         Kv=10,
+        selector_mode="stochastic",
+        selector_depth=2,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
         n_walkers=5000,
         seed=123,
         verbose=False,
@@ -123,6 +147,10 @@ def test_h4_selection_variants_remain_close_to_fci() -> None:
         nadd=12,
         nkeep=18,
         Kv=10,
+        selector_mode="cipsi",
+        selector_depth=1,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
         orth_tol=1e-12,
         verbose=False,
     )
@@ -131,6 +159,10 @@ def test_h4_selection_variants_remain_close_to_fci() -> None:
         nadd=12,
         nkeep=18,
         Kv=10,
+        selector_mode="stochastic",
+        selector_depth=2,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
         n_walkers=10000,
         seed=0,
         parent_power=1.0,
@@ -146,3 +178,80 @@ def test_h4_selection_variants_remain_close_to_fci() -> None:
 
     assert abs(e_thick - e_fci_tot) < 2e-2
     assert abs(e_stoch - e_fci_tot) < 2e-2
+
+
+def test_full_selector_mode_remains_available() -> None:
+    h1, eri8, ecore, ncas, nelec, e_fci_tot = _build_h2_cas()
+
+    dense_params = CCIKParams(
+        m=8,
+        nadd=50,
+        nkeep=200,
+        Kv=50,
+        selector_mode="full",
+        verbose=False,
+        orth_tol=1e-12,
+    )
+    thick_params = CCIKThickRestartParams(
+        m_cycle=8,
+        ncycles=1,
+        nroot=2,
+        tol=1e-12,
+        nadd=50,
+        nkeep=200,
+        Kv=50,
+        selector_mode="full",
+        verbose=False,
+        orth_tol=1e-12,
+    )
+
+    e_dense = float(ecore + ccik_ground_energy_dense(h1, eri8, ncas, nelec, params=dense_params))
+    e_thick = float(ecore + ccik_ground_energy_dense_thick_restart(h1, eri8, ncas, nelec, params=thick_params))
+
+    assert abs(e_dense - e_fci_tot) < 1e-10
+    assert abs(e_thick - e_fci_tot) < 1e-10
+
+
+def test_threshold_mode_zero_threshold_solver_path_remains_exact_on_h2() -> None:
+    h1, eri8, ecore, ncas, nelec, e_fci_tot = _build_h2_cas()
+
+    dense_params = CCIKParams(
+        m=8,
+        compression_policy="threshold",
+        store_abs_tol=0.0,
+        propagate_abs_tol=0.0,
+        candidate_mode="full",
+        selector_mode="abs_residual",
+        orth_tol=1e-12,
+        verbose=False,
+    )
+    thick_params = CCIKThickRestartParams(
+        m_cycle=8,
+        ncycles=2,
+        nroot=2,
+        tol=1e-12,
+        compression_policy="threshold",
+        store_abs_tol=0.0,
+        propagate_abs_tol=0.0,
+        candidate_mode="full",
+        selector_mode="abs_residual",
+        orth_tol=1e-12,
+        verbose=False,
+    )
+
+    e_dense = float(ecore + ccik_ground_energy_dense(h1, eri8, ncas, nelec, params=dense_params))
+    e_thick = float(ecore + ccik_ground_energy_dense_thick_restart(h1, eri8, ncas, nelec, params=thick_params))
+
+    assert abs(e_dense - e_fci_tot) < 1e-10
+    assert abs(e_thick - e_fci_tot) < 1e-10
+
+
+def test_generalized_eigh_filters_near_singular_overlap_modes() -> None:
+    H = np.array([[-1.0, -1.0], [-1.0, -1.0]])
+    S = np.array([[1.0, 1.0 - 1.0e-14], [1.0 - 1.0e-14, 1.0]])
+
+    evals, X = generalized_eigh(H, S, eps=1.0e-10)
+
+    assert evals.shape == (1,)
+    assert X.shape == (2, 1)
+    assert abs(float(evals[0]) + 1.0) < 1.0e-10

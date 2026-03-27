@@ -3,9 +3,10 @@
 ## Repository layout
 
 - `src/ccik/`: importable package
-- `scripts/`: runnable example drivers
-- `tests/`: smoke tests and sample config
+- `scripts/`: runnable example drivers and benchmark helpers
+- `tests/`: smoke tests and sparse-backend tests
 - `configs/`: optional user override configs
+- `experiments/`: benchmark artifacts and notes
 - `legacy/`: preserved historical scripts
 
 ## Core modules
@@ -18,13 +19,29 @@ Hamiltonian construction helpers:
 - `build_cas_hamiltonian_pyscf(...)`
 - `exact_cas_fci_energy_pyscf(...)`
 
+### `ccik.sparse_ci`
+
+Shared sparse determinant-vector operations:
+
+- sparse Krylov vector storage
+- support compression and projection
+- sparse inner products and linear combinations
+- conversions to and from PySCF selected-CI containers
+
+### `ccik.selection`
+
+Selected-space builders used by all three solvers:
+
+- deterministic selected-CI expansion (`selector_mode = "cipsi"`)
+- multidepth stochastic discovery (`selector_mode = "stochastic"`)
+- explicit dense fallback (`selector_mode = "full"`)
+
 ### `ccik.core`
 
-Baseline dense CCIK implementation and its shared linear-algebra helpers:
+Baseline selected-space CCIK implementation and shared Ritz helpers:
 
 - `ccik_ground_energy_dense(...)`
-- `compress_keep_top_mask(...)`
-- `topk_positive_mask(...)`
+- `_score_map(...)`
 - `generalized_eigh(...)`
 
 ### `ccik.thick_restart`
@@ -32,6 +49,8 @@ Baseline dense CCIK implementation and its shared linear-algebra helpers:
 Thick-restart variant:
 
 - `ccik_ground_energy_dense_thick_restart(...)`
+- sparse restart-space construction
+- sparse Ritz-vector recycling
 
 ### `ccik.stochastic`
 
@@ -67,6 +86,12 @@ Main example runner:
 ### `scripts/n2_pes_scan_and_plot.py`
 
 PES plotting helper for `ccik_thick` and `ccik_stochastic`.
+
+### `scripts/benchmark_sparse_backend.py`
+
+Sparse-backend benchmark and tuning helper.
+
+It stages parameter sweeps on representative geometries, validates tuned settings on a small bond-length set, and writes CSV summaries plus notes into `experiments/`.
 
 ### `scripts/cr2_scan.py`
 
