@@ -1,43 +1,110 @@
-# CompressK / `ccik`
+# CompressK
 
-[![Documentation](https://img.shields.io/badge/Documentation-Open%20Docs-0A7EA4?style=for-the-badge)](https://asthanaa.github.io/CompressK/)
+`CompressK` is a teaching-and-research repository for the **Compressed Krylov in Configuration Interaction (CCIK)** family of solvers.
 
-This repository contains a Python package in `src/ccik` and runnable drivers in `scripts` for three compressed-Krylov solvers over CAS Hamiltonians:
+The repository now has two clearly labeled paths:
 
-- `ccik`: baseline selected-space CCIK
-- `ccik_thick`: CCIK with thick restart
-- `ccik_stochastic`: CCIK with multidepth stochastic candidate discovery
+- **Start Here: Chemistry Student**
+  - Learn the basic ideas with small molecules.
+  - Run short examples that compare CCIK to exact CAS-FCI.
+  - Use `ccik_thick` as the recommended default solver.
+- **Advanced / Research Workflows**
+  - Large-system benchmarks
+  - Quantum Package bridge tooling
+  - Fixed-budget and threshold sweeps
+  - Parity and validation scripts
 
-The active implementation stores Krylov vectors sparsely over selected determinant pairs. Full dense `H|q_k>` formation is no longer the default path; it remains available only as the explicit `selector_mode = "full"` validation fallback.
+## Start Here: Chemistry Student
 
-## Documentation
+1. Install the package and PySCF:
 
-- Hosted docs: https://asthanaa.github.io/CompressK/
-- In-repo docs index: `docs/index.md`
-- Quickstart: `docs/quickstart.md`
-- Configuration reference: `docs/configuration.md`
-- Algorithms overview: `docs/algorithms.md`
-- Architecture map: `docs/architecture.md`
+   ```bash
+   pip install -e ".[quantum]"
+   ```
 
-## Recommended entry points
+2. Run the first example:
 
-- Main N2 scan driver: `python scripts/n2_cas_scan.py --config <toml>`
-- N2 PES plot driver: `python scripts/n2_pes_scan_and_plot.py --config <toml>`
-- Sparse-backend benchmark/tuning driver: `python scripts/benchmark_sparse_backend.py --cases n2_cas10_10`
-- Sample config: `tests/n2_sample.toml`
+   ```bash
+   python examples/scripts/01_h2_ground_state.py
+   ```
 
-## Current benchmark status
+3. Then continue with:
 
-Representative sparse-backend tuning artifacts are in:
+- [Beginner docs index](docs/index.md)
+- [Quickstart](docs/quickstart.md)
+- [Chemistry glossary](docs/glossary.md)
+- [Examples guide](docs/examples.md)
 
-- `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`
+## Recommended learning path
 
-Main takeaways from that benchmark:
+- `H2`: build the smallest CAS Hamiltonian and compare CCIK to exact CAS-FCI
+- `H4`: compare solver variants and see what thick restart changes
+- `N2`: learn how active-space choices enter a realistic chemistry example
 
-- On N2 / 6-31G / CAS(10,10), tuned `ccik` and tuned `ccik_stochastic` both stayed below `1e-3 Eh` on the tested validation geometries.
-- Tuned `ccik_thick` was close but remained slightly above target at the short bond.
-- The tuned CAS(10,10) settings do not transfer cleanly to stretched CAS(12,12); larger active spaces still need algorithmic improvement, not just parameter transfer.
+The mirrored teaching files live in:
 
-## Current scope
+- `examples/scripts/`
+- `examples/notebooks/`
 
-The active repository focuses on the three solver variants above. Earlier neural-network selector experiments are not part of the maintained code path.
+## Advanced / Research Workflows
+
+Advanced scripts now live under:
+
+- `scripts/advanced/`
+- `scripts/_shared/`
+
+For convenience, the old root-level script names still exist as compatibility shims. New documentation points to the cleaner advanced layout instead of treating those workflows as the default starting point.
+
+Useful advanced references:
+
+- [Advanced workflows](docs/advanced.md)
+- [Fixed-budget N2 benchmark results](docs/fixed_budget_results.md)
+- [Quantum Package backend](docs/quantum_package_backend.md)
+- [Advanced scripts index](scripts/README.md)
+- [Experiment artifact notes](experiments/README.md)
+
+## Current production answer
+
+The current large-active-space benchmark conclusion is:
+
+- use the Quantum Package path
+- use `connected_sd_fullq`
+- use `abs_residual`
+- use `ccik_thick`
+- tune `fixed_store_keep` and `fixed_propagate_keep`
+
+The finished `N2` hard-point studies show that the compression problem is now a
+budget-tuning problem, not a selector-choice problem. The current best strategy
+is to keep `fixed_store_keep` moderate, start at `65536`, and tune
+`fixed_propagate_keep` first.
+
+## Package overview
+
+The public Python API stays small:
+
+- `ccik_ground_energy_dense(...)`
+- `ccik_ground_energy_dense_thick_restart(...)`
+- `ccik_ground_energy_stochastic(...)`
+- `make_mol_pyscf(...)`
+- `build_cas_hamiltonian_pyscf(...)`
+- `exact_cas_fci_energy_pyscf(...)`
+
+For most learners, `ccik_ground_energy_dense_thick_restart(...)` is the best place to start.
+
+## Repository layout
+
+- `src/ccik/`: importable package
+- `examples/`: beginner scripts and notebooks
+- `docs/`: narrative documentation
+- `scripts/advanced/`: research, benchmark, and QP workflows
+- `scripts/_shared/`: helpers used by advanced scripts
+- `tests/`: beginner, core, and advanced checks
+
+## Documentation site
+
+The MkDocs source lives in `docs/`. The main starting pages are:
+
+- `docs/index.md`
+- `docs/quickstart.md`
+- `docs/glossary.md`
+- `docs/examples.md`

@@ -1,4 +1,4 @@
-# Default configuration for scripts/n2_cas_scan.py
+# Default configuration for the legacy-compatible N2 scan driver
 
 [run]
 # Valid method names:

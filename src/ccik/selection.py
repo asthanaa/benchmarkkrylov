@@ -1,3 +1,10 @@
+"""Build the determinant space used to approximate ``H q_k``.
+
+This module is intentionally more technical than the beginner examples. It is
+responsible for deciding which determinants are explored, scored, and kept
+during each sparse Krylov update.
+"""
+
 from __future__ import annotations
 
 from itertools import combinations
@@ -60,6 +67,7 @@ def selector_mode_from_params(params: Any, *, default: str = "abs_residual") -> 
         "stochastic": "pt2_legacy",
         "full": "abs_hq",
         "dense": "abs_hq",
+        "ritz_pt2": "ground_state_pt2",
     }
     return aliases.get(mode, mode)
 
@@ -425,12 +433,10 @@ def build_candidate_pool_impl(
         )
         return parent_support, candidate_pool
 
-    if compression_policy == "fixed_budget":
-        if candidate_mode == "full":
-            if hdiag_full is None:
-                raise ValueError("full candidate mode requires hdiag_full")
-            return parent_support, set(hdiag_full)
-        return parent_support, (_enumerate_connected_sd_support(parent_support, norb) | current_support)
+    if compression_policy == "fixed_budget" and candidate_mode == "full":
+        if hdiag_full is None:
+            raise ValueError("full candidate mode requires hdiag_full")
+        return parent_support, set(hdiag_full)
 
     if candidate_mode == "full":
         if hdiag_full is None:
@@ -524,8 +530,6 @@ def compute_projected_matvec_impl(
         dense_q = qprop.to_dense(norb=norb, nelec=nelec)
         dense_v = np.asarray(direct_spin1.contract_2e(h2eff, dense_q, norb, nelec), dtype=float)
         v_proj = sparse_from_dense(dense_v, norb=norb, nelec=nelec)
-        if compression_policy == "fixed_budget":
-            v_proj = compress_topk_sparse(v_proj, _fixed_budget_keep_from_params(params, "fixed_store_keep", 1_000_000))
         full_support = set(hdiag_full)
         return SparseProjectionWorkspace(
             v_proj=v_proj,
@@ -554,8 +558,6 @@ def compute_projected_matvec_impl(
     hdiag_sel = selected_ci.make_hdiag(h1, eri8, work_sci._strs, norb, nelec).reshape(work_sci.shape)
     hdiag = hdiag_map_from_array(hdiag_sel, space=space)
     v_proj = sparse_from_scivector(v_sci)
-    if compression_policy == "fixed_budget":
-        v_proj = compress_topk_sparse(v_proj, _fixed_budget_keep_from_params(params, "fixed_store_keep", 1_000_000))
     return SparseProjectionWorkspace(
         v_proj=v_proj,
         hdiag=hdiag,

@@ -1,6 +1,16 @@
-# Configuration reference
+# Configuration Reference
 
-Most runs use a TOML file consumed by `scripts/n2_cas_scan.py`.
+You only need this page for config-driven workflows.
+
+If you are just learning the code, start with the example scripts instead of the config system.
+
+## Where config files are used
+
+The legacy-compatible scan driver still accepts TOML:
+
+```bash
+python scripts/n2_cas_scan.py --config tests/n2_sample.toml
+```
 
 Loading order:
 
@@ -9,8 +19,6 @@ Loading order:
 - packaged defaults in `src/ccik/defaults/config.toml`
 
 ## Top-level sections
-
-A complete config can contain:
 
 - `[run]`
 - `[molecule]`
@@ -22,147 +30,73 @@ A complete config can contain:
 
 ## `[run]`
 
-Controls which solver or solvers are executed.
-
-Supported shapes:
+Choose one method:
 
 ```toml
 [run]
-method = "ccik"
+method = "ccik_thick"
 ```
+
+Or compare several:
 
 ```toml
 [run]
 methods = ["ccik", "ccik_thick", "ccik_stochastic"]
 ```
 
-Valid method names:
-
-- `ccik`
-- `ccik_thick`
-- `ccik_stochastic`
-
-Aliases accepted by the driver:
-
-- `ccik_thick_restart`, `reuse_ritz`, `reuseRitz` -> `ccik_thick`
-- `stochastic`, `ccikstochastic`, `fciqmckrylov`, `fciqmc_krylov` -> `ccik_stochastic`
+The recommended default for most users is `ccik_thick`.
 
 ## `[molecule]`
 
-Controls the PySCF molecule used to build the CAS Hamiltonian.
+Controls the PySCF molecule:
 
-- `basis`: AO basis label
-- `unit`: geometry unit, usually `Angstrom`
-- `charge`: total molecular charge
-- `spin`: PySCF spin value `2S`
-- `verbose`: PySCF verbosity level
-
-The N2 geometry itself is generated in the driver from the scan bond length.
+- `basis`
+- `unit`
+- `charge`
+- `spin`
+- `verbose`
 
 ## `[scan]`
 
-Controls the bond scan grid.
+Controls the bond-length grid for scan-style drivers:
 
-- `R_min`: minimum bond length in Angstrom
-- `R_max`: maximum bond length in Angstrom
-- `n_points`: number of scan points, including both endpoints
-
-The driver uses `numpy.linspace(R_min, R_max, n_points)`.
+- `R_min`
+- `R_max`
+- `n_points`
 
 ## `[cas]`
 
-Defines the active space used to build the CAS Hamiltonian.
+Defines the active space:
 
-- `ncas`: number of active orbitals
-- `nelecas`: number of active electrons
-- `ncore`: number of frozen doubly occupied core orbitals
+- `ncas`
+- `nelecas`
+- `ncore`
 
-For singlets, the example drivers enforce `mol.nelectron == 2*ncore + nelecas`.
-
-## `[ccik]`
-
-Parameters for baseline sparse CCIK.
-
-- `m`: maximum Krylov dimension
-- `nadd`: number of external determinants added from the score ranking at each step
-- `nkeep`: maximum support retained in each compressed Krylov vector
-- `Kv`: stabilizer size; retain the top-`Kv` projected amplitudes
-- `selector_mode`: candidate-discovery / projected-matvec mode: `cipsi` (default) or `full`
-- `selector_depth`: number of repeated selected-CI expansion layers used to build each projected `H|q_k>`
-- `selector_ci_coeff_cutoff`: parent coefficient threshold used by the PySCF selected-CI expander
-- `selector_cutoff`: determinant generation threshold used by the PySCF selected-CI expander
-- `orth_tol`: residual norm threshold used to detect Krylov breakdown
-- `verbose`: print per-iteration diagnostics
-
-## `[ccik_thick]`
-
-Parameters for CCIK with thick restart.
-
-- `m_cycle`: Krylov dimension built inside one restart cycle
-- `ncycles`: maximum number of restart cycles
-- `nroot`: number of lowest Ritz vectors reused as restart seeds
-- `tol`: convergence threshold on successive cycle energies
-- `nadd`, `nkeep`, `Kv`, `selector_mode`, `selector_depth`, `selector_ci_coeff_cutoff`, `selector_cutoff`, `orth_tol`, `verbose`: same meanings as in `[ccik]`
-
-## `[ccik_stochastic]`
-
-Parameters for CCIK-stochastic.
-
-- `m`, `nadd`, `nkeep`, `Kv`, `selector_ci_coeff_cutoff`, `selector_cutoff`, `orth_tol`, `verbose`: same meanings as in `[ccik]`
-- `selector_mode`: `stochastic` (default), `cipsi`, or `full`
-- `selector_depth`: repeated discovery / projected-contraction depth when `selector_mode = "stochastic"`
-- `n_walkers`: number of stochastic proposals used at each depth
-- `seed`: random seed for reproducibility; use `null` for nondeterministic runs
-- `parent_power`: parent sampling exponent, where parents are weighted by `|q_J|**parent_power`
-- `p_double`: probability of proposing a double excitation instead of a single excitation
-- `mixed_double_weight`: relative weight of mixed-spin doubles among all doubles
-- `eps_denom`: lower bound used in the score denominator `|E_k - H_II|`
-
-## Benchmarked sparse-backend settings
-
-From `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`, the following settings worked well on N2 / 6-31G / CAS(10,10) for the tested validation geometries:
-
-### `ccik`
+Example:
 
 ```toml
-[ccik]
-m = 32
-nadd = 2000
-nkeep = 12000
-Kv = 4000
-selector_mode = "cipsi"
-selector_depth = 1
+[cas]
+ncas = 10
+nelecas = 10
+ncore = 2
 ```
 
-### `ccik_thick`
+## `[ccik]`, `[ccik_thick]`, `[ccik_stochastic]`
 
-```toml
-[ccik_thick]
-m_cycle = 5
-ncycles = 10
-nroot = 2
-tol = 1e-6
-nadd = 4000
-nkeep = 8000
-Kv = 4000
-selector_mode = "cipsi"
-selector_depth = 1
-```
+These sections store solver-specific parameters.
 
-### `ccik_stochastic`
+For modern sparse runs, the most important learner-facing knobs are:
 
-```toml
-[ccik_stochastic]
-m = 24
-nadd = 2000
-nkeep = 12000
-Kv = 2000
-selector_mode = "stochastic"
-selector_depth = 2
-n_walkers = 1500
-seed = 0
-```
+- `compression_policy`
+- `fixed_store_keep`
+- `fixed_propagate_keep`
 
-Caveat:
+The repository-wide learner-friendly defaults are:
 
-- These CAS(10,10) settings do not transfer cleanly to stretched N2 / CAS(12,12); the larger multireference regime still needs additional algorithmic improvement.
+- `compression_policy = "fixed_budget"`
+- `fixed_store_keep = 65536`
+- `fixed_propagate_keep = 512`
+
+For the current large-`N2` benchmark strategy, keep `fixed_store_keep = 65536`
+and tune `fixed_propagate_keep` first. The detailed results are summarized in
+[fixed_budget_results.md](fixed_budget_results.md).

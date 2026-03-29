@@ -1,4 +1,8 @@
-"""N2 bond scan driver for the three supported CCIK solvers."""
+"""Legacy-compatible N2 bond scan driver for the three supported CCIK solvers.
+
+This file remains at the old path for users who prefer a TOML-driven scan
+workflow. New learners should start in ``examples/`` instead.
+"""
 
 from __future__ import annotations
 

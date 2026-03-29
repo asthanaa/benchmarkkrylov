@@ -1,3 +1,10 @@
+"""Dataclasses that define solver defaults and accepted parameter names.
+
+These classes are the easiest place to inspect the knobs exposed by the public
+API. For most learners, :class:`CCIKThickRestartParams` is the best class to
+read first because ``ccik_thick`` is the recommended default solver.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -5,7 +12,15 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class CCIKParams:
-    """Parameters controlling the baseline sparse CCIK iteration."""
+    """Parameters controlling the baseline sparse CCIK iteration.
+
+    Plain-language purpose:
+    - collect the baseline solver settings in one immutable object
+
+    Chemistry meaning:
+    - controls how the Krylov space is built and how aggressively determinant
+      amplitudes are compressed during the calculation
+    """
 
     # Maximum number of Krylov basis vectors to build.
     m: int = 100
@@ -27,7 +42,8 @@ class CCIKParams:
     fixed_propagate_keep: int = 512
     # Candidate discovery mode: connected_sd, selected_ci (default), stochastic, or full.
     candidate_mode: str = "selected_ci"
-    # Selector mode used to rank the projected H q_k or its orthogonal residual.
+    # Selector mode used to rank the projected H q_k, its orthogonal residual,
+    # or the current lowest Ritz state in fixed-budget mode.
     selector_mode: str = "abs_residual"
     # Number of repeated selected-CI expansion layers used to build each projected H|q_k>.
     selector_depth: int = 1
@@ -59,7 +75,15 @@ class CCIKParams:
 
 @dataclass(frozen=True)
 class CCIKThickRestartParams:
-    """Parameters for sparse CCIK with thick restart."""
+    """Parameters for sparse CCIK with thick restart.
+
+    Plain-language purpose:
+    - collect the settings for the recommended thick-restart solver
+
+    Chemistry meaning:
+    - controls both the restart schedule and the determinant-compression policy
+      used inside each cycle
+    """
 
     # Krylov basis size built within one restart cycle.
     m_cycle: int = 25
@@ -80,6 +104,8 @@ class CCIKThickRestartParams:
     fixed_store_keep: int = 65_536
     fixed_propagate_keep: int = 512
     candidate_mode: str = "selected_ci"
+    # Selector mode used to rank the projected H q_k, its orthogonal residual,
+    # or the current lowest Ritz state in fixed-budget mode.
     selector_mode: str = "abs_residual"
     selector_depth: int = 1
     generator_keep: int = 256
@@ -98,7 +124,15 @@ class CCIKThickRestartParams:
 
 @dataclass(frozen=True)
 class CCIKStochasticParams:
-    """Parameters for CCIK-stochastic candidate discovery."""
+    """Parameters for CCIK-stochastic candidate discovery.
+
+    Plain-language purpose:
+    - collect the settings for the stochastic discovery variant
+
+    Chemistry meaning:
+    - mixes Krylov iteration settings with stochastic proposal settings such as
+      walker count and random seed
+    """
 
     # Maximum number of Krylov basis vectors.
     m: int = 100
@@ -115,6 +149,8 @@ class CCIKStochasticParams:
     # Candidate discovery mode: stochastic (default), connected_sd, selected_ci, or full.
     candidate_mode: str = "stochastic"
     # Selector mode used to rank the projected H q_k or its orthogonal residual.
+    # The new ground-state Ritz PT2 selector is deterministic-only and is not
+    # supported for the stochastic solver.
     selector_mode: str = "abs_residual"
     # Number of fixed-budget stochastic discovery / projected-contraction rounds
     # when candidate_mode='stochastic', or repeated selected-CI expansion layers

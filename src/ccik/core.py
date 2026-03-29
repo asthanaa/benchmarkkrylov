@@ -1,13 +1,19 @@
+"""Baseline deterministic CCIK solver and core linear-algebra helpers.
+
+This file is the best place to understand the basic compressed-Krylov loop
+before studying thick restart or stochastic discovery.
+"""
+
 from __future__ import annotations
 
 import numpy as np
 
 from .params import CCIKParams
 from .propagation import build_next_krylov_vector, format_krylov_step_diagnostics, krylov_step_diagnostics_as_dict
-from .selection import build_projection_workspace, candidate_mode_from_params, make_full_hdiag_map
+from .ritz import generalized_eigh, solve_projected_ritz
+from .selection import candidate_mode_from_params, make_full_hdiag_map
 from .sparse_ci import (
     SparseCIVector,
-    inner_sparse,
     make_hf_sparse_vector,
 )
 
@@ -32,12 +38,16 @@ from .sparse_ci import (
 
 
 def normalize(ci: np.ndarray) -> np.ndarray:
+    """Return a normalized dense CI array, leaving an all-zero array unchanged."""
+
     nrm = np.linalg.norm(ci.ravel())
     return ci if nrm == 0 else (ci / nrm)
 
 
 
 def inner(ci1: np.ndarray, ci2: np.ndarray) -> float:
+    """Return the usual dense-vector inner product."""
+
     return float(np.vdot(ci1.ravel(), ci2.ravel()))
 
 
@@ -111,39 +121,12 @@ def topk_positive_mask(arr: np.ndarray, k: int) -> np.ndarray:
 
 
 def occ_list_to_bitstring(occ: list[int]) -> int:
+    """Convert an occupied-orbital list into the bitstring format used by PySCF."""
+
     s = 0
     for p in occ:
         s |= (1 << p)
     return s
-
-
-
-def generalized_eigh(H: np.ndarray, S: np.ndarray, eps: float = 1e-12) -> tuple[np.ndarray, np.ndarray]:
-    """Solve H x = e S x for symmetric H and positive-semidefinite S.
-
-    Compression can make the Krylov basis nearly linearly dependent, especially
-    in threshold mode with weak truncation. Project small-overlap directions out
-    of the generalized eigenproblem instead of relying on a fragile Cholesky of S.
-    """
-    H = 0.5 * (H + H.T)
-    S = 0.5 * (S + S.T)
-
-    s_eval, U = np.linalg.eigh(S)
-    s_scale = float(max(np.max(np.abs(s_eval)), 1.0))
-    keep = s_eval > float(eps) * s_scale
-    if not np.any(keep):
-        keep = s_eval > float(eps)
-    if not np.any(keep):
-        raise np.linalg.LinAlgError("Generalized Ritz overlap matrix is numerically singular.")
-
-    s_keep = s_eval[keep]
-    U_keep = U[:, keep]
-    Sinv_half = U_keep / np.sqrt(s_keep)
-    A = Sinv_half.T @ H @ Sinv_half
-    A = 0.5 * (A + A.T)
-    evals, Y = np.linalg.eigh(A)
-    X = Sinv_half @ Y
-    return evals, X
 
 
 
@@ -158,28 +141,19 @@ def _ritz_energy(
     params: CCIKParams,
     hdiag_full: dict[tuple[int, int], float] | None,
 ) -> tuple[float, np.ndarray, np.ndarray]:
-    m_eff = len(Q)
-    Hproj = np.zeros((m_eff, m_eff))
-    Sproj = np.zeros((m_eff, m_eff))
-    Hq = [
-        build_projection_workspace(
-            qk=Q[j],
-            h1=h1,
-            eri8=eri8,
-            h2eff=h2eff,
-            norb=norb,
-            nelec=nelec,
-            params=params,
-            hdiag_full=hdiag_full,
-        ).v_proj
-        for j in range(m_eff)
-    ]
-    for i in range(m_eff):
-        for j in range(m_eff):
-            Sproj[i, j] = inner_sparse(Q[i], Q[j])
-            Hproj[i, j] = inner_sparse(Q[i], Hq[j])
-    evals, _ = generalized_eigh(Hproj, Sproj)
-    return float(evals[0]), Hproj, Sproj
+    """Solve the projected Ritz problem for the current sparse Krylov basis."""
+
+    projected = solve_projected_ritz(
+        Q=Q,
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=norb,
+        nelec=nelec,
+        params=params,
+        hdiag_full=hdiag_full,
+    )
+    return float(projected.evals[0]), projected.Hproj, projected.Sproj
 
 
 
@@ -192,7 +166,23 @@ def ccik_ground_energy_dense(
     params: CCIKParams | None = None,
     stats: dict[str, object] | None = None,
 ) -> float:
-    """Selected-space CCIK using sparse Krylov vectors over determinant pairs."""
+    """Run the baseline sparse CCIK solver.
+
+    Plain-language purpose:
+    - estimate the ground-state CAS electronic energy with the deterministic
+      baseline solver
+
+    Chemistry meaning:
+    - builds a compressed Krylov basis over determinant pairs and performs a
+      Ritz solve in that subspace
+
+    Inputs:
+    - active-space integrals and electron counts
+    - optional ``params`` dataclass
+
+    Outputs:
+    - the electronic CAS energy in Hartree
+    """
 
     if params is None:
         params = CCIKParams()

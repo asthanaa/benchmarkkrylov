@@ -1,4 +1,14 @@
-"""Public package surface for the three supported CCIK solvers."""
+"""Beginner-friendly public API for the supported CCIK solvers.
+
+Most new users only need three ideas:
+
+- build a molecule with :func:`make_mol_pyscf`
+- build an active-space Hamiltonian with :func:`build_cas_hamiltonian_pyscf`
+- solve it with :func:`ccik_ground_energy_dense_thick_restart`
+
+The heavier benchmarking and backend-specific workflows live outside this
+package in ``scripts/advanced/``.
+"""
 
 from .config import (
     cas_spec_from_dict,

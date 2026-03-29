@@ -9,14 +9,14 @@ import sys
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from qp_ccik_common import load_prepared_active_space
+from _shared.qp_ccik_common import load_prepared_active_space
 
-spec = importlib.util.spec_from_file_location("debug_selector_parity", SCRIPTS / "debug_selector_parity.py")
+spec = importlib.util.spec_from_file_location("debug_selector_parity", SCRIPTS / "_shared" / "debug_selector_parity.py")
 assert spec is not None and spec.loader is not None
 dsp = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = dsp
@@ -37,17 +37,37 @@ def test_r_alias_maps_to_cas10_smoke_case() -> None:
     assert [case.name for case in cases] == ["n2_cas10_10_R1p10"]
 
 
-def test_load_prepared_active_space_cas12_donor() -> None:
-    ezfio = ROOT / "experiments" / "threshold_test" / "n2_qp_ccik_cas12_12_R2p50_b" / "n2_2p50.ezfio"
-    active = load_prepared_active_space(ezfio)
+def test_load_prepared_active_space_uses_fallback_metadata_for_cas12(tmp_path: Path) -> None:
+    ezfio = tmp_path / "n2_2p50.ezfio"
+    ezfio.mkdir()
+    electrons = ezfio / "electrons"
+    electrons.mkdir()
+    (electrons / "elec_alpha_num").write_text("7\n", encoding="ascii")
+    (electrons / "elec_beta_num").write_text("7\n", encoding="ascii")
+    metadata = tmp_path / "prepared_metadata.json"
+    metadata.write_text(
+        json.dumps({"mo_num": 18, "ncore": 1, "ncas": 12, "nelecas": 12, "neleca": 6, "nelecb": 6}),
+        encoding="utf-8",
+    )
+    active = load_prepared_active_space(ezfio, fallback_metadata=metadata)
     assert active.ncore == 1
     assert active.ncas == 12
     assert active.nelecas == 12
 
 
-def test_load_prepared_active_space_cas14_donor() -> None:
-    ezfio = ROOT / "experiments" / "threshold_test" / "n2_qp_ccik_cas14_14_hard_budget1e7" / "n2_2p50.ezfio"
-    active = load_prepared_active_space(ezfio)
+def test_load_prepared_active_space_uses_fallback_metadata_for_cas14(tmp_path: Path) -> None:
+    ezfio = tmp_path / "n2_2p50.ezfio"
+    ezfio.mkdir()
+    electrons = ezfio / "electrons"
+    electrons.mkdir()
+    (electrons / "elec_alpha_num").write_text("7\n", encoding="ascii")
+    (electrons / "elec_beta_num").write_text("7\n", encoding="ascii")
+    metadata = tmp_path / "prepared_metadata.json"
+    metadata.write_text(
+        json.dumps({"mo_num": 14, "ncore": 0, "ncas": 14, "nelecas": 14, "neleca": 7, "nelecb": 7}),
+        encoding="utf-8",
+    )
+    active = load_prepared_active_space(ezfio, fallback_metadata=metadata)
     assert active.ncore == 0
     assert active.ncas == 14
     assert active.nelecas == 14

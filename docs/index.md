@@ -1,28 +1,42 @@
-# CompressK / `ccik` Documentation
+# CompressK Documentation
 
-The importable package name is `ccik`. The active repository supports exactly three solvers:
+This documentation is written for two audiences:
 
-- `ccik`: baseline selected-space CCIK
-- `ccik_thick`: selected-space CCIK with thick restart
-- `ccik_stochastic`: selected-space CCIK with multidepth stochastic candidate discovery
+- **Chemistry students** who want to understand what CCIK does and run a small example
+- **Researchers and developers** who need the benchmarking, Quantum Package, and implementation details
 
-The runtime representation is sparse over selected determinant pairs by default. Full dense `H|q_k>` formation remains available only through `selector_mode = "full"` for validation and regression checks.
+If you are new to the project, follow the beginner path first.
 
 ## Start here
 
-- Quickstart: [quickstart.md](quickstart.md)
-- Configuration reference: [configuration.md](configuration.md)
-- Algorithm details: [algorithms.md](algorithms.md)
-- API summary: [api.md](api.md)
-- Architecture map: [architecture.md](architecture.md)
+1. Read [quickstart.md](quickstart.md)
+2. Skim the [glossary.md](glossary.md)
+3. Run the `H2` example from [examples.md](examples.md)
+4. Use [choose_solver.md](choose_solver.md) to decide which solver to try next
 
-## Supporting docs
+## Beginner path
 
-- Development and testing: [development.md](development.md)
-- Legacy scripts: [legacy.md](legacy.md)
+- [Quickstart](quickstart.md)
+- [Chemistry glossary](glossary.md)
+- [Choose a solver](choose_solver.md)
+- [Examples](examples.md)
+- [API](api.md)
 
-## Pointers
+## Advanced path
 
-- Driver walkthrough: `scripts/README.md`
-- Equation-to-code mapping: `src/ccik/README.md`
-- Benchmark summary: `experiments/sparse_backend_benchmark_20260312/SUMMARY.md`
+- [Advanced workflows](advanced.md)
+- [Fixed-budget N2 results](fixed_budget_results.md)
+- [Algorithms](algorithms.md)
+- [Quantum Package backend](quantum_package_backend.md)
+- [Architecture](architecture.md)
+- [Development](development.md)
+- [Legacy](legacy.md)
+
+## What this repository contains
+
+- `src/ccik`: the importable Python package
+- `examples`: beginner scripts and notebooks
+- `docs`: the narrative documentation
+- `scripts/advanced`: benchmark, sweep, parity, and QP workflows
+- `scripts/_shared`: helpers for the advanced workflows
+- `tests`: checks that keep examples, API behavior, and advanced scripts working

@@ -1,15 +1,14 @@
+"""Thick-restart CCIK, the recommended default solver in this repository."""
+
 from __future__ import annotations
 
-import numpy as np
-
-from .core import generalized_eigh
 from .params import CCIKThickRestartParams
 from .propagation import build_next_krylov_vector, format_krylov_step_diagnostics, krylov_step_diagnostics_as_dict
-from .selection import build_projection_workspace, candidate_mode_from_params, compression_policy_from_params, make_full_hdiag_map
+from .ritz import solve_projected_ritz
+from .selection import candidate_mode_from_params, compression_policy_from_params, make_full_hdiag_map
 from .sparse_ci import (
     SparseCIVector,
     compress_topk_sparse,
-    inner_sparse,
     linear_combination_sparse,
     make_hf_sparse_vector,
     normalize_sparse,
@@ -21,7 +20,7 @@ from .sparse_ci import (
 
 
 def gram_schmidt_list(vecs: list[SparseCIVector], tol: float = 1e-12) -> list[SparseCIVector]:
-    """Orthonormalize list of sparse CI vectors; drop near-dependent ones."""
+    """Orthonormalize sparse Krylov vectors and drop nearly dependent ones."""
     Q: list[SparseCIVector] = []
     for v in vecs:
         vn = normalize_sparse(v)
@@ -60,27 +59,17 @@ def _cycle_ritz(
     params: CCIKThickRestartParams,
     hdiag_full: dict[tuple[int, int], float] | None,
 ) -> tuple[np.ndarray, np.ndarray]:
-    m_eff = len(Q)
-    Hproj = np.zeros((m_eff, m_eff))
-    Sproj = np.zeros((m_eff, m_eff))
-    Hq = [
-        build_projection_workspace(
-            qk=Q[j],
-            h1=h1,
-            eri8=eri8,
-            h2eff=h2eff,
-            norb=norb,
-            nelec=nelec,
-            params=params,
-            hdiag_full=hdiag_full,
-        ).v_proj
-        for j in range(m_eff)
-    ]
-    for i in range(m_eff):
-        for j in range(m_eff):
-            Sproj[i, j] = inner_sparse(Q[i], Q[j])
-            Hproj[i, j] = inner_sparse(Q[i], Hq[j])
-    return generalized_eigh(Hproj, Sproj)
+    projected = solve_projected_ritz(
+        Q=Q,
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=norb,
+        nelec=nelec,
+        params=params,
+        hdiag_full=hdiag_full,
+    )
+    return projected.evals, projected.eigvecs
 
 
 
@@ -152,7 +141,22 @@ def ccik_ground_energy_dense_thick_restart(
     params: CCIKThickRestartParams | None = None,
     stats: dict[str, object] | None = None,
 ) -> float:
-    """Sparse selected-space CCIK with thick restart."""
+    """Run sparse CCIK with thick restart.
+
+    Plain-language purpose:
+    - provide the repository's most stable general-purpose solver
+
+    Chemistry meaning:
+    - keep several good Ritz vectors at restart instead of restarting from only
+      one direction
+
+    Inputs:
+    - active-space integrals and electron counts
+    - optional ``params`` dataclass
+
+    Outputs:
+    - the electronic CAS energy in Hartree
+    """
 
     if params is None:
         params = CCIKThickRestartParams()

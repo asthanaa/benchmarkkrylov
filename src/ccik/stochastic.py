@@ -1,3 +1,5 @@
+"""Stochastic candidate-discovery variant of the CCIK solver."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -23,7 +25,23 @@ def ccik_ground_energy_stochastic(
     params: CCIKStochasticParams | None = None,
     stats: dict[str, object] | None = None,
 ) -> float:
-    """Run CCIK with stochastic multidepth candidate discovery over sparse determinant supports."""
+    """Run CCIK with stochastic multidepth candidate discovery.
+
+    Plain-language purpose:
+    - estimate the ground-state CAS electronic energy using stochastic proposals
+      to discover important determinants
+
+    Chemistry meaning:
+    - similar Krylov structure to the deterministic solvers, but the selected
+      determinant space is discovered stochastically
+
+    Inputs:
+    - active-space integrals and electron counts
+    - optional ``params`` dataclass
+
+    Outputs:
+    - the electronic CAS energy in Hartree
+    """
 
     if params is None:
         params = CCIKStochasticParams()

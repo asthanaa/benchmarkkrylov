@@ -1,81 +1,85 @@
 # Quickstart
 
-## Install
+This page is the shortest path from a clean checkout to a first chemistry result.
 
-Python 3.11 or newer is required.
+## 1. Install
 
-Minimal install:
+Python `3.11+` is required.
 
-```bash
-pip install -e .
-```
-
-Recommended for the chemistry workflows:
+For the beginner chemistry workflows:
 
 ```bash
 pip install -e ".[quantum]"
 ```
 
-Optional test dependencies:
+If you also want plotting and tests:
 
 ```bash
-pip install -e ".[quantum,test]"
+pip install -e ".[quantum,plot,test]"
 ```
 
-## Run the sample N2 input
+## 2. Run the first example
 
-The sample config is `tests/n2_sample.toml`.
+Start with the smallest example:
 
-Run:
+```bash
+python examples/scripts/01_h2_ground_state.py
+```
+
+That script:
+
+- builds an `H2` molecule in `STO-3G`
+- constructs a CAS Hamiltonian
+- runs `ccik_thick`
+- compares the result to exact CAS-FCI
+
+## 3. Continue with the next examples
+
+Compare solver styles on a slightly larger toy system:
+
+```bash
+python examples/scripts/02_h4_compare_solvers.py
+```
+
+Then move to a realistic active-space example:
+
+```bash
+python examples/scripts/03_n2_intro_active_space.py
+```
+
+That N2 example deliberately uses the plain dense solver, not `ccik_thick`,
+because the active space is still small enough that dense CCIK reaches
+sub-`1 mEh` agreement with exact CAS-FCI.
+
+## 4. Recommended solver for learners
+
+Use `ccik_thick` unless you are intentionally comparing methods.
+
+Why:
+
+- it is the most stable default in this repository
+- it reuses good Ritz vectors instead of restarting from scratch
+- it is the solver used most often in the current examples
+
+One exception:
+
+- for the tiny `N2 CAS(6e,6o)` teaching notebook, dense CCIK is used because it
+  already reaches the `1 mEh` chemistry target and keeps the explanation simple
+
+## 5. Where the old N2 scan driver fits
+
+The old config-driven scan entrypoint still exists:
 
 ```bash
 python scripts/n2_cas_scan.py --config tests/n2_sample.toml
 ```
 
-The script prints per-geometry energies and writes `out_n2_cas_scan.csv`.
-
-## Choose the solver
-
-The driver accepts one method with `[run].method` or several with `[run].methods`.
-
-Valid method names:
-
-- `ccik`
-- `ccik_thick`
-- `ccik_stochastic`
-
-Example, single method:
-
-```toml
-[run]
-method = "ccik_thick"
-```
-
-Example, two methods:
-
-```toml
-[run]
-methods = ["ccik", "ccik_stochastic"]
-```
-
-## Benchmark the sparse backend
-
-To run the staged sparse-backend tuning workflow used for the current documentation:
-
-```bash
-python scripts/benchmark_sparse_backend.py --cases n2_cas10_10 --methods ccik ccik_thick ccik_stochastic
-```
-
-Artifacts are written under `experiments/sparse_backend_benchmark_20260312/`.
-
-## Common gotchas
-
-- For a singlet (`spin = 0`), the drivers check `mol.nelectron == 2*ncore + nelecas`.
-- CAS-FCI is used as a reference in the example scripts and becomes expensive quickly as the active space grows.
-- `ccik_stochastic` is reproducible only when `seed` is fixed.
-- `selector_mode = "full"` is a validation fallback, not the default production path.
+It is still supported, but it is no longer the recommended first step for new users.
 
 ## Next
 
-- Configuration details: [configuration.md](configuration.md)
-- Algorithm details: [algorithms.md](algorithms.md)
+- Vocabulary: [glossary.md](glossary.md)
+- Solver guidance: [choose_solver.md](choose_solver.md)
+- Full examples guide: [examples.md](examples.md)
+- Config reference: [configuration.md](configuration.md)
+- Large-`N2` benchmark answer: [fixed_budget_results.md](fixed_budget_results.md)

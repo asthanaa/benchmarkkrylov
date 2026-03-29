@@ -8,6 +8,7 @@ __pycache__/
 .eggs/
 .dist/
 .build/
+.pytest_cache/
 .venv/
 .venv*/
 
@@ -18,11 +19,22 @@ __pycache__/
 .DS_Store
 
 # Outputs
+out/
 out*/
 plots*/
-*.png
-*.csv
+*.log
 site/
 data/
 data/
 *.npz
+docs/assets/
+experiments/threshold_test/
+manuscripts/
+
+# LaTeX build products
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out

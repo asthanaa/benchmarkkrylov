@@ -1,29 +1,28 @@
-# Legacy scripts
+# Legacy Code
 
-This repo used to be organized as a set of one-off scripts at the repository root.
+This repository still keeps a small amount of historical code for reproducibility and context.
 
-Those scripts have been moved into:
+## Legacy locations
 
 - `legacy/`
+- root compatibility wrappers such as `krylov_cipsi.py`
 
-The repo root still contains small compatibility wrappers (shims) so that older commands continue to work:
+## What changed during the cleanup
 
-- `krylov_cipsi.py`
-- `krylov cipsi primitive.py`
+- beginner material moved into `examples/`
+- advanced workflows moved into `scripts/advanced/`
+- old script names remain as thin shims when practical
 
-New work should use:
+## When to read legacy files
 
-- the importable package `src/ccik/`
-- the current drivers under `scripts/`
+Use them only if you need:
 
-## Why keep legacy code?
+- historical context
+- reproduction of older one-off workflows
+- a map from old filenames to the cleaned layout
 
-- It can be useful for reproducing older experiments.
-- It provides historical context for how the package evolved.
-- It avoids breaking downstream users that have local tooling expecting those filenames.
+For new work, prefer:
 
-## Where to look instead
-
-- Run instructions: `scripts/README.md` and [quickstart.md](quickstart.md)
-- Algorithm mapping to the PDF: `src/ccik/README.md`
-- Config schema: [configuration.md](configuration.md)
+- `examples/`
+- `src/ccik/`
+- `scripts/advanced/`

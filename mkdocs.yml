@@ -1,10 +1,9 @@
 site_name: "CompressK / ccik"
-site_description: "Compressed Krylov + selected-configuration matvecs (CCIK family) and related variants"
+site_description: "Compressed Krylov solvers for active-space quantum chemistry, with a beginner-friendly learning path"
 repo_url: "https://github.com/asthanaa/CompressK"
 repo_name: "asthanaa/CompressK"
 edit_uri: "edit/main/docs/"
 
-# Produce /page.html style URLs (closer to the link style you referenced).
 use_directory_urls: false
 
 theme:
@@ -39,9 +38,16 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Quickstart: quickstart.md
-  - Configuration: configuration.md
-  - Algorithms: algorithms.md
-  - Architecture: architecture.md
+  - Chemistry Glossary: glossary.md
+  - Choose a Solver: choose_solver.md
+  - Examples: examples.md
   - API: api.md
+  - Architecture: architecture.md
+  - Configuration: configuration.md
   - Development: development.md
-  - Legacy: legacy.md
+  - Advanced:
+      - Research Workflows: advanced.md
+      - Fixed-Budget N2 Results: fixed_budget_results.md
+      - Algorithms: algorithms.md
+      - Quantum Package Backend: quantum_package_backend.md
+      - Legacy: legacy.md

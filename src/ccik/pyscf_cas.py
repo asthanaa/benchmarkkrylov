@@ -1,3 +1,15 @@
+"""Build active-space Hamiltonians from PySCF objects.
+
+This module is the bridge between chemistry input and the Krylov solvers:
+
+- PySCF builds the molecular orbitals
+- this module extracts the effective CAS Hamiltonian
+- the solver modules consume the resulting ``h1``, ``eri8``, ``ecore``,
+  orbital count, and active-space electron tuple
+
+For most new readers, this is the easiest internal module to start with.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -43,6 +55,17 @@ def make_mol_pyscf(
 
 @dataclass(frozen=True)
 class CASSpec:
+    """Describe the chosen complete active space.
+
+    Plain-language purpose:
+    - store the active-space size in one place
+
+    Chemistry meaning:
+    - ``ncas`` active orbitals
+    - ``nelecas`` active electrons
+    - ``ncore`` frozen doubly occupied core orbitals
+    """
+
     ncas: int
     nelecas: int
     ncore: int = 0
@@ -59,17 +82,24 @@ def build_cas_hamiltonian_pyscf(
     state_average: bool = False,
     x2c1e: bool = False,
 ):
-    """Build effective CAS Hamiltonian using PySCF (RHF orbitals).
+    """Build the effective CAS Hamiltonian from a PySCF molecule.
 
-    By default, this uses CASCI on RHF orbitals (fast, no orbital optimization).
-    For difficult multireference problems (e.g., transition-metal dimers), you may
-    want orbital optimization via CASSCF by setting `orbital_method="casscf"`.
-    If you specifically want the workflow “CASSCF to optimize orbitals, then CASCI
-    on those optimized orbitals”, use `orbital_method="casscf_then_casci"`.
+    Plain-language purpose:
+    - turn a molecule into the active-space problem that CCIK solves
 
-    Returns: (h1eff, eri8, ecore, ncas, nelec_cas)
+    Chemistry meaning:
+    - ``h1eff`` and ``eri8`` are the one- and two-electron Hamiltonian pieces
+      inside the chosen active space
+    - ``ecore`` stores the energy contribution from the frozen core and other
+      inactive terms
 
-    Total energy = ecore + E_cas_elec
+    Inputs:
+    - ``mol``: a PySCF molecule
+    - ``cas``: the active-space choice
+    - ``orbital_method``: whether to use CASCI or CASSCF orbitals
+
+    Outputs:
+    - ``(h1eff, eri8, ecore, ncas, nelec_cas)``
     """
 
     from pyscf import ao2mo, mcscf, scf
@@ -132,6 +162,21 @@ def build_cas_hamiltonian_pyscf(
 
 
 def exact_cas_fci_energy_pyscf(h1eff: np.ndarray, eri8: np.ndarray, ncas: int, nelec_cas: tuple[int, int]) -> float:
+    """Compute the exact CAS-FCI electronic energy for a small reference problem.
+
+    Plain-language purpose:
+    - provide a trustworthy comparison target for the teaching examples
+
+    Chemistry meaning:
+    - this is the exact electronic energy inside the chosen active space
+
+    Inputs:
+    - active-space integrals and electron counts
+
+    Outputs:
+    - the electronic CAS-FCI energy in Hartree
+    """
+
     from pyscf import fci
 
     cisolver = fci.direct_spin1.FCI()

@@ -4,8 +4,12 @@ import importlib.util
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = ROOT / "scripts" / "qp_ccik_bridge.py"
+ROOT = Path(__file__).resolve().parents[2]
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+MODULE_PATH = ROOT / "scripts" / "advanced" / "qp_ccik_bridge.py"
 SPEC = importlib.util.spec_from_file_location("qp_ccik_bridge", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

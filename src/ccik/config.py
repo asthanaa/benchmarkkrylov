@@ -1,3 +1,9 @@
+"""Read configuration files and convert them into solver parameter objects.
+
+This module supports the config-driven scan and benchmark scripts. New learners
+can safely ignore it at first and use the example scripts directly.
+"""
+
 from __future__ import annotations
 
 from dataclasses import asdict
@@ -15,7 +21,7 @@ def _require(d: dict[str, Any], key: str) -> Any:
 
 
 def load_toml(path: str | Path) -> dict[str, Any]:
-    """Load a TOML file using the Python 3.11 stdlib parser."""
+    """Load a TOML file into a plain Python dictionary."""
 
     import tomllib
 
@@ -147,16 +153,16 @@ def ccik_stochastic_params_from_dict(d: dict[str, Any]) -> CCIKStochasticParams:
 
 
 def run_method_from_dict(d: dict[str, Any]) -> str:
-    """Return the requested method name, defaulting to ``ccik``."""
+    """Return the requested method name, defaulting to ``ccik_thick``."""
 
-    return str(d.get("method", "ccik")).strip()
+    return str(d.get("method", "ccik_thick")).strip()
 
 
 def run_methods_from_dict(d: dict[str, Any]) -> list[str]:
     """Return the requested method list.
 
     Supported shapes:
-    - ``method = "ccik"``
+    - ``method = "ccik_thick"``
     - ``methods = ["ccik", "ccik_thick"]``
     """
 
@@ -165,12 +171,12 @@ def run_methods_from_dict(d: dict[str, Any]) -> list[str]:
         if not isinstance(raw, (list, tuple)):
             raise TypeError("run.methods must be a list of strings")
         out = [str(x).strip() for x in raw if str(x).strip()]
-        return out if out else ["ccik"]
+        return out if out else ["ccik_thick"]
 
     if "method" in d and isinstance(d["method"], (list, tuple)):
         raw = d["method"]
         out = [str(x).strip() for x in raw if str(x).strip()]
-        return out if out else ["ccik"]
+        return out if out else ["ccik_thick"]
 
     return [run_method_from_dict(d)]
 

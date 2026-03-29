@@ -1,3 +1,5 @@
+"""Turn a projected sparse ``H q_k`` into the next compressed Krylov vector."""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -12,6 +14,7 @@ from .selection import (
     compute_projected_matvec_impl,
     selector_mode_from_params,
 )
+from .ritz import build_projected_columns, solve_projected_ritz
 from .sparse_ci import (
     SparseCIVector,
     SparseProjectionWorkspace,
@@ -19,6 +22,7 @@ from .sparse_ci import (
     compress_topk_sparse,
     compress_with_support_sparse,
     inner_sparse,
+    linear_combination_sparse,
     normalize_sparse,
     orthogonalize_sparse,
     project_sparse_to_support,
@@ -38,6 +42,8 @@ def _fixed_store_keep(params: Any) -> int:
 
 @dataclass(frozen=True)
 class KrylovStepDiagnostics:
+    """Numerical summary of one sparse Krylov update."""
+
     q_norm: float
     hq_norm: float
     projected_matvec_norm: float
@@ -58,10 +64,15 @@ class KrylovStepDiagnostics:
     propagation_used_fallback: bool
     store_dropped_norm: float
     store_used_fallback: bool
+    target_ritz_energy: float | None = None
+    target_basis_size: int | None = None
+    selector_score_mode: str | None = None
 
 
 @dataclass(frozen=True)
 class KrylovStepArtifacts:
+    """Intermediate sparse objects produced during one Krylov step."""
+
     requested_selector: str
     used_selector: str
     score_vector: SparseCIVector
@@ -242,6 +253,94 @@ def _score_from_vector(vec: SparseCIVector, mode: str) -> dict[DetKey, float]:
     raise ValueError(f"Unsupported score mode {mode!r}")
 
 
+def _fixed_budget_keep(params: Any) -> int:
+    return max(1, int(getattr(params, "fixed_store_keep", 1_000_000)))
+
+
+def _fixed_budget_score_support(
+    *,
+    qk: SparseCIVector,
+    basis: list[SparseCIVector],
+    ws: SparseProjectionWorkspace,
+    orth_residual: SparseCIVector,
+    used_selector: str,
+    h1: np.ndarray,
+    eri8: np.ndarray,
+    h2eff: np.ndarray,
+    norb: int,
+    nelec: tuple[int, int],
+    params: Any,
+    hdiag_full: dict[DetKey, float] | None,
+) -> tuple[set[DetKey], SparseCIVector, float | None, int | None, str]:
+    keep = _fixed_budget_keep(params)
+    target_ritz_energy: float | None = None
+    target_basis_size: int | None = None
+    selector_score_mode = used_selector
+
+    if used_selector == "pt2_legacy":
+        _, legacy_scores = _legacy_score_map(
+            qk=qk,
+            v_proj=ws.v_proj,
+            hdiag=ws.hdiag,
+            candidate_support=ws.candidate_pool,
+            eps_denom=float(getattr(params, "eps_denom", 1e-12)),
+        )
+        support = _topk_score_keys(legacy_scores, keep)
+        score_vec = ws.v_proj
+    elif used_selector in {"abs_hq", "sq_hq"}:
+        score_vec = ws.v_proj
+        support = _topk_score_keys(_score_from_vector(score_vec, used_selector), keep)
+    elif used_selector in {"abs_residual", "sq_residual"}:
+        score_vec = orth_residual
+        support = _topk_score_keys(_score_from_vector(score_vec, used_selector), keep)
+    elif used_selector == "ground_state_pt2":
+        ritz_basis = basis if basis else [qk]
+        projected = solve_projected_ritz(
+            Q=ritz_basis,
+            h1=h1,
+            eri8=eri8,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+            params=params,
+            hdiag_full=hdiag_full,
+        )
+        coeffs = projected.eigvecs[:, 0]
+        pool_columns = build_projected_columns(
+            ritz_basis,
+            h1=h1,
+            eri8=eri8,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+            params=params,
+            hdiag_full=hdiag_full,
+            candidate_pool_override=ws.candidate_pool,
+        )
+        score_vec = project_sparse_to_support(
+            linear_combination_sparse((float(coeffs[i]), pool_columns[i]) for i in range(len(ritz_basis))),
+            ws.candidate_pool,
+        )
+        target_ritz_energy = float(projected.evals[0])
+        target_basis_size = int(len(ritz_basis))
+        score_map: dict[DetKey, float] = {}
+        eps_denom = float(getattr(params, "eps_denom", 1e-12))
+        for det in ws.candidate_pool:
+            amp = score_vec.get(det, 0.0)
+            if amp == 0.0:
+                continue
+            denom = max(abs(target_ritz_energy - ws.hdiag.get(det, target_ritz_energy)), eps_denom)
+            score_map[det] = (abs(amp) ** 2) / denom
+        support = _topk_score_keys(score_map, keep)
+        selector_score_mode = "ground_state_pt2"
+    else:
+        raise ValueError(f"Unsupported fixed-budget selector mode {used_selector!r}")
+
+    if not support:
+        support = topk_abs_keys_sparse(orth_residual, keep)
+    return support, score_vec, target_ritz_energy, target_basis_size, selector_score_mode
+
+
 def _max_basis_overlap(vec: SparseCIVector, basis: list[SparseCIVector]) -> float:
     if not vec.coeffs or not basis:
         return 0.0
@@ -289,6 +388,16 @@ def analyze_krylov_step(
     used_selector = requested_selector
     score_vec = ws.v_proj
     compression_policy = _compression_policy(params)
+    target_ritz_energy: float | None = None
+    target_basis_size: int | None = None
+    selector_score_mode: str | None = requested_selector
+
+    if requested_selector == "ground_state_pt2" and compression_policy != "fixed_budget":
+        raise ValueError(
+            "selector_mode='ground_state_pt2' is only supported when compression_policy='fixed_budget'."
+        )
+    if requested_selector == "ground_state_pt2" and candidate_mode_from_params(params, default="selected_ci") == "stochastic":
+        raise ValueError("selector_mode='ground_state_pt2' is only supported for deterministic candidate discovery.")
 
     if requested_selector in {"abs_residual", "sq_residual"}:
         if basis:
@@ -296,17 +405,18 @@ def analyze_krylov_step(
         else:
             used_selector = "abs_hq" if requested_selector == "abs_residual" else "sq_hq"
             score_vec = ws.v_proj
+        selector_score_mode = used_selector
 
     score_support: set[DetKey] = set()
     preserve_support: set[DetKey] = set()
     preserve_cap = 0
     store_dropped_norm = 0.0
     store_used_fallback = False
+    orth_residual = orthogonalize_against_basis(ws.v_proj, basis)
 
     if compression_policy == "threshold":
         v_temp = ws.v_proj.copy()
         discarded_weight = 0.0
-        orth_residual = orthogonalize_against_basis(v_temp, basis)
         orth_unit = normalize_sparse(orth_residual)
         compressed, store_dropped_norm, store_used_fallback = threshold_prune_sparse(
             orth_unit,
@@ -317,17 +427,35 @@ def analyze_krylov_step(
             raise RuntimeError(
                 "threshold compression policy exceeded internal stored-support limit "
                 f"({_THRESHOLD_MAX_STORED}); loosen thresholds or switch back to topk compression."
-            )
+        )
         q_next = normalize_sparse(compressed)
         score_support = set(score_vec.coeffs)
     elif compression_policy == "fixed_budget":
-        v_temp = ws.v_proj.copy()
-        discarded_weight = 0.0
-        orth_residual = orthogonalize_against_basis(v_temp, basis)
-        compressed = compress_topk_sparse(orth_residual, _fixed_store_keep(params))
-        store_dropped_norm = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
+        (
+            score_support,
+            score_vec,
+            target_ritz_energy,
+            target_basis_size,
+            selector_score_mode,
+        ) = _fixed_budget_score_support(
+            qk=q_k,
+            basis=basis,
+            ws=ws,
+            orth_residual=orth_residual,
+            used_selector=used_selector,
+            h1=h1,
+            eri8=eri8,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+            params=params,
+            hdiag_full=hdiag_full,
+        )
+        compressed = project_sparse_to_support(orth_residual, score_support)
+        discarded_weight = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
+        v_temp = compressed.copy()
+        store_dropped_norm = discarded_weight
         q_next = normalize_sparse(compressed)
-        score_support = set(score_vec.coeffs)
     else:
         if used_selector == "pt2_legacy":
             _, legacy_scores = _legacy_score_map(
@@ -381,15 +509,7 @@ def analyze_krylov_step(
         post_compression_residual_norm=sparse_norm(compressed),
         max_basis_overlap=_max_basis_overlap(q_next, basis),
         selector_mode_used=used_selector,
-        candidate_mode_used=(
-            "full"
-            if compression_policy in {"threshold", "fixed_budget"} and candidate_mode_from_params(params, default="selected_ci") == "full"
-            else (
-                "connected_sd"
-                if compression_policy in {"threshold", "fixed_budget"}
-                else candidate_mode_from_params(params, default="selected_ci")
-            )
-        ),
+        candidate_mode_used=candidate_mode_from_params(params, default="selected_ci"),
         num_candidates_generated=len(ws.candidate_pool),
         num_tmp_kept=len(v_temp.coeffs),
         num_final_kept=len(compressed.coeffs),
@@ -401,6 +521,9 @@ def analyze_krylov_step(
         propagation_used_fallback=bool(ws.propagation_used_fallback),
         store_dropped_norm=store_dropped_norm,
         store_used_fallback=store_used_fallback,
+        target_ritz_energy=target_ritz_energy,
+        target_basis_size=target_basis_size,
+        selector_score_mode=selector_score_mode,
     )
     artifacts = KrylovStepArtifacts(
         requested_selector=requested_selector,

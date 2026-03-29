@@ -8,8 +8,9 @@ from ccik import build_cas_hamiltonian_pyscf, make_mol_pyscf
 from ccik.params import CCIKParams
 from ccik.propagation import analyze_krylov_step, build_candidate_pool, build_next_krylov_vector, compress_vector
 from ccik.pyscf_cas import CASSpec
-from ccik.selection import _propagation_source, build_projection_workspace, make_full_hdiag_map
-from ccik.sparse_ci import SparseCIVector, make_hf_sparse_vector, normalize_sparse
+from ccik.ritz import build_projected_columns, solve_projected_ritz
+from ccik.selection import _propagation_source, build_projection_workspace, make_full_hdiag_map, selector_mode_from_params
+from ccik.sparse_ci import SparseCIVector, linear_combination_sparse, make_hf_sparse_vector, normalize_sparse, project_sparse_to_support
 from ccik.thick_restart import _compress_with_stage1
 
 
@@ -101,6 +102,14 @@ def test_pt2_legacy_selector_mode_is_preserved() -> None:
     assert diag.selector_mode_used == "pt2_legacy"
     assert q_next.coeffs
     assert len(ws.candidate_support) > 0
+
+
+def test_ground_state_pt2_selector_alias_is_preserved() -> None:
+    params_direct = CCIKParams(compression_policy="fixed_budget", selector_mode="ground_state_pt2")
+    params_alias = CCIKParams(compression_policy="fixed_budget", selector_mode="ritz_pt2")
+
+    assert selector_mode_from_params(params_direct) == "ground_state_pt2"
+    assert selector_mode_from_params(params_alias) == "ground_state_pt2"
 
 
 def test_abs_residual_falls_back_to_abs_hq_without_basis() -> None:
@@ -378,6 +387,222 @@ def test_fixed_budget_mode_dense_step_keeps_at_most_fixed_store_support() -> Non
 
     assert len(q1.coeffs) <= 1
     assert diag.num_final_kept <= 1
+
+
+def test_ground_state_pt2_requires_fixed_budget_policy() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h2_cas()
+    q0 = make_hf_sparse_vector(norb=ncas, nelec=nelec)
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    hdiag_full = make_full_hdiag_map(h1=h1, eri8=eri8, norb=ncas, nelec=nelec)
+
+    for policy in ("topk", "threshold"):
+        params = CCIKParams(
+            compression_policy=policy,
+            candidate_mode="full",
+            selector_mode="ground_state_pt2",
+            store_abs_tol=0.0,
+            propagate_abs_tol=0.0,
+        )
+        with pytest.raises(ValueError, match="fixed_budget"):
+            build_next_krylov_vector(
+                q0,
+                [q0],
+                h1=h1,
+                eri8=eri8,
+                h2eff=h2eff,
+                norb=ncas,
+                nelec=nelec,
+                params=params,
+                hdiag_full=hdiag_full,
+            )
+
+
+def test_ground_state_pt2_matches_pt2_legacy_on_single_vector_h2() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h2_cas()
+    q0 = make_hf_sparse_vector(norb=ncas, nelec=nelec)
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    hdiag_full = make_full_hdiag_map(h1=h1, eri8=eri8, norb=ncas, nelec=nelec)
+    common = dict(
+        compression_policy="fixed_budget",
+        candidate_mode="full",
+        fixed_store_keep=4,
+        fixed_propagate_keep=2,
+        orth_tol=1e-12,
+        verbose=False,
+    )
+
+    q_pt2, _, _, art_pt2 = analyze_krylov_step(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="pt2_legacy", **common),
+        hdiag_full=hdiag_full,
+    )
+    q_ground, _, _, art_ground = analyze_krylov_step(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="ground_state_pt2", **common),
+        hdiag_full=hdiag_full,
+    )
+
+    assert art_ground.score_support == art_pt2.score_support
+    assert np.allclose(q_ground.to_dense(norb=ncas, nelec=nelec), q_pt2.to_dense(norb=ncas, nelec=nelec))
+
+
+def test_ground_state_pt2_fixed_budget_support_matches_manual_score_formula() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    hdiag_full = make_full_hdiag_map(h1=h1, eri8=eri8, norb=ncas, nelec=nelec)
+    q0 = make_hf_sparse_vector(norb=ncas, nelec=nelec)
+    common = dict(
+        compression_policy="fixed_budget",
+        candidate_mode="full",
+        fixed_store_keep=4,
+        fixed_propagate_keep=4,
+        selector_depth=1,
+        generator_keep=4,
+        max_parents_for_expansion=4,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
+        orth_tol=1e-12,
+        verbose=False,
+    )
+    q1, _, _ = build_next_krylov_vector(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="abs_residual", **common),
+        hdiag_full=hdiag_full,
+    )
+    params = CCIKParams(selector_mode="ground_state_pt2", **common)
+    _, diag, ws, artifacts = analyze_krylov_step(
+        q1,
+        [q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+        hdiag_full=hdiag_full,
+    )
+
+    projected = solve_projected_ritz(
+        Q=[q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+        hdiag_full=hdiag_full,
+    )
+    coeffs = projected.eigvecs[:, 0]
+    pool_columns = build_projected_columns(
+        [q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+        hdiag_full=hdiag_full,
+        candidate_pool_override=ws.candidate_pool,
+    )
+    target = project_sparse_to_support(
+        linear_combination_sparse((float(coeffs[i]), pool_columns[i]) for i in range(2)),
+        ws.candidate_pool,
+    )
+    manual_scores = {}
+    for det in ws.candidate_pool:
+        amp = target.get(det, 0.0)
+        if amp == 0.0:
+            continue
+        denom = max(abs(float(projected.evals[0]) - ws.hdiag.get(det, float(projected.evals[0]))), 1e-12)
+        manual_scores[det] = (abs(amp) ** 2) / denom
+    manual_support = {
+        key
+        for key, _ in sorted(manual_scores.items(), key=lambda item: item[1], reverse=True)[: params.fixed_store_keep]
+    }
+
+    assert diag.selector_mode_used == "ground_state_pt2"
+    assert artifacts.score_support == manual_support
+
+
+def test_fixed_budget_selector_mode_changes_support_ranking() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    hdiag_full = make_full_hdiag_map(h1=h1, eri8=eri8, norb=ncas, nelec=nelec)
+    q0 = make_hf_sparse_vector(norb=ncas, nelec=nelec)
+    common = dict(
+        compression_policy="fixed_budget",
+        candidate_mode="full",
+        fixed_store_keep=4,
+        fixed_propagate_keep=4,
+        selector_depth=1,
+        generator_keep=4,
+        max_parents_for_expansion=4,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
+        orth_tol=1e-12,
+        verbose=False,
+    )
+    q1, _, _ = build_next_krylov_vector(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="abs_residual", **common),
+        hdiag_full=hdiag_full,
+    )
+    _, _, _, art_abs_hq = analyze_krylov_step(
+        q1,
+        [q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="abs_hq", **common),
+        hdiag_full=hdiag_full,
+    )
+    _, _, _, art_ground = analyze_krylov_step(
+        q1,
+        [q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="ground_state_pt2", **common),
+        hdiag_full=hdiag_full,
+    )
+
+    assert art_abs_hq.score_support != art_ground.score_support
 
 
 def test_threshold_mode_storage_fallback_keeps_largest_residual_entry() -> None:

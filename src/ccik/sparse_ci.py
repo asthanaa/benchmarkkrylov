@@ -1,3 +1,9 @@
+"""Sparse determinant-vector data structures used by the CCIK solvers.
+
+The objects here are the main reason the solver can avoid keeping a full dense
+CI vector in memory for every Krylov step.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -11,6 +17,15 @@ _ZERO_TOL = 1e-15
 
 @dataclass
 class SparseCIVector:
+    """A sparse CI vector keyed by determinant pairs.
+
+    Plain-language purpose:
+    - store only the determinant amplitudes that are currently being kept
+
+    Chemistry meaning:
+    - represents a compressed CI wavefunction in the determinant basis
+    """
+
     coeffs: dict[DetKey, float]
 
     def copy(self) -> "SparseCIVector":
@@ -73,6 +88,8 @@ class SparseCIVector:
 
 @dataclass(frozen=True)
 class SparseDeterminantSpace:
+    """A rectangular determinant space built from alpha and beta string lists."""
+
     strsa: tuple[int, ...]
     strsb: tuple[int, ...]
 
@@ -85,6 +102,8 @@ class SparseDeterminantSpace:
 
 @dataclass(frozen=True)
 class SparseProjectionWorkspace:
+    """Bundle the projected ``H q_k`` data produced during one Krylov step."""
+
     v_proj: SparseCIVector
     hdiag: dict[DetKey, float]
     space: SparseDeterminantSpace

@@ -4,12 +4,12 @@ import importlib.util
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-MODULE_PATH = SCRIPTS / "cr2_qp_fixed_budget_sweep_plots.py"
+MODULE_PATH = SCRIPTS / "advanced" / "cr2_qp_fixed_budget_sweep_plots.py"
 SPEC = importlib.util.spec_from_file_location("cr2_qp_fixed_budget_sweep_plots", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

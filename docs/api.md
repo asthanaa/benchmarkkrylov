@@ -1,37 +1,57 @@
 # Public API
 
-The package exposes a small top-level API from `src/ccik/__init__.py`.
+The top-level API is intentionally small.
 
 ## Solvers
 
-- `ccik_ground_energy_dense(...)`
-  Meaning: baseline selected-space CCIK solver.
-- `ccik_ground_energy_dense_thick_restart(...)`
-  Meaning: selected-space CCIK with thick restart.
-- `ccik_ground_energy_stochastic(...)`
-  Meaning: selected-space CCIK with multidepth stochastic candidate discovery.
+### `ccik_ground_energy_dense(...)`
 
-All three return the lowest electronic CAS energy. They do not include `ecore`; the driver scripts add that offset.
+Plain-language purpose:
+- run the baseline deterministic CCIK solver
 
-## Hamiltonian helpers
+Chemistry meaning:
+- builds a compressed Krylov space over a CAS Hamiltonian without thick restart
 
-- `make_mol_pyscf(...)`
-  Meaning: construct a PySCF molecule object.
-- `build_cas_hamiltonian_pyscf(...)`
-  Meaning: build the CAS one-body integrals, two-body integrals, core offset, and electron counts.
-- `exact_cas_fci_energy_pyscf(...)`
-  Meaning: compute the exact CAS-FCI reference energy for comparison.
+### `ccik_ground_energy_dense_thick_restart(...)`
+
+Plain-language purpose:
+- run the recommended thick-restart CCIK solver
+
+Chemistry meaning:
+- reuses several good Ritz vectors during restart, which is why it is the best default learning path in this repository
+
+### `ccik_ground_energy_stochastic(...)`
+
+Plain-language purpose:
+- run the stochastic candidate-discovery variant
+
+Chemistry meaning:
+- explores important determinants using stochastic proposals instead of only deterministic discovery
+
+All three return the **electronic CAS energy** only. Add `ecore` if you want the total energy.
+
+## Hamiltonian builders
+
+### `make_mol_pyscf(...)`
+
+- build a PySCF molecule object
+
+### `build_cas_hamiltonian_pyscf(...)`
+
+- build the effective one-electron and two-electron CAS Hamiltonian pieces
+- return `h1`, `eri8`, `ecore`, `ncas`, and the active-space electron tuple
+
+### `exact_cas_fci_energy_pyscf(...)`
+
+- compute the exact CAS-FCI electronic energy used as a small-system reference
 
 ## Parameter dataclasses
 
 - `CCIKParams`
-  Used by `ccik_ground_energy_dense`.
 - `CCIKThickRestartParams`
-  Used by `ccik_ground_energy_dense_thick_restart`.
 - `CCIKStochasticParams`
-  Used by `ccik_ground_energy_stochastic`.
 
-Each dataclass is the single source of truth for defaults.
+These dataclasses define the solver defaults. For most new users, `CCIKThickRestartParams` is the one to read first.
 
 ## Config helpers
 
@@ -45,10 +65,4 @@ Each dataclass is the single source of truth for defaults.
 - `ccik_stochastic_params_from_dict(d)`
 - `cas_spec_from_dict(d)`
 
-## CAS specification
-
-- `CASSpec`
-  Fields:
-  - `ncas`: number of active orbitals
-  - `nelecas`: number of active electrons
-  - `ncore`: number of frozen doubly occupied core orbitals
+These are mainly useful for config-driven workflows and advanced scripts.

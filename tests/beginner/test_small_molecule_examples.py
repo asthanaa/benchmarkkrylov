@@ -1,3 +1,5 @@
+"""Core small-molecule solver checks used by the beginner example layer."""
+
 import pytest
 
 
