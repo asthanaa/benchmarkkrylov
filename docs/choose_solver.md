@@ -26,10 +26,6 @@ Choose `ccik` if:
 
 This is the easiest solver to explain mathematically, but it is not the most stable production choice for learners.
 
-For very small teaching systems, it can still be the right notebook choice
-because it may already reach exact or near-exact CAS-FCI energies without any
-restart machinery. The `N2 CAS(6e,6o)` notebook uses it for that reason.
-
 ## `ccik_stochastic`
 
 Choose `ccik_stochastic` if:
@@ -73,4 +69,9 @@ The reason is empirical: on the completed `N2 CAS(12e,12o)` and
 `CAS(14e,14o)` runs, the propagate budget is the sharper tuning axis while the
 store budget is already good once it reaches `65536`.
 
-For the actual finished numbers, see [fixed_budget_results.md](fixed_budget_results.md).
+The repo also keeps a documented single-pass `pt2_residual` comparison run.
+That comparison is useful for understanding the selector design, but it does
+not replace `abs_residual` as the production default.
+
+For the finished numbers and the selector comparison, see
+[fixed_budget_results.md](fixed_budget_results.md).

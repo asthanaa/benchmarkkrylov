@@ -101,7 +101,7 @@ CASES: tuple[CaseSpec, ...] = (
 )
 
 METHODS: tuple[str, ...] = ("ccik", "ccik_thick")
-SELECTORS: tuple[str, ...] = ("abs_hq", "abs_residual", "pt2_legacy", "ground_state_pt2")
+SELECTORS: tuple[str, ...] = ("abs_hq", "abs_residual", "pt2_residual", "ground_state_pt2")
 SCOPES: tuple[str, ...] = ("isolated", "realistic")
 
 

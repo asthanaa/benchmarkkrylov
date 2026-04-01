@@ -332,7 +332,11 @@ def _run_single_qp_job(
 ) -> dict[str, object]:
     summary_path = run_dir / "run_summary.json"
     if summary_path.exists() and not force:
-        return json.loads(summary_path.read_text(encoding="utf-8"))
+        cached = json.loads(summary_path.read_text(encoding="utf-8"))
+        # Only reuse successful cached runs. If the prior attempt failed
+        # (for example due to an old timeout cap), rerun and overwrite it.
+        if cached.get("failure") is None and cached.get("e_total_eh") is not None:
+            return cached
 
     run_dir.mkdir(parents=True, exist_ok=True)
     qp = discover_qp_paths_from_root(qp_root)

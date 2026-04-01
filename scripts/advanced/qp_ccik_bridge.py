@@ -177,7 +177,7 @@ def make_parser() -> argparse.ArgumentParser:
     p_set.add_argument("--ccik-pt2-rank-weight", dest="ccik_pt2_rank_weight", type=float, default=None)
     p_set.add_argument("--ccik-selector-mode", dest="ccik_selector_mode", default=None)
     p_set.add_argument("--ccik-matvec-backend", dest="ccik_matvec_backend", default=None)
-    p_set.add_argument("--ccik-compression-policy", dest="ccik_compression_policy", choices=("topk", "threshold"), default=None)
+    p_set.add_argument("--ccik-compression-policy", dest="ccik_compression_policy", choices=("topk", "threshold", "fixed_budget"), default=None)
     p_set.add_argument("--ccik-store-abs-tol", dest="ccik_store_abs_tol", type=float, default=None)
     p_set.add_argument("--ccik-propagate-abs-tol", dest="ccik_propagate_abs_tol", type=float, default=None)
     p_set.add_argument("--ccik-nkeep", dest="ccik_nkeep", type=int, default=None)

@@ -49,9 +49,9 @@ from qp_ccik_common import (  # noqa: E402
 
 
 THRESHOLD_TEST_ROOT = threshold.THRESHOLD_TEST_ROOT
-DEFAULT_DMRG_PYTHON = THRESHOLD_TEST_ROOT / "block2_cr2_sto3g_R1p68_cas28_20" / ".venv" / "bin" / "python"
-DEFAULT_STORE_KEEP_GRID = (32_768, 65_536, 131_072, 262_144, 524_288)
-DEFAULT_PROPAGATE_KEEP_GRID = (1_024, 2_048, 4_096, 8_192, 16_384)
+DEFAULT_DMRG_PYTHON = THRESHOLD_TEST_ROOT / "block2_cr2_ccpvdzdk_R1p68_cas12_22" / ".venv" / "bin" / "python"
+DEFAULT_STORE_KEEP_GRID = (32_768, 49_152, 65_536, 88_474, 98_304, 131_072)
+DEFAULT_PROPAGATE_KEEP_GRID = (512, 1_024, 2_048)
 INTERNAL_EXTERNAL_KEEP = 1_000_000
 CR2_TEMPLATE_GIT_PATH = "experiments/cr2_qp_campaign_20260314/repro_w0_f4_rel/cr2.ezfio"
 CR2_TEMPLATE_FALLBACKS = (
@@ -86,13 +86,13 @@ class Cr2FixedBudgetCase:
 
 
 CASE = Cr2FixedBudgetCase(
-    name="cr2_sto3g_R1p68_cas28_20",
-    title="Cr2 / STO-3G / R = 1.68 A / CAS(28e,20o)",
-    basis="sto-3g",
+    name="cr2_ccpvdzdk_R1p68_cas12_22",
+    title="Cr2 / cc-pVDZ-DK / R = 1.68 A / CAS(12e,22o)",
+    basis="cc-pvdz-dk",
     distance_ang=1.68,
-    ncas=20,
-    nelecas=28,
-    ncore=10,
+    ncas=22,
+    nelecas=12,
+    ncore=18,
     fixed_config=threshold.StructuralConfig(
         method="thick",
         tag="restart_50_60_12",
@@ -106,7 +106,7 @@ CASE = Cr2FixedBudgetCase(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     stamp = datetime.now().strftime("%Y%m%d")
-    p = argparse.ArgumentParser(description="Fresh-setup Cr2 fixed-budget thick sweep with DMRG reference")
+    p = argparse.ArgumentParser(description="Fresh-setup Cr2 fixed-budget thick sweep with bounded DMRG reference")
     p.add_argument("--outdir", type=Path, default=None)
     p.add_argument("--qp-root", type=Path, default=None)
     p.add_argument("--force", action="store_true")
@@ -115,21 +115,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--dmrg-threads", type=int, default=16)
     p.add_argument("--dmrg-conv-tol", type=float, default=1e-8)
     p.add_argument("--dmrg-python", type=Path, default=DEFAULT_DMRG_PYTHON)
-    p.add_argument("--fixed-store-keep", type=int, default=131_072)
-    p.add_argument("--fixed-propagate-keep", type=int, default=4_096)
+    p.add_argument("--fixed-store-keep", type=int, default=65_536)
+    p.add_argument("--fixed-propagate-keep", type=int, default=1_024)
+    p.add_argument("--selector-mode", choices=["abs_residual", "pt2_residual", "pt2_legacy"], default="abs_residual")
     p.add_argument(
         "--store-grid",
         default=None,
-        help="Comma-separated fixed_store_keep sweep values. Default: 32768,65536,131072,262144,524288",
+        help="Comma-separated fixed_store_keep sweep values. Default: 32768,49152,65536,88474,98304,131072",
     )
     p.add_argument(
         "--propagate-grid",
         default=None,
-        help="Comma-separated fixed_propagate_keep sweep values. Default: 1024,2048,4096,8192,16384",
+        help="Comma-separated fixed_propagate_keep sweep values. Default: 512,1024,2048",
     )
     args = p.parse_args(argv)
     if args.outdir is None:
-        args.outdir = THRESHOLD_TEST_ROOT / f"cr2_qp_{CASE.name}_fixed_budget_centered_{stamp}"
+        stem = f"cr2_qp_{CASE.name}_fixed_budget_centered_{stamp}"
+        if args.selector_mode != "abs_residual":
+            stem = f"{stem}_{args.selector_mode}"
+        args.outdir = THRESHOLD_TEST_ROOT / stem
     args.fixed_store_keep = int(args.fixed_store_keep)
     args.fixed_propagate_keep = int(args.fixed_propagate_keep)
     if args.fixed_store_keep < 1 or args.fixed_propagate_keep < 1:
@@ -269,34 +273,41 @@ def _build_cr2_rhf_payload(case: Cr2FixedBudgetCase, template_ezfio: Path) -> di
     ao_power: list[list[int]] = []
     ao_coef: list[list[float]] = []
     ao_expo: list[list[float]] = []
+    shell_counter = 0
 
     for ib in range(mol.nbas):
         atom_index = int(mol.bas_atom(ib)) + 1
         nprim = int(mol.bas_nprim(ib))
         nctr = int(mol.bas_nctr(ib))
-        if nctr != 1:
-            raise RuntimeError(f"Unsupported PySCF shell with nctr={nctr}; expected 1 for {case.title}")
         l = int(mol.bas_angular(ib))
         expos = [float(x) for x in mol.bas_exp(ib).tolist()]
         ctr_coeff = mol.bas_ctr_coeff(ib)
-        coeffs = [float(x) for x in ctr_coeff[:, 0].tolist()]
-        shell_prim_num.append(nprim)
-        shell_ang_mom.append(l)
-        basis_nucleus_index.append(atom_index)
-        prim_coef.extend(coeffs)
-        prim_expo.extend(expos)
-        shell_index.extend([ib + 1] * nprim)
-        for _ in range(int(mol.bas_len_cart(ib))):
-            if ao_cursor >= len(ao_labels):
-                raise RuntimeError(f"AO label cursor overflow while building Cr2 shell for {case.title}")
-            component = str(ao_labels[ao_cursor][3]).strip()
-            power = [component.count("x"), component.count("y"), component.count("z")]
-            ao_prim_num.append(nprim)
-            ao_nucl.append(atom_index)
-            ao_power.append(power)
-            ao_coef.append(coeffs)
-            ao_expo.append(expos)
-            ao_cursor += 1
+        if ctr_coeff.shape[1] != nctr:
+            raise RuntimeError(
+                f"PySCF contraction matrix shape mismatch for {case.title}: "
+                f"expected {nctr} contraction columns, got {ctr_coeff.shape[1]}"
+            )
+        n_cart = int(mol.bas_len_cart(ib))
+        for ictr in range(nctr):
+            coeffs = [float(x) for x in ctr_coeff[:, ictr].tolist()]
+            shell_counter += 1
+            shell_prim_num.append(nprim)
+            shell_ang_mom.append(l)
+            basis_nucleus_index.append(atom_index)
+            prim_coef.extend(coeffs)
+            prim_expo.extend(expos)
+            shell_index.extend([shell_counter] * nprim)
+            for _ in range(n_cart):
+                if ao_cursor >= len(ao_labels):
+                    raise RuntimeError(f"AO label cursor overflow while building Cr2 shell for {case.title}")
+                component = str(ao_labels[ao_cursor][3]).strip()
+                power = [component.count("x"), component.count("y"), component.count("z")]
+                ao_prim_num.append(nprim)
+                ao_nucl.append(atom_index)
+                ao_power.append(power)
+                ao_coef.append(coeffs)
+                ao_expo.append(expos)
+                ao_cursor += 1
     if ao_cursor != len(ao_labels):
         raise RuntimeError(f"AO label cursor mismatch while building Cr2 shell for {case.title}")
 
@@ -326,7 +337,7 @@ def _build_cr2_rhf_payload(case: Cr2FixedBudgetCase, template_ezfio: Path) -> di
         "ao_power": [[int(v) for v in row] for row in ao_power],
         "ao_coef": padded_ao_coef,
         "ao_expo": padded_ao_expo,
-        "shell_num": int(mol.nbas),
+        "shell_num": int(shell_counter),
         "prim_num": int(len(prim_coef)),
         "shell_prim_num": [int(x) for x in shell_prim_num],
         "shell_ang_mom": [int(x) for x in shell_ang_mom],
@@ -738,6 +749,7 @@ def _make_fixed_budget_params(
     *,
     fixed_store_keep: int,
     fixed_propagate_keep: int,
+    selector_mode: str = "abs_residual",
 ) -> QPCCIKParams:
     return QPCCIKParams(
         ccik_basis_size=int(config.basis_size),
@@ -750,7 +762,7 @@ def _make_fixed_budget_params(
         ccik_external_keep=int(INTERNAL_EXTERNAL_KEEP),
         ccik_external_candidate_factor=1,
         ccik_pt2_rank_weight=1.0,
-        ccik_selector_mode="abs_residual",
+        ccik_selector_mode=str(selector_mode),
         ccik_matvec_backend="connected_sd_fullq",
         ccik_compression_policy="fixed_budget",
         ccik_fixed_store_keep=int(fixed_store_keep),
@@ -789,6 +801,7 @@ def _run_single_qp_job(
     config: threshold.StructuralConfig,
     fixed_store_keep: int,
     fixed_propagate_keep: int,
+    selector_mode: str,
     run_dir: Path,
     omp_threads: int,
     force: bool,
@@ -803,6 +816,7 @@ def _run_single_qp_job(
         config,
         fixed_store_keep=int(fixed_store_keep),
         fixed_propagate_keep=int(fixed_propagate_keep),
+        selector_mode=str(selector_mode),
     )
     runtime_parent = Path(tempfile.mkdtemp(prefix=f"{case.name}_{config.tag}_", dir="/tmp"))
     runtime_ezfio = runtime_parent / base_ezfio.name
@@ -870,6 +884,7 @@ def _run_single_qp_job(
         "reference_label": reference["reference_label"],
         "method": config.method,
         "config_tag": config.tag,
+        "selector_mode": str(selector_mode),
         "fixed_store_keep": int(fixed_store_keep),
         "fixed_propagate_keep": int(fixed_propagate_keep),
         "e_total_eh": None if e_total is None else float(e_total),
@@ -1008,7 +1023,7 @@ def main(argv: list[str] | None = None) -> int:
         key = (str(job["sweep_kind"]), int(job["budget_value"]), str(job["method"]))
         if key in rows_by_key and not args.force:
             continue
-        run_dir = outdir / n2_fixed._run_dir_for(
+        run_dir = outdir / str(args.selector_mode) / n2_fixed._run_dir_for(
             sweep_kind=str(job["sweep_kind"]),
             method=str(job["method"]),
             budget=int(job["budget_value"]),
@@ -1021,6 +1036,7 @@ def main(argv: list[str] | None = None) -> int:
             config=CASE.fixed_config,
             fixed_store_keep=int(job["fixed_store_keep"]),
             fixed_propagate_keep=int(job["fixed_propagate_keep"]),
+            selector_mode=str(args.selector_mode),
             run_dir=run_dir,
             omp_threads=omp_threads,
             force=args.force,

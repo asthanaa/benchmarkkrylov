@@ -26,12 +26,14 @@ ncore = 2
 
 [ccik]
 m = 250
+# Legacy top-k knobs. These are only active when compression_policy = "topk".
 nadd = 2000
 nkeep = 10000
 Kv = 3000
-compression_policy = "topk"
+compression_policy = "fixed_budget"
 store_abs_tol = 0.0
 propagate_abs_tol = 0.0
+# Default fixed-budget knobs used by the teaching and benchmark workflows.
 fixed_store_keep = 65536
 fixed_propagate_keep = 512
 candidate_mode = "selected_ci"
@@ -55,12 +57,14 @@ m_cycle = 25
 ncycles = 10
 nroot = 5
 tol = 1e-6
+# Legacy top-k knobs. These are only active when compression_policy = "topk".
 nadd = 2000
 nkeep = 10000
 Kv = 3000
-compression_policy = "topk"
+compression_policy = "fixed_budget"
 store_abs_tol = 0.0
 propagate_abs_tol = 0.0
+# Default fixed-budget knobs used by the teaching and benchmark workflows.
 fixed_store_keep = 65536
 fixed_propagate_keep = 512
 candidate_mode = "selected_ci"
@@ -81,12 +85,14 @@ verbose = false
 
 [ccik_stochastic]
 m = 100
+# Legacy top-k knobs. These are only active when compression_policy = "topk".
 nadd = 2000
 nkeep = 10000
 Kv = 3000
-compression_policy = "topk"
+compression_policy = "fixed_budget"
 store_abs_tol = 0.0
 propagate_abs_tol = 0.0
+# Default fixed-budget knobs used by the teaching and benchmark workflows.
 fixed_store_keep = 65536
 fixed_propagate_keep = 512
 candidate_mode = "stochastic"

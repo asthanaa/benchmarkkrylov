@@ -29,7 +29,7 @@ def test_fixed_budget_selector_benchmark_smoke(tmp_path: Path) -> None:
         "--selectors",
         "abs_hq",
         "abs_residual",
-        "pt2_legacy",
+        "pt2_residual",
         "ground_state_pt2",
     ]
     subprocess.run(cmd, cwd=_ROOT, check=True, capture_output=True, text=True)
@@ -39,7 +39,7 @@ def test_fixed_budget_selector_benchmark_smoke(tmp_path: Path) -> None:
     assert {row["selector_mode"] for row in rows} == {
         "abs_hq",
         "abs_residual",
-        "pt2_legacy",
+        "pt2_residual",
         "ground_state_pt2",
     }
     for col in ("projected_h_fro_error", "projected_h_maxabs_error", "same_basis_ritz_error"):

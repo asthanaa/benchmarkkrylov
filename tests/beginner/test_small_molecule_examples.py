@@ -20,6 +20,12 @@ from ccik.params import CCIKParams, CCIKStochasticParams, CCIKThickRestartParams
 from ccik.pyscf_cas import CASSpec
 
 
+def test_public_param_defaults_now_use_fixed_budget() -> None:
+    assert CCIKParams().compression_policy == "fixed_budget"
+    assert CCIKThickRestartParams().compression_policy == "fixed_budget"
+    assert CCIKStochasticParams().compression_policy == "fixed_budget"
+
+
 def _build_h2_cas() -> tuple[np.ndarray, np.ndarray, float, int, tuple[int, int], float]:
     mol = make_mol_pyscf(
         atom="H 0 0 0; H 0 0 0.74",

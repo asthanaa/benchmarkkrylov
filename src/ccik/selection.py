@@ -60,11 +60,15 @@ def candidate_mode_from_params(params: Any, *, default: str = "selected_ci") -> 
 def selector_mode_from_params(params: Any, *, default: str = "abs_residual") -> str:
     mode = _normalize_mode(getattr(params, "selector_mode", default), default)
     aliases = {
+        # Preserve the older user-facing shorthands for non-fixed-budget paths.
         "selected_ci": "pt2_legacy",
         "selectedci": "pt2_legacy",
         "sci": "pt2_legacy",
         "cipsi": "pt2_legacy",
         "stochastic": "pt2_legacy",
+        # The explicit legacy selector name now points to the maintained
+        # fixed-budget PT2-residual implementation.
+        "pt2_legacy": "pt2_residual",
         "full": "abs_hq",
         "dense": "abs_hq",
         "ritz_pt2": "ground_state_pt2",
@@ -72,7 +76,7 @@ def selector_mode_from_params(params: Any, *, default: str = "abs_residual") -> 
     return aliases.get(mode, mode)
 
 
-def compression_policy_from_params(params: Any, *, default: str = "topk") -> str:
+def compression_policy_from_params(params: Any, *, default: str = "fixed_budget") -> str:
     mode = _normalize_mode(getattr(params, "compression_policy", default), default)
     aliases = {
         "topk": "topk",
@@ -116,11 +120,17 @@ def _propagation_source(
     qk: SparseCIVector,
     params: Any,
 ) -> tuple[SparseCIVector, set[DetKey], float, bool]:
-    compression_policy = compression_policy_from_params(params, default="topk")
+    compression_policy = compression_policy_from_params(params, default="fixed_budget")
     if compression_policy == "fixed_budget":
+        selector_mode = selector_mode_from_params(params, default="abs_residual")
+        if selector_mode == "pt2_residual" and qk.delayed_propagation_support:
+            qprop = normalize_sparse(project_sparse_to_support(qk, qk.delayed_propagation_support))
+            if qprop.coeffs:
+                dropped_norm_sq = max(0.0, sparse_norm_sq(qk) - sparse_norm_sq(qprop))
+                return qprop, qprop.support(), float(np.sqrt(dropped_norm_sq)), False
         qprop = compress_topk_sparse(qk, _fixed_budget_keep_from_params(params, "fixed_propagate_keep", 10_000))
         dropped_norm_sq = max(0.0, sparse_norm_sq(qk) - sparse_norm_sq(qprop))
-        return qprop, qprop.support(), float(np.sqrt(dropped_norm_sq)), False
+        return qprop, qprop.support(), float(np.sqrt(dropped_norm_sq)), selector_mode == "pt2_residual"
     if compression_policy != "threshold":
         return qk.copy(), qk.support(), 0.0, False
     qprop, dropped_norm, used_fallback = threshold_prune_sparse(
@@ -401,21 +411,30 @@ def build_candidate_pool_impl(
     params: Any,
     hdiag_full: dict[DetKey, float] | None = None,
     rng: np.random.Generator | None = None,
+    qprop_override: SparseCIVector | None = None,
+    parent_support_override: set[DetKey] | None = None,
 ) -> tuple[set[DetKey], set[DetKey]]:
     from pyscf.fci import selected_ci
 
-    compression_policy = compression_policy_from_params(params, default="topk")
+    compression_policy = compression_policy_from_params(params, default="fixed_budget")
     candidate_mode = candidate_mode_from_params(params, default="selected_ci")
-    qprop, current_support, _, _ = _propagation_source(qk, params)
-    if compression_policy in {"threshold", "fixed_budget"}:
-        parent_support = set(current_support)
+    if qprop_override is not None:
+        qprop = normalize_sparse(qprop_override)
+        current_support = qprop.support()
+        parent_support = set(current_support if parent_support_override is None else parent_support_override)
         parent_vec = qprop.copy()
     else:
-        parent_support = _select_parent_support(qk, params)
-        parent_vec = normalize_sparse(project_sparse_to_support(qk, parent_support))
-        if not parent_vec.coeffs:
-            parent_vec = normalize_sparse(qk)
-            parent_support = parent_vec.support()
+        qprop, current_support, _, _ = _propagation_source(qk, params)
+        if compression_policy in {"threshold", "fixed_budget"}:
+            parent_support = set(current_support)
+            parent_vec = qprop.copy()
+        else:
+            parent_support = _select_parent_support(qk, params)
+            parent_vec = normalize_sparse(project_sparse_to_support(qk, parent_support))
+            if not parent_vec.coeffs:
+                parent_vec = normalize_sparse(qk)
+                parent_support = parent_vec.support()
+    parent_support = set(parent_support)
 
     include_current_support = _preserve_current_support_from_params(params)
 
@@ -511,12 +530,20 @@ def compute_projected_matvec_impl(
     nelec: tuple[int, int],
     params: Any,
     hdiag_full: dict[DetKey, float] | None = None,
+    qprop_override: SparseCIVector | None = None,
+    propagation_support_override: set[DetKey] | None = None,
 ) -> SparseProjectionWorkspace:
     from pyscf.fci import direct_spin1, selected_ci
 
-    compression_policy = compression_policy_from_params(params, default="topk")
+    compression_policy = compression_policy_from_params(params, default="fixed_budget")
     candidate_mode = candidate_mode_from_params(params, default="selected_ci")
-    qprop, prop_support, prop_dropped_norm, prop_used_fallback = _propagation_source(qk, params)
+    if qprop_override is not None:
+        qprop = normalize_sparse(qprop_override)
+        prop_support = set(qprop.support() if propagation_support_override is None else propagation_support_override)
+        prop_dropped_norm = 0.0
+        prop_used_fallback = False
+    else:
+        qprop, prop_support, prop_dropped_norm, prop_used_fallback = _propagation_source(qk, params)
     exact_v: SparseCIVector | None = None
 
     if bool(getattr(params, "exact_hq_diagnostics", False)):
@@ -583,6 +610,8 @@ def build_projection_workspace(
     params: Any,
     hdiag_full: dict[DetKey, float] | None = None,
     rng: np.random.Generator | None = None,
+    qprop_override: SparseCIVector | None = None,
+    parent_support_override: set[DetKey] | None = None,
 ) -> SparseProjectionWorkspace:
     parent_support, candidate_pool = build_candidate_pool_impl(
         qk=qk,
@@ -594,6 +623,8 @@ def build_projection_workspace(
         params=params,
         hdiag_full=hdiag_full,
         rng=rng,
+        qprop_override=qprop_override,
+        parent_support_override=parent_support_override,
     )
     return compute_projected_matvec_impl(
         qk=qk,
@@ -606,6 +637,8 @@ def build_projection_workspace(
         nelec=nelec,
         params=params,
         hdiag_full=hdiag_full,
+        qprop_override=qprop_override,
+        propagation_support_override=parent_support_override,
     )
 
 

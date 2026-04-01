@@ -35,7 +35,7 @@ def gram_schmidt_list(vecs: list[SparseCIVector], tol: float = 1e-12) -> list[Sp
 
 def _compress_with_stage1(vec: SparseCIVector, nkeep: int, params: CCIKThickRestartParams) -> SparseCIVector:
     """Use an oversampled first truncation before the final keep size."""
-    compression_policy = compression_policy_from_params(params, default="topk")
+    compression_policy = compression_policy_from_params(params, default="fixed_budget")
     if compression_policy == "threshold":
         unit = normalize_sparse(vec)
         out, _, _ = threshold_prune_sparse(unit, float(getattr(params, "store_abs_tol", 0.0)), keep_largest_if_empty=True)

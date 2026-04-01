@@ -64,9 +64,16 @@ class KrylovStepDiagnostics:
     propagation_used_fallback: bool
     store_dropped_norm: float
     store_used_fallback: bool
+    selector_reference_energy: float | None = None
+    probe_residual_norm: float | None = None
+    rebuilt_residual_norm: float | None = None
+    propagation_score_mode: str | None = None
+    storage_score_mode: str | None = None
     target_ritz_energy: float | None = None
     target_basis_size: int | None = None
     selector_score_mode: str | None = None
+    next_propagation_support_size: int | None = None
+    delayed_propagation_used_fallback: bool | None = None
 
 
 @dataclass(frozen=True)
@@ -84,6 +91,7 @@ class KrylovStepArtifacts:
     preserve_support: set[DetKey]
     candidate_pool: set[DetKey]
     parent_support: set[DetKey]
+    propagation_score_support: set[DetKey]
     score_support: set[DetKey]
 
 
@@ -208,7 +216,7 @@ def _runtime_preserve_prev_support_cap(params: Any) -> int:
 
 
 def _compression_policy(params: Any) -> str:
-    return compression_policy_from_params(params, default="topk")
+    return compression_policy_from_params(params, default="fixed_budget")
 
 
 def _tmp_keep(params: Any) -> int:
@@ -245,6 +253,22 @@ def _legacy_score_map(
     return Ek, score
 
 
+def _pt2_score_map(
+    *,
+    vec: SparseCIVector,
+    hdiag: dict[DetKey, float],
+    energy: float,
+    eps_denom: float,
+) -> dict[DetKey, float]:
+    score: dict[DetKey, float] = {}
+    for det, amp in vec.coeffs.items():
+        if amp == 0.0:
+            continue
+        denom = max(abs(energy - hdiag.get(det, energy)), eps_denom)
+        score[det] = (abs(amp) ** 2) / denom
+    return score
+
+
 def _score_from_vector(vec: SparseCIVector, mode: str) -> dict[DetKey, float]:
     if mode in {"abs_hq", "abs_residual"}:
         return {key: abs(val) for key, val in vec.coeffs.items() if abs(val) > 0.0}
@@ -255,6 +279,10 @@ def _score_from_vector(vec: SparseCIVector, mode: str) -> dict[DetKey, float]:
 
 def _fixed_budget_keep(params: Any) -> int:
     return max(1, int(getattr(params, "fixed_store_keep", 1_000_000)))
+
+
+def _fixed_budget_propagate_keep(params: Any) -> int:
+    return max(1, int(getattr(params, "fixed_propagate_keep", 10_000)))
 
 
 def _fixed_budget_score_support(
@@ -277,6 +305,8 @@ def _fixed_budget_score_support(
     target_basis_size: int | None = None
     selector_score_mode = used_selector
 
+    if used_selector == "pt2_residual":
+        raise ValueError("pt2_residual uses a dedicated fixed-budget single-pass path.")
     if used_selector == "pt2_legacy":
         _, legacy_scores = _legacy_score_map(
             qk=qk,
@@ -347,6 +377,54 @@ def _max_basis_overlap(vec: SparseCIVector, basis: list[SparseCIVector]) -> floa
     return max(abs(inner_sparse(vec, q)) for q in basis)
 
 
+def _analyze_fixed_budget_pt2_residual(
+    *,
+    qk: SparseCIVector,
+    basis: list[SparseCIVector],
+    ws: SparseProjectionWorkspace,
+    h1: np.ndarray,
+    eri8: np.ndarray,
+    h2eff: np.ndarray,
+    norb: int,
+    nelec: tuple[int, int],
+    params: Any,
+    hdiag_full: dict[DetKey, float] | None,
+    rng: np.random.Generator | None,
+) -> tuple[SparseCIVector, SparseProjectionWorkspace, SparseCIVector, set[DetKey], set[DetKey], float]:
+    _ = (h1, eri8, h2eff, norb, nelec, hdiag_full, rng)
+    eps_denom = float(getattr(params, "eps_denom", 1e-12))
+    orth_residual = orthogonalize_against_basis(ws.v_proj, basis)
+    selector_energy = inner_sparse(qk, ws.v_proj)
+    store_scores = _pt2_score_map(
+        vec=orth_residual,
+        hdiag=ws.hdiag,
+        energy=selector_energy,
+        eps_denom=eps_denom,
+    )
+    store_support = _topk_score_keys(store_scores, _fixed_budget_keep(params))
+    if not store_support:
+        store_support = topk_abs_keys_sparse(orth_residual, _fixed_budget_keep(params))
+    compressed = project_sparse_to_support(orth_residual, store_support)
+    next_propagation = normalize_sparse(compressed)
+    propagate_scores = _pt2_score_map(
+        vec=next_propagation,
+        hdiag=ws.hdiag,
+        energy=selector_energy,
+        eps_denom=eps_denom,
+    )
+    propagation_support = _topk_score_keys(propagate_scores, _fixed_budget_propagate_keep(params))
+    if not propagation_support:
+        propagation_support = topk_abs_keys_sparse(next_propagation, _fixed_budget_propagate_keep(params))
+    return (
+        compressed,
+        ws,
+        orth_residual,
+        propagation_support,
+        store_support,
+        selector_energy,
+    )
+
+
 def analyze_krylov_step(
     q_k: SparseCIVector,
     basis: list[SparseCIVector],
@@ -398,6 +476,12 @@ def analyze_krylov_step(
         )
     if requested_selector == "ground_state_pt2" and candidate_mode_from_params(params, default="selected_ci") == "stochastic":
         raise ValueError("selector_mode='ground_state_pt2' is only supported for deterministic candidate discovery.")
+    if requested_selector == "pt2_residual" and compression_policy != "fixed_budget":
+        raise ValueError(
+            "selector_mode='pt2_residual' is only supported when compression_policy='fixed_budget'."
+        )
+    if requested_selector == "pt2_residual" and candidate_mode_from_params(params, default="selected_ci") == "stochastic":
+        raise ValueError("selector_mode='pt2_residual' is only supported for deterministic candidate discovery.")
 
     if requested_selector in {"abs_residual", "sq_residual"}:
         if basis:
@@ -408,11 +492,19 @@ def analyze_krylov_step(
         selector_score_mode = used_selector
 
     score_support: set[DetKey] = set()
+    propagation_score_support: set[DetKey] = set()
     preserve_support: set[DetKey] = set()
     preserve_cap = 0
     store_dropped_norm = 0.0
     store_used_fallback = False
     orth_residual = orthogonalize_against_basis(ws.v_proj, basis)
+    selector_reference_energy: float | None = None
+    probe_residual_norm: float | None = None
+    rebuilt_residual_norm: float | None = None
+    propagation_score_mode: str | None = None
+    storage_score_mode: str | None = None
+    next_propagation_support_size: int | None = None
+    delayed_propagation_used_fallback: bool | None = None
 
     if compression_policy == "threshold":
         v_temp = ws.v_proj.copy()
@@ -431,27 +523,55 @@ def analyze_krylov_step(
         q_next = normalize_sparse(compressed)
         score_support = set(score_vec.coeffs)
     elif compression_policy == "fixed_budget":
-        (
-            score_support,
-            score_vec,
-            target_ritz_energy,
-            target_basis_size,
-            selector_score_mode,
-        ) = _fixed_budget_score_support(
-            qk=q_k,
-            basis=basis,
-            ws=ws,
-            orth_residual=orth_residual,
-            used_selector=used_selector,
-            h1=h1,
-            eri8=eri8,
-            h2eff=h2eff,
-            norb=norb,
-            nelec=nelec,
-            params=params,
-            hdiag_full=hdiag_full,
-        )
-        compressed = project_sparse_to_support(orth_residual, score_support)
+        if used_selector == "pt2_residual":
+            (
+                compressed,
+                ws,
+                orth_residual,
+                propagation_score_support,
+                score_support,
+                selector_reference_energy,
+            ) = _analyze_fixed_budget_pt2_residual(
+                qk=q_k,
+                basis=basis,
+                ws=ws,
+                h1=h1,
+                eri8=eri8,
+                h2eff=h2eff,
+                norb=norb,
+                nelec=nelec,
+                params=params,
+                hdiag_full=hdiag_full,
+                rng=rng,
+            )
+            score_vec = orth_residual
+            selector_score_mode = "pt2_residual"
+            propagation_score_mode = "pt2_residual"
+            storage_score_mode = "pt2_residual"
+            probe_residual_norm = sparse_norm(orth_residual)
+            rebuilt_residual_norm = sparse_norm(orth_residual)
+        else:
+            (
+                score_support,
+                score_vec,
+                target_ritz_energy,
+                target_basis_size,
+                selector_score_mode,
+            ) = _fixed_budget_score_support(
+                qk=q_k,
+                basis=basis,
+                ws=ws,
+                orth_residual=orth_residual,
+                used_selector=used_selector,
+                h1=h1,
+                eri8=eri8,
+                h2eff=h2eff,
+                norb=norb,
+                nelec=nelec,
+                params=params,
+                hdiag_full=hdiag_full,
+            )
+            compressed = project_sparse_to_support(orth_residual, score_support)
         discarded_weight = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
         v_temp = compressed.copy()
         store_dropped_norm = discarded_weight
@@ -521,9 +641,16 @@ def analyze_krylov_step(
         propagation_used_fallback=bool(ws.propagation_used_fallback),
         store_dropped_norm=store_dropped_norm,
         store_used_fallback=store_used_fallback,
+        selector_reference_energy=selector_reference_energy,
+        probe_residual_norm=probe_residual_norm,
+        rebuilt_residual_norm=rebuilt_residual_norm,
+        propagation_score_mode=propagation_score_mode,
+        storage_score_mode=storage_score_mode,
         target_ritz_energy=target_ritz_energy,
         target_basis_size=target_basis_size,
         selector_score_mode=selector_score_mode,
+        next_propagation_support_size=len(propagation_score_support) if propagation_score_support else None,
+        delayed_propagation_used_fallback=bool(ws.propagation_used_fallback) if used_selector == "pt2_residual" else None,
     )
     artifacts = KrylovStepArtifacts(
         requested_selector=requested_selector,
@@ -537,8 +664,11 @@ def analyze_krylov_step(
         preserve_support=preserve_support,
         candidate_pool=set(ws.candidate_pool),
         parent_support=set(ws.parent_support),
+        propagation_score_support=propagation_score_support,
         score_support=score_support,
     )
+    if used_selector == "pt2_residual":
+        q_next.delayed_propagation_support = set(propagation_score_support)
     return q_next, diag, ws, artifacts
 
 

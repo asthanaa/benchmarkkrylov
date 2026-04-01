@@ -1,9 +1,7 @@
 """Beginner example: introduce an active-space calculation on N2.
 
-For this tiny ``CAS(6e,6o)`` teaching problem, the dense CCIK solver reaches
-sub-millihartree agreement with exact CAS-FCI on a laptop. That makes it a
-better notebook choice than a more aggressively compressed thick-restart setup,
-which is the solver to switch back to for larger active spaces.
+This example keeps the notebook teaching rule simple: use `ccik_thick` by
+default and report its error relative to exact CAS-FCI.
 """
 
 from __future__ import annotations
@@ -18,11 +16,11 @@ if str(SRC) not in sys.path:
 
 from ccik import (  # noqa: E402
     build_cas_hamiltonian_pyscf,
-    ccik_ground_energy_dense,
+    ccik_ground_energy_dense_thick_restart,
     exact_cas_fci_energy_pyscf,
     make_mol_pyscf,
 )
-from ccik.params import CCIKParams  # noqa: E402
+from ccik.params import CCIKThickRestartParams  # noqa: E402
 from ccik.pyscf_cas import CASSpec  # noqa: E402
 
 
@@ -37,12 +35,10 @@ def make_n2_atom(distance_ang: float) -> str:
 
 
 def run_example(distance_ang: float = 1.10) -> dict[str, float]:
-    """Run a small N2 active-space example that reaches the 1 mHa target.
+    """Run a small N2 active-space example with thick-restart CCIK."""
 
-    This example uses dense CCIK because the active space is still small enough
-    that the dense solver reproduces exact CAS-FCI to well below ``1 mEh``.
-    """
-
+    # N2 is a realistic molecule, but CAS(6e,6o) is still small enough that we
+    # can explain every step without turning the example into a benchmark.
     mol = make_mol_pyscf(
         atom=make_n2_atom(distance_ang),
         basis="6-31g",
@@ -52,27 +48,44 @@ def run_example(distance_ang: float = 1.10) -> dict[str, float]:
         verbose=0,
     )
     cas = CASSpec(ncas=6, nelecas=6, ncore=2)
+
+    # The active-space Hamiltonian is the chemistry object the CCIK solvers use.
     h1, eri8, ecore, ncas, nelec = build_cas_hamiltonian_pyscf(mol, cas=cas)
 
-    # For this small active space the baseline dense solver is simple and
-    # already chemically accurate, so it is the clearest notebook default.
-    params = CCIKParams(verbose=False)
+    # This thick-restart setup uses explicit fixed budgets.  The values below
+    # were tuned for this small teaching case so the error stays well below the
+    # 1 mEh chemistry target.
+    params = CCIKThickRestartParams(
+        m_cycle=20,
+        ncycles=6,
+        nroot=4,
+        tol=1e-10,
+        compression_policy="fixed_budget",
+        fixed_store_keep=1024,
+        fixed_propagate_keep=512,
+        candidate_mode="full",
+        selector_mode="abs_residual",
+        orth_tol=1e-12,
+        verbose=False,
+    )
 
+    # Add the frozen-core energy back so we compare total energies, then report
+    # the error relative to exact CAS-FCI.
     e_fci_total = float(ecore + exact_cas_fci_energy_pyscf(h1, eri8, ncas, nelec))
-    e_dense_total = float(ecore + ccik_ground_energy_dense(h1, eri8, ncas, nelec, params=params))
-    delta_millihartree = 1000.0 * (e_dense_total - e_fci_total)
+    e_thick_total = float(ecore + ccik_ground_energy_dense_thick_restart(h1, eri8, ncas, nelec, params=params))
+    delta_millihartree = 1000.0 * (e_thick_total - e_fci_total)
 
     return {
         "distance_ang": distance_ang,
         "ncas": float(cas.ncas),
         "nelecas": float(cas.nelecas),
-        "solver_name": "ccik_dense",
-        "solver_label": "CCIK dense",
+        "solver_name": "ccik_thick",
+        "solver_label": "CCIK thick restart",
         "target_millihartree": 1.0,
         "meets_target": abs(delta_millihartree) < 1.0,
         "e_fci_total": e_fci_total,
-        "e_dense_total": e_dense_total,
-        "e_ccik_total": e_dense_total,
+        "e_thick_total": e_thick_total,
+        "e_ccik_total": e_thick_total,
         "delta_millihartree": delta_millihartree,
     }
 
@@ -85,7 +98,7 @@ def main() -> None:
     print(f"Solver used                : {result['solver_label']}")
     print(f"Exact CAS-FCI total energy : {result['e_fci_total']:+.12f} Eh")
     print(f"{result['solver_label']:<26}: {result['e_ccik_total']:+.12f} Eh")
-    print(f"Difference                 : {result['delta_millihartree']:+.6f} mEh")
+    print(f"Error relative to FCI      : {result['delta_millihartree']:+.6f} mEh")
     print(f"Chemical-accuracy target   : < {result['target_millihartree']:.1f} mEh ({result['meets_target']})")
 
 

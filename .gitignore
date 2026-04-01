@@ -27,8 +27,11 @@ site/
 data/
 data/
 *.npz
+# Local benchmark assets and notebook figures
 docs/assets/
-experiments/threshold_test/
+experiments/*
+!experiments/README.md
+# Local-only manuscript workspace
 manuscripts/
 
 # LaTeX build products

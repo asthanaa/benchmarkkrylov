@@ -46,7 +46,7 @@ def run_case(selector_mode: str) -> None:
 
 
 def main() -> None:
-    for mode in ("pt2_legacy", "abs_hq", "abs_residual"):
+    for mode in ("pt2_residual", "abs_hq", "abs_residual"):
         run_case(mode)
 
 

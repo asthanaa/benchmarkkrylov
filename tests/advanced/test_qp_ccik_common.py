@@ -41,10 +41,10 @@ write_ezfio_value = MODULE.write_ezfio_value
 
 def test_ccik_driver_refreshes_wavefunction_providers_after_load() -> None:
     driver = (ROOT / "ccik_qp" / "stable" / "ccik" / "ccik_driver.irp.f").read_text(encoding="ascii")
-    assert "call ccik_refresh_working_wf_providers()" in driver
-    assert "SOFT_TOUCH psi_det_size N_det psi_det psi_coef" in driver
-    assert "PROVIDE psi_det_sorted psi_coef_sorted psi_average_norm_contrib_sorted psi_det_sorted_order" in driver
-    assert "PROVIDE N_det_propagators psi_det_propagators psi_coef_propagators" in driver
+    assert "subroutine ccik_refresh_working_wf_providers()" in driver
+    assert "PROVIDE psi_det_size psi_det psi_coef N_states N_det" in driver
+    assert "PROVIDE psi_det_generators psi_det_sorted_bit n_act_orb list_act list_act_reverse psi_det_propagators_sorted psi_det_working_sorted" in driver
+    assert "call ccik_capture_working_vector(current_vec)" in driver
 
 
 def test_ccik_driver_has_stale_topk_generator_guard() -> None:
@@ -126,7 +126,7 @@ def test_storage_estimate_uses_manual_nkeep_without_budget() -> None:
 def test_ensure_ezfio_defaults_writes_threshold_knobs(tmp_path: Path) -> None:
     ezfio = tmp_path / "case.ezfio"
     ensure_ezfio_defaults(ezfio)
-    assert (ezfio / "ccik" / "ccik_compression_policy").read_text(encoding="ascii").strip() == "topk"
+    assert (ezfio / "ccik" / "ccik_compression_policy").read_text(encoding="ascii").strip() == "fixed_budget"
     assert (ezfio / "ccik" / "ccik_fixed_store_keep").read_text(encoding="ascii").strip() == "65536"
     assert (ezfio / "ccik" / "ccik_fixed_propagate_keep").read_text(encoding="ascii").strip() == "512"
     assert float((ezfio / "ccik" / "ccik_store_abs_tol").read_text(encoding="ascii").strip()) == 0.0

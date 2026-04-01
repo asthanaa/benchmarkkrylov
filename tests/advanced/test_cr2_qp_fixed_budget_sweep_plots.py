@@ -19,19 +19,19 @@ SPEC.loader.exec_module(MODULE)
 
 def test_parse_args_defaults_match_cr2_plan() -> None:
     args = MODULE.parse_args([])
-    assert args.fixed_store_keep == 131_072
-    assert args.fixed_propagate_keep == 4_096
-    assert args.store_grid == [32_768, 65_536, 131_072, 262_144, 524_288]
-    assert args.propagate_grid == [1_024, 2_048, 4_096, 8_192, 16_384]
-    assert "cr2_qp_cr2_sto3g_R1p68_cas28_20_fixed_budget_centered_" in str(args.outdir)
+    assert args.fixed_store_keep == 65_536
+    assert args.fixed_propagate_keep == 1_024
+    assert args.store_grid == [32_768, 49_152, 65_536, 88_474, 98_304, 131_072]
+    assert args.propagate_grid == [512, 1_024, 2_048]
+    assert "cr2_qp_cr2_ccpvdzdk_R1p68_cas12_22_fixed_budget_centered_" in str(args.outdir)
 
 
 def test_case_definition_matches_requested_system() -> None:
-    assert MODULE.CASE.basis == "sto-3g"
+    assert MODULE.CASE.basis == "cc-pvdz-dk"
     assert MODULE.CASE.distance_ang == 1.68
-    assert MODULE.CASE.ncas == 20
-    assert MODULE.CASE.nelecas == 28
-    assert MODULE.CASE.ncore == 10
+    assert MODULE.CASE.ncas == 22
+    assert MODULE.CASE.nelecas == 12
+    assert MODULE.CASE.ncore == 18
     assert MODULE.CASE.fixed_config.method == "thick"
     assert MODULE.CASE.fixed_config.tag == "restart_50_60_12"
 

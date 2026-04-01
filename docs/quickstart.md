@@ -35,7 +35,7 @@ That script:
 
 ## 3. Continue with the next examples
 
-Compare solver styles on a slightly larger toy system:
+Compare two thick-restart budgets on a slightly larger toy system:
 
 ```bash
 python examples/scripts/02_h4_compare_solvers.py
@@ -47,9 +47,10 @@ Then move to a realistic active-space example:
 python examples/scripts/03_n2_intro_active_space.py
 ```
 
-That N2 example deliberately uses the plain dense solver, not `ccik_thick`,
-because the active space is still small enough that dense CCIK reaches
-sub-`1 mEh` agreement with exact CAS-FCI.
+That N2 example now uses `ccik_thick`, because the teaching rule in the
+notebooks is to learn the thick-restart solver first and measure its error
+relative to exact CAS-FCI. The notebooks use the QP backend directly, while
+the scripts remain the lightweight Python path.
 
 ## 4. Recommended solver for learners
 
@@ -61,10 +62,8 @@ Why:
 - it reuses good Ritz vectors instead of restarting from scratch
 - it is the solver used most often in the current examples
 
-One exception:
-
-- for the tiny `N2 CAS(6e,6o)` teaching notebook, dense CCIK is used because it
-  already reaches the `1 mEh` chemistry target and keeps the explanation simple
+Even the tiny `N2` teaching notebook now follows that same rule, so new users
+do not have to switch solver styles between examples.
 
 ## 5. Where the old N2 scan driver fits
 

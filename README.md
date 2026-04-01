@@ -38,13 +38,18 @@ The repository now has two clearly labeled paths:
 ## Recommended learning path
 
 - `H2`: build the smallest CAS Hamiltonian and compare CCIK to exact CAS-FCI
-- `H4`: compare solver variants and see what thick restart changes
+- `H4`: compare lighter and refined fixed-budget thick settings
 - `N2`: learn how active-space choices enter a realistic chemistry example
 
 The mirrored teaching files live in:
 
 - `examples/scripts/`
 - `examples/notebooks/`
+
+The notebooks are written as self-contained teaching notebooks. They now show
+the actual example code inline instead of importing a hidden script, and they
+teach the Quantum Package backend directly. The companion scripts stay as the
+fast plain-Python path.
 
 ## Advanced / Research Workflows
 
@@ -73,10 +78,15 @@ The current large-active-space benchmark conclusion is:
 - use `ccik_thick`
 - tune `fixed_store_keep` and `fixed_propagate_keep`
 
-The finished `N2` hard-point studies show that the compression problem is now a
-budget-tuning problem, not a selector-choice problem. The current best strategy
-is to keep `fixed_store_keep` moderate, start at `65536`, and tune
-`fixed_propagate_keep` first.
+The finished `N2` hard-point studies show that the compression problem is still
+mainly a budget-tuning problem. The repository now keeps exactly two selector
+datasets:
+
+- the production `abs_residual` baseline
+- the single-pass `pt2_residual` comparison run
+
+The current best strategy is to keep `fixed_store_keep` moderate, start at
+`65536`, and tune `fixed_propagate_keep` first.
 
 ## Package overview
 

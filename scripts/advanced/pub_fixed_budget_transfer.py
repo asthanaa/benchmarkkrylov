@@ -30,11 +30,18 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 import cr2_qp_fixed_budget_sweep_plots as cr2_fixed  # noqa: E402
+import cr2_fixed_orbital_campaign as cr2_campaign  # noqa: E402
 import debug_selector_parity as dsp  # noqa: E402
 import n2_qp_fixed_budget_sweep_plots as n2_fixed  # noqa: E402
 import n2_qp_threshold_sweep_plots as n2_threshold  # noqa: E402
 from _shared.n2_utils import make_n2_atom  # noqa: E402
-from ccik import CCIKStochasticParams, ccik_ground_energy_stochastic, exact_cas_fci_energy_pyscf  # noqa: E402
+from ccik import (  # noqa: E402
+    CCIKStochasticParams,
+    ccik_ground_energy_dense_thick_restart,
+    ccik_ground_energy_stochastic,
+    exact_cas_fci_energy_pyscf,
+)
+from ccik.params import CCIKThickRestartParams  # noqa: E402
 from qp_ccik_common import (  # noqa: E402
     CCIKParams as QPCCIKParams,
     detect_physical_cpu_count,
@@ -50,10 +57,17 @@ from qp_ccik_common import (  # noqa: E402
 
 
 PUB_ROOT = ROOT / "docs" / "assets" / "pub"
+LOCAL_SEED_ROOT = ROOT / "docs" / "assets" / "local_qp_seeds"
+LOCAL_ABS_BENCH_ROOT = PUB_ROOT / "n2_abs_residual_qp_thick"
+LOCAL_PT2_BENCH_ROOT = PUB_ROOT / "n2_pt2_residual_single_pass_qp_thick"
 DEFAULT_STAMP = datetime.now().strftime("%Y%m%d")
 DEFAULT_OUTDIR = PUB_ROOT / f"fixed_budget_transfer_{DEFAULT_STAMP}_live"
-KPROP_GRID = (1024, 512, 2048)
-KSTORE_GRID = (65_536, 49_152, 32_768, 88_474, 98_304, 131_072)
+DEFAULT_N2_PT2_OUTDIR = PUB_ROOT / f"n2_pt2_residual_single_pass_{DEFAULT_STAMP}_live"
+CR2_CASE_NAME = "cr2_ccpvdzdk_R1p68_cas12_22"
+DEFAULT_DMRG_SCRATCH_ROOT = Path("/tmp/cka_dmrg")
+DEFAULT_CIPSI_SCRATCH_ROOT = Path("/tmp/cka_cipsi")
+KPROP_GRID = (512, 1024, 2048)
+KSTORE_GRID = (32_768, 49_152, 65_536, 88_474, 98_304, 131_072)
 CSV_FIELDS = [
     "system",
     "title",
@@ -102,6 +116,19 @@ class PublicationCase:
     seed_kprop_csv: Path | None = None
     seed_ezfio: Path | None = None
     seed_fcidump: Path | None = None
+    cipsi_seed_ezfio: Path | None = None
+    cipsi_seed_log: Path | None = None
+
+
+@dataclass(frozen=True)
+class ReferenceOptions:
+    reference_mode: str = "dmrg_then_cipsi"
+    dmrg_max_file_mb: int = 500
+    dmrg_scratch_root: Path = DEFAULT_DMRG_SCRATCH_ROOT
+    cipsi_max_file_mb: int = 500
+    cipsi_scratch_root: Path = DEFAULT_CIPSI_SCRATCH_ROOT
+    cipsi_rungs: tuple[int, ...] = (5_000_000, 10_000_000)
+    selector_mode: str = "abs_residual"
 
 
 CASES: tuple[PublicationCase, ...] = (
@@ -127,13 +154,9 @@ CASES: tuple[PublicationCase, ...] = (
         reference_kind="exact_fci",
         stochastic_m=30,
         stochastic_walkers=200_000,
-        seed_kprop_csv=ROOT
-        / "experiments"
-        / "threshold_test"
-        / "n2_qp_n2_cas12_12_R2p50_fixed_budget_centered_20260326_live"
-        / "fixed_budget_sweep.csv",
-        seed_ezfio=Path("/private/tmp/n2_cas12_12_R2p50_thick_restart_30_30_8_ucsp0mjr/n2_cas12_12_R2p50.ezfio"),
-        seed_fcidump=Path("/private/tmp/n2_cas12_12_R2p50_ats48m55/n2_cas12_12_R2p50.ezfio.FCIDUMP"),
+        seed_kprop_csv=LOCAL_ABS_BENCH_ROOT / "results.csv",
+        seed_ezfio=LOCAL_SEED_ROOT / "n2_cas12_12_R2p50" / "n2.ezfio",
+        seed_fcidump=LOCAL_SEED_ROOT / "n2_cas12_12_R2p50" / "qp_active.FCIDUMP",
     ),
     PublicationCase(
         name="n2_cas14_14_R2p50",
@@ -157,33 +180,29 @@ CASES: tuple[PublicationCase, ...] = (
         reference_kind="exact_fci",
         stochastic_m=16,
         stochastic_walkers=250_000,
-        seed_kprop_csv=ROOT
-        / "experiments"
-        / "threshold_test"
-        / "n2_qp_n2_cas14_14_R2p50_fixed_budget_centered_20260326_thick_prop2048_live"
-        / "fixed_budget_sweep.csv",
-        seed_ezfio=Path("/private/tmp/n2_cas14_14_R2p50_thick_restart_16_16_5_aj495usi/n2_cas14_14_R2p50.ezfio"),
-        seed_fcidump=Path("/private/tmp/n2_cas14_14_R2p50_d93zd7_1/n2_cas14_14_R2p50.ezfio.FCIDUMP"),
+        seed_kprop_csv=LOCAL_ABS_BENCH_ROOT / "results.csv",
+        seed_ezfio=LOCAL_SEED_ROOT / "n2_cas14_14_R2p50" / "n2.ezfio",
+        seed_fcidump=LOCAL_SEED_ROOT / "n2_cas14_14_R2p50" / "qp_active.FCIDUMP",
     ),
     PublicationCase(
-        name="cr2_sto3g_R1p68_cas28_20",
-        title="Cr2 / STO-3G / R = 1.68 A / CAS(28e,20o)",
+        name=CR2_CASE_NAME,
+        title="Cr2 / cc-pVDZ-DK / R = 1.68 A / CAS(12e,22o)",
         kind="cr2",
-        basis="sto-3g",
+        basis="cc-pvdz-dk",
         distance_ang=1.68,
-        ncas=20,
-        nelecas=28,
-        ncore=10,
+        ncas=22,
+        nelecas=12,
+        ncore=18,
         nmo_total=None,
         thick_config=cr2_fixed.CASE.fixed_config,
         external_keep=1_000_000,
-        reference_kind="dmrg",
+        reference_kind="dmrg_then_cipsi",
         stochastic_m=24,
         stochastic_walkers=300_000,
         dmrg_python=ROOT
         / "experiments"
         / "threshold_test"
-        / "block2_cr2_sto3g_R1p68_cas28_20"
+        / "block2_cr2_ccpvdzdk_R1p68_cas12_22"
         / ".venv"
         / "bin"
         / "python",
@@ -230,13 +249,35 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--phase", choices=["all", "kprop", "kstore"], default="all")
     p.add_argument("--no-seed", action="store_true", help="Do not seed N2 thick Kprop rows from finished QP sweeps")
     p.add_argument("--systems", default=None, help="Comma-separated subset of systems to run")
+    p.add_argument(
+        "--methods",
+        default=None,
+        help="Comma-separated subset of methods to run/plot (ccik_thick_qp, ccik_thick_python, ccik_stochastic)",
+    )
+    p.add_argument("--selector-mode", choices=["abs_residual", "pt2_residual", "pt2_legacy"], default="abs_residual")
+    p.add_argument("--reference-mode", choices=["dmrg_then_cipsi"], default="dmrg_then_cipsi")
+    p.add_argument("--dmrg-max-file-mb", type=int, default=500)
+    p.add_argument("--dmrg-scratch-root", type=Path, default=DEFAULT_DMRG_SCRATCH_ROOT)
+    p.add_argument("--cipsi-max-file-mb", type=int, default=500)
+    p.add_argument("--cipsi-scratch-root", type=Path, default=DEFAULT_CIPSI_SCRATCH_ROOT)
+    p.add_argument(
+        "--cipsi-rungs",
+        default=None,
+        help="Comma-separated CIPSI ladder sizes for Cr2 fallback. Default: 5000000,10000000",
+    )
     args = p.parse_args(argv)
     if args.outdir is None:
         requested = {part.strip() for part in str(args.systems or "").split(",") if part.strip()}
-        if requested == {"cr2_sto3g_R1p68_cas28_20"}:
+        if requested == {CR2_CASE_NAME}:
             args.outdir = PUB_ROOT / f"cr2_fixed_budget_pub_{DEFAULT_STAMP}_live"
+        elif requested == {"n2_cas12_12_R2p50", "n2_cas14_14_R2p50"} and str(args.selector_mode) == "pt2_residual":
+            args.outdir = DEFAULT_N2_PT2_OUTDIR
         else:
             args.outdir = DEFAULT_OUTDIR
+    requested = {part.strip() for part in str(args.systems or "").split(",") if part.strip()}
+    if args.methods is None:
+        args.methods = "ccik_thick_qp" if requested == {CR2_CASE_NAME} else "ccik_thick_qp,ccik_stochastic"
+    args.cipsi_rungs = tuple(int(value) for value in n2_fixed._parse_int_grid(args.cipsi_rungs, (5_000_000, 10_000_000)))
     return args
 
 
@@ -248,6 +289,17 @@ def _selected_cases(args: argparse.Namespace) -> list[PublicationCase]:
     if unknown:
         raise ValueError(f"Unknown systems requested: {sorted(unknown)}")
     return [case for case in CASES if case.name in requested]
+
+
+def _selected_methods(args: argparse.Namespace) -> tuple[str, ...]:
+    allowed = ("ccik_thick_qp", "ccik_thick_python", "ccik_stochastic")
+    requested = tuple(part.strip() for part in str(args.methods).split(",") if part.strip())
+    if not requested:
+        raise ValueError("At least one method must be selected")
+    unknown = sorted(set(requested) - set(allowed))
+    if unknown:
+        raise ValueError(f"Unknown methods requested: {unknown}")
+    return tuple(method for method in allowed if method in requested)
 
 
 def _normalize_csv_float(text: str) -> float | None:
@@ -296,7 +348,7 @@ def _row_key(row: dict[str, object]) -> tuple[str, str, str, int]:
 
 def _sorted_rows(rows_by_key: dict[tuple[str, str, str, int], dict[str, object]]) -> list[dict[str, object]]:
     system_order = {case.name: idx for idx, case in enumerate(CASES)}
-    method_order = {"ccik_thick_qp": 0, "ccik_stochastic": 1}
+    method_order = {"ccik_thick_qp": 0, "ccik_thick_python": 1, "ccik_stochastic": 2}
     phase_order = {"kprop": 0, "kstore": 1}
     return [
         rows_by_key[key]
@@ -396,11 +448,29 @@ def _load_or_create_n2_setup(*, case: PublicationCase, qp_root: Path, outdir: Pa
     return payload
 
 
+def _as_cr2_fixed_case(case: PublicationCase) -> cr2_fixed.Cr2FixedBudgetCase:
+    return cr2_fixed.Cr2FixedBudgetCase(
+        name=case.name,
+        title=case.title,
+        basis=case.basis,
+        distance_ang=float(case.distance_ang),
+        ncas=int(case.ncas),
+        nelecas=int(case.nelecas),
+        ncore=int(case.ncore),
+        fixed_config=case.thick_config,
+    )
+
+
 def _load_or_prepare_case(*, case: PublicationCase, qp_root: Path, outdir: Path, force: bool) -> dict[str, object]:
     if case.kind == "n2":
         return _load_or_create_n2_setup(case=case, qp_root=qp_root, outdir=outdir, force=force)
     if case.kind == "cr2":
-        return cr2_fixed._load_or_create_system_setup(case=cr2_fixed.CASE, qp_root=qp_root, outdir=outdir, force=force)
+        return cr2_fixed._load_or_create_system_setup(
+            case=_as_cr2_fixed_case(case),
+            qp_root=qp_root,
+            outdir=outdir,
+            force=force,
+        )
     raise ValueError(f"Unsupported case kind {case.kind!r}")
 
 
@@ -432,8 +502,85 @@ def _normalized_c1_isym(value: object) -> int:
     return 1 if parsed == 0 else parsed
 
 
-def _load_or_compute_cr2_dmrg_reference(
+def _largest_file_across(roots: list[Path]) -> tuple[Path | None, int]:
+    largest_path: Path | None = None
+    largest_size = 0
+    for root in roots:
+        if not root.exists():
+            continue
+        for candidate in root.rglob("*"):
+            if not candidate.is_file():
+                continue
+            try:
+                size = candidate.stat().st_size
+            except OSError:
+                continue
+            if size > largest_size:
+                largest_path = candidate
+                largest_size = size
+    return largest_path, largest_size
+
+
+def _run_capped_command(
     *,
+    cmd: list[str],
+    cwd: Path | None,
+    env: dict[str, str],
+    stdout_path: Path,
+    stderr_path: Path,
+    watch_roots: list[Path],
+    max_file_mb: int,
+    poll_s: float = 5.0,
+) -> dict[str, object]:
+    max_bytes = int(max_file_mb) * 1024 * 1024
+    largest_path: Path | None = None
+    largest_size = 0
+    cap_exceeded = False
+    stdout_path.parent.mkdir(parents=True, exist_ok=True)
+    stderr_path.parent.mkdir(parents=True, exist_ok=True)
+    with stdout_path.open("w", encoding="utf-8") as stdout_fh, stderr_path.open("w", encoding="utf-8") as stderr_fh:
+        proc = subprocess.Popen(
+            cmd,
+            cwd=None if cwd is None else str(cwd),
+            env=env,
+            text=True,
+            stdout=stdout_fh,
+            stderr=stderr_fh,
+        )
+        while True:
+            current_path, current_size = _largest_file_across(watch_roots)
+            if current_size > largest_size:
+                largest_path = current_path
+                largest_size = current_size
+            if current_size > max_bytes:
+                proc.kill()
+                proc.wait()
+                cap_exceeded = True
+                break
+            if proc.poll() is not None:
+                break
+            time.sleep(poll_s)
+        returncode = int(proc.wait())
+    current_path, current_size = _largest_file_across(watch_roots)
+    if current_size > largest_size:
+        largest_path = current_path
+        largest_size = current_size
+    return {
+        "returncode": returncode,
+        "cap_exceeded": bool(cap_exceeded),
+        "largest_file_path": None if largest_path is None else str(largest_path),
+        "largest_file_mb": float(largest_size) / (1024.0 * 1024.0),
+        "max_file_mb": int(max_file_mb),
+    }
+
+
+def _reference_choice_path(outdir: Path) -> Path:
+    return outdir / "reference_choice.json"
+
+
+def _attempt_cr2_dmrg_reference(
+    *,
+    case: PublicationCase,
     fcidump_path: Path,
     outdir: Path,
     force: bool,
@@ -442,18 +589,57 @@ def _load_or_compute_cr2_dmrg_reference(
     conv_tol: float,
     dmrg_python: Path,
 ) -> dict[str, object]:
+    return _attempt_cr2_dmrg_reference_bounded(
+        case=case,
+        fcidump_path=fcidump_path,
+        outdir=outdir,
+        force=force,
+        memory_gb=memory_gb,
+        threads=threads,
+        conv_tol=conv_tol,
+        dmrg_python=dmrg_python,
+        max_file_mb=500,
+        scratch_root=DEFAULT_DMRG_SCRATCH_ROOT,
+    )
+
+
+def _attempt_cr2_dmrg_reference_bounded(
+    *,
+    case: PublicationCase,
+    fcidump_path: Path,
+    outdir: Path,
+    force: bool,
+    memory_gb: int,
+    threads: int,
+    conv_tol: float,
+    dmrg_python: Path,
+    max_file_mb: int,
+    scratch_root: Path,
+) -> dict[str, object]:
     path = outdir / "reference_dmrg_summary.json"
+    attempt_path = outdir / "reference_dmrg_attempt.json"
     if path.exists() and not force:
-        return json.loads(path.read_text(encoding="utf-8"))
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["success"] = True
+        return payload
     if not dmrg_python.exists():
-        raise FileNotFoundError(f"DMRG Python interpreter not found: {dmrg_python}")
+        payload = {
+            "success": False,
+            "reference_kind": "dmrg",
+            "reference_label": "DMRG",
+            "failure": f"DMRG Python interpreter not found: {dmrg_python}",
+            "stop_reason": "missing_dmrg_python",
+            "max_file_mb": int(max_file_mb),
+        }
+        attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return payload
 
     from pyscf.tools import fcidump as pyscf_fcidump
 
     runtime_dir = outdir / "reference_dmrg_runtime"
-    scratch_dir = runtime_dir / "scratch"
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    scratch_dir = Path(tempfile.mkdtemp(prefix=f"{case.name}_dmrg_", dir=str(scratch_root)))
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    scratch_dir.mkdir(parents=True, exist_ok=True)
     log_path = runtime_dir / "dmrg.log"
     stdout_path = runtime_dir / "subprocess.stdout"
     stderr_path = runtime_dir / "subprocess.stderr"
@@ -590,17 +776,278 @@ print(json.dumps(summary))
             "CKA_ISYM": str(isym),
         }
     )
-    run = subprocess.run([str(dmrg_python), "-c", script], text=True, capture_output=True, env=env)
-    stdout_path.write_text(run.stdout, encoding="utf-8")
-    stderr_path.write_text(run.stderr, encoding="utf-8")
-    if run.returncode != 0:
-        raise RuntimeError(
-            "Cr2 DMRG reference subprocess failed with rc="
-            f"{run.returncode}; see {log_path}, {stdout_path}, and {stderr_path}"
+    capped = _run_capped_command(
+        cmd=[str(dmrg_python), "-c", script],
+        cwd=None,
+        env=env,
+        stdout_path=stdout_path,
+        stderr_path=stderr_path,
+        watch_roots=[runtime_dir, scratch_dir],
+        max_file_mb=int(max_file_mb),
+    )
+    try:
+        if capped["cap_exceeded"]:
+            payload = {
+                "success": False,
+                "reference_kind": "dmrg",
+                "reference_label": "DMRG",
+                "failure": f"DMRG exceeded per-file cap of {int(max_file_mb)} MB",
+                "stop_reason": "max_file_mb_exceeded",
+                "largest_file_path": capped["largest_file_path"],
+                "largest_file_mb": capped["largest_file_mb"],
+                "max_file_mb": int(max_file_mb),
+                "log_path": str(log_path),
+                "stdout_path": str(stdout_path),
+                "stderr_path": str(stderr_path),
+            }
+            attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            return payload
+        if int(capped["returncode"]) != 0:
+            payload = {
+                "success": False,
+                "reference_kind": "dmrg",
+                "reference_label": "DMRG",
+                "failure": (
+                    "Cr2 DMRG reference subprocess failed with rc="
+                    f"{int(capped['returncode'])}; see {log_path}, {stdout_path}, and {stderr_path}"
+                ),
+                "stop_reason": "subprocess_failed",
+                "largest_file_path": capped["largest_file_path"],
+                "largest_file_mb": capped["largest_file_mb"],
+                "max_file_mb": int(max_file_mb),
+                "log_path": str(log_path),
+                "stdout_path": str(stdout_path),
+                "stderr_path": str(stderr_path),
+            }
+            attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            return payload
+        payload = json.loads(stdout_path.read_text(encoding="utf-8").strip())
+        payload.update(
+            {
+                "success": True,
+                "largest_file_path": capped["largest_file_path"],
+                "largest_file_mb": capped["largest_file_mb"],
+                "max_file_mb": int(max_file_mb),
+                "scratch_root": str(scratch_dir),
+            }
         )
-    payload = json.loads(run.stdout.strip())
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return payload
+        path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return payload
+    except Exception as exc:
+        payload = {
+            "success": False,
+            "reference_kind": "dmrg",
+            "reference_label": "DMRG",
+            "failure": f"{type(exc).__name__}: {exc}",
+            "stop_reason": "exception",
+            "max_file_mb": int(max_file_mb),
+            "log_path": str(log_path),
+            "stdout_path": str(stdout_path),
+            "stderr_path": str(stderr_path),
+        }
+        attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return payload
+    finally:
+        shutil.rmtree(scratch_dir, ignore_errors=True)
+
+
+def _run_cipsi_setup_command(
+    *,
+    qp_root: Path,
+    runtime_ezfio: Path,
+    n_det_max: int,
+    read_wf: bool,
+) -> None:
+    qp = discover_qp_paths_from_root(qp_root)
+    cmd = (
+        f"source '{qp.quantum_package_rc}' >/dev/null 2>&1 && "
+        f"qp set_file '{runtime_ezfio}' >/dev/null && "
+        f"qp set determinants n_det_max {int(n_det_max)} && "
+        f"qp set determinants read_wf {'true' if read_wf else 'false'}"
+    )
+    subprocess.run(
+        ["/bin/bash", "-lc", cmd],
+        text=True,
+        capture_output=True,
+        check=True,
+        env={**os.environ, "QP_ROOT": str(qp.qp_root)},
+    )
+
+
+def _attempt_cr2_cipsi_reference(
+    *,
+    case: PublicationCase,
+    qp_root: Path,
+    base_ezfio: Path,
+    outdir: Path,
+    force: bool,
+    omp_threads: int,
+    max_file_mb: int,
+    scratch_root: Path,
+    cipsi_rungs: tuple[int, ...],
+) -> dict[str, object]:
+    summary_path = outdir / "reference_cipsi_summary.json"
+    attempt_path = outdir / "reference_cipsi_attempt.json"
+    runtime_dir = outdir / "reference_cipsi_runtime"
+    if summary_path.exists() and not force:
+        payload = json.loads(summary_path.read_text(encoding="utf-8"))
+        payload["success"] = True
+        return payload
+
+    qp = discover_qp_paths_from_root(qp_root)
+    runtime_dir.mkdir(parents=True, exist_ok=True)
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    work_root = Path(tempfile.mkdtemp(prefix=f"{case.name}_cipsi_", dir=str(scratch_root)))
+    completed_rungs: list[dict[str, object]] = []
+    previous_seed: Path | None = None
+    largest_file_path: str | None = None
+    largest_file_mb = 0.0
+    base_entry: dict[str, object] | None = None
+    if (
+        case.cipsi_seed_ezfio is not None
+        and case.cipsi_seed_log is not None
+        and case.cipsi_seed_ezfio.exists()
+        and case.cipsi_seed_log.exists()
+    ):
+        try:
+            best_seed = cr2_campaign._existing_best_cipsi(case.cipsi_seed_log)
+            base_entry = {
+                "seed_kind": "preserved_cipsi",
+                "n_det": int(best_seed["n_det"]),
+                "e_var": float(best_seed["e_var"]),
+                "e_pt2": float(best_seed["e_pt2"]),
+                "log_path": str(case.cipsi_seed_log),
+            }
+            previous_seed = case.cipsi_seed_ezfio
+        except Exception:
+            previous_seed = None
+
+    try:
+        for index, n_det_max in enumerate(cipsi_rungs, start=1):
+            rung_dir = work_root / f"cipsi_{int(n_det_max)}"
+            runtime_ezfio = rung_dir / f"{case.name}.ezfio"
+            if rung_dir.exists():
+                shutil.rmtree(rung_dir)
+            rung_dir.mkdir(parents=True, exist_ok=True)
+            source = base_ezfio if previous_seed is None else previous_seed
+            shutil.copytree(source, runtime_ezfio)
+            ensure_ezfio_defaults(runtime_ezfio, qp_root=qp.qp_root)
+            _run_cipsi_setup_command(
+                qp_root=qp_root,
+                runtime_ezfio=runtime_ezfio,
+                n_det_max=int(n_det_max),
+                read_wf=previous_seed is not None,
+            )
+            stdout_path = runtime_dir / f"cipsi_{int(n_det_max)}.log"
+            stderr_path = runtime_dir / f"cipsi_{int(n_det_max)}.stderr"
+            local_scratch = Path(tempfile.mkdtemp(prefix=f"cipsi_{int(n_det_max)}_", dir=str(work_root)))
+            capped = _run_capped_command(
+                cmd=[
+                    "/bin/bash",
+                    "-lc",
+                    (
+                        f"source '{qp.quantum_package_rc}' >/dev/null 2>&1 && "
+                        f"qp_run fci '{runtime_ezfio}'"
+                    ),
+                ],
+                cwd=None,
+                env={**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(local_scratch), **qp_parallel_env(int(omp_threads))},
+                stdout_path=stdout_path,
+                stderr_path=stderr_path,
+                watch_roots=[runtime_dir, rung_dir, local_scratch],
+                max_file_mb=int(max_file_mb),
+            )
+            largest_file_mb = max(largest_file_mb, float(capped["largest_file_mb"]))
+            if capped["largest_file_path"] is not None and float(capped["largest_file_mb"]) >= largest_file_mb:
+                largest_file_path = str(capped["largest_file_path"])
+            if capped["cap_exceeded"] or int(capped["returncode"]) != 0:
+                shutil.rmtree(local_scratch, ignore_errors=True)
+                break
+            parsed = cr2_campaign._parse_cipsi_summaries(stdout_path.read_text(errors="ignore"))
+            if not parsed:
+                shutil.rmtree(local_scratch, ignore_errors=True)
+                break
+            best = parsed[-1]
+            completed_rungs.append(
+                {
+                    "n_det": int(best["n_det"]),
+                    "e_var": float(best["e_var"]),
+                    "e_pt2": float(best["e_pt2"]),
+                    "log_path": str(stdout_path),
+                    "stderr_path": str(stderr_path),
+                    "largest_file_mb": float(capped["largest_file_mb"]),
+                    "largest_file_path": capped["largest_file_path"],
+                    "requested_n_det_max": int(n_det_max),
+                    "seed_kind": "preserved_cipsi" if index == 1 and base_entry is not None else ("previous_rung" if previous_seed is not None else "fresh_setup"),
+                }
+            )
+            previous_seed = runtime_ezfio
+            shutil.rmtree(local_scratch, ignore_errors=True)
+        if not completed_rungs:
+            payload = {
+                "success": False,
+                "reference_kind": "cipsi",
+                "reference_label": "CIPSI variational",
+                "failure": "No bounded CIPSI rung completed successfully",
+                "stop_reason": "no_completed_rungs",
+                "largest_file_path": largest_file_path,
+                "largest_file_mb": largest_file_mb,
+                "max_file_mb": int(max_file_mb),
+                "base_seed": base_entry,
+                "completed_rungs": [],
+            }
+            attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            return payload
+        chosen = completed_rungs[-1]
+        payload = {
+            "success": True,
+            "reference_kind": "cipsi",
+            "reference_label": "CIPSI variational",
+            "total_energy_eh": float(chosen["e_var"]),
+            "cipsi_pt2_total_energy_eh": float(chosen["e_pt2"]),
+            "selected_n_det": int(chosen["n_det"]),
+            "selected_requested_n_det_max": int(chosen["requested_n_det_max"]),
+            "base_seed": base_entry,
+            "completed_rungs": completed_rungs,
+            "largest_file_path": largest_file_path,
+            "largest_file_mb": largest_file_mb,
+            "max_file_mb": int(max_file_mb),
+        }
+        summary_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return payload
+    except Exception as exc:
+        payload = {
+            "success": False,
+            "reference_kind": "cipsi",
+            "reference_label": "CIPSI variational",
+            "failure": f"{type(exc).__name__}: {exc}",
+            "stop_reason": "exception",
+            "largest_file_path": largest_file_path,
+            "largest_file_mb": largest_file_mb,
+            "max_file_mb": int(max_file_mb),
+            "base_seed": base_entry,
+            "completed_rungs": completed_rungs,
+        }
+        attempt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return payload
+    finally:
+        shutil.rmtree(work_root, ignore_errors=True)
+
+
+def _load_cached_selected_reference(outdir: Path) -> dict[str, object] | None:
+    choice_path = _reference_choice_path(outdir)
+    if not choice_path.exists():
+        return None
+    choice = json.loads(choice_path.read_text(encoding="utf-8"))
+    summary_path_text = choice.get("selected_summary_path")
+    if not summary_path_text:
+        return None
+    summary_path = Path(str(summary_path_text))
+    if not summary_path.exists():
+        return None
+    return json.loads(summary_path.read_text(encoding="utf-8"))
 
 
 def _load_or_compute_reference(
@@ -609,24 +1056,86 @@ def _load_or_compute_reference(
     setup: dict[str, object],
     outdir: Path,
     force: bool,
+    qp_root: Path,
+    omp_threads: int,
+    reference_options: ReferenceOptions,
 ) -> dict[str, object]:
+    cached = None if force else _load_cached_selected_reference(outdir)
+    if cached is not None:
+        return cached
     fcidump_path = Path(str(setup["fcidump_path"]))
     if case.reference_kind == "exact_fci":
         return _load_or_compute_exact_reference(fcidump_path=fcidump_path, outdir=outdir, force=force)
-    if case.reference_kind == "dmrg":
-        return _load_or_compute_cr2_dmrg_reference(
-            fcidump_path=fcidump_path,
-            outdir=outdir,
-            force=force,
-            memory_gb=int(case.dmrg_memory_gb),
-            threads=int(case.dmrg_threads),
-            conv_tol=1e-8,
-            dmrg_python=Path(case.dmrg_python) if case.dmrg_python is not None else Path(),
-        )
-    raise ValueError(f"Unsupported reference kind {case.reference_kind!r}")
+    if case.reference_kind != "dmrg_then_cipsi":
+        raise ValueError(f"Unsupported reference kind {case.reference_kind!r}")
+    dmrg_attempt = _attempt_cr2_dmrg_reference_bounded(
+        case=case,
+        fcidump_path=fcidump_path,
+        outdir=outdir,
+        force=force,
+        memory_gb=int(case.dmrg_memory_gb),
+        threads=int(case.dmrg_threads),
+        conv_tol=1e-8,
+        dmrg_python=Path(case.dmrg_python) if case.dmrg_python is not None else Path(),
+        max_file_mb=int(reference_options.dmrg_max_file_mb),
+        scratch_root=Path(reference_options.dmrg_scratch_root),
+    )
+    choice_path = _reference_choice_path(outdir)
+    if dmrg_attempt.get("success"):
+        choice = {
+            "requested_mode": reference_options.reference_mode,
+            "selected_reference_kind": "dmrg",
+            "selected_reference_label": "DMRG",
+            "selected_summary_path": str(outdir / "reference_dmrg_summary.json"),
+            "dmrg_attempt_path": str(outdir / "reference_dmrg_attempt.json"),
+        }
+        choice_path.write_text(json.dumps(choice, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return dmrg_attempt
+    cipsi_attempt = _attempt_cr2_cipsi_reference(
+        case=case,
+        qp_root=qp_root,
+        base_ezfio=Path(str(setup["ezfio_path"])),
+        outdir=outdir,
+        force=force,
+        omp_threads=int(omp_threads),
+        max_file_mb=int(reference_options.cipsi_max_file_mb),
+        scratch_root=Path(reference_options.cipsi_scratch_root),
+        cipsi_rungs=tuple(int(value) for value in reference_options.cipsi_rungs),
+    )
+    if cipsi_attempt.get("success"):
+        choice = {
+            "requested_mode": reference_options.reference_mode,
+            "selected_reference_kind": "cipsi",
+            "selected_reference_label": "CIPSI variational",
+            "selected_summary_path": str(outdir / "reference_cipsi_summary.json"),
+            "dmrg_attempt_path": str(outdir / "reference_dmrg_attempt.json"),
+            "cipsi_attempt_path": str(outdir / "reference_cipsi_attempt.json"),
+        }
+        choice_path.write_text(json.dumps(choice, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return cipsi_attempt
+    choice = {
+        "requested_mode": reference_options.reference_mode,
+        "selected_reference_kind": None,
+        "selected_reference_label": None,
+        "selected_summary_path": None,
+        "dmrg_attempt_path": str(outdir / "reference_dmrg_attempt.json"),
+        "cipsi_attempt_path": str(outdir / "reference_cipsi_attempt.json"),
+    }
+    choice_path.write_text(json.dumps(choice, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    raise RuntimeError(
+        "Cr2 bounded reference generation failed. "
+        f"DMRG failure={dmrg_attempt.get('failure')!r}; "
+        f"CIPSI failure={cipsi_attempt.get('failure')!r}"
+    )
 
 
-def _make_qp_fixed_budget_params(case: PublicationCase, *, fixed_store_keep: int, fixed_propagate_keep: int) -> QPCCIKParams:
+def _make_qp_fixed_budget_params(
+    case: PublicationCase,
+    *,
+    fixed_store_keep: int,
+    fixed_propagate_keep: int,
+    selector_mode: str = "abs_residual",
+) -> QPCCIKParams:
     config = case.thick_config
     return QPCCIKParams(
         ccik_basis_size=int(config.basis_size),
@@ -639,7 +1148,7 @@ def _make_qp_fixed_budget_params(case: PublicationCase, *, fixed_store_keep: int
         ccik_external_keep=int(case.external_keep),
         ccik_external_candidate_factor=1,
         ccik_pt2_rank_weight=1.0,
-        ccik_selector_mode="abs_residual",
+        ccik_selector_mode=str(selector_mode),
         ccik_matvec_backend="connected_sd_fullq",
         ccik_compression_policy="fixed_budget",
         ccik_fixed_store_keep=int(fixed_store_keep),
@@ -664,6 +1173,40 @@ def _make_qp_fixed_budget_params(case: PublicationCase, *, fixed_store_keep: int
     )
 
 
+def _make_python_thick_fixed_budget_params(
+    case: PublicationCase,
+    *,
+    fixed_store_keep: int,
+    fixed_propagate_keep: int,
+    selector_mode: str = "abs_residual",
+) -> CCIKThickRestartParams:
+    restart_m = max(1, int(case.thick_config.restart_m_cycle))
+    max_cycle = max(1, int(case.thick_config.max_cycle))
+    ncycles = max(1, math.ceil(max_cycle / restart_m))
+    return CCIKThickRestartParams(
+        m_cycle=restart_m,
+        ncycles=ncycles,
+        nroot=max(1, int(case.thick_config.restart_nroot)),
+        tol=1e-12,
+        compression_policy="fixed_budget",
+        fixed_store_keep=int(fixed_store_keep),
+        fixed_propagate_keep=int(fixed_propagate_keep),
+        candidate_mode="connected_sd",
+        selector_mode=str(selector_mode),
+        selector_depth=1,
+        generator_keep=1,
+        generator_abs_coeff_cutoff=0.0,
+        max_parents_for_expansion=0,
+        include_current_support=True,
+        tmp_keep_factor=1,
+        preserve_prev_support=False,
+        preserve_prev_support_cap=0,
+        exact_hq_diagnostics=False,
+        verbose=False,
+        orth_tol=1e-12,
+    )
+
+
 def _extract_optional(text: str, key: str) -> float | None:
     match = re.search(rf"{re.escape(key)} =\s*([-+0-9.eE]+)", text)
     return None if match is None else float(match.group(1))
@@ -680,6 +1223,7 @@ def _run_qp_thick_job(
     run_dir: Path,
     omp_threads: int,
     force: bool,
+    selector_mode: str = "abs_residual",
 ) -> dict[str, object]:
     summary_path = run_dir / "run_summary.json"
     if summary_path.exists() and not force:
@@ -691,6 +1235,7 @@ def _run_qp_thick_job(
         case,
         fixed_store_keep=int(fixed_store_keep),
         fixed_propagate_keep=int(fixed_propagate_keep),
+        selector_mode=str(selector_mode),
     )
     runtime_parent = Path(tempfile.mkdtemp(prefix=f"{case.name}_{case.thick_config.tag}_", dir="/tmp"))
     runtime_ezfio = runtime_parent / base_ezfio.name
@@ -743,6 +1288,7 @@ def _run_qp_thick_job(
         "source_kind": "fresh_qp",
         "stochastic_walkers": None,
         "failure": failure,
+        "selector_mode": str(selector_mode),
         "artifacts": {
             "stdout": str(stdout_path),
             "stderr": str(stderr_path),
@@ -753,19 +1299,33 @@ def _run_qp_thick_job(
     return payload
 
 
-def _patch_n2_donor_case(case: PublicationCase) -> n2_threshold.SweepCaseSpec:
-    if case.seed_ezfio is None or case.seed_fcidump is None:
-        raise RuntimeError(f"N2 publication case {case.name} is missing preserved donor shell paths")
-    if not case.seed_ezfio.exists() or not case.seed_fcidump.exists():
+def _patch_n2_donor_case(case: PublicationCase, setup: dict[str, object] | None = None) -> n2_threshold.SweepCaseSpec:
+    donor_ezfio = case.seed_ezfio
+    donor_fcidump = case.seed_fcidump
+    if (
+        donor_ezfio is None
+        or donor_fcidump is None
+        or not donor_ezfio.exists()
+        or not donor_fcidump.exists()
+    ):
+        if setup is not None:
+            setup_ezfio = Path(str(setup["ezfio_path"]))
+            setup_fcidump = Path(str(setup["fcidump_path"]))
+            if setup_ezfio.exists() and setup_fcidump.exists():
+                donor_ezfio = setup_ezfio
+                donor_fcidump = setup_fcidump
+    if donor_ezfio is None or donor_fcidump is None:
+        raise RuntimeError(f"N2 publication case {case.name} is missing donor shell paths")
+    if not donor_ezfio.exists() or not donor_fcidump.exists():
         raise FileNotFoundError(
-            f"Missing preserved donor shell for {case.name}: "
-            f"ezfio={case.seed_ezfio}, fcidump={case.seed_fcidump}"
+            f"Missing donor shell for {case.name}: "
+            f"ezfio={donor_ezfio}, fcidump={donor_fcidump}"
         )
     donor = dsp.DONOR_N2_CASES[case.name]
     dsp.DONOR_N2_CASES[case.name] = replace(
         donor,
-        donor_ezfio=case.seed_ezfio,
-        cached_qp_fcidump=case.seed_fcidump,
+        donor_ezfio=donor_ezfio,
+        cached_qp_fcidump=donor_fcidump,
     )
     return n2_threshold.CASES[case.name]
 
@@ -773,6 +1333,7 @@ def _patch_n2_donor_case(case: PublicationCase) -> n2_threshold.SweepCaseSpec:
 def _run_n2_qp_thick_job(
     *,
     case: PublicationCase,
+    setup: dict[str, object] | None,
     reference: dict[str, object],
     qp_root: Path,
     fixed_store_keep: int,
@@ -780,37 +1341,98 @@ def _run_n2_qp_thick_job(
     run_dir: Path,
     omp_threads: int,
     force: bool,
+    selector_mode: str = "abs_residual",
 ) -> dict[str, object]:
-    case_spec = _patch_n2_donor_case(case)
-    result = n2_fixed._run_single_qp_job(
-        case=case_spec,
+    if setup is None:
+        raise RuntimeError(f"N2 publication case {case.name} is missing prepared setup")
+    result = _run_qp_thick_job(
+        case=case,
         reference=reference,
         qp_root=qp_root,
-        config=case.thick_config,
+        base_ezfio=Path(str(setup["ezfio_path"])),
         fixed_store_keep=int(fixed_store_keep),
         fixed_propagate_keep=int(fixed_propagate_keep),
         run_dir=run_dir,
         omp_threads=int(omp_threads),
-        timeout_s=case_spec.exact_timeout_s,
         force=force,
+        selector_mode=str(selector_mode),
     )
     return {
         "system": case.name,
         "title": case.title,
         "reference_kind": reference["reference_kind"],
         "reference_label": reference["reference_label"],
-        "method": "ccik_thick_qp",
-        "engine": "quantum_package",
-        "config_tag": case.thick_config.tag,
-        "reference_total_energy_eh": float(reference["total_energy_eh"]),
+        "method": result["method"],
+        "engine": result["engine"],
+        "config_tag": result["config_tag"],
+        "reference_total_energy_eh": result["reference_total_energy_eh"],
         "e_total_eh": result["e_total_eh"],
         "delta_vs_ref_mEh": result["delta_vs_ref_mEh"],
         "abs_delta_vs_ref_mEh": result["abs_delta_vs_ref_mEh"],
         "wall_s": result["wall_s"],
-        "source_kind": "fresh_qp_donor_seeded",
+        "source_kind": "fresh_qp_publication_setup",
         "stochastic_walkers": None,
         "failure": result["failure"],
+        "selector_mode": str(selector_mode),
     }
+
+
+def _run_python_thick_job(
+    *,
+    case: PublicationCase,
+    reference: dict[str, object],
+    fcidump_path: Path,
+    fixed_store_keep: int,
+    fixed_propagate_keep: int,
+    run_dir: Path,
+    force: bool,
+    selector_mode: str = "abs_residual",
+) -> dict[str, object]:
+    summary_path = run_dir / "run_summary.json"
+    if summary_path.exists() and not force:
+        return json.loads(summary_path.read_text(encoding="utf-8"))
+
+    run_dir.mkdir(parents=True, exist_ok=True)
+    h1, eri8, norb, nelec, ecore = dsp._load_qp_fcidump_hamiltonian(fcidump_path)
+    params = _make_python_thick_fixed_budget_params(
+        case,
+        fixed_store_keep=int(fixed_store_keep),
+        fixed_propagate_keep=int(fixed_propagate_keep),
+        selector_mode=str(selector_mode),
+    )
+    stats: dict[str, object] = {}
+    t0 = time.perf_counter()
+    failure = None
+    e_total = None
+    try:
+        e_cas = ccik_ground_energy_dense_thick_restart(h1, eri8, norb, nelec, params=params, stats=stats)
+        e_total = float(ecore + e_cas)
+    except Exception as exc:  # pragma: no cover - runtime path
+        failure = str(exc)
+    wall_s = float(time.perf_counter() - t0)
+    delta = None if e_total is None else float((float(e_total) - float(reference["total_energy_eh"])) * 1000.0)
+    payload = {
+        "system": case.name,
+        "title": case.title,
+        "reference_kind": reference["reference_kind"],
+        "reference_label": reference["reference_label"],
+        "method": "ccik_thick_python",
+        "engine": "python",
+        "config_tag": case.thick_config.tag,
+        "reference_total_energy_eh": float(reference["total_energy_eh"]),
+        "e_total_eh": e_total,
+        "delta_vs_ref_mEh": delta,
+        "abs_delta_vs_ref_mEh": None if delta is None else abs(float(delta)),
+        "wall_s": wall_s,
+        "source_kind": "fresh_python_fcidump",
+        "stochastic_walkers": None,
+        "failure": failure,
+        "selector_mode": str(selector_mode),
+        "stats": stats,
+        "params": params.__dict__,
+    }
+    summary_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return payload
 
 
 def _run_stochastic_job(
@@ -916,14 +1538,58 @@ def _summary_rows(rows_by_key: dict[tuple[str, str, str, int], dict[str, object]
     return [best_by_combo[key] for key in sorted(best_by_combo)]
 
 
-def _write_summary_markdown(outdir: Path, rows_by_key: dict[tuple[str, str, str, int], dict[str, object]], cases: list[PublicationCase]) -> None:
+def _load_case_reference_choice(outdir: Path, case: PublicationCase) -> dict[str, object] | None:
+    path = outdir / "systems" / case.name / "reference_choice.json"
+    if not path.exists():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _case_reference_label(
+    outdir: Path,
+    case: PublicationCase,
+    rows_by_key: dict[tuple[str, str, str, int], dict[str, object]],
+) -> str | None:
+    choice = _load_case_reference_choice(outdir, case)
+    if choice is not None and choice.get("selected_reference_label"):
+        return str(choice["selected_reference_label"])
+    for row in rows_by_key.values():
+        if row["system"] == case.name and row.get("reference_label"):
+            return str(row["reference_label"])
+    return None
+
+
+def _ylabel_for_reference_label(reference_label: str | None) -> str:
+    if reference_label == "DMRG":
+        return r"$|E-E_{\mathrm{DMRG}}|$ (mEh)"
+    if reference_label == "CIPSI variational":
+        return r"$|E-E_{\mathrm{CIPSI,var}}|$ (mEh)"
+    if reference_label == "Exact FCI":
+        return r"$|E-E_{\mathrm{Exact}}|$ (mEh)"
+    return r"$|E-E_{\mathrm{ref}}|$ (mEh)"
+
+
+def _write_summary_markdown(
+    outdir: Path,
+    rows_by_key: dict[tuple[str, str, str, int], dict[str, object]],
+    cases: list[PublicationCase],
+    methods: tuple[str, ...] | None = None,
+) -> None:
+    methods = ("ccik_thick_qp", "ccik_stochastic") if methods is None else methods
+    selector_mode = "abs_residual"
+    run_meta = outdir / "run_metadata.json"
+    if run_meta.exists():
+        try:
+            selector_mode = str(json.loads(run_meta.read_text(encoding="utf-8")).get("selector_mode", selector_mode))
+        except Exception:
+            pass
     title = "# Cr2 Fixed-Budget Publication Benchmark" if len(cases) == 1 and cases[0].kind == "cr2" else "# Fixed-Budget Transfer Benchmark"
     lines = [
         title,
         "",
         "Settled deterministic settings:",
         "- engine: Quantum Package",
-        "- selector: abs_residual",
+        f"- selector: {selector_mode}",
         "- deterministic solver: thick CCIK",
         "- compression: fixed_budget",
         "- anchor store keep: 65536",
@@ -931,14 +1597,20 @@ def _write_summary_markdown(outdir: Path, rows_by_key: dict[tuple[str, str, str,
         "- Kstore scan: 32768, 49152, 65536, 88474, 98304, 131072",
         "",
         "Method note:",
-        "- `ccik_thick_qp` is the settled production path.",
-        "- `ccik_stochastic` is the maintained Python stochastic implementation run on the same FCIDUMP Hamiltonian and reference.",
         "",
         "## Best Completed Rows",
         "",
     ]
+    if "ccik_thick_qp" in methods:
+        lines.append("- `ccik_thick_qp` is the settled production path.")
+    if "ccik_thick_python" in methods:
+        lines.append("- `ccik_thick_python` runs the same FCIDUMP Hamiltonian through the Python thick-restart solver for parity checking.")
+    if "ccik_stochastic" in methods:
+        lines.append("- `ccik_stochastic` is the maintained Python stochastic implementation run on the same FCIDUMP Hamiltonian and reference.")
+    lines.append("")
     if len(cases) == 1 and cases[0].kind == "cr2":
         case = cases[0]
+        reference_choice = _load_case_reference_choice(outdir, case)
         thick_best_kprop = _best_kprop(rows_by_key, case, "ccik_thick_qp")
         if thick_best_kprop is not None:
             lines.extend(
@@ -946,6 +1618,7 @@ def _write_summary_markdown(outdir: Path, rows_by_key: dict[tuple[str, str, str,
                     "## Cr2 Publication Summary",
                     "",
                     f"- system: {case.title}",
+                    f"- selected reference: {reference_choice.get('selected_reference_label') if reference_choice else 'pending'}",
                     f"- best thick-QP Kprop: {thick_best_kprop}",
                 ]
             )
@@ -1041,9 +1714,11 @@ def _plot_scan(
         axes = [axes]
     method_styles = {
         "ccik_thick_qp": {"label": "CCIK-thick (QP)", "color": "black", "marker": "o", "linestyle": "-"},
+        "ccik_thick_python": {"label": "CCIK-thick (Python)", "color": "#1b9e77", "marker": "^", "linestyle": "-."},
         "ccik_stochastic": {"label": "CCIK-stochastic", "color": "#d95f02", "marker": "s", "linestyle": "--"},
     }
     for ax, case in zip(axes, cases):
+        reference_label = _case_reference_label(outdir, case, rows_by_key)
         for method, style in method_styles.items():
             method_rows = [
                 row
@@ -1061,7 +1736,7 @@ def _plot_scan(
             yvals = [max(PLOT_FLOOR_MEH, float(row["abs_delta_vs_ref_mEh"])) for row in method_rows]
             ax.plot(xvals, yvals, label=style["label"], color=style["color"], marker=style["marker"], linestyle=style["linestyle"])
         ax.set_yscale("log")
-        ax.set_ylabel(r"$|E-E_{\mathrm{ref}}|$ (mEh)")
+        ax.set_ylabel(_ylabel_for_reference_label(reference_label))
         ax.set_title(case.title)
         if phase == "kprop":
             ax.set_xlabel(r"$K_{\mathrm{prop}}$")
@@ -1080,6 +1755,7 @@ def _refresh_outputs(
     rows_by_key: dict[tuple[str, str, str, int], dict[str, object]],
     cases: list[PublicationCase],
     total_jobs: int,
+    methods: tuple[str, ...],
 ) -> None:
     rows = _sorted_rows(rows_by_key)
     _write_rows_csv(outdir / "results.csv", rows)
@@ -1092,7 +1768,7 @@ def _refresh_outputs(
         "planned_jobs": int(total_jobs),
     }
     (outdir / "progress.json").write_text(json.dumps(progress, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    _write_summary_markdown(outdir, rows_by_key, cases)
+    _write_summary_markdown(outdir, rows_by_key, cases, methods)
 
 
 def _seed_n2_kprop_rows(
@@ -1145,19 +1821,23 @@ def _seed_n2_kprop_rows(
             }
 
 
-def _kprop_jobs(cases: list[PublicationCase]) -> list[tuple[PublicationCase, str, int]]:
+def _kprop_jobs(cases: list[PublicationCase], methods: tuple[str, ...]) -> list[tuple[PublicationCase, str, int]]:
     jobs: list[tuple[PublicationCase, str, int]] = []
     for case in cases:
         for budget in KPROP_GRID:
-            jobs.append((case, "ccik_thick_qp", int(budget)))
-            jobs.append((case, "ccik_stochastic", int(budget)))
+            for method in methods:
+                jobs.append((case, method, int(budget)))
     return jobs
 
 
-def _kstore_jobs(cases: list[PublicationCase], rows_by_key: dict[tuple[str, str, str, int], dict[str, object]]) -> list[tuple[PublicationCase, str, int, int]]:
+def _kstore_jobs(
+    cases: list[PublicationCase],
+    rows_by_key: dict[tuple[str, str, str, int], dict[str, object]],
+    methods: tuple[str, ...],
+) -> list[tuple[PublicationCase, str, int, int]]:
     jobs: list[tuple[PublicationCase, str, int, int]] = []
     for case in cases:
-        for method in ("ccik_thick_qp", "ccik_stochastic"):
+        for method in methods:
             best = _best_kprop(rows_by_key, case, method)
             if best is None:
                 continue
@@ -1170,9 +1850,10 @@ def _seed_kstore_anchor_rows(
     *,
     cases: list[PublicationCase],
     rows_by_key: dict[tuple[str, str, str, int], dict[str, object]],
+    methods: tuple[str, ...],
 ) -> None:
     for case in cases:
-        for method in ("ccik_thick_qp", "ccik_stochastic"):
+        for method in methods:
             best = _best_kprop(rows_by_key, case, method)
             if best is None:
                 continue
@@ -1206,23 +1887,28 @@ def _run_phase_kprop(
     force: bool,
     seed_n2: bool,
     total_jobs: int,
+    methods: tuple[str, ...],
+    selector_mode: str,
 ) -> None:
     if seed_n2:
         for case in cases:
-            if case.kind == "n2":
+            if case.kind == "n2" and selector_mode == "abs_residual":
                 _, reference = ensure_case_ready(case)
                 _seed_n2_kprop_rows(case=case, reference=reference, rows_by_key=rows_by_key)
-        _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs)
-    for case, method, budget in _kprop_jobs(cases):
+        _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs, methods=methods)
+    for case, method, budget in _kprop_jobs(cases, methods):
         key = (case.name, method, "kprop", int(budget))
-        if key in rows_by_key and not force:
-            continue
+        existing = rows_by_key.get(key)
+        if existing is not None and not force:
+            if existing.get("failure") is None and existing.get("e_total_eh") is not None:
+                continue
         setup, reference = ensure_case_ready(case)
         run_dir = outdir / "runs" / case.name / method / "kprop" / str(int(budget))
         if method == "ccik_thick_qp":
             if case.kind == "n2":
                 payload = _run_n2_qp_thick_job(
                     case=case,
+                    setup=setup,
                     reference=reference,
                     qp_root=qp_root,
                     fixed_store_keep=65_536,
@@ -1230,6 +1916,7 @@ def _run_phase_kprop(
                     run_dir=run_dir,
                     omp_threads=omp_threads,
                     force=force,
+                    selector_mode=str(selector_mode),
                 )
             else:
                 payload = _run_qp_thick_job(
@@ -1242,7 +1929,27 @@ def _run_phase_kprop(
                     run_dir=run_dir,
                     omp_threads=omp_threads,
                     force=force,
+                    selector_mode=str(selector_mode),
                 )
+            row = {
+                **payload,
+                "phase": "kprop",
+                "budget_name": "fixed_propagate_keep",
+                "budget_value": int(budget),
+                "fixed_store_keep": 65_536,
+                "fixed_propagate_keep": int(budget),
+            }
+        elif method == "ccik_thick_python":
+            payload = _run_python_thick_job(
+                case=case,
+                reference=reference,
+                fcidump_path=Path(str(setup["fcidump_path"])),
+                fixed_store_keep=65_536,
+                fixed_propagate_keep=int(budget),
+                run_dir=run_dir,
+                force=force,
+                selector_mode=str(selector_mode),
+            )
             row = {
                 **payload,
                 "phase": "kprop",
@@ -1270,7 +1977,7 @@ def _run_phase_kprop(
                 "fixed_propagate_keep": int(budget),
             }
         rows_by_key[key] = row
-        _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs)
+        _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs, methods=methods)
 
 
 def _run_phase_kstore(
@@ -1283,19 +1990,24 @@ def _run_phase_kstore(
     outdir: Path,
     force: bool,
     total_jobs: int,
+    methods: tuple[str, ...],
+    selector_mode: str,
 ) -> None:
-    _seed_kstore_anchor_rows(cases=cases, rows_by_key=rows_by_key)
-    _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs)
-    for case, method, best_kprop, budget in _kstore_jobs(cases, rows_by_key):
+    _seed_kstore_anchor_rows(cases=cases, rows_by_key=rows_by_key, methods=methods)
+    _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs, methods=methods)
+    for case, method, best_kprop, budget in _kstore_jobs(cases, rows_by_key, methods):
         key = (case.name, method, "kstore", int(budget))
-        if key in rows_by_key and not force:
-            continue
+        existing = rows_by_key.get(key)
+        if existing is not None and not force:
+            if existing.get("failure") is None and existing.get("e_total_eh") is not None:
+                continue
         setup, reference = ensure_case_ready(case)
         run_dir = outdir / "runs" / case.name / method / "kstore" / str(int(budget))
         if method == "ccik_thick_qp":
             if case.kind == "n2":
                 payload = _run_n2_qp_thick_job(
                     case=case,
+                    setup=setup,
                     reference=reference,
                     qp_root=qp_root,
                     fixed_store_keep=int(budget),
@@ -1303,6 +2015,7 @@ def _run_phase_kstore(
                     run_dir=run_dir,
                     omp_threads=omp_threads,
                     force=force,
+                    selector_mode=str(selector_mode),
                 )
             else:
                 payload = _run_qp_thick_job(
@@ -1315,7 +2028,27 @@ def _run_phase_kstore(
                     run_dir=run_dir,
                     omp_threads=omp_threads,
                     force=force,
+                    selector_mode=str(selector_mode),
                 )
+            row = {
+                **payload,
+                "phase": "kstore",
+                "budget_name": "fixed_store_keep",
+                "budget_value": int(budget),
+                "fixed_store_keep": int(budget),
+                "fixed_propagate_keep": int(best_kprop),
+            }
+        elif method == "ccik_thick_python":
+            payload = _run_python_thick_job(
+                case=case,
+                reference=reference,
+                fcidump_path=Path(str(setup["fcidump_path"])),
+                fixed_store_keep=int(budget),
+                fixed_propagate_keep=int(best_kprop),
+                run_dir=run_dir,
+                force=force,
+                selector_mode=str(selector_mode),
+            )
             row = {
                 **payload,
                 "phase": "kstore",
@@ -1343,15 +2076,33 @@ def _run_phase_kstore(
                 "fixed_propagate_keep": int(best_kprop),
             }
         rows_by_key[key] = row
-        _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs)
+        _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs, methods=methods)
 
 
-def _write_run_metadata(outdir: Path, qp_root: Path, omp_threads: int, cases: list[PublicationCase]) -> None:
+def _write_run_metadata(
+    outdir: Path,
+    qp_root: Path,
+    omp_threads: int,
+    cases: list[PublicationCase],
+    methods: tuple[str, ...],
+    reference_options: ReferenceOptions,
+) -> None:
     payload = {
         "qp_root": str(qp_root),
         "omp_threads": int(omp_threads),
+        "methods": list(methods),
+        "selector_mode": str(reference_options.selector_mode),
         "kprop_grid": list(KPROP_GRID),
         "kstore_grid": list(KSTORE_GRID),
+        "reference_options": {
+            "reference_mode": reference_options.reference_mode,
+            "selector_mode": str(reference_options.selector_mode),
+            "dmrg_max_file_mb": int(reference_options.dmrg_max_file_mb),
+            "dmrg_scratch_root": str(reference_options.dmrg_scratch_root),
+            "cipsi_max_file_mb": int(reference_options.cipsi_max_file_mb),
+            "cipsi_scratch_root": str(reference_options.cipsi_scratch_root),
+            "cipsi_rungs": [int(value) for value in reference_options.cipsi_rungs],
+        },
         "cases": [
             {
                 "name": case.name,
@@ -1381,6 +2132,16 @@ def _write_run_metadata(outdir: Path, qp_root: Path, omp_threads: int, cases: li
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     cases = _selected_cases(args)
+    methods = _selected_methods(args)
+    reference_options = ReferenceOptions(
+        reference_mode=str(args.reference_mode),
+        dmrg_max_file_mb=int(args.dmrg_max_file_mb),
+        dmrg_scratch_root=Path(args.dmrg_scratch_root),
+        cipsi_max_file_mb=int(args.cipsi_max_file_mb),
+        cipsi_scratch_root=Path(args.cipsi_scratch_root),
+        cipsi_rungs=tuple(int(value) for value in args.cipsi_rungs),
+        selector_mode=str(args.selector_mode),
+    )
     outdir = args.outdir
     outdir.mkdir(parents=True, exist_ok=True)
     qp_root = _resolve_qp_root(args.qp_root)
@@ -1403,9 +2164,10 @@ def main(argv: list[str] | None = None) -> int:
         + "\n",
         encoding="utf-8",
     )
-    _write_run_metadata(outdir, qp_root, omp_threads, cases)
+    _write_run_metadata(outdir, qp_root, omp_threads, cases, methods, reference_options)
 
     rows_by_key = {} if args.force else _load_rows(outdir / "results.csv")
+    rows_by_key = {key: row for key, row in rows_by_key.items() if str(row["method"]) in methods}
     case_setups: dict[str, dict[str, object]] = {}
     references: dict[str, dict[str, object]] = {}
 
@@ -1416,13 +2178,21 @@ def main(argv: list[str] | None = None) -> int:
             case_dir = outdir / "systems" / case.name
             case_dir.mkdir(parents=True, exist_ok=True)
             setup = _load_or_prepare_case(case=case, qp_root=qp_root, outdir=case_dir, force=args.force)
-            reference = _load_or_compute_reference(case=case, setup=setup, outdir=case_dir, force=args.force)
+            reference = _load_or_compute_reference(
+                case=case,
+                setup=setup,
+                outdir=case_dir,
+                force=args.force,
+                qp_root=qp_root,
+                omp_threads=omp_threads,
+                reference_options=reference_options,
+            )
             case_setups[case.name] = setup
             references[case.name] = reference
         return setup, reference
 
-    total_jobs = len(_kprop_jobs(cases)) + 2 * len(KSTORE_GRID) * len(cases)
-    _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs)
+    total_jobs = len(_kprop_jobs(cases, methods)) + len(methods) * len(KSTORE_GRID) * len(cases)
+    _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs, methods=methods)
 
     if args.phase in {"all", "kprop"}:
         _run_phase_kprop(
@@ -1435,6 +2205,8 @@ def main(argv: list[str] | None = None) -> int:
             force=args.force,
             seed_n2=not args.no_seed,
             total_jobs=total_jobs,
+            methods=methods,
+            selector_mode=str(args.selector_mode),
         )
     if args.phase in {"all", "kstore"}:
         _run_phase_kstore(
@@ -1446,8 +2218,10 @@ def main(argv: list[str] | None = None) -> int:
             outdir=outdir,
             force=args.force,
             total_jobs=total_jobs,
+            methods=methods,
+            selector_mode=str(args.selector_mode),
         )
-    _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs)
+    _refresh_outputs(outdir=outdir, rows_by_key=rows_by_key, cases=cases, total_jobs=total_jobs, methods=methods)
     return 0
 
 

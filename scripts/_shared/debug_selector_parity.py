@@ -25,6 +25,7 @@ from typing import Any
 
 _ROOT = Path(__file__).resolve().parents[2]
 _THRESHOLD_TEST_ROOT = _ROOT / "experiments" / "threshold_test"
+_LOCAL_SEED_ROOT = _ROOT / "docs" / "assets" / "local_qp_seeds"
 _SRC = _ROOT / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
@@ -98,8 +99,16 @@ DONOR_N2_CASES: dict[str, DonorCaseSpec] = {
     ),
     "n2_cas12_12_R2p50": DonorCaseSpec(
         name="n2_cas12_12_R2p50",
-        donor_ezfio=_THRESHOLD_TEST_ROOT / "n2_qp_ccik_cas12_12_R2p50_b" / "n2_2p50.ezfio",
-        cached_qp_fcidump=_THRESHOLD_TEST_ROOT / "threshold_mode_validation_20260325" / "zero_cas12" / "qp_active.FCIDUMP",
+        donor_ezfio=(
+            _LOCAL_SEED_ROOT / "n2_cas12_12_R2p50" / "n2.ezfio"
+            if (_LOCAL_SEED_ROOT / "n2_cas12_12_R2p50" / "n2.ezfio").exists()
+            else _THRESHOLD_TEST_ROOT / "n2_qp_ccik_cas12_12_R2p50_b" / "n2_2p50.ezfio"
+        ),
+        cached_qp_fcidump=(
+            _LOCAL_SEED_ROOT / "n2_cas12_12_R2p50" / "qp_active.FCIDUMP"
+            if (_LOCAL_SEED_ROOT / "n2_cas12_12_R2p50" / "qp_active.FCIDUMP").exists()
+            else _THRESHOLD_TEST_ROOT / "threshold_mode_validation_20260325" / "zero_cas12" / "qp_active.FCIDUMP"
+        ),
         basis="6-31g",
         geometry_label="R2p50",
         r_ang=2.50,
@@ -111,8 +120,16 @@ DONOR_N2_CASES: dict[str, DonorCaseSpec] = {
     ),
     "n2_cas14_14_R2p50": DonorCaseSpec(
         name="n2_cas14_14_R2p50",
-        donor_ezfio=_THRESHOLD_TEST_ROOT / "n2_qp_ccik_cas14_14_hard_budget1e7" / "n2_2p50.ezfio",
-        cached_qp_fcidump=_THRESHOLD_TEST_ROOT / "donor_n2_parity_sweep_20260320_rerun" / "n2_cas14_14_R2p50" / "connected_sd_fullq" / "qp_active.FCIDUMP",
+        donor_ezfio=(
+            _LOCAL_SEED_ROOT / "n2_cas14_14_R2p50" / "n2.ezfio"
+            if (_LOCAL_SEED_ROOT / "n2_cas14_14_R2p50" / "n2.ezfio").exists()
+            else _THRESHOLD_TEST_ROOT / "n2_qp_ccik_cas14_14_hard_budget1e7" / "n2_2p50.ezfio"
+        ),
+        cached_qp_fcidump=(
+            _LOCAL_SEED_ROOT / "n2_cas14_14_R2p50" / "qp_active.FCIDUMP"
+            if (_LOCAL_SEED_ROOT / "n2_cas14_14_R2p50" / "qp_active.FCIDUMP").exists()
+            else _THRESHOLD_TEST_ROOT / "donor_n2_parity_sweep_20260320_rerun" / "n2_cas14_14_R2p50" / "connected_sd_fullq" / "qp_active.FCIDUMP"
+        ),
         basis="6-31g",
         geometry_label="R2p50",
         r_ang=2.50,
@@ -138,7 +155,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--sweep", choices=["donor_n2"], default=None, help="Run the donor-backed N2 benchmark sweep")
     p.add_argument("--R", type=float, default=None, help="Backward-compatible alias for the 1.10 A CAS(10,10) donor case")
     p.add_argument("--steps", type=int, default=None, help="Override the per-case recommended step budget")
-    p.add_argument("--selector-mode", default="abs_residual", choices=["pt2_legacy", "abs_hq", "abs_residual"])
+    p.add_argument("--selector-mode", default="abs_residual", choices=["pt2_residual", "pt2_legacy", "abs_hq", "abs_residual"])
     p.add_argument(
         "--matvec-backend",
         default="connected_sd_fullq",
@@ -147,7 +164,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     p.add_argument(
         "--compression-policy",
-        default="topk",
+        default="fixed_budget",
         choices=["topk", "threshold", "fixed_budget"],
         help="Compression policy to use in the Python and QP CCIK runs",
     )
@@ -772,6 +789,8 @@ def run_qp_trace(
     stderr_path = outdir / "ccik_stderr.log"
     raw_trace_path = workdir / "ccik_debug_trace.log"
     trace_path = outdir / "ccik_debug_trace.log"
+    tmpdir = workdir / ".tmp"
+    tmpdir.mkdir(parents=True, exist_ok=True)
 
     def _as_text(payload: object) -> str:
         if payload is None:
@@ -788,7 +807,14 @@ def run_qp_trace(
             cwd=workdir,
             capture_output=True,
             timeout=timeout_s,
-            env={**os.environ, "QP_ROOT": str(qp_root), **qp_parallel_env(omp_threads)},
+            env={
+                **os.environ,
+                "QP_ROOT": str(qp_root),
+                "TMPDIR": str(tmpdir),
+                "TMP": str(tmpdir),
+                "TEMP": str(tmpdir),
+                **qp_parallel_env(omp_threads),
+            },
         )
         wall_time_s = time.perf_counter() - t0
         stdout_path.write_text(run.stdout, encoding="utf-8")

@@ -21,12 +21,8 @@ from typing import Mapping
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_EZFIO_DONOR = (
-    ROOT / "experiments" / "threshold_test" / "n2_qp_ccik_cas14_14_hard_budget1e7" / "n2_2p50.ezfio"
-)
-DEFAULT_SMOKE_EZFIO_DONOR = (
-    ROOT / "experiments" / "threshold_test" / "n2_qp_ccik_simplified_smoke" / "n2_1p10.ezfio"
-)
+DEFAULT_EZFIO_DONOR = ROOT / "docs" / "assets" / "local_qp_seeds" / "n2_cas14_14_R2p50" / "n2.ezfio"
+DEFAULT_SMOKE_EZFIO_DONOR = ROOT / "docs" / "assets" / "local_qp_seeds" / "n2_cas12_12_R2p50" / "n2.ezfio"
 WORKSPACE_CCIK_PLUGIN = ROOT / "ccik_qp" / "stable" / "ccik"
 DEFAULT_QP_REBUILD_MANIFEST = (
     ROOT / "experiments" / "threshold_test" / "threshold_mode_validation_20260325" / "qp_plugin_rebuild.json"
@@ -72,7 +68,7 @@ class CCIKParams:
     ccik_pt2_rank_weight: float = 1.0
     ccik_selector_mode: str = "abs_residual"
     ccik_matvec_backend: str = "connected_sd_fullq"
-    ccik_compression_policy: str = "topk"
+    ccik_compression_policy: str = "fixed_budget"
     ccik_fixed_store_keep: int = 65_536
     ccik_fixed_propagate_keep: int = 512
     ccik_store_abs_tol: float = 0.0
@@ -1090,7 +1086,7 @@ def ensure_ezfio_defaults(ezfio: Path, *, qp_root: Path | None = None) -> None:
         "ccik/ccik_external_candidate_factor": "                   4\n",
         "ccik/ccik_pt2_rank_weight": "   1.000000000000000E+00\n",
         "ccik/ccik_matvec_backend": "connected_sd_fullq\n",
-        "ccik/ccik_compression_policy": "topk\n",
+        "ccik/ccik_compression_policy": "fixed_budget\n",
         "ccik/ccik_fixed_store_keep": "               65536\n",
         "ccik/ccik_fixed_propagate_keep": "                 512\n",
         "ccik/ccik_store_abs_tol": "   0.000000000000000E+00\n",

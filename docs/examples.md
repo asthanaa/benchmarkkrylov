@@ -5,10 +5,20 @@ The beginner examples live in two mirrored formats:
 - `examples/scripts/`
 - `examples/notebooks/`
 
-The scripts are the main supported teaching path. The notebooks are there for guided exploration.
+The scripts are the plain-Python path. The notebooks are the guided teaching
+path, and they now use the Quantum Package backend directly.
 
-All three beginner examples are chosen so that the reported CCIK result is at
-or below the chemistry rule-of-thumb target of `1 mEh` on a laptop-scale run.
+Important cleanup note:
+
+- the notebooks now contain the actual teaching code in their own code cells
+- they do not hide the work inside an imported script file
+- the script files still exist as fast command-line companions
+- the notebook path is now the QP-backed production-style teaching path
+
+The three beginner notebooks are chosen to teach the QP workflow clearly on
+laptop-scale runs. The `N2` notebook is tuned to land well below `1 mEh`,
+while the `H2` parity notebook and the `H4` budget notebook are mainly there
+to explain backend agreement and budget trends.
 
 ## 1. H2 ground state
 
@@ -20,9 +30,10 @@ Files:
 Concept:
 
 - build the smallest possible CAS Hamiltonian
-- run `ccik_thick`
+- run `ccik_thick` through the QP backend
 - compare against exact CAS-FCI
-- see what "much better than `1 mEh`" looks like on the simplest system
+- check that the QP and Python thick-restart implementations agree to machine precision on the same FCIDUMP
+- read the shortest Python version in the script and the fuller QP workflow in the notebook
 
 Run:
 
@@ -30,7 +41,7 @@ Run:
 python examples/scripts/01_h2_ground_state.py
 ```
 
-## 2. H4 compare solvers
+## 2. H4 thick-restart comparison
 
 Files:
 
@@ -39,9 +50,10 @@ Files:
 
 Concept:
 
-- compare `ccik`, `ccik_thick`, and `ccik_stochastic`
-- see why thick restart is a useful default
-- check all three errors against the `1 mEh` target line in the notebook plot
+- compare a lighter and a refined QP `ccik_thick` fixed-budget setting
+- see why thick restart is the useful default to learn first
+- check both errors against exact CAS-FCI in the notebook plot
+- learn how larger `Kstore` and `Kprop` budgets usually lower the error
 
 Run:
 
@@ -60,8 +72,11 @@ Concept:
 
 - introduce a realistic molecule
 - explain what `CAS(6e,6o)` means in practice
-- use dense CCIK on this tiny active space because it reaches sub-`1 mEh`
-- explain why `ccik_thick` is still the better default once the active space gets larger
+- use `ccik_thick` even on this tiny active space so the teaching path matches
+  the production default
+- make `Kstore` and `Kprop` explicit instead of hiding them behind top-k knobs
+- measure the solver error directly against exact CAS-FCI
+- keep the fully QP-backed notebook small and readable by using a minimal-basis `N2` teaching case
 
 Run:
 

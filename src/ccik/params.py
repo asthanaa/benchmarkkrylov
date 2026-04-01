@@ -24,14 +24,17 @@ class CCIKParams:
 
     # Maximum number of Krylov basis vectors to build.
     m: int = 100
-    # Number of external determinants added from the score ranking at each step.
+    # Legacy top-k knob: number of score-ranked external determinants admitted
+    # into the working support update when compression_policy="topk".
     nadd: int = 2000
-    # Maximum support size retained for each compressed Krylov vector q_k.
+    # Legacy top-k knob: maximum support size retained for each compressed
+    # Krylov vector q_k when compression_policy="topk".
     nkeep: int = 10000
-    # Stabilizer support size retained from the largest |(H q_k)_I| entries.
+    # Legacy top-k knob: propagation/selector cap used before the final top-k
+    # storage compression when compression_policy="topk".
     Kv: int = 3000
-    # Compression policy: topk (legacy), threshold, or fixed_budget.
-    compression_policy: str = "topk"
+    # Compression policy: fixed_budget (default), threshold, or topk (legacy).
+    compression_policy: str = "fixed_budget"
     # Absolute threshold for storing normalized Krylov vectors in threshold mode.
     store_abs_tol: float = 0.0
     # Absolute threshold for using normalized q_k coefficients in H q_k propagation.
@@ -94,11 +97,12 @@ class CCIKThickRestartParams:
     # Stop when successive restart energies differ by less than tol.
     tol: float = 1e-6
 
-    # Same support-selection knobs used by baseline CCIK.
+    # Legacy top-k knobs from baseline CCIK. These are only active when
+    # compression_policy="topk".
     nadd: int = 2000
     nkeep: int = 10000
     Kv: int = 3000
-    compression_policy: str = "topk"
+    compression_policy: str = "fixed_budget"
     store_abs_tol: float = 0.0
     propagate_abs_tol: float = 0.0
     fixed_store_keep: int = 65_536
@@ -137,11 +141,12 @@ class CCIKStochasticParams:
     # Maximum number of Krylov basis vectors.
     m: int = 100
 
-    # Same compression/selection knobs as baseline CCIK.
+    # Legacy top-k knobs from baseline CCIK. These are only active when
+    # compression_policy="topk".
     nadd: int = 2000
     nkeep: int = 10000
     Kv: int = 3000
-    compression_policy: str = "topk"
+    compression_policy: str = "fixed_budget"
     store_abs_tol: float = 0.0
     propagate_abs_tol: float = 0.0
     fixed_store_keep: int = 65_536

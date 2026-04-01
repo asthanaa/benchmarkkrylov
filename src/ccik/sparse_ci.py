@@ -27,9 +27,13 @@ class SparseCIVector:
     """
 
     coeffs: dict[DetKey, float]
+    delayed_propagation_support: set[DetKey] = field(default_factory=set)
 
     def copy(self) -> "SparseCIVector":
-        return SparseCIVector(dict(self.coeffs))
+        return SparseCIVector(
+            dict(self.coeffs),
+            delayed_propagation_support=set(self.delayed_propagation_support),
+        )
 
     def nnz(self) -> int:
         return len(self.coeffs)

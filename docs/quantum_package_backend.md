@@ -21,9 +21,9 @@ benchmark sweeps summarized in [fixed_budget_results.md](fixed_budget_results.md
 The current benchmark evidence is simple:
 
 - the best completed `CAS(12e,12o)` result is a thick QP fixed-budget run with
-  `|ΔE| = 0.000779 mEh`
+  `|ΔE| = 0.000783 mEh`
 - the best completed `CAS(14e,14o)` result is also a thick QP fixed-budget run,
-  with `|ΔE| = 0.712248 mEh`
+  with `|ΔE| = 0.710970 mEh`
 - both runs use `abs_residual` and the `connected_sd_fullq` backend
 
 So the large-system question has shifted. The main tuning problem is now the

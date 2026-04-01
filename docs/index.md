@@ -25,7 +25,7 @@ If you are new to the project, follow the beginner path first.
 ## Advanced path
 
 - [Advanced workflows](advanced.md)
-- [Fixed-budget N2 results](fixed_budget_results.md)
+- [Fixed-budget N2 selector results](fixed_budget_results.md)
 - [Algorithms](algorithms.md)
 - [Quantum Package backend](quantum_package_backend.md)
 - [Architecture](architecture.md)
