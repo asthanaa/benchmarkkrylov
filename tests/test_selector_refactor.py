@@ -47,6 +47,7 @@ def test_candidate_pool_respects_generator_limit_cutoff_and_current_support() ->
         }
     )
     params = CCIKParams(
+        compression_policy="topk",
         candidate_mode="selected_ci",
         selector_mode="abs_hq",
         selector_depth=1,
