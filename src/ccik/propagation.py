@@ -20,6 +20,7 @@ from .sparse_ci import (
     SparseProjectionWorkspace,
     add_scaled_sparse,
     compress_topk_sparse,
+    compress_topk_sparse_grouped,
     compress_with_support_sparse,
     inner_sparse,
     linear_combination_sparse,
@@ -462,10 +463,26 @@ def analyze_krylov_step(
         hdiag_full=hdiag_full,
     )
 
+    compression_policy = _compression_policy(params)
+    if compression_policy == "fixed_budget":
+        # QP keeps the full projected Hq through orthogonalization and only applies
+        # the fixed store budget when storing q_{k+1}.
+        ws = SparseProjectionWorkspace(
+            v_proj=ws.v_proj,
+            hdiag=ws.hdiag,
+            space=ws.space,
+            candidate_support=ws.candidate_support,
+            candidate_pool=ws.candidate_pool,
+            parent_support=ws.parent_support,
+            propagation_support=ws.propagation_support,
+            propagation_dropped_norm=ws.propagation_dropped_norm,
+            propagation_used_fallback=ws.propagation_used_fallback,
+            exact_v=ws.exact_v,
+        )
+
     requested_selector = selector_mode_from_params(params, default="abs_residual")
     used_selector = requested_selector
     score_vec = ws.v_proj
-    compression_policy = _compression_policy(params)
     target_ritz_energy: float | None = None
     target_basis_size: int | None = None
     selector_score_mode: str | None = requested_selector
@@ -550,6 +567,10 @@ def analyze_krylov_step(
             storage_score_mode = "pt2_residual"
             probe_residual_norm = sparse_norm(orth_residual)
             rebuilt_residual_norm = sparse_norm(orth_residual)
+            discarded_weight = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
+            v_temp = compressed.copy()
+            store_dropped_norm = discarded_weight
+            q_next = normalize_sparse(compressed)
         else:
             (
                 score_support,
@@ -571,11 +592,14 @@ def analyze_krylov_step(
                 params=params,
                 hdiag_full=hdiag_full,
             )
-            compressed = project_sparse_to_support(orth_residual, score_support)
-        discarded_weight = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
-        v_temp = compressed.copy()
-        store_dropped_norm = discarded_weight
-        q_next = normalize_sparse(compressed)
+            # QP fixed-budget mode always stores the top-|orth_residual| entries, even
+            # when selector-specific score supports are used for diagnostics.
+            compressed = compress_topk_sparse_grouped(orth_residual, _fixed_budget_keep(params))
+            discarded_weight = 0.0
+            v_temp = ws.v_proj.copy()
+            store_dropped_norm = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
+            storage_score_mode = "orth_residual_topk"
+            q_next = normalize_sparse(compressed)
     else:
         if used_selector == "pt2_legacy":
             _, legacy_scores = _legacy_score_map(

@@ -74,6 +74,14 @@ def test_make_fixed_budget_params_uses_fixed_budget_policy() -> None:
     assert params.ccik_compression_policy == "fixed_budget"
     assert params.ccik_fixed_store_keep == 65_536
     assert params.ccik_fixed_propagate_keep == 512
+    assert params.ccik_generator_keep == 512
+    assert params.ccik_max_parents_for_expansion == 512
+    assert params.ccik_selector_keep == 65_536
+    assert params.ccik_nkeep == 65_536
+    assert params.ccik_external_candidate_factor == 4
+    assert params.ccik_tmp_keep_factor == 4
+    assert params.ccik_preserve_prev_support is True
+    assert params.ccik_preserve_prev_support_cap == 512
 
 
 def test_load_cached_rows_roundtrip(tmp_path: Path) -> None:

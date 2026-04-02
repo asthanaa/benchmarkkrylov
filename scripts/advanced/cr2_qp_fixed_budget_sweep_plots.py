@@ -38,6 +38,7 @@ from qp_ccik_common import (  # noqa: E402
     CCIKParams as QPCCIKParams,
     discover_qp_paths_from_root,
     ensure_ezfio_defaults,
+    fixed_budget_bridge_kwargs,
     qp_parallel_env,
     rebuild_ccik_plugin,
     resolve_omp_threads,
@@ -751,30 +752,16 @@ def _make_fixed_budget_params(
     fixed_propagate_keep: int,
     selector_mode: str = "abs_residual",
 ) -> QPCCIKParams:
+    bridge = fixed_budget_bridge_kwargs(
+        fixed_store_keep=int(fixed_store_keep),
+        fixed_propagate_keep=int(fixed_propagate_keep),
+        external_keep=int(INTERNAL_EXTERNAL_KEEP),
+    )
     return QPCCIKParams(
         ccik_basis_size=int(config.basis_size),
-        ccik_generator_keep=1,
-        ccik_generator_fraction=0.0,
-        ccik_generator_abs_coeff_cutoff=0.0,
-        ccik_max_parents_for_expansion=0,
-        ccik_include_current_support=True,
-        ccik_selector_keep=1,
-        ccik_external_keep=int(INTERNAL_EXTERNAL_KEEP),
-        ccik_external_candidate_factor=1,
-        ccik_pt2_rank_weight=1.0,
         ccik_selector_mode=str(selector_mode),
         ccik_matvec_backend="connected_sd_fullq",
-        ccik_compression_policy="fixed_budget",
-        ccik_fixed_store_keep=int(fixed_store_keep),
-        ccik_fixed_propagate_keep=int(fixed_propagate_keep),
-        ccik_store_abs_tol=0.0,
-        ccik_propagate_abs_tol=0.0,
-        ccik_nkeep=1,
-        ccik_tmp_keep_factor=1,
-        ccik_preserve_prev_support=False,
-        ccik_preserve_prev_support_cap=0,
-        ccik_total_det_budget=0,
-        ccik_conv_tol=1e-12,
+        ccik_conv_tol=1e-10,
         ccik_ritz_overlap_tol=1e-8,
         ccik_ritz_max_drop=0.0,
         ccik_save_final_wf=False,
@@ -784,6 +771,7 @@ def _make_fixed_budget_params(
         ccik_restart_m_cycle=int(config.restart_m_cycle),
         ccik_restart_nroot=int(config.restart_nroot),
         ccik_verbose=False,
+        **bridge,
     )
 
 

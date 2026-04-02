@@ -8,7 +8,7 @@ from ccik import build_cas_hamiltonian_pyscf, make_mol_pyscf
 from ccik.params import CCIKParams, CCIKStochasticParams
 from ccik.pyscf_cas import CASSpec
 from ccik.selection import build_projection_workspace, make_full_hdiag_map
-from ccik.sparse_ci import make_hf_sparse_vector, sparse_from_dense
+from ccik.sparse_ci import SparseCIVector, compress_topk_sparse, make_hf_sparse_vector, sparse_from_dense, topk_abs_keys_sparse
 
 
 
@@ -43,6 +43,21 @@ def test_sparse_dense_roundtrip_preserves_coefficients() -> None:
     sparse = sparse_from_dense(ci, norb=ncas, nelec=nelec)
     dense = sparse.to_dense(norb=ncas, nelec=nelec)
     assert np.allclose(dense, ci)
+
+
+def test_topk_compression_uses_qp_like_canonical_tie_break() -> None:
+    vec = SparseCIVector(
+        {
+            (5, 5): 1.0,
+            (1, 1): -1.0,
+            (3, 3): 1.0,
+        }
+    )
+
+    compressed = compress_topk_sparse(vec, 2)
+
+    assert compressed.support() == {(3, 3), (5, 5)}
+    assert topk_abs_keys_sparse(vec, 2) == {(3, 3), (5, 5)}
 
 
 

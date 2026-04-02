@@ -16,6 +16,7 @@ from .sparse_ci import (
     SparseCIVector,
     SparseProjectionWorkspace,
     compress_topk_sparse,
+    compress_topk_sparse_grouped,
     full_hdiag_map,
     hdiag_map_from_array,
     normalize_sparse,
@@ -116,6 +117,10 @@ def _fixed_budget_keep_from_params(params: Any, name: str, default: int) -> int:
     return max(1, int(getattr(params, name, default)))
 
 
+def _use_full_stored_connected_sd_matvec(*, compression_policy: str, candidate_mode: str) -> bool:
+    return compression_policy == "fixed_budget" and candidate_mode == "connected_sd"
+
+
 def _propagation_source(
     qk: SparseCIVector,
     params: Any,
@@ -128,7 +133,7 @@ def _propagation_source(
             if qprop.coeffs:
                 dropped_norm_sq = max(0.0, sparse_norm_sq(qk) - sparse_norm_sq(qprop))
                 return qprop, qprop.support(), float(np.sqrt(dropped_norm_sq)), False
-        qprop = compress_topk_sparse(qk, _fixed_budget_keep_from_params(params, "fixed_propagate_keep", 10_000))
+        qprop = compress_topk_sparse_grouped(qk, _fixed_budget_keep_from_params(params, "fixed_propagate_keep", 10_000))
         dropped_norm_sq = max(0.0, sparse_norm_sq(qk) - sparse_norm_sq(qprop))
         return qprop, qprop.support(), float(np.sqrt(dropped_norm_sq)), selector_mode == "pt2_residual"
     if compression_policy != "threshold":
@@ -424,9 +429,12 @@ def build_candidate_pool_impl(
         parent_support = set(current_support if parent_support_override is None else parent_support_override)
         parent_vec = qprop.copy()
     else:
-        qprop, current_support, _, _ = _propagation_source(qk, params)
+        qprop, qprop_support, _, _ = _propagation_source(qk, params)
+        current_support = qprop_support
+        if _use_full_stored_connected_sd_matvec(compression_policy=compression_policy, candidate_mode=candidate_mode):
+            current_support = qk.support()
         if compression_policy in {"threshold", "fixed_budget"}:
-            parent_support = set(current_support)
+            parent_support = set(qprop_support)
             parent_vec = qprop.copy()
         else:
             parent_support = _select_parent_support(qk, params)
@@ -544,17 +552,27 @@ def compute_projected_matvec_impl(
         prop_used_fallback = False
     else:
         qprop, prop_support, prop_dropped_norm, prop_used_fallback = _propagation_source(qk, params)
+    use_full_stored_connected_sd_matvec = _use_full_stored_connected_sd_matvec(
+        compression_policy=compression_policy,
+        candidate_mode=candidate_mode,
+    )
+    if use_full_stored_connected_sd_matvec and qprop_override is None:
+        matvec_source = normalize_sparse(qk)
+        internal_support = matvec_source.support()
+    else:
+        matvec_source = qprop
+        internal_support = matvec_source.support()
     exact_v: SparseCIVector | None = None
 
     if bool(getattr(params, "exact_hq_diagnostics", False)):
-        dense_q = qprop.to_dense(norb=norb, nelec=nelec)
+        dense_q = matvec_source.to_dense(norb=norb, nelec=nelec)
         dense_v = np.asarray(direct_spin1.contract_2e(h2eff, dense_q, norb, nelec), dtype=float)
         exact_v = sparse_from_dense(dense_v, norb=norb, nelec=nelec)
 
     if candidate_mode == "full":
         if hdiag_full is None:
             raise ValueError("full candidate mode requires hdiag_full")
-        dense_q = qprop.to_dense(norb=norb, nelec=nelec)
+        dense_q = matvec_source.to_dense(norb=norb, nelec=nelec)
         dense_v = np.asarray(direct_spin1.contract_2e(h2eff, dense_q, norb, nelec), dtype=float)
         v_proj = sparse_from_dense(dense_v, norb=norb, nelec=nelec)
         full_support = set(hdiag_full)
@@ -562,7 +580,7 @@ def compute_projected_matvec_impl(
             v_proj=v_proj,
             hdiag=hdiag_full,
             space=sparse_space_from_scivector(v_proj.to_scivector() if v_proj.coeffs else qk.to_scivector()),
-            candidate_support=full_support - prop_support,
+            candidate_support=full_support - internal_support,
             candidate_pool=full_support,
             parent_support=set(parent_support),
             propagation_support=set(prop_support),
@@ -571,25 +589,33 @@ def compute_projected_matvec_impl(
             exact_v=exact_v if exact_v is not None else v_proj,
         )
 
-    support = _rectangularize_support(set(candidate_pool) | prop_support)
+    explicit_support = set(candidate_pool) | internal_support
+    support = _rectangularize_support(explicit_support)
     if compression_policy == "threshold" and len(support) > _THRESHOLD_MAX_CANDIDATES:
         raise RuntimeError(
             "threshold compression policy exceeded internal support limit "
             f"({_THRESHOLD_MAX_CANDIDATES}) while building the projected Hq workspace; "
             "loosen thresholds or switch back to topk compression."
         )
-    work_sci = qprop.to_scivector_on_support(support)
+    work_sci = matvec_source.to_scivector_on_support(support)
     v_sci = selected_ci.contract_2e(h2eff, work_sci, norb, nelec)
     space = sparse_space_from_scivector(v_sci)
-    actual_pool = set(space.keys())
     hdiag_sel = selected_ci.make_hdiag(h1, eri8, work_sci._strs, norb, nelec).reshape(work_sci.shape)
     hdiag = hdiag_map_from_array(hdiag_sel, space=space)
     v_proj = sparse_from_scivector(v_sci)
+    if use_full_stored_connected_sd_matvec:
+        v_proj = project_sparse_to_support(v_proj, explicit_support)
+        hdiag = {key: val for key, val in hdiag.items() if key in explicit_support}
+        actual_pool = explicit_support
+        candidate_support = actual_pool - internal_support
+    else:
+        actual_pool = set(space.keys())
+        candidate_support = actual_pool - prop_support
     return SparseProjectionWorkspace(
         v_proj=v_proj,
         hdiag=hdiag,
         space=space,
-        candidate_support=actual_pool - prop_support,
+        candidate_support=candidate_support,
         candidate_pool=actual_pool,
         parent_support=set(parent_support),
         propagation_support=set(prop_support),

@@ -87,7 +87,40 @@ class CCIKParams:
     ccik_max_cycle: int = 1
     ccik_restart_m_cycle: int = 0
     ccik_restart_nroot: int = 2
+    ccik_reference_total_energy: float = 0.0
+    ccik_print_iteration_error: bool = False
     ccik_verbose: bool = False
+
+
+def fixed_budget_bridge_kwargs(
+    *,
+    fixed_store_keep: int,
+    fixed_propagate_keep: int,
+    external_keep: int,
+) -> dict[str, int | float | bool]:
+    store_keep = max(1, int(fixed_store_keep))
+    propagate_keep = max(1, int(fixed_propagate_keep))
+    return {
+        "ccik_generator_keep": propagate_keep,
+        "ccik_generator_fraction": 0.0,
+        "ccik_generator_abs_coeff_cutoff": 0.0,
+        "ccik_max_parents_for_expansion": propagate_keep,
+        "ccik_include_current_support": True,
+        "ccik_selector_keep": store_keep,
+        "ccik_external_keep": int(external_keep),
+        "ccik_external_candidate_factor": 4,
+        "ccik_pt2_rank_weight": 1.0,
+        "ccik_compression_policy": "fixed_budget",
+        "ccik_fixed_store_keep": store_keep,
+        "ccik_fixed_propagate_keep": propagate_keep,
+        "ccik_store_abs_tol": 0.0,
+        "ccik_propagate_abs_tol": 0.0,
+        "ccik_nkeep": store_keep,
+        "ccik_tmp_keep_factor": 4,
+        "ccik_preserve_prev_support": True,
+        "ccik_preserve_prev_support_cap": propagate_keep,
+        "ccik_total_det_budget": 0,
+    }
 
 
 def bash(cmd: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
@@ -1093,6 +1126,8 @@ def ensure_ezfio_defaults(ezfio: Path, *, qp_root: Path | None = None) -> None:
         "ccik/ccik_propagate_abs_tol": "   0.000000000000000E+00\n",
         "ccik/ccik_ritz_overlap_tol": "   1.000000000000000E-08\n",
         "ccik/ccik_ritz_max_drop": "   0.000000000000000E+00\n",
+        "ccik/ccik_reference_total_energy": "   0.000000000000000E+00\n",
+        "ccik/ccik_print_iteration_error": "F\n\n",
         "ccik/ccik_debug_trace": "F\n\n",
         "ccik/ccik_debug_trace_topn": "                   8\n",
         "ccik/ccik_save_final_wf": "T\n\n",
@@ -1260,6 +1295,8 @@ PARAM_ORDER = (
     "ccik_max_cycle",
     "ccik_restart_m_cycle",
     "ccik_restart_nroot",
+    "ccik_reference_total_energy",
+    "ccik_print_iteration_error",
     "ccik_verbose",
 )
 

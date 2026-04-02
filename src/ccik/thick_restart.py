@@ -9,6 +9,7 @@ from .selection import candidate_mode_from_params, compression_policy_from_param
 from .sparse_ci import (
     SparseCIVector,
     compress_topk_sparse,
+    compress_topk_sparse_grouped,
     linear_combination_sparse,
     make_hf_sparse_vector,
     normalize_sparse,
@@ -41,7 +42,7 @@ def _compress_with_stage1(vec: SparseCIVector, nkeep: int, params: CCIKThickRest
         out, _, _ = threshold_prune_sparse(unit, float(getattr(params, "store_abs_tol", 0.0)), keep_largest_if_empty=True)
         return out
     if compression_policy == "fixed_budget":
-        return compress_topk_sparse(vec, nkeep=max(1, int(getattr(params, "fixed_store_keep", 1_000_000))))
+        return compress_topk_sparse_grouped(vec, nkeep=max(1, int(getattr(params, "fixed_store_keep", 1_000_000))))
     nraw = len(vec.coeffs)
     nkeep_stage1 = max(nkeep, min(nraw, 8 * nkeep))
     trial = compress_topk_sparse(vec, nkeep=nkeep_stage1)

@@ -47,6 +47,7 @@ from qp_ccik_common import (  # noqa: E402
     detect_physical_cpu_count,
     discover_qp_paths_from_root,
     ensure_ezfio_defaults,
+    fixed_budget_bridge_kwargs,
     qp_parallel_env,
     resolve_omp_threads,
     run_qp_setup,
@@ -1137,30 +1138,16 @@ def _make_qp_fixed_budget_params(
     selector_mode: str = "abs_residual",
 ) -> QPCCIKParams:
     config = case.thick_config
+    bridge = fixed_budget_bridge_kwargs(
+        fixed_store_keep=int(fixed_store_keep),
+        fixed_propagate_keep=int(fixed_propagate_keep),
+        external_keep=int(case.external_keep),
+    )
     return QPCCIKParams(
         ccik_basis_size=int(config.basis_size),
-        ccik_generator_keep=1,
-        ccik_generator_fraction=0.0,
-        ccik_generator_abs_coeff_cutoff=0.0,
-        ccik_max_parents_for_expansion=0,
-        ccik_include_current_support=True,
-        ccik_selector_keep=1,
-        ccik_external_keep=int(case.external_keep),
-        ccik_external_candidate_factor=1,
-        ccik_pt2_rank_weight=1.0,
         ccik_selector_mode=str(selector_mode),
         ccik_matvec_backend="connected_sd_fullq",
-        ccik_compression_policy="fixed_budget",
-        ccik_fixed_store_keep=int(fixed_store_keep),
-        ccik_fixed_propagate_keep=int(fixed_propagate_keep),
-        ccik_store_abs_tol=0.0,
-        ccik_propagate_abs_tol=0.0,
-        ccik_nkeep=1,
-        ccik_tmp_keep_factor=1,
-        ccik_preserve_prev_support=False,
-        ccik_preserve_prev_support_cap=0,
-        ccik_total_det_budget=0,
-        ccik_conv_tol=1e-12,
+        ccik_conv_tol=1e-10,
         ccik_ritz_overlap_tol=1e-8,
         ccik_ritz_max_drop=0.0,
         ccik_save_final_wf=False,
@@ -1170,6 +1157,7 @@ def _make_qp_fixed_budget_params(
         ccik_restart_m_cycle=int(config.restart_m_cycle),
         ccik_restart_nroot=int(config.restart_nroot),
         ccik_verbose=False,
+        **bridge,
     )
 
 
@@ -1243,30 +1231,39 @@ def _run_qp_thick_job(
     ensure_ezfio_defaults(runtime_ezfio, qp_root=qp.qp_root)
     set_ccik_params(qp, runtime_ezfio, params)
     write_ezfio_value(runtime_ezfio, "ccik/ccik_m", int(params.ccik_basis_size))
+    # Publication rows must not inherit debug-heavy flags from donor seeds.
+    write_ezfio_value(runtime_ezfio, "ccik/ccik_debug_trace", False)
+    write_ezfio_value(runtime_ezfio, "ccik/ccik_debug_trace_topn", 16)
+    # Keep lightweight per-iteration energy diagnostics in the stdout log so
+    # long publication rows can be monitored without turning on full tracing.
+    write_ezfio_value(runtime_ezfio, "ccik/ccik_print_iteration_error", True)
+    write_ezfio_value(runtime_ezfio, "ccik/ccik_reference_total_energy", float(reference["total_energy_eh"]))
 
     env = {**os.environ, "QP_ROOT": str(qp.qp_root), **qp_parallel_env(int(omp_threads))}
     quoted_rc = str(qp.quantum_package_rc.resolve())
     quoted_ccik = str(qp.ccik_binary.resolve())
-    t0 = time.perf_counter()
-    proc = subprocess.run(
-        [
-            "/bin/bash",
-            "-lc",
-            f"source '{quoted_rc}' >/dev/null 2>&1 && qp set_file '{runtime_ezfio.name}' >/dev/null && '{quoted_ccik}' '{runtime_ezfio.name}'",
-        ],
-        cwd=str(runtime_parent),
-        env=env,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    wall_s = float(time.perf_counter() - t0)
-
     stdout_path = run_dir / "ccik_stdout.log"
     stderr_path = run_dir / "ccik_stderr.log"
-    stdout_path.write_text(proc.stdout, encoding="utf-8")
-    stderr_path.write_text(proc.stderr, encoding="utf-8")
-    e_total = _extract_optional(proc.stdout, "CCIK_FINAL_TOTAL_ENERGY")
+    t0 = time.perf_counter()
+    with stdout_path.open("w", encoding="utf-8") as stdout_fh, stderr_path.open("w", encoding="utf-8") as stderr_fh:
+        proc = subprocess.run(
+            [
+                "/bin/bash",
+                "-lc",
+                f"source '{quoted_rc}' >/dev/null 2>&1 && qp set_file '{runtime_ezfio.name}' >/dev/null && '{quoted_ccik}' '{runtime_ezfio.name}'",
+            ],
+            cwd=str(runtime_parent),
+            env=env,
+            text=True,
+            stdout=stdout_fh,
+            stderr=stderr_fh,
+            check=False,
+        )
+    wall_s = float(time.perf_counter() - t0)
+
+    stdout_text = stdout_path.read_text(encoding="utf-8")
+    stderr_text = stderr_path.read_text(encoding="utf-8")
+    e_total = _extract_optional(stdout_text, "CCIK_FINAL_TOTAL_ENERGY")
     delta = None if e_total is None else float((float(e_total) - float(reference["total_energy_eh"])) * 1000.0)
     failure = None
     if proc.returncode != 0 or e_total is None:

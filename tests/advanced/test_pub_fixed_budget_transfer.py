@@ -4,6 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from types import SimpleNamespace
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
@@ -119,3 +121,66 @@ def test_cr2_reference_pipeline_falls_back_to_cipsi(tmp_path: Path, monkeypatch)
     choice = json.loads((tmp_path / "reference_choice.json").read_text(encoding="utf-8"))
     assert choice["selected_reference_kind"] == "cipsi"
     assert choice["selected_reference_label"] == "CIPSI variational"
+
+
+def test_qp_publication_rows_clear_debug_flags_even_if_seed_is_dirty(tmp_path: Path, monkeypatch) -> None:
+    case = next(case for case in MODULE.CASES if case.name == "n2_cas12_12_R2p50")
+    base_ezfio = tmp_path / "seed.ezfio"
+    base_ezfio.mkdir()
+    run_dir = tmp_path / "run"
+    rc = tmp_path / "quantum_package.rc"
+    ccik = tmp_path / "ccik"
+    rc.write_text("", encoding="utf-8")
+    ccik.write_text("", encoding="utf-8")
+
+    writes: list[tuple[str, object]] = []
+
+    monkeypatch.setattr(
+        MODULE,
+        "discover_qp_paths_from_root",
+        lambda _root: SimpleNamespace(qp_root=tmp_path, quantum_package_rc=rc, ccik_binary=ccik),
+    )
+    monkeypatch.setattr(MODULE, "ensure_ezfio_defaults", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(MODULE, "set_ccik_params", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(MODULE, "qp_parallel_env", lambda _threads: {})
+    def fake_mkdtemp(**_kwargs: object) -> str:
+        path = tmp_path / "runtime_parent"
+        path.mkdir(exist_ok=True)
+        return str(path)
+
+    monkeypatch.setattr(MODULE.tempfile, "mkdtemp", fake_mkdtemp)
+
+    def fake_write_ezfio_value(ezfio: Path, key: str, value: object) -> None:
+        writes.append((key, value))
+
+    monkeypatch.setattr(MODULE, "write_ezfio_value", fake_write_ezfio_value)
+    def fake_run(*args: object, **kwargs: object) -> subprocess.CompletedProcess[str]:
+        stdout_fh = kwargs["stdout"]
+        stderr_fh = kwargs["stderr"]
+        assert stdout_fh is not None
+        assert stderr_fh is not None
+        stdout_fh.write("ccik(thick) cycle=1 iter=1 total=-108.0 ref=-108.761373315606 delta_mEh=761.373315606\n")
+        stdout_fh.write("CCIK_FINAL_TOTAL_ENERGY = -108.0\n")
+        stderr_fh.write("")
+        return subprocess.CompletedProcess(args[0], 0)
+
+    monkeypatch.setattr(MODULE.subprocess, "run", fake_run)
+
+    payload = MODULE._run_qp_thick_job(
+        case=case,
+        reference={"reference_kind": "exact_fci", "reference_label": "Exact FCI", "total_energy_eh": -108.76137331560642},
+        qp_root=tmp_path,
+        base_ezfio=base_ezfio,
+        fixed_store_keep=65536,
+        fixed_propagate_keep=512,
+        run_dir=run_dir,
+        omp_threads=24,
+        force=True,
+        selector_mode="abs_residual",
+    )
+
+    assert payload["failure"] is None
+    assert ("ccik/ccik_debug_trace", False) in writes
+    assert ("ccik/ccik_print_iteration_error", True) in writes
+    assert ("ccik/ccik_reference_total_energy", -108.76137331560642) in writes
+    assert "CCIK_FINAL_TOTAL_ENERGY = -108.0" in (run_dir / "ccik_stdout.log").read_text(encoding="utf-8")

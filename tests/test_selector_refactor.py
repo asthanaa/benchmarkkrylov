@@ -9,8 +9,23 @@ from ccik.params import CCIKParams
 from ccik.propagation import analyze_krylov_step, build_candidate_pool, build_next_krylov_vector, compress_vector
 from ccik.pyscf_cas import CASSpec
 from ccik.ritz import build_projected_columns, solve_projected_ritz
-from ccik.selection import _propagation_source, build_projection_workspace, make_full_hdiag_map, selector_mode_from_params
-from ccik.sparse_ci import SparseCIVector, linear_combination_sparse, make_hf_sparse_vector, normalize_sparse, project_sparse_to_support, topk_abs_keys_sparse
+from ccik.selection import (
+    _enumerate_connected_sd_support,
+    _propagation_source,
+    _rectangularize_support,
+    build_projection_workspace,
+    make_full_hdiag_map,
+    selector_mode_from_params,
+)
+from ccik.sparse_ci import (
+    SparseCIVector,
+    linear_combination_sparse,
+    make_hf_sparse_vector,
+    normalize_sparse,
+    project_sparse_to_support,
+    sparse_from_dense,
+    topk_abs_keys_sparse,
+)
 from ccik.thick_restart import _compress_with_stage1
 
 
@@ -32,6 +47,25 @@ def _build_h4_chain_cas(r_ang: float = 1.5):
     mol = make_mol_pyscf(atom=atom, basis="sto-3g", unit="Angstrom", charge=0, spin=0, verbose=0)
     cas = CASSpec(ncas=4, nelecas=4, ncore=0)
     return build_cas_hamiltonian_pyscf(mol, cas=cas)
+
+
+def _fixed_budget_connected_sd_reference(
+    *,
+    qk: SparseCIVector,
+    h2eff,
+    norb: int,
+    nelec: tuple[int, int],
+    params: CCIKParams,
+):
+    from pyscf.fci import direct_spin1
+
+    qprop, parent_support, _, _ = _propagation_source(qk, params)
+    explicit_support = set(qk.support()) | _enumerate_connected_sd_support(parent_support, norb)
+    dense_full = np.asarray(direct_spin1.contract_2e(h2eff, qk.to_dense(norb=norb, nelec=nelec), norb, nelec), dtype=float)
+    dense_prop = np.asarray(direct_spin1.contract_2e(h2eff, qprop.to_dense(norb=norb, nelec=nelec), norb, nelec), dtype=float)
+    exact_full = project_sparse_to_support(sparse_from_dense(dense_full, norb=norb, nelec=nelec), explicit_support)
+    exact_prop = project_sparse_to_support(sparse_from_dense(dense_prop, norb=norb, nelec=nelec), explicit_support)
+    return qprop, parent_support, explicit_support, exact_full, exact_prop
 
 
 def test_candidate_pool_respects_generator_limit_cutoff_and_current_support() -> None:
@@ -245,30 +279,146 @@ def test_threshold_mode_monotonically_reduces_propagation_support() -> None:
     assert drop_hi >= drop_lo
 
 
-def test_fixed_budget_mode_abs_residual_propagation_uses_topk_support() -> None:
+def test_fixed_budget_mode_connected_sd_uses_topk_parent_support_and_full_matvec_source() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
     qk = normalize_sparse(
         SparseCIVector(
             {
-                (15, 15): 0.95,
-                (7, 7): 0.20,
-                (11, 11): 0.03,
+                (3, 3): 0.90,
+                (5, 9): 0.30,
+                (12, 6): 0.15,
             }
         )
     )
     params = CCIKParams(
         compression_policy="fixed_budget",
-        fixed_propagate_keep=2,
-        fixed_store_keep=8,
+        fixed_propagate_keep=1,
+        fixed_store_keep=32,
         candidate_mode="connected_sd",
         selector_mode="abs_residual",
     )
+    ws = build_projection_workspace(
+        qk=qk,
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+    )
     qprop, supp, dropped_norm, used_fallback = _propagation_source(qk, params)
+    _, parent_support, explicit_support, exact_full, exact_prop = _fixed_budget_connected_sd_reference(
+        qk=qk,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+    )
 
     assert used_fallback is False
-    assert len(supp) == 2
-    assert supp == {(15, 15), (7, 7)}
+    assert len(supp) == 1
+    assert supp == {(3, 3)}
     assert set(qprop.coeffs) == supp
     assert dropped_norm > 0.0
+    assert ws.propagation_support == parent_support
+    assert ws.candidate_pool == explicit_support
+    assert np.allclose(ws.v_proj.to_dense(norb=ncas, nelec=nelec), exact_full.to_dense(norb=ncas, nelec=nelec))
+    assert not np.allclose(exact_full.to_dense(norb=ncas, nelec=nelec), exact_prop.to_dense(norb=ncas, nelec=nelec))
+
+
+def test_fixed_budget_connected_sd_tail_coefficients_change_projected_matvec() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    qk = normalize_sparse(
+        SparseCIVector(
+            {
+                (3, 3): 0.85,
+                (5, 9): 0.35,
+                (6, 10): 0.20,
+                (12, 12): 0.10,
+            }
+        )
+    )
+    params = CCIKParams(
+        compression_policy="fixed_budget",
+        fixed_propagate_keep=1,
+        fixed_store_keep=32,
+        candidate_mode="connected_sd",
+        selector_mode="abs_residual",
+    )
+    ws = build_projection_workspace(
+        qk=qk,
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+    )
+    _, _, explicit_support, exact_full, exact_prop = _fixed_budget_connected_sd_reference(
+        qk=qk,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+    )
+
+    full_dense = exact_full.to_dense(norb=ncas, nelec=nelec)
+    prop_dense = exact_prop.to_dense(norb=ncas, nelec=nelec)
+    assert np.linalg.norm((full_dense - prop_dense).ravel()) > 1e-3
+    assert np.allclose(ws.v_proj.to_dense(norb=ncas, nelec=nelec), full_dense)
+    assert ws.candidate_pool == explicit_support
+
+
+def test_fixed_budget_connected_sd_drops_closure_only_coefficients() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    qk = normalize_sparse(
+        SparseCIVector(
+            {
+                (3, 3): 0.88,
+                (5, 9): 0.28,
+                (12, 6): 0.18,
+                (10, 12): 0.11,
+            }
+        )
+    )
+    params = CCIKParams(
+        compression_policy="fixed_budget",
+        fixed_propagate_keep=1,
+        fixed_store_keep=32,
+        candidate_mode="connected_sd",
+        selector_mode="abs_residual",
+    )
+    ws = build_projection_workspace(
+        qk=qk,
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+    )
+    _, parent_support, explicit_support, _, _ = _fixed_budget_connected_sd_reference(
+        qk=qk,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=params,
+    )
+    closure_only = _rectangularize_support(explicit_support) - explicit_support
+
+    assert parent_support == ws.propagation_support
+    assert closure_only
+    assert set(ws.v_proj.coeffs).issubset(explicit_support)
+    assert set(ws.v_proj.coeffs).isdisjoint(closure_only)
 
 
 def test_threshold_mode_propagation_fallback_keeps_largest_entry() -> None:
@@ -555,6 +705,7 @@ def test_pt2_residual_single_vector_h2_supports_match_manual_formula() -> None:
 
 def test_ground_state_pt2_fixed_budget_support_matches_manual_score_formula() -> None:
     from pyscf.fci import direct_spin1
+    from ccik.propagation import orthogonalize_against_basis
 
     h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
     h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
@@ -585,7 +736,7 @@ def test_ground_state_pt2_fixed_budget_support_matches_manual_score_formula() ->
         hdiag_full=hdiag_full,
     )
     params = CCIKParams(selector_mode="ground_state_pt2", **common)
-    _, diag, ws, artifacts = analyze_krylov_step(
+    q_next, diag, ws, artifacts = analyze_krylov_step(
         q1,
         [q0, q1],
         h1=h1,
@@ -634,9 +785,14 @@ def test_ground_state_pt2_fixed_budget_support_matches_manual_score_formula() ->
         key
         for key, _ in sorted(manual_scores.items(), key=lambda item: item[1], reverse=True)[: params.fixed_store_keep]
     }
+    manual_storage_support = topk_abs_keys_sparse(
+        orthogonalize_against_basis(ws.v_proj, [q0, q1]),
+        params.fixed_store_keep,
+    )
 
     assert diag.selector_mode_used == "ground_state_pt2"
     assert artifacts.score_support == manual_support
+    assert q_next.support() == manual_storage_support
 
 
 def test_fixed_budget_selector_mode_changes_support_ranking() -> None:
@@ -689,11 +845,69 @@ def test_fixed_budget_selector_mode_changes_support_ranking() -> None:
         h2eff=h2eff,
         norb=ncas,
         nelec=nelec,
-        params=CCIKParams(selector_mode="pt2_residual", **common),
+        params=CCIKParams(selector_mode="ground_state_pt2", **common),
         hdiag_full=hdiag_full,
     )
 
     assert art_abs_hq.score_support != art_ground.score_support
+
+
+def test_fixed_budget_non_pt2_selectors_share_storage_support() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    hdiag_full = make_full_hdiag_map(h1=h1, eri8=eri8, norb=ncas, nelec=nelec)
+    q0 = make_hf_sparse_vector(norb=ncas, nelec=nelec)
+    common = dict(
+        compression_policy="fixed_budget",
+        candidate_mode="full",
+        fixed_store_keep=4,
+        fixed_propagate_keep=4,
+        selector_depth=1,
+        generator_keep=4,
+        max_parents_for_expansion=4,
+        selector_ci_coeff_cutoff=1e-8,
+        selector_cutoff=1e-8,
+        orth_tol=1e-12,
+        verbose=False,
+    )
+    q1, _, _ = build_next_krylov_vector(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="abs_residual", **common),
+        hdiag_full=hdiag_full,
+    )
+    q_abs_hq, _, _, art_abs_hq = analyze_krylov_step(
+        q1,
+        [q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="abs_hq", **common),
+        hdiag_full=hdiag_full,
+    )
+    q_ground, _, _, art_ground = analyze_krylov_step(
+        q1,
+        [q0, q1],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(selector_mode="ground_state_pt2", **common),
+        hdiag_full=hdiag_full,
+    )
+
+    assert art_abs_hq.score_support != art_ground.score_support
+    assert q_abs_hq.support() == q_ground.support()
 
 
 def test_pt2_residual_changes_fixed_budget_propagation_support() -> None:

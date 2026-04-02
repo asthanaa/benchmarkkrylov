@@ -40,6 +40,7 @@ class CaseSpec:
     Rs: tuple[float, ...]
     fixed_store_keep: int
     fixed_propagate_keep: int
+    plot_label: str | None = None
     charge: int = 0
     spin: int = 0
     unit: str = "Angstrom"
@@ -65,9 +66,26 @@ def _h4_atom(r_ang: float) -> str:
     return "; ".join(f"H 0 0 {float(i * r_ang):.8f}" for i in range(4))
 
 
+def _h_chain_atom(n_h: int, r_ang: float) -> str:
+    return "; ".join(f"H 0 0 {float(i * r_ang):.8f}" for i in range(int(n_h)))
+
+
 def _n2_atom(r_ang: float) -> str:
     half = float(r_ang) / 2.0
     return f"N 0 0 {-half:.8f}; N 0 0 {half:.8f}"
+
+
+def _make_h_chain_series_case(n_h: int, *, r_ang: float = 1.50) -> CaseSpec:
+    return CaseSpec(
+        name=f"h{int(n_h)}_series_cas{int(n_h)}_{int(n_h)}",
+        atom_builder=lambda spacing, n_h=n_h: _h_chain_atom(n_h, spacing),
+        basis="sto-3g",
+        cas=CASSpec(ncas=int(n_h), nelecas=int(n_h), ncore=0),
+        Rs=(float(r_ang),),
+        fixed_store_keep=65_536,
+        fixed_propagate_keep=1_024,
+        plot_label=f"H{int(n_h)}",
+    )
 
 
 CASES: tuple[CaseSpec, ...] = (
@@ -79,6 +97,7 @@ CASES: tuple[CaseSpec, ...] = (
         Rs=(0.74,),
         fixed_store_keep=4,
         fixed_propagate_keep=2,
+        plot_label="H2",
     ),
     CaseSpec(
         name="h4_cas4_4",
@@ -88,6 +107,7 @@ CASES: tuple[CaseSpec, ...] = (
         Rs=(1.50, 2.00),
         fixed_store_keep=8,
         fixed_propagate_keep=4,
+        plot_label="H4",
     ),
     CaseSpec(
         name="n2_cas6_6",
@@ -97,12 +117,23 @@ CASES: tuple[CaseSpec, ...] = (
         Rs=(1.10, 2.00),
         fixed_store_keep=24,
         fixed_propagate_keep=8,
+        plot_label="N2",
     ),
+    _make_h_chain_series_case(4),
+    _make_h_chain_series_case(10),
+    _make_h_chain_series_case(16),
 )
 
 METHODS: tuple[str, ...] = ("ccik", "ccik_thick")
 SELECTORS: tuple[str, ...] = ("abs_hq", "abs_residual", "pt2_residual", "ground_state_pt2")
 SCOPES: tuple[str, ...] = ("isolated", "realistic")
+DEFAULT_CASE_NAMES: tuple[str, ...] = ("h2_cas2_2", "h4_cas4_4", "n2_cas6_6")
+HYDROGEN_SERIES_CASE_NAMES: tuple[str, ...] = (
+    "h4_series_cas4_4",
+    "h10_series_cas10_10",
+    "h16_series_cas16_16",
+)
+PLOT_FLOOR_EH = 1.0e-12
 
 
 def _build_case_point(case: CaseSpec, R: float) -> PointData:
@@ -341,6 +372,114 @@ def _winner(summary: dict[str, tuple[float, float]]) -> str:
     return min(summary, key=lambda mode: (summary[mode][0], summary[mode][1]))
 
 
+def _dedupe_preserve_order(names: list[str]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for name in names:
+        if name in seen:
+            continue
+        seen.add(name)
+        out.append(name)
+    return out
+
+
+def _selector_plot_style(selector_mode: str) -> dict[str, object]:
+    styles: dict[str, dict[str, object]] = {
+        "abs_hq": {"color": "#1b9e77", "marker": "o", "linestyle": (0, (3, 1.3))},
+        "abs_residual": {"color": "#7570b3", "marker": "s", "linestyle": "-"},
+        "pt2_residual": {"color": "#d95f02", "marker": "^", "linestyle": "-."},
+        "ground_state_pt2": {"color": "#e7298a", "marker": "D", "linestyle": "--"},
+    }
+    return styles.get(selector_mode, {"color": "black", "marker": "o", "linestyle": "-"})
+
+
+def _selector_display_label(selector_mode: str) -> str:
+    return selector_mode.replace("_", " ")
+
+
+def _case_plot_label(case: CaseSpec) -> str:
+    return case.plot_label if case.plot_label is not None else case.name
+
+
+def _write_molecule_plots(outdir: Path, rows: list[dict[str, object]], selected_cases: list[CaseSpec]) -> None:
+    if not rows or not selected_cases:
+        return
+
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    plt.rcParams.update(
+        {
+            "font.family": "STIXGeneral",
+            "mathtext.fontset": "stix",
+            "font.size": 11,
+            "axes.titlesize": 11,
+            "axes.labelsize": 12,
+            "legend.fontsize": 10,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 10,
+            "axes.linewidth": 0.9,
+        }
+    )
+
+    x_values = np.arange(len(selected_cases), dtype=float)
+    x_labels = [_case_plot_label(case) for case in selected_cases]
+    for scope in SCOPES:
+        for method in METHODS:
+            subset = [row for row in rows if row["scope"] == scope and row["method"] == method]
+            if not subset:
+                continue
+            selectors = [selector for selector in SELECTORS if any(row["selector_mode"] == selector for row in subset)]
+            if not selectors:
+                continue
+
+            fig, ax = plt.subplots(figsize=(6.6, 4.0))
+            finite_vals: list[float] = []
+            for selector in selectors:
+                y_values: list[float] = []
+                for case in selected_cases:
+                    case_rows = [
+                        row
+                        for row in subset
+                        if row["case"] == case.name and row["selector_mode"] == selector and row.get("abs_err") is not None
+                    ]
+                    if not case_rows:
+                        y_values.append(np.nan)
+                        continue
+                    mean_abs_err = float(np.mean([float(row["abs_err"]) for row in case_rows]))
+                    plotted = max(PLOT_FLOOR_EH, mean_abs_err)
+                    y_values.append(plotted)
+                    finite_vals.append(plotted)
+                ax.plot(
+                    x_values,
+                    y_values,
+                    label=_selector_display_label(selector),
+                    linewidth=1.8,
+                    markersize=5.5,
+                    **_selector_plot_style(selector),
+                )
+
+            if not finite_vals:
+                plt.close(fig)
+                continue
+
+            ax.set_xticks(x_values, x_labels)
+            ax.set_yscale("log")
+            ax.set_xlabel("Molecule")
+            ax.set_ylabel(r"$|E - E_{\mathrm{FCI}}|$ / Eh")
+            ax.set_title(f"{method} / {scope}")
+            ax.grid(True, which="major", alpha=0.25)
+            ax.grid(True, which="minor", alpha=0.10)
+            ax.legend(loc="best", frameon=False)
+
+            stem = f"abs_err_vs_molecule_{scope}_{method}"
+            fig.savefig(outdir / f"{stem}.png", dpi=300, bbox_inches="tight")
+            fig.savefig(outdir / f"{stem}.pdf", bbox_inches="tight")
+            plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Compare fixed-budget selector modes on exact-reference small molecules")
     parser.add_argument(
@@ -348,16 +487,32 @@ def main() -> None:
         default=str(_ROOT / "experiments" / "fixed_budget_selector_benchmark_20260327"),
         help="Directory for CSV results and summary notes",
     )
-    parser.add_argument("--cases", nargs="*", default=[case.name for case in CASES], help="Subset of cases to run")
+    parser.add_argument("--cases", nargs="*", default=None, help="Subset of cases to run")
     parser.add_argument("--methods", nargs="*", default=list(METHODS), help="Subset of methods to run")
     parser.add_argument("--selectors", nargs="*", default=list(SELECTORS), help="Subset of selectors to run")
     parser.add_argument("--scopes", nargs="*", default=list(SCOPES), help="Subset of scopes to run")
+    parser.add_argument(
+        "--hydrogen-series",
+        action="store_true",
+        help="Add the fixed-budget H4/H10/H16 series with Kstore=65536 and Kprop=1024 for molecule-axis plots",
+    )
     args = parser.parse_args()
 
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    selected_cases = [case for case in CASES if case.name in set(args.cases)]
+    requested_cases = list(args.cases) if args.cases is not None else list(DEFAULT_CASE_NAMES)
+    if args.hydrogen_series:
+        if args.cases is None:
+            requested_cases = list(HYDROGEN_SERIES_CASE_NAMES)
+        else:
+            requested_cases.extend(HYDROGEN_SERIES_CASE_NAMES)
+    requested_cases = _dedupe_preserve_order(requested_cases)
+    case_lookup = {case.name: case for case in CASES}
+    missing_cases = [name for name in requested_cases if name not in case_lookup]
+    if missing_cases:
+        raise SystemExit(f"Unknown case(s): {', '.join(missing_cases)}")
+    selected_cases = [case_lookup[name] for name in requested_cases]
     selected_methods = [method for method in METHODS if method in set(args.methods)]
     selected_selectors = [selector for selector in SELECTORS if selector in set(args.selectors)]
     selected_scopes = [scope for scope in SCOPES if scope in set(args.scopes)]
@@ -442,8 +597,14 @@ def main() -> None:
     summary_lines.append("")
 
     _write_csv(outdir / "results.csv", rows)
+    _write_molecule_plots(outdir, rows, selected_cases)
     (outdir / "SUMMARY.md").write_text("\n".join(summary_lines) + "\n")
     print(f"\nWrote: {outdir / 'results.csv'}")
+    for scope in selected_scopes:
+        for method in selected_methods:
+            stem = outdir / f"abs_err_vs_molecule_{scope}_{method}.png"
+            if stem.exists():
+                print(f"Wrote: {stem}")
     print(f"Wrote: {outdir / 'SUMMARY.md'}")
 
 

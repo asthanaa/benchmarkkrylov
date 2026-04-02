@@ -23,6 +23,7 @@ derived_thick_nkeep = MODULE.derived_thick_nkeep
 ensure_ezfio_defaults = MODULE.ensure_ezfio_defaults
 estimate_thick_storage_slots = MODULE.estimate_thick_storage_slots
 ensure_ccik_plugin_installed = MODULE.ensure_ccik_plugin_installed
+fixed_budget_bridge_kwargs = MODULE.fixed_budget_bridge_kwargs
 infer_qp_root_from_rebuild_manifest = MODULE.infer_qp_root_from_rebuild_manifest
 qp_parallel_env = MODULE.qp_parallel_env
 repair_qp_runtime_install_names = MODULE.repair_qp_runtime_install_names
@@ -123,6 +124,23 @@ def test_storage_estimate_uses_manual_nkeep_without_budget() -> None:
     assert estimate_thick_storage_slots(params) == 1_048_576
 
 
+def test_fixed_budget_bridge_kwargs_tracks_public_budgets() -> None:
+    bridge = fixed_budget_bridge_kwargs(
+        fixed_store_keep=65_536,
+        fixed_propagate_keep=2_048,
+        external_keep=1_000_000,
+    )
+    assert bridge["ccik_generator_keep"] == 2_048
+    assert bridge["ccik_max_parents_for_expansion"] == 2_048
+    assert bridge["ccik_selector_keep"] == 65_536
+    assert bridge["ccik_nkeep"] == 65_536
+    assert bridge["ccik_external_keep"] == 1_000_000
+    assert bridge["ccik_external_candidate_factor"] == 4
+    assert bridge["ccik_tmp_keep_factor"] == 4
+    assert bridge["ccik_preserve_prev_support"] is True
+    assert bridge["ccik_preserve_prev_support_cap"] == 2_048
+
+
 def test_ensure_ezfio_defaults_writes_threshold_knobs(tmp_path: Path) -> None:
     ezfio = tmp_path / "case.ezfio"
     ensure_ezfio_defaults(ezfio)
@@ -131,6 +149,8 @@ def test_ensure_ezfio_defaults_writes_threshold_knobs(tmp_path: Path) -> None:
     assert (ezfio / "ccik" / "ccik_fixed_propagate_keep").read_text(encoding="ascii").strip() == "512"
     assert float((ezfio / "ccik" / "ccik_store_abs_tol").read_text(encoding="ascii").strip()) == 0.0
     assert float((ezfio / "ccik" / "ccik_propagate_abs_tol").read_text(encoding="ascii").strip()) == 0.0
+    assert float((ezfio / "ccik" / "ccik_reference_total_energy").read_text(encoding="ascii").strip()) == 0.0
+    assert (ezfio / "ccik" / "ccik_print_iteration_error").read_text(encoding="ascii").strip() == "F"
 
 
 def test_resolve_installed_ccik_plugin_dir(tmp_path: Path) -> None:

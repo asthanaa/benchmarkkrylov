@@ -40,7 +40,9 @@ class OracleStepComparison:
 
 
 def _sorted_sparse_items(vec: SparseCIVector, limit: int | None = None) -> list[dict[str, object]]:
-    ranked = sorted(vec.coeffs.items(), key=lambda item: abs(item[1]), reverse=True)
+    ranked = sorted(vec.coeffs.items(), key=lambda item: (int(item[0][0]), int(item[0][1])))
+    ranked.sort(key=lambda item: abs(item[1]))
+    ranked.reverse()
     if limit is not None:
         ranked = ranked[: int(limit)]
     return [
