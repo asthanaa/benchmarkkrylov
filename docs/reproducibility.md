@@ -3,6 +3,65 @@
 This page is the shortest path from a fresh checkout to a working large-space
 QP study.
 
+## Fresh checkout: exact commands
+
+From a new machine or a new clone, run these commands in order.
+
+1. Clone the repository and enter it:
+
+```bash
+git clone https://github.com/asthanaa/CompressK.git
+cd CompressK
+```
+
+2. Create and activate the main Python environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+3. Install the repo package and local plotting/test tools:
+
+```bash
+pip install -e ".[quantum,plot,test]"
+```
+
+4. Create the dedicated DMRG environment:
+
+```bash
+bash scripts/bootstrap_dmrg_env.sh
+```
+
+5. Source Quantum Package:
+
+```bash
+source /path/to/quantum_package.rc
+```
+
+6. Rebuild the vendored plugin inside your Quantum Package installation:
+
+```bash
+python scripts/advanced/qp_ccik_bridge.py rebuild-plugin
+```
+
+7. Launch a representative `N2` QP study:
+
+```bash
+python scripts/advanced/n2_thick_iteration_study.py \
+  --input inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+```
+
+8. Open the generated plots:
+
+```bash
+CASE=inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3
+open "$CASE/energy_error_vs_iteration_comparison.png"
+open "$CASE/k0500_s050000/energy_error_vs_iteration.png"
+open "$CASE/k1000_s100000/energy_error_vs_iteration.png"
+```
+
 ## What runs where
 
 - Python backend:
@@ -97,7 +156,16 @@ Example:
 
 ```bash
 python scripts/advanced/n2_thick_iteration_study.py \
-  --input inputs/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+  --input inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+```
+
+Open the corresponding plots with:
+
+```bash
+CASE=inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3
+open "$CASE/energy_error_vs_iteration_comparison.png"
+open "$CASE/k0500_s050000/energy_error_vs_iteration.png"
+open "$CASE/k1000_s100000/energy_error_vs_iteration.png"
 ```
 
 That case demonstrates the restart-after-50 setup:
@@ -110,10 +178,16 @@ happens after `51 - 1 = 50` newly generated Krylov vectors.
 
 ## Large-case input policy
 
-For `CAS(14,14)` and larger study inputs, the tracked source definition keeps
-only one fixed-budget line unless a new sweep is intentionally being added:
+For the tracked `N2` studies, the default run pair is:
 
 - `Kprop = 500`
+- `Kstore = 50000`
+- `Kprop = 1000`
+- `Kstore = 100000`
+
+The exception is `CAS(14e,16o)`, which keeps a single fixed-budget line:
+
+- `Kprop = 5000`
 - `Kstore = 50000`
 
 This keeps large-case studies cheap enough to reproduce while still matching

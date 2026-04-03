@@ -19,9 +19,9 @@ What does **not** belong in git:
 
 Two bond-length groups are tracked here:
 
-- `inputs/`
+- `inputs/n2/1.5/`
   - `R = 1.50 Å`
-- `inputs/2.0/`
+- `inputs/n2/2.0/`
   - `R = 2.00 Å`
 
 For `CAS(14,14)` and larger, the tracked input definitions keep only the

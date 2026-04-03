@@ -1,8 +1,8 @@
 {
-  "name": "n2_cas12_12_R2p00_m10_c11_r3",
-  "label": "N2 CAS(12e,12o) R=2.00 A",
+  "name": "n2_cas12_12_R1p50_m10_c11_r3",
+  "label": "N2 CAS(12e,12o) R=1.50 A",
   "molecule": {
-    "distance_ang": 2.0,
+    "distance_ang": 1.5,
     "basis": "6-31g",
     "unit": "Angstrom",
     "charge": 0,
@@ -34,21 +34,6 @@
           "compression_policy": "fixed_budget",
           "fixed_store_keep": 50000,
           "fixed_propagate_keep": 500
-        }
-      }
-    },
-    {
-      "name": "k1000_s050000",
-      "label": "Kprop=1000 Kstore=50000",
-      "solver": {
-        "kind": "ccik_thick",
-        "params": {
-          "m_cycle": 10,
-          "ncycles": 11,
-          "nroot": 3,
-          "compression_policy": "fixed_budget",
-          "fixed_store_keep": 50000,
-          "fixed_propagate_keep": 1000
         }
       }
     },

@@ -16,24 +16,34 @@ The repository now has two clearly labeled paths:
 
 ## Start Here: Chemistry Student
 
-1. Install the package and PySCF:
+1. Create a local Python environment:
 
    ```bash
-   pip install -e ".[quantum]"
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install --upgrade pip
    ```
 
-2. Run the first example:
+2. Install the package and PySCF:
+
+   ```bash
+   pip install -e ".[quantum,plot,test]"
+   ```
+
+3. Run the first example:
 
    ```bash
    python examples/scripts/01_h2_ground_state.py
    ```
 
-3. Then continue with:
+4. Then continue with:
 
 - [Beginner docs index](docs/index.md)
 - [Quickstart](docs/quickstart.md)
 - [Chemistry glossary](docs/glossary.md)
 - [Examples guide](docs/examples.md)
+
+If you only want the beginner Python examples, you can stop there.
 
 ## Recommended learning path
 
@@ -125,31 +135,61 @@ The MkDocs source lives in `docs/`. The main starting pages are:
 
 ## Reproducible large-space setup
 
-For the maintained large-space workflow:
+For the maintained large-space `N2` workflow on a fresh machine:
 
-1. install the Python package:
+1. clone the repo and enter it:
+
+   ```bash
+   git clone https://github.com/asthanaa/CompressK.git
+   cd CompressK
+   ```
+
+2. create and activate the main Python environment:
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install --upgrade pip
+   ```
+
+3. install the repo package and local tooling:
 
    ```bash
    pip install -e ".[quantum,plot,test]"
    ```
 
-2. create the dedicated DMRG environment:
+4. create the dedicated DMRG environment:
 
    ```bash
    bash scripts/bootstrap_dmrg_env.sh
    ```
 
-3. rebuild the vendored QP plugin into your Quantum Package installation:
+5. source Quantum Package on your machine:
+
+   ```bash
+   source /path/to/quantum_package.rc
+   ```
+
+6. rebuild the vendored QP plugin into your Quantum Package installation:
 
    ```bash
    python scripts/advanced/qp_ccik_bridge.py rebuild-plugin
    ```
 
-4. launch a representative QP study:
+7. launch a representative QP `N2` study:
 
    ```bash
    python scripts/advanced/n2_thick_iteration_study.py \
-     --input inputs/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+     --input inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+   ```
+
+8. open the generated plots:
+
+   ```bash
+   CASE=inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3
+   open "$CASE/energy_error_vs_iteration_comparison.png"
+   open "$CASE/k0500_s050000/energy_error_vs_iteration.png"
+   open "$CASE/k1000_s100000/energy_error_vs_iteration.png"
    ```
 
 The DMRG bootstrap spec is tracked in `environment.dmrg.yml`. The binary

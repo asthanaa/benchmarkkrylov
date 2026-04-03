@@ -2,6 +2,14 @@
 
 ## Install
 
+For a fresh local development setup:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
 Editable install:
 
 ```bash

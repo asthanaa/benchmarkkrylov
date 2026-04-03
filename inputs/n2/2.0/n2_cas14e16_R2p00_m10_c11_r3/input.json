@@ -1,8 +1,8 @@
 {
-  "name": "n2_cas14_14_R1p50_m10_c11_r3",
-  "label": "N2 CAS(14e,14o) R=1.50 A",
+  "name": "n2_cas14e16_R2p00_m10_c11_r3",
+  "label": "N2 CAS(14e,16o) R=2.00 A",
   "molecule": {
-    "distance_ang": 1.5,
+    "distance_ang": 2.0,
     "basis": "6-31g",
     "unit": "Angstrom",
     "charge": 0,
@@ -10,7 +10,7 @@
     "verbose": 0
   },
   "cas": {
-    "ncas": 14,
+    "ncas": 16,
     "nelecas": 14,
     "ncore": 0
   },
@@ -33,8 +33,8 @@
   },
   "runs": [
     {
-      "name": "k0500_s050000",
-      "label": "Kprop=500 Kstore=50000",
+      "name": "k5000_s050000",
+      "label": "Kprop=5000 Kstore=50000",
       "solver": {
         "kind": "ccik_thick",
         "params": {
@@ -43,7 +43,7 @@
           "nroot": 3,
           "compression_policy": "fixed_budget",
           "fixed_store_keep": 50000,
-          "fixed_propagate_keep": 500
+          "fixed_propagate_keep": 5000
         }
       }
     }

@@ -6,13 +6,15 @@ This page is the shortest path from a clean checkout to a first chemistry result
 
 Python `3.11+` is required.
 
-For the beginner chemistry workflows:
+Create and activate a local virtual environment first:
 
 ```bash
-pip install -e ".[quantum]"
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 ```
 
-If you also want plotting and tests:
+For the beginner chemistry workflows:
 
 ```bash
 pip install -e ".[quantum,plot,test]"
@@ -82,3 +84,4 @@ It is still supported, but it is no longer the recommended first step for new us
 - Full examples guide: [examples.md](examples.md)
 - Config reference: [configuration.md](configuration.md)
 - Large-`N2` benchmark answer: [fixed_budget_results.md](fixed_budget_results.md)
+- Large-space QP setup: [reproducibility.md](reproducibility.md)

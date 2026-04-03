@@ -108,11 +108,15 @@ This remains more reliable here than relying on `qp run ccik`.
 The tracked `inputs/` tree is the source surface for live QP studies.
 
 - small and medium cases may keep several `(Kprop, Kstore)` lines
-- `CAS(14,14)` and larger keep only `Kprop=500`, `Kstore=50000` by default
+- the tracked default run pair is:
+  - `Kprop=500`, `Kstore=50000`
+  - `Kprop=1000`, `Kstore=100000`
+- `CAS(14e,16o)` is the exception and keeps:
+  - `Kprop=5000`, `Kstore=50000`
 
 The special restart-after-50 case is:
 
-- `inputs/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json`
+- `inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json`
 
 Its restart settings are:
 

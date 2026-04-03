@@ -46,6 +46,21 @@
           "fixed_propagate_keep": 500
         }
       }
+    },
+    {
+      "name": "k1000_s100000",
+      "label": "Kprop=1000 Kstore=100000",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 51,
+          "ncycles": 11,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 100000,
+          "fixed_propagate_keep": 1000
+        }
+      }
     }
   ]
 }
