@@ -20,6 +20,16 @@ With tests and plotting:
 pip install -e ".[quantum,plot,test]"
 ```
 
+For large-space reference calculations, also create the dedicated DMRG
+environment:
+
+```bash
+bash scripts/bootstrap_dmrg_env.sh
+```
+
+That environment is specified by `environment.dmrg.yml` and is created under
+`.conda/cka-dmrg-py312` by default.
+
 ## Running tests
 
 The repo now groups tests by purpose:
@@ -65,6 +75,8 @@ mkdocs build
 - beginner examples belong in `examples/`
 - research workflows belong in `scripts/advanced/`
 - shared advanced helpers belong in `scripts/_shared/`
+- vendored Quantum Package plugin sources belong in `ccik_qp/`
+- tracked study definitions belong in `inputs/`
 - public package code belongs in `src/ccik/`
 
 ## Adding a new example

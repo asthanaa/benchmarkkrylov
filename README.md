@@ -63,6 +63,7 @@ For convenience, the old root-level script names still exist as compatibility sh
 Useful advanced references:
 
 - [Advanced workflows](docs/advanced.md)
+- [Reproducible setup](docs/reproducibility.md)
 - [Fixed-budget N2 benchmark results](docs/fixed_budget_results.md)
 - [Quantum Package backend](docs/quantum_package_backend.md)
 - [Advanced scripts index](scripts/README.md)
@@ -108,6 +109,8 @@ For most learners, `ccik_ground_energy_dense_thick_restart(...)` is the best pla
 - `docs/`: narrative documentation
 - `scripts/advanced/`: research, benchmark, and QP workflows
 - `scripts/_shared/`: helpers used by advanced scripts
+- `ccik_qp/`: vendored Quantum Package plugin source
+- `inputs/`: tracked study definitions for live QP runs
 - `tests/`: beginner, core, and advanced checks
 
 ## Documentation site
@@ -118,3 +121,36 @@ The MkDocs source lives in `docs/`. The main starting pages are:
 - `docs/quickstart.md`
 - `docs/glossary.md`
 - `docs/examples.md`
+- `docs/reproducibility.md`
+
+## Reproducible large-space setup
+
+For the maintained large-space workflow:
+
+1. install the Python package:
+
+   ```bash
+   pip install -e ".[quantum,plot,test]"
+   ```
+
+2. create the dedicated DMRG environment:
+
+   ```bash
+   bash scripts/bootstrap_dmrg_env.sh
+   ```
+
+3. rebuild the vendored QP plugin into your Quantum Package installation:
+
+   ```bash
+   python scripts/advanced/qp_ccik_bridge.py rebuild-plugin
+   ```
+
+4. launch a representative QP study:
+
+   ```bash
+   python scripts/advanced/n2_thick_iteration_study.py \
+     --input inputs/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+   ```
+
+The DMRG bootstrap spec is tracked in `environment.dmrg.yml`. The binary
+environment under `.conda/` is local-only and intentionally not committed.

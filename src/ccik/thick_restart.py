@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import Callable
+
 from .params import CCIKThickRestartParams
 from .propagation import build_next_krylov_vector, format_krylov_step_diagnostics, krylov_step_diagnostics_as_dict
-from .ritz import solve_projected_ritz
+from .ritz import projected_ritz_mode_from_params, solve_projected_ritz
 from .selection import candidate_mode_from_params, compression_policy_from_params, make_full_hdiag_map
 from .sparse_ci import (
     SparseCIVector,
@@ -17,6 +20,39 @@ from .sparse_ci import (
     sparse_norm,
     threshold_prune_sparse,
 )
+
+
+@dataclass(frozen=True)
+class ThickRestartIterationRecord:
+    """Record one thick-restart Krylov expansion checkpoint."""
+
+    cycle: int
+    basis_size: int
+    restart_seed_count: int
+    cum_new_krylov: int
+    electronic_energy_eh: float
+
+
+def _maybe_trace_iteration(
+    iteration_callback: Callable[[ThickRestartIterationRecord], None] | None,
+    *,
+    cycle: int,
+    basis_size: int,
+    restart_seed_count: int,
+    cum_new_krylov: int,
+    electronic_energy_eh: float,
+) -> None:
+    if iteration_callback is None:
+        return
+    iteration_callback(
+        ThickRestartIterationRecord(
+            cycle=int(cycle),
+            basis_size=int(basis_size),
+            restart_seed_count=int(restart_seed_count),
+            cum_new_krylov=int(cum_new_krylov),
+            electronic_energy_eh=float(electronic_energy_eh),
+        )
+    )
 
 
 
@@ -69,6 +105,7 @@ def _cycle_ritz(
         nelec=nelec,
         params=params,
         hdiag_full=hdiag_full,
+        projected_ritz_mode=projected_ritz_mode_from_params(params, default="exact_on_basis"),
     )
     return projected.evals, projected.eigvecs
 
@@ -83,7 +120,10 @@ def _ccik_cycle_sparse_multi_start(
     start_vecs: list[SparseCIVector],
     params: CCIKThickRestartParams,
     hdiag_full: dict[tuple[int, int], float] | None,
-) -> tuple[np.ndarray, np.ndarray, list[SparseCIVector]]:
+    cycle_index: int,
+    cum_new_krylov_start: int = 0,
+    iteration_callback: Callable[[ThickRestartIterationRecord], None] | None = None,
+) -> tuple[np.ndarray, np.ndarray, list[SparseCIVector], int]:
     """One thick-restart cycle: build a compressed sparse Krylov basis from multiple starts."""
 
     from pyscf.fci import direct_spin1
@@ -94,6 +134,8 @@ def _ccik_cycle_sparse_multi_start(
     if len(Q) == 0:
         raise RuntimeError("All start vectors vanished after orthogonalization.")
 
+    restart_seed_count = int(len(Q))
+    cum_new_krylov = int(cum_new_krylov_start)
     frontier = list(range(len(Q)))
     head = 0
 
@@ -117,6 +159,26 @@ def _ccik_cycle_sparse_multi_start(
         if not q_next.coeffs:
             break
         Q.append(q_next)
+        cum_new_krylov += 1
+        if iteration_callback is not None:
+            evals_step, _ = _cycle_ritz(
+                Q=Q,
+                h1=h1,
+                eri8=eri8,
+                h2eff=h2eff,
+                norb=norb,
+                nelec=nelec,
+                params=params,
+                hdiag_full=hdiag_full,
+            )
+            _maybe_trace_iteration(
+                iteration_callback,
+                cycle=cycle_index,
+                basis_size=len(Q),
+                restart_seed_count=restart_seed_count,
+                cum_new_krylov=cum_new_krylov,
+                electronic_energy_eh=float(evals_step[0]),
+            )
         frontier.append(len(Q) - 1)
 
     evals, X = _cycle_ritz(
@@ -129,7 +191,7 @@ def _ccik_cycle_sparse_multi_start(
         params=params,
         hdiag_full=hdiag_full,
     )
-    return evals, X, Q
+    return evals, X, Q, cum_new_krylov
 
 
 
@@ -141,6 +203,7 @@ def ccik_ground_energy_dense_thick_restart(
     *,
     params: CCIKThickRestartParams | None = None,
     stats: dict[str, object] | None = None,
+    iteration_callback: Callable[[ThickRestartIterationRecord], None] | None = None,
 ) -> float:
     """Run sparse CCIK with thick restart.
 
@@ -212,6 +275,25 @@ def ccik_ground_energy_dense_thick_restart(
             if not q_next.coeffs:
                 break
             Q.append(q_next)
+            if iteration_callback is not None:
+                evals_step, _ = _cycle_ritz(
+                    Q=Q,
+                    h1=h1,
+                    eri8=eri8,
+                    h2eff=h2eff,
+                    norb=norb,
+                    nelec=nelec,
+                    params=params,
+                    hdiag_full=hdiag_full,
+                )
+                _maybe_trace_iteration(
+                    iteration_callback,
+                    cycle=1,
+                    basis_size=len(Q),
+                    restart_seed_count=1,
+                    cum_new_krylov=len(Q) - 1,
+                    electronic_energy_eh=float(evals_step[0]),
+                )
 
             if (len(Q) % checkpoint_every) == 0:
                 evals, _ = _cycle_ritz(
@@ -276,9 +358,10 @@ def ccik_ground_energy_dense_thick_restart(
 
     starts: list[SparseCIVector] = [q0]
     E_prev = None
+    cum_new_krylov = 0
 
     for cyc in range(params.ncycles):
-        evals, X, Q = _ccik_cycle_sparse_multi_start(
+        evals, X, Q, cum_new_krylov = _ccik_cycle_sparse_multi_start(
             h1,
             eri8,
             norb,
@@ -286,6 +369,9 @@ def ccik_ground_energy_dense_thick_restart(
             start_vecs=starts,
             params=params,
             hdiag_full=hdiag_full,
+            cycle_index=cyc + 1,
+            cum_new_krylov_start=cum_new_krylov,
+            iteration_callback=iteration_callback,
         )
 
         nroot_eff = min(params.nroot, X.shape[1])

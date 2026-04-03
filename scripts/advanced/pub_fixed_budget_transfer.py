@@ -897,6 +897,7 @@ def _attempt_cr2_cipsi_reference(
         return payload
 
     qp = discover_qp_paths_from_root(qp_root)
+    fci_binary = qp.qp_root / "src" / "fci" / "fci"
     runtime_dir.mkdir(parents=True, exist_ok=True)
     scratch_root.mkdir(parents=True, exist_ok=True)
     work_root = Path(tempfile.mkdtemp(prefix=f"{case.name}_cipsi_", dir=str(scratch_root)))
@@ -949,7 +950,7 @@ def _attempt_cr2_cipsi_reference(
                     "-lc",
                     (
                         f"source '{qp.quantum_package_rc}' >/dev/null 2>&1 && "
-                        f"qp_run fci '{runtime_ezfio}'"
+                        f"'{fci_binary}' '{runtime_ezfio}'"
                     ),
                 ],
                 cwd=None,

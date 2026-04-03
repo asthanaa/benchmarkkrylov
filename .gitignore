@@ -11,6 +11,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 .venv*/
+.conda/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -33,6 +34,22 @@ experiments/*
 !experiments/README.md
 # Local-only manuscript workspace
 manuscripts/
+inputs/**/launcher.log
+inputs/**/runner.log
+inputs/**/study_summary.json
+inputs/**/energy_error_vs_iteration*.png
+inputs/**/energy_error_vs_iteration*.pdf
+inputs/**/iteration_trace.csv
+inputs/**/iteration_trace.json
+inputs/**/live_status.json
+inputs/**/summary.json
+inputs/**/ccik_stdout.log
+inputs/**/ccik_stderr.log
+inputs/**/reference_*.json
+inputs/**/system_setup/
+inputs/**/k0500_s050000/
+inputs/**/k1000_s050000/
+inputs/**/k1000_s100000/
 
 # LaTeX build products
 *.aux

@@ -25,6 +25,7 @@ If you are new to the project, follow the beginner path first.
 ## Advanced path
 
 - [Advanced workflows](advanced.md)
+- [Reproducible setup](reproducibility.md)
 - [Fixed-budget N2 selector results](fixed_budget_results.md)
 - [Algorithms](algorithms.md)
 - [Quantum Package backend](quantum_package_backend.md)
@@ -39,4 +40,6 @@ If you are new to the project, follow the beginner path first.
 - `docs`: the narrative documentation
 - `scripts/advanced`: benchmark, sweep, parity, and QP workflows
 - `scripts/_shared`: helpers for the advanced workflows
+- `ccik_qp`: vendored Quantum Package plugin source
+- `inputs`: tracked study definitions for QP iteration studies
 - `tests`: checks that keep examples, API behavior, and advanced scripts working

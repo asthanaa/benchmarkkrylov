@@ -3,6 +3,22 @@
 This page records the current production status of the Quantum Package
 integration.
 
+## Repository layout
+
+The maintained QP source path in this repository is:
+
+- `ccik_qp/stable/ccik/`
+
+That directory is the tracked plugin source tree. At runtime, the compiled
+plugin binary still lives under your Quantum Package installation:
+
+- `QP_ROOT/plugins/ccik_qp/stable/ccik/ccik`
+
+The shared sync/rebuild helpers are in:
+
+- `scripts/_shared/qp_ccik_common.py`
+- `scripts/advanced/qp_ccik_bridge.py`
+
 ## Current answer
 
 For the validated large-`N2` runs in this repository, the production path is:
@@ -86,6 +102,25 @@ route:
 - run the compiled `ccik` plugin binary directly
 
 This remains more reliable here than relying on `qp run ccik`.
+
+## Representative study inputs
+
+The tracked `inputs/` tree is the source surface for live QP studies.
+
+- small and medium cases may keep several `(Kprop, Kstore)` lines
+- `CAS(14,14)` and larger keep only `Kprop=500`, `Kstore=50000` by default
+
+The special restart-after-50 case is:
+
+- `inputs/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json`
+
+Its restart settings are:
+
+- `m_cycle = 51`
+- `nroot = 3`
+
+Cycle 1 starts from one seed vector, so the first restart happens after
+`51 - 1 = 50` newly generated Krylov vectors.
 
 ## What this page is not claiming
 

@@ -69,6 +69,8 @@ def ccik_params_from_dict(d: dict[str, Any]) -> CCIKParams:
         base["orth_tol"] = float(d["orth_tol"])
     if "candidate_mode" in d:
         base["candidate_mode"] = str(d["candidate_mode"]).strip()
+    if "projected_ritz_mode" in d:
+        base["projected_ritz_mode"] = str(d["projected_ritz_mode"]).strip()
     if "compression_policy" in d:
         base["compression_policy"] = str(d["compression_policy"]).strip()
     if "selector_mode" in d:
@@ -103,6 +105,8 @@ def ccik_thick_restart_params_from_dict(d: dict[str, Any]) -> CCIKThickRestartPa
         base["orth_tol"] = float(d["orth_tol"])
     if "candidate_mode" in d:
         base["candidate_mode"] = str(d["candidate_mode"]).strip()
+    if "projected_ritz_mode" in d:
+        base["projected_ritz_mode"] = str(d["projected_ritz_mode"]).strip()
     if "compression_policy" in d:
         base["compression_policy"] = str(d["compression_policy"]).strip()
     if "selector_mode" in d:

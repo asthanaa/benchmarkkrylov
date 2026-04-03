@@ -1,7 +1,7 @@
 """Bridge script for running the Quantum Package ccik plugin from CompressK.
 
 This script assumes Quantum Package is installed separately and that the
-external plugin repository is available at `ccik_qp/` by default.
+vendored plugin source tree is available at `ccik_qp/` by default.
 
 It intentionally does not depend on PySCF. Its job is to:
 

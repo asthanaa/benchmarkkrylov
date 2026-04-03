@@ -20,6 +20,7 @@ Root-level script names still exist as compatibility shims, but the actual imple
 ## First files to read
 
 - `scripts/README.md`
+- `docs/reproducibility.md`
 - `docs/fixed_budget_results.md`
 - `docs/quantum_package_backend.md`
 - `src/ccik/README.md`
@@ -47,3 +48,16 @@ The current settled large-system result in this repository is:
 
 The benchmark details and the finished `N2 CAS(12e,12o)` to `CAS(14e,14o)`
 transfer story are summarized in [fixed_budget_results.md](fixed_budget_results.md).
+
+## Study inputs
+
+Tracked `inputs/` folders are source definitions, not artifact dumps.
+
+- keep `input.json`
+- keep the case folder names stable
+- treat generated plots, traces, logs, and `system_setup/` as local runtime
+  output
+
+For `CAS(14,14)` and larger, the tracked study definitions now keep only the
+`Kprop=500`, `Kstore=50000` line by default unless a new sweep is being added
+intentionally.

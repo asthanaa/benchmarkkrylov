@@ -10,7 +10,7 @@ import numpy as np
 
 from .params import CCIKParams
 from .propagation import build_next_krylov_vector, format_krylov_step_diagnostics, krylov_step_diagnostics_as_dict
-from .ritz import generalized_eigh, solve_projected_ritz
+from .ritz import generalized_eigh, projected_ritz_mode_from_params, solve_projected_ritz
 from .selection import candidate_mode_from_params, make_full_hdiag_map
 from .sparse_ci import (
     SparseCIVector,
@@ -152,6 +152,7 @@ def _ritz_energy(
         nelec=nelec,
         params=params,
         hdiag_full=hdiag_full,
+        projected_ritz_mode=projected_ritz_mode_from_params(params, default="exact_on_basis"),
     )
     return float(projected.evals[0]), projected.Hproj, projected.Sproj
 

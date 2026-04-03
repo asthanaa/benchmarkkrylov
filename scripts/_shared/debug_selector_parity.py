@@ -722,16 +722,28 @@ def _generate_qp_fcidump(qp: QPPaths, ezfio: Path, outdir: Path, *, case_spec: D
         fcidump_binary = qp.qp_root / "src" / "tools" / "fcidump"
         quoted_rc = shlex.quote(str(qp.quantum_package_rc))
         quoted_binary = shlex.quote(str(fcidump_binary))
-        quoted_ezfio = shlex.quote(str(ezfio))
-        subprocess.run(
-            ["/bin/bash", "-lc", f"source {quoted_rc} && {quoted_binary} {quoted_ezfio}"],
-            check=True,
+        short_ezfio = shlex.quote(ezfio.name)
+        tmpdir = outdir / "fcidump_tmp"
+        if tmpdir.exists():
+            shutil.rmtree(tmpdir)
+        tmpdir.mkdir(parents=True, exist_ok=True)
+        run = subprocess.run(
+            ["/bin/bash", "-lc", f"source {quoted_rc} && {quoted_binary} {short_ezfio}"],
+            check=False,
             text=True,
             cwd=ezfio.parent,
             capture_output=True,
-            env={**os.environ, "QP_ROOT": str(qp.qp_root)},
+            env={**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(tmpdir)},
         )
-        raw = Path(str(ezfio) + ".FCIDUMP")
+        (outdir / "fcidump_stdout.log").write_text(run.stdout, encoding="utf-8")
+        (outdir / "fcidump_stderr.log").write_text(run.stderr, encoding="utf-8")
+        if run.returncode != 0:
+            raise RuntimeError(
+                "QP FCIDUMP export failed "
+                f"(returncode={run.returncode}); see "
+                f"{outdir / 'fcidump_stdout.log'} and {outdir / 'fcidump_stderr.log'}"
+            )
+        raw = ezfio.parent / f"{ezfio.name}.FCIDUMP"
         shutil.copy2(raw, copied)
         source_kind = "generated_from_qp"
     data = pyscf_fcidump.read(str(copied), verbose=False)

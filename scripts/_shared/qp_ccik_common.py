@@ -21,6 +21,9 @@ from typing import Mapping
 
 
 ROOT = Path(__file__).resolve().parents[2]
+# The workspace copy under `ccik_qp/` is the tracked source tree. The compiled
+# binary that QP runs lives under `QP_ROOT/plugins/ccik_qp/...` and is rebuilt
+# from this source when the bridge helpers sync the plugin.
 DEFAULT_EZFIO_DONOR = ROOT / "docs" / "assets" / "local_qp_seeds" / "n2_cas14_14_R2p50" / "n2.ezfio"
 DEFAULT_SMOKE_EZFIO_DONOR = ROOT / "docs" / "assets" / "local_qp_seeds" / "n2_cas12_12_R2p50" / "n2.ezfio"
 WORKSPACE_CCIK_PLUGIN = ROOT / "ccik_qp" / "stable" / "ccik"
@@ -98,6 +101,9 @@ def fixed_budget_bridge_kwargs(
     fixed_propagate_keep: int,
     external_keep: int,
 ) -> dict[str, int | float | bool]:
+    # These bridge kwargs make the public fixed-budget knobs explicit:
+    # `fixed_store_keep` is the stored-vector cap (`Kstore`) and
+    # `fixed_propagate_keep` is the propagation cap (`Kprop`).
     store_keep = max(1, int(fixed_store_keep))
     propagate_keep = max(1, int(fixed_propagate_keep))
     return {
@@ -136,11 +142,22 @@ def bash(cmd: str, env: dict[str, str] | None = None) -> subprocess.CompletedPro
 def discover_qp_paths_from_root(root: Path) -> QPPaths:
     root = Path(root).resolve()
     qp_create_ezfio_path = root / "ocaml" / "qp_create_ezfio"
+    qp_create_ezfio_native_path = root / "ocaml" / "qp_create_ezfio.native"
+    qp_set_mo_class_path = root / "ocaml" / "qp_set_mo_class"
+    qp_set_mo_class_native_path = root / "ocaml" / "qp_set_mo_class.native"
     return QPPaths(
         qp_root=root,
         quantum_package_rc=root / "quantum_package.rc",
-        qp_set_mo_class=root / "ocaml" / "qp_set_mo_class",
-        qp_create_ezfio=str(qp_create_ezfio_path) if qp_create_ezfio_path.exists() else "qp_create_ezfio",
+        qp_set_mo_class=(
+            qp_set_mo_class_path
+            if qp_set_mo_class_path.exists()
+            else (qp_set_mo_class_native_path if qp_set_mo_class_native_path.exists() else root / "ocaml" / "qp_set_mo_class")
+        ),
+        qp_create_ezfio=(
+            str(qp_create_ezfio_path)
+            if qp_create_ezfio_path.exists()
+            else (str(qp_create_ezfio_native_path) if qp_create_ezfio_native_path.exists() else "qp_create_ezfio")
+        ),
         scf_binary=root / "src" / "hartree_fock" / "scf",
         ccik_binary=root / "plugins" / "ccik_qp" / "stable" / "ccik" / "ccik",
         pt2_binary=root / "src" / "fci" / "pt2",
@@ -962,6 +979,30 @@ def format_orbital_range(start: int, stop: int) -> str:
     return f"[{start}-{stop}]"
 
 
+def _set_mo_class_direct(qp: QPPaths, ezfio: Path, *, mo_num: int, ncore: int, ncas: int) -> None:
+    write_ezfio_value(ezfio, "mo_basis/mo_num", int(mo_num))
+    script = f"""
+from ezfio import ezfio
+ezfio.set_file(r"{ezfio}")
+mo_num = int(ezfio.get_mo_basis_mo_num())
+mo_class = []
+for i in range(1, mo_num + 1):
+    if i <= {int(ncore)}:
+        mo_class.append("Core")
+    elif i <= {int(ncore + ncas)}:
+        mo_class.append("Active")
+    else:
+        mo_class.append("Deleted")
+ezfio.set_mo_basis_mo_class(mo_class)
+ezfio.set_mo_basis_mo_symmetry([1] * mo_num)
+"""
+    quoted_rc = shlex.quote(str(qp.quantum_package_rc))
+    bash(
+        f"source {quoted_rc} >/dev/null 2>&1 && python3 - <<'PY'\n{script}\nPY",
+        env={**os.environ, "QP_ROOT": str(qp.qp_root)},
+    )
+
+
 def _read_ezfio_text(ezfio: Path, relpath: str) -> str | None:
     target = ezfio / relpath
     if not target.exists():
@@ -1232,35 +1273,30 @@ def run_qp_setup(
     ncas: int,
     nmo_total: int,
 ) -> None:
+    quoted_rc = shlex.quote(str(qp.quantum_package_rc))
+    quoted_qp_create_ezfio = shlex.quote(str(qp.qp_create_ezfio))
+    quoted_basis = shlex.quote(str(basis))
+    quoted_ezfio = shlex.quote(str(ezfio))
+    quoted_xyz = shlex.quote(str(xyz))
+    quoted_scf = shlex.quote(str(qp.scf_binary))
     bash(
-        f"source {qp.quantum_package_rc} && "
-        f"{qp.qp_create_ezfio} -b {basis} -m 1 -o {ezfio} {xyz}"
+        f"source {quoted_rc} && "
+        f"{quoted_qp_create_ezfio} -b {quoted_basis} -m 1 -o {quoted_ezfio} {quoted_xyz}"
     )
     ensure_ezfio_defaults(ezfio, qp_root=qp.qp_root)
     bash(
-        f"source {qp.quantum_package_rc} && "
-        f"qp set_file {ezfio} && "
+        f"source {quoted_rc} && "
+        f"qp set_file {quoted_ezfio} && "
         "qp set scf_utils thresh_scf 1.e-10 && "
         "qp set ao_two_e_ints io_ao_two_e_integrals Write && "
         "qp set mo_two_e_ints io_mo_two_e_integrals Write"
     )
     ensure_ezfio_defaults(ezfio, qp_root=qp.qp_root)
     bash(
-        f"source {qp.quantum_package_rc} && "
-        f"{qp.scf_binary} {ezfio}"
+        f"source {quoted_rc} && "
+        f"{quoted_scf} {quoted_ezfio}"
     )
-
-    first_act = ncore + 1
-    last_act = ncore + ncas
-    last_del = nmo_total
-    pieces = [f"source {qp.quantum_package_rc} && {qp.qp_set_mo_class}"]
-    if ncore > 0:
-        pieces.append(f'--core="{format_orbital_range(1, ncore)}"')
-    pieces.append(f'--act="{format_orbital_range(first_act, last_act)}"')
-    if last_act < last_del:
-        pieces.append(f'--del="{format_orbital_range(last_act + 1, last_del)}"')
-    pieces.append(str(ezfio))
-    bash(" ".join(pieces))
+    _set_mo_class_direct(qp, ezfio, mo_num=nmo_total, ncore=ncore, ncas=ncas)
 
 
 PARAM_ORDER = (

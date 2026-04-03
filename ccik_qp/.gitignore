@@ -1,0 +1,8 @@
+.DS_Store
+*.o
+*.mod
+*.i90
+*.irp.f90
+*.ezfio
+_build/
+.qp_plugin_cache/

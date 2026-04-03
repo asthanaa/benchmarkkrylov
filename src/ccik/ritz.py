@@ -17,6 +17,23 @@ from .sparse_ci import SparseCIVector, inner_sparse, sparse_from_dense
 DetKey = tuple[int, int]
 
 
+def projected_ritz_mode_from_params(params: Any, *, default: str = "approximate") -> str:
+    raw = str(getattr(params, "projected_ritz_mode", default)).strip().lower().replace("-", "_")
+    aliases = {
+        "exact": "exact_on_basis",
+        "exact_on_basis": "exact_on_basis",
+        "exact_basis": "exact_on_basis",
+        "approximate": "approximate",
+        "approx": "approximate",
+    }
+    try:
+        return aliases[raw]
+    except KeyError as exc:
+        raise ValueError(
+            f"Unknown projected_ritz_mode {raw!r}. Expected one of: exact_on_basis, approximate."
+        ) from exc
+
+
 @dataclass(frozen=True)
 class ProjectedRitzData:
     """Projected Ritz solve data for a fixed sparse Krylov basis."""
@@ -133,21 +150,31 @@ def solve_projected_ritz(
     params: Any,
     hdiag_full: dict[DetKey, float] | None = None,
     candidate_pool_override: set[DetKey] | None = None,
+    projected_ritz_mode: str = "approximate",
 ) -> ProjectedRitzData:
     """Build the projected Krylov matrices and solve the generalized Ritz problem."""
 
-    projected_columns = build_projected_columns(
-        Q,
-        h1=h1,
-        eri8=eri8,
-        h2eff=h2eff,
-        norb=norb,
-        nelec=nelec,
-        params=params,
-        hdiag_full=hdiag_full,
-        candidate_pool_override=candidate_pool_override,
-    )
-    Hproj, Sproj = build_projected_matrices_from_columns(Q, projected_columns)
+    mode = projected_ritz_mode_from_params(params, default=projected_ritz_mode)
+    if mode == "exact_on_basis":
+        Hproj, Sproj, projected_columns = build_exact_projected_matrices(
+            Q,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+        )
+    else:
+        projected_columns = build_projected_columns(
+            Q,
+            h1=h1,
+            eri8=eri8,
+            h2eff=h2eff,
+            norb=norb,
+            nelec=nelec,
+            params=params,
+            hdiag_full=hdiag_full,
+            candidate_pool_override=candidate_pool_override,
+        )
+        Hproj, Sproj = build_projected_matrices_from_columns(Q, projected_columns)
     evals, eigvecs = generalized_eigh(Hproj, Sproj)
     return ProjectedRitzData(
         evals=evals,

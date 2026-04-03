@@ -45,6 +45,8 @@ class CCIKParams:
     fixed_propagate_keep: int = 512
     # Candidate discovery mode: connected_sd, selected_ci (default), stochastic, or full.
     candidate_mode: str = "selected_ci"
+    # Projected Ritz policy for deterministic solvers: exact_on_basis or approximate.
+    projected_ritz_mode: str = "exact_on_basis"
     # Selector mode used to rank the projected H q_k, its orthogonal residual,
     # or the current lowest Ritz state in fixed-budget mode.
     selector_mode: str = "abs_residual"
@@ -108,6 +110,7 @@ class CCIKThickRestartParams:
     fixed_store_keep: int = 65_536
     fixed_propagate_keep: int = 512
     candidate_mode: str = "selected_ci"
+    projected_ritz_mode: str = "exact_on_basis"
     # Selector mode used to rank the projected H q_k, its orthogonal residual,
     # or the current lowest Ritz state in fixed-budget mode.
     selector_mode: str = "abs_residual"

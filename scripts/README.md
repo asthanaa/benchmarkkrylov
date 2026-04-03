@@ -19,6 +19,8 @@ If you are learning the project for the first time, start in:
 
 - `scripts/advanced/qp_ccik_bridge.py`
 - `scripts/_shared/qp_ccik_common.py`
+- `scripts/reference_backends.py`
+- `scripts/advanced/n2_thick_iteration_study.py`
 
 ### N2 benchmark and sweep workflows
 
@@ -48,3 +50,15 @@ python scripts/n2_qp_fixed_budget_sweep_plots.py
 ```
 
 still work through shim files, but the implementation now lives in `scripts/advanced/`.
+
+## Reproducible setup
+
+The large-case QP studies assume:
+
+- the vendored plugin source in `ccik_qp/`
+- a separate Quantum Package installation for the compiled binary
+- the dedicated Python 3.12 DMRG environment created by
+  `scripts/bootstrap_dmrg_env.sh`
+
+Use [docs/reproducibility.md](../docs/reproducibility.md) as the primary setup
+reference before running large-space studies.
