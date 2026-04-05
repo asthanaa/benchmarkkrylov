@@ -32,6 +32,31 @@ DEFAULT_QP_REBUILD_MANIFEST = (
 )
 DEFAULT_QP_FORBIDDEN_PREFIXES = (Path("/private/tmp/qp2_fresh_20260320"),)
 DEFAULT_MACOS_DIAGNOSTIC_REPORTS_DIR = Path.home() / "Library" / "Logs" / "DiagnosticReports"
+DEFAULT_TALON_OPENBLAS_LIB = Path(
+    "/cm/shared/apps/spack/opt/spack/linux-rhel9-icelake/gcc-11.3.1/"
+    "openblas-0.3.27-tjsex4shr6vfowj3tgp23jyvftvaxl2q/lib"
+)
+
+
+def _prepend_env_path(env: dict[str, str], key: str, path: str) -> None:
+    current = str(env.get(key, "")).strip()
+    env[key] = path if not current else f"{path}:{current}"
+
+
+def _with_qp_build_env(base_env: Mapping[str, str] | None = None) -> dict[str, str]:
+    env = dict(os.environ if base_env is None else base_env)
+    openblas_lib = str(
+        Path(
+            os.environ.get(
+                "CKA_OPENBLAS_LIB",
+                str(DEFAULT_TALON_OPENBLAS_LIB),
+            )
+        ).expanduser()
+    )
+    if openblas_lib:
+        _prepend_env_path(env, "LD_LIBRARY_PATH", openblas_lib)
+        _prepend_env_path(env, "LIBRARY_PATH", openblas_lib)
+    return env
 
 
 @dataclass(frozen=True)
@@ -939,7 +964,7 @@ def rebuild_ccik_plugin(
         text=True,
         capture_output=True,
         cwd=str(run_cwd),
-        env={**os.environ, "QP_ROOT": str(qp.qp_root)},
+        env={**_with_qp_build_env(), "QP_ROOT": str(qp.qp_root)},
     )
 
     runtime_patch_summary = None

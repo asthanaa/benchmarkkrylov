@@ -52,6 +52,7 @@ from ccik.thick_restart import ThickRestartIterationRecord  # noqa: E402
 from n2_utils import make_n2_atom  # noqa: E402
 from qp_ccik_common import (  # noqa: E402
     CCIKParams as QPCCIKParams,
+    _with_qp_build_env,
     discover_qp_paths_from_root,
     ensure_ezfio_defaults,
     fixed_budget_bridge_kwargs,
@@ -80,7 +81,7 @@ QP_ROOT_CANDIDATES = (
     Path("/private/tmp/qp2_fresh_20260320"),
 )
 
-QP_N2_SETUP_DONOR = (
+QP_N2_SETUP_DONOR_CANDIDATES = (
     ROOT
     / "docs"
     / "assets"
@@ -89,11 +90,18 @@ QP_N2_SETUP_DONOR = (
     / "systems"
     / "n2_cas12_12_R2p50"
     / "system_setup"
-    / "n2.ezfio"
+    / "n2.ezfio",
+    ROOT / "inputs" / "n2" / "2.0" / "n2_cas8_8_R2p00_m10_c11_r3" / "system_setup" / "n2.ezfio",
 )
 
 QP_THICK_LINE_RE = re.compile(
     r"ccik\(thick\)\s+cycle=\s*(?P<cycle>\d+)\s+iter=\s*(?P<iter>\d+)\s+"
+    r"total=\s*(?P<total>[+-]?\d+\.\d+)\s+ref=\s*(?P<ref>[+-]?\d+\.\d+)\s+"
+    r"delta_mEh=\s*(?P<delta>[+-]?\d+\.\d+)"
+)
+
+QP_BASELINE_LINE_RE = re.compile(
+    r"ccik\(baseline\)\s+iter=\s*(?P<iter>\d+)\s+"
     r"total=\s*(?P<total>[+-]?\d+\.\d+)\s+ref=\s*(?P<ref>[+-]?\d+\.\d+)\s+"
     r"delta_mEh=\s*(?P<delta>[+-]?\d+\.\d+)"
 )
@@ -158,6 +166,10 @@ def _trace_paths(run_dir: Path) -> tuple[Path, Path]:
     return run_dir / "iteration_trace.csv", run_dir / "iteration_trace.json"
 
 
+def _runtime_ezfio_path(run_dir: Path, ezfio_name: str) -> Path:
+    return run_dir / "runtime" / ezfio_name
+
+
 def write_trace_outputs(run_dir: Path, rows: list[dict[str, Any]]) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     csv_path, json_path = _trace_paths(run_dir)
@@ -173,6 +185,7 @@ def write_trace_outputs(run_dir: Path, rows: list[dict[str, Any]]) -> None:
                 "total_energy_eh",
                 "delta_mHa",
                 "abs_delta_mHa",
+                "elapsed_s",
             ),
         )
         writer.writeheader()
@@ -371,6 +384,10 @@ def _resolve_qp_reference(
     dmrg_memory_gb = int(study_cfg.get("dmrg_memory_gb", 64))
     dmrg_threads = int(study_cfg.get("dmrg_threads", omp_threads))
     dmrg_conv_tol = float(study_cfg.get("dmrg_conv_tol", 1.0e-8))
+    dmrg_bond_dims = study_cfg.get("dmrg_bond_dims")
+    dmrg_noises = study_cfg.get("dmrg_noises")
+    dmrg_dav_thrds = study_cfg.get("dmrg_dav_thrds")
+    dmrg_n_steps = int(study_cfg.get("dmrg_n_steps", 40))
     dmrg_total_scratch_gb = float(study_cfg.get("dmrg_total_scratch_gb", DEFAULT_TOTAL_SCRATCH_GB))
     dmrg_max_file_mb = int(study_cfg.get("dmrg_max_file_mb", DEFAULT_MAX_FILE_MB))
     dmrg_scratch_root = Path(str(study_cfg.get("dmrg_scratch_root", DEFAULT_DMRG_SCRATCH_ROOT)))
@@ -406,6 +423,39 @@ def _resolve_qp_reference(
         attempts.append(chosen)
         if not bool(chosen.get("success")):
             raise RuntimeError(f"Bounded CIPSI reference failed: {chosen.get('failure', 'unknown failure')}")
+    elif effective_mode == "dmrg_only":
+        dmrg_summary = load_or_compute_dmrg_reference_from_fcidump(
+            fcidump_path=fcidump_path,
+            outdir=setup_dir,
+            force=force,
+            memory_gb=dmrg_memory_gb,
+            threads=dmrg_threads,
+            conv_tol=dmrg_conv_tol,
+            dmrg_python=dmrg_python,
+            max_file_mb=dmrg_max_file_mb,
+            max_total_scratch_gb=dmrg_total_scratch_gb,
+            scratch_root=dmrg_scratch_root,
+            bond_dims=None if dmrg_bond_dims is None else tuple(int(x) for x in dmrg_bond_dims),
+            noises=None if dmrg_noises is None else tuple(float(x) for x in dmrg_noises),
+            dav_thrds=None if dmrg_dav_thrds is None else tuple(float(x) for x in dmrg_dav_thrds),
+            n_steps=dmrg_n_steps,
+        )
+        attempts.append(dmrg_summary)
+        if not bool(dmrg_summary.get("success")):
+            failure_payload = {
+                "requested_reference_mode": requested_mode,
+                "effective_reference_mode": effective_mode,
+                "chosen_reference_kind": None,
+                "reference_total_energy_eh": None,
+                "attempts": attempts,
+                "failure": "DMRG reference failed in dmrg_only mode",
+            }
+            choice_path.write_text(json.dumps(failure_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            raise RuntimeError(
+                "DMRG reference failed in dmrg_only mode; see "
+                f"{setup_dir / 'reference_dmrg_attempt.json'}"
+            )
+        chosen = dmrg_summary
     elif effective_mode == "dmrg_then_cipsi":
         dmrg_summary = load_or_compute_dmrg_reference_from_fcidump(
             fcidump_path=fcidump_path,
@@ -418,6 +468,10 @@ def _resolve_qp_reference(
             max_file_mb=dmrg_max_file_mb,
             max_total_scratch_gb=dmrg_total_scratch_gb,
             scratch_root=dmrg_scratch_root,
+            bond_dims=None if dmrg_bond_dims is None else tuple(int(x) for x in dmrg_bond_dims),
+            noises=None if dmrg_noises is None else tuple(float(x) for x in dmrg_noises),
+            dav_thrds=None if dmrg_dav_thrds is None else tuple(float(x) for x in dmrg_dav_thrds),
+            n_steps=dmrg_n_steps,
         )
         attempts.append(dmrg_summary)
         if bool(dmrg_summary.get("success")):
@@ -513,7 +567,7 @@ def _ensure_qp_study_binaries(qp_root: Path) -> None:
         check=True,
         text=True,
         cwd=str(qp.qp_root),
-        env={**os.environ, "QP_ROOT": str(qp.qp_root)},
+        env={**_with_qp_build_env(), "QP_ROOT": str(qp.qp_root)},
         capture_output=True,
     )
 
@@ -554,11 +608,13 @@ def _prepare_n2_setup_from_donor(
     ncas: int,
     nmo_total: int,
 ) -> None:
-    if not QP_N2_SETUP_DONOR.exists():
-        raise FileNotFoundError(f"Missing N2 donor EZFIO for QP study setup: {QP_N2_SETUP_DONOR}")
+    donor = next((path for path in QP_N2_SETUP_DONOR_CANDIDATES if path.exists()), None)
+    if donor is None:
+        candidates = "\n".join(str(path) for path in QP_N2_SETUP_DONOR_CANDIDATES)
+        raise FileNotFoundError(f"Missing N2 donor EZFIO for QP study setup. Checked:\n{candidates}")
     if ezfio_path.exists():
         shutil.rmtree(ezfio_path)
-    shutil.copytree(QP_N2_SETUP_DONOR, ezfio_path)
+    shutil.copytree(donor, ezfio_path)
     qp = discover_qp_paths_from_root(qp_root)
     ensure_ezfio_defaults(ezfio_path, qp_root=qp_root)
     _rewrite_n2_geometry_direct(qp_root, ezfio_path, distance_ang=distance_ang)
@@ -566,18 +622,6 @@ def _prepare_n2_setup_from_donor(
     write_ezfio_value(ezfio_path, "ao_two_e_ints/io_ao_two_e_integrals", "Write")
     write_ezfio_value(ezfio_path, "mo_two_e_ints/io_mo_two_e_integrals", "Write")
     write_ezfio_value(ezfio_path, "mo_one_e_ints/io_mo_one_e_integrals", "None")
-    subprocess.run(
-        [
-            "/bin/bash",
-            "-lc",
-            f"source {shlex.quote(str(qp.quantum_package_rc.resolve()))} >/dev/null 2>&1 || true && {shlex.quote(str(qp.scf_binary.resolve()))} {shlex.quote(str(ezfio_path.resolve()))}",
-        ],
-        check=True,
-        text=True,
-        cwd=str(ezfio_path.parent),
-        env={**os.environ, "QP_ROOT": str(qp_root), **qp_parallel_env(8)},
-        capture_output=True,
-    )
     from qp_ccik_common import _set_mo_class_direct as _qp_set_mo_class_direct  # noqa: PLC0415
 
     _qp_set_mo_class_direct(qp, ezfio_path, mo_num=nmo_total, ncore=ncore, ncas=ncas)
@@ -612,7 +656,10 @@ def _prepare_case_qp(spec: dict[str, Any], *, case_dir: Path, force: bool = Fals
                 reference_total_eh=float(payload["reference_total_energy_eh"]),
                 reference_summary=dict(payload.get("reference_summary", {})),
                 reference_mode=str(payload.get("effective_reference_mode", payload.get("reference_mode", "exact_fci"))),
-                omp_threads=int(payload.get("omp_threads", omp_threads)),
+                # Thread count is a live run setting, not part of the cached
+                # system setup. Reusing the setup should not silently pin later
+                # runs to an old OMP value.
+                omp_threads=int(omp_threads),
             )
 
     if setup_dir.exists():
@@ -629,15 +676,31 @@ def _prepare_case_qp(spec: dict[str, Any], *, case_dir: Path, force: bool = Fals
     )
     nmo_total = int(mol.nao_nr())
     _create_xyz(xyz_path, make_n2_atom(float(molecule["distance_ang"])), comment=str(spec["label"]))
-    run_qp_setup(
-        qp,
-        basis=str(molecule["basis"]),
-        ezfio=ezfio_path,
-        xyz=xyz_path,
-        ncore=int(cas_cfg.get("ncore", 0)),
-        ncas=int(cas_cfg["ncas"]),
-        nmo_total=nmo_total,
-    )
+    setup_backend = "fresh_qp_setup"
+    setup_fallback_reason: str | None = None
+    try:
+        run_qp_setup(
+            qp,
+            basis=str(molecule["basis"]),
+            ezfio=ezfio_path,
+            xyz=xyz_path,
+            ncore=int(cas_cfg.get("ncore", 0)),
+            ncas=int(cas_cfg["ncas"]),
+            nmo_total=nmo_total,
+        )
+    except Exception as exc:
+        if str(molecule["basis"]).strip().lower() != "6-31g":
+            raise
+        _prepare_n2_setup_from_donor(
+            qp_root=qp_root,
+            ezfio_path=ezfio_path,
+            distance_ang=float(molecule["distance_ang"]),
+            ncore=int(cas_cfg.get("ncore", 0)),
+            ncas=int(cas_cfg["ncas"]),
+            nmo_total=nmo_total,
+        )
+        setup_backend = "donor_ezfio_fallback"
+        setup_fallback_reason = f"{type(exc).__name__}: {exc}"
     generated_fcidump = dsp._generate_qp_fcidump(qp, ezfio_path, setup_dir, case_spec=None)
     h1, eri8, norb, nelec, ecore = dsp._load_qp_fcidump_hamiltonian(generated_fcidump)
     reference_summary, reference_choice = _resolve_qp_reference(
@@ -669,6 +732,8 @@ def _prepare_case_qp(spec: dict[str, Any], *, case_dir: Path, force: bool = Fals
         "reference_summary": reference_summary,
         "reference_choice_path": str(setup_dir / "reference_choice.json"),
         "basis": str(molecule["basis"]),
+        "setup_backend": setup_backend,
+        "setup_fallback_reason": setup_fallback_reason,
         "distance_ang": float(molecule["distance_ang"]),
         "ncas": int(cas_cfg["ncas"]),
         "nelecas": int(cas_cfg["nelecas"]),
@@ -696,39 +761,116 @@ def _make_qp_thick_params(
     run_params: dict[str, Any],
     reference_total_eh: float,
 ) -> QPCCIKParams:
+    def _get_optional_int(name: str) -> int | None:
+        value = run_params.get(name)
+        return None if value is None else int(value)
+
+    def _get_optional_float(name: str) -> float | None:
+        value = run_params.get(name)
+        return None if value is None else float(value)
+
+    def _get_optional_bool(name: str) -> bool | None:
+        value = run_params.get(name)
+        return None if value is None else bool(value)
+
+    def _get_optional_str(name: str) -> str | None:
+        value = run_params.get(name)
+        if value is None:
+            return None
+        text = str(value).strip()
+        return text if text else None
+
     fixed_store_keep = int(run_params["fixed_store_keep"])
     fixed_propagate_keep = int(run_params["fixed_propagate_keep"])
     m_cycle = int(run_params["m_cycle"])
     ncycles = int(run_params["ncycles"])
     nroot = int(run_params["nroot"])
-    selector_mode = str(run_params.get("selector_mode", "abs_residual"))
+    selector_mode = _get_optional_str("selector_mode") or "abs_residual"
+    matvec_backend = _get_optional_str("matvec_backend") or "connected_sd_fullq"
+    compression_policy = _get_optional_str("compression_policy") or "fixed_budget"
+    conv_tol = _get_optional_float("conv_tol")
+    ritz_overlap_tol = _get_optional_float("ritz_overlap_tol")
+    ritz_max_drop = _get_optional_float("ritz_max_drop")
+    save_final_wf = _get_optional_bool("save_final_wf")
+    use_existing_wf = _get_optional_bool("use_existing_wf")
+    restart_from_run = _get_optional_str("restart_from_run")
+    do_post_pt2 = _get_optional_bool("do_post_pt2")
+    verbose = _get_optional_bool("verbose")
+    if restart_from_run is not None and use_existing_wf is None:
+        use_existing_wf = True
     bridge = fixed_budget_bridge_kwargs(
         fixed_store_keep=fixed_store_keep,
         fixed_propagate_keep=fixed_propagate_keep,
         external_keep=max(2048, fixed_store_keep),
     )
+    if compression_policy != str(bridge.get("ccik_compression_policy", "fixed_budget")):
+        bridge["ccik_compression_policy"] = compression_policy
+    int_overrides = {
+        "ccik_generator_keep": _get_optional_int("generator_keep"),
+        "ccik_max_parents_for_expansion": _get_optional_int("max_parents_for_expansion"),
+        "ccik_selector_keep": _get_optional_int("selector_keep"),
+        "ccik_external_keep": _get_optional_int("external_keep"),
+        "ccik_external_candidate_factor": _get_optional_int("external_candidate_factor"),
+        "ccik_fixed_store_keep": _get_optional_int("fixed_store_keep_override"),
+        "ccik_fixed_propagate_keep": _get_optional_int("fixed_propagate_keep_override"),
+        "ccik_nkeep": _get_optional_int("nkeep"),
+        "ccik_tmp_keep_factor": _get_optional_int("tmp_keep_factor"),
+        "ccik_preserve_prev_support_cap": _get_optional_int("preserve_prev_support_cap"),
+        "ccik_total_det_budget": _get_optional_int("total_det_budget"),
+    }
+    float_overrides = {
+        "ccik_generator_fraction": _get_optional_float("generator_fraction"),
+        "ccik_generator_abs_coeff_cutoff": _get_optional_float("generator_abs_coeff_cutoff"),
+        "ccik_pt2_rank_weight": _get_optional_float("pt2_rank_weight"),
+        "ccik_store_abs_tol": _get_optional_float("store_abs_tol"),
+        "ccik_propagate_abs_tol": _get_optional_float("propagate_abs_tol"),
+        "ccik_conv_tol": _get_optional_float("conv_tol"),
+        "ccik_ritz_overlap_tol": _get_optional_float("ritz_overlap_tol"),
+        "ccik_ritz_max_drop": _get_optional_float("ritz_max_drop"),
+    }
+    bool_overrides = {
+        "ccik_include_current_support": _get_optional_bool("include_current_support"),
+        "ccik_preserve_prev_support": _get_optional_bool("preserve_prev_support"),
+        "ccik_save_final_wf": _get_optional_bool("save_final_wf"),
+        "ccik_use_existing_wf": _get_optional_bool("use_existing_wf"),
+        "ccik_do_post_pt2": _get_optional_bool("do_post_pt2"),
+        "ccik_verbose": _get_optional_bool("verbose"),
+    }
+    for key, value in int_overrides.items():
+        if value is not None:
+            bridge[key] = value
+    for key, value in float_overrides.items():
+        if value is not None:
+            bridge[key] = value
+    for key, value in bool_overrides.items():
+        if value is not None:
+            bridge[key] = value
     # In the QP plugin, `ccik_basis_size` and `ccik_restart_m_cycle` both set
     # the within-cycle Krylov basis size. For example, `m_cycle = 51` means the
     # first thick restart happens after 50 newly generated vectors because cycle
     # 1 starts from a single seed vector.
-    return QPCCIKParams(
-        ccik_basis_size=m_cycle,
-        ccik_selector_mode=selector_mode,
-        ccik_matvec_backend="connected_sd_fullq",
-        ccik_conv_tol=1.0e-10,
-        ccik_ritz_overlap_tol=1.0e-8,
-        ccik_ritz_max_drop=0.0,
-        ccik_save_final_wf=False,
-        ccik_use_existing_wf=False,
-        ccik_do_post_pt2=False,
-        ccik_max_cycle=ncycles,
-        ccik_restart_m_cycle=m_cycle,
-        ccik_restart_nroot=nroot,
-        ccik_reference_total_energy=float(reference_total_eh),
-        ccik_print_iteration_error=True,
-        ccik_verbose=False,
-        **bridge,
-    )
+    # Avoid passing any override twice when it is already present in `bridge`.
+    params_kwargs: dict[str, Any] = {
+        "ccik_basis_size": m_cycle,
+        "ccik_selector_mode": selector_mode,
+        "ccik_matvec_backend": matvec_backend,
+        "ccik_conv_tol": 1.0e-10 if conv_tol is None else conv_tol,
+        "ccik_ritz_overlap_tol": 1.0e-8 if ritz_overlap_tol is None else ritz_overlap_tol,
+        "ccik_ritz_max_drop": 0.0 if ritz_max_drop is None else ritz_max_drop,
+        "ccik_max_cycle": ncycles,
+        "ccik_restart_m_cycle": m_cycle,
+        "ccik_restart_nroot": nroot,
+        "ccik_reference_total_energy": float(reference_total_eh),
+        "ccik_print_iteration_error": True,
+        "ccik_verbose": False if verbose is None else verbose,
+    }
+    if "ccik_save_final_wf" not in bridge:
+        params_kwargs["ccik_save_final_wf"] = False if save_final_wf is None else save_final_wf
+    if "ccik_use_existing_wf" not in bridge:
+        params_kwargs["ccik_use_existing_wf"] = False if use_existing_wf is None else use_existing_wf
+    if "ccik_do_post_pt2" not in bridge:
+        params_kwargs["ccik_do_post_pt2"] = False if do_post_pt2 is None else do_post_pt2
+    return QPCCIKParams(**params_kwargs, **bridge)
 
 
 def _cumulative_new_krylov(
@@ -768,6 +910,7 @@ def _build_qp_trace_row(
     ecore: float,
     restart_m_cycle: int,
     restart_nroot: int,
+    elapsed_s: float,
 ) -> dict[str, Any]:
     return {
         "cycle": int(cycle),
@@ -786,6 +929,7 @@ def _build_qp_trace_row(
         "total_energy_eh": float(total_energy_eh),
         "delta_mHa": float(delta_mha),
         "abs_delta_mHa": abs(float(delta_mha)),
+        "elapsed_s": float(elapsed_s),
     }
 
 
@@ -798,6 +942,7 @@ def _run_qp_thick_trace(
     prepared: PreparedQpCase,
     run_params: dict[str, Any],
     max_cumulative_iterations: int,
+    plot_max_cumulative_iterations: int,
     stop_abs_delta_mha: float | None,
     run_labels: dict[str, str],
 ) -> dict[str, Any]:
@@ -807,8 +952,24 @@ def _run_qp_thick_trace(
         shutil.rmtree(run_dir)
     runtime_dir = run_dir / "runtime"
     runtime_dir.mkdir(parents=True, exist_ok=True)
-    runtime_ezfio = runtime_dir / prepared.ezfio_path.name
-    shutil.copytree(prepared.ezfio_path, runtime_ezfio)
+    restart_from_run = None
+    restart_source_ezfio = prepared.ezfio_path
+    raw_restart_from_run = run_params.get("restart_from_run")
+    if raw_restart_from_run is not None:
+        restart_from_run = str(raw_restart_from_run).strip()
+        if not restart_from_run:
+            restart_from_run = None
+    if restart_from_run is not None:
+        if restart_from_run == run_name:
+            raise ValueError(f"Run {run_name!r} cannot restart from itself")
+        restart_source_ezfio = _runtime_ezfio_path(_run_dir(case_dir, restart_from_run), prepared.ezfio_path.name)
+        if not restart_source_ezfio.exists():
+            raise FileNotFoundError(
+                f"Restart source EZFIO not found for run {run_name!r}: "
+                f"{restart_source_ezfio} (restart_from_run={restart_from_run!r})"
+            )
+    runtime_ezfio = runtime_dir / restart_source_ezfio.name
+    shutil.copytree(restart_source_ezfio, runtime_ezfio)
     ensure_ezfio_defaults(runtime_ezfio, qp_root=prepared.qp_root)
 
     params = _make_qp_thick_params(run_params=run_params, reference_total_eh=prepared.reference_total_eh)
@@ -850,15 +1011,27 @@ def _run_qp_thick_trace(
             stdout_chunks.append(raw)
             match = QP_THICK_LINE_RE.search(raw)
             if match is None:
-                continue
+                baseline_match = QP_BASELINE_LINE_RE.search(raw)
+                if baseline_match is None:
+                    continue
+                cycle = 1
+                iter_idx = int(baseline_match.group("iter"))
+                total_energy_eh = float(baseline_match.group("total"))
+                delta_mha = float(baseline_match.group("delta"))
+            else:
+                cycle = int(match.group("cycle"))
+                iter_idx = int(match.group("iter"))
+                total_energy_eh = float(match.group("total"))
+                delta_mha = float(match.group("delta"))
             row = _build_qp_trace_row(
-                cycle=int(match.group("cycle")),
-                iter_idx=int(match.group("iter")),
-                total_energy_eh=float(match.group("total")),
-                delta_mha=float(match.group("delta")),
+                cycle=cycle,
+                iter_idx=iter_idx,
+                total_energy_eh=total_energy_eh,
+                delta_mha=delta_mha,
                 ecore=prepared.ecore,
                 restart_m_cycle=int(run_params["m_cycle"]),
                 restart_nroot=int(run_params["nroot"]),
+                elapsed_s=float(time.perf_counter() - t0),
             )
             rows.append(row)
             _refresh_run_outputs(
@@ -868,6 +1041,7 @@ def _run_qp_thick_trace(
                 run_label=run_label,
                 rows=rows,
                 max_cumulative_iterations=max_cumulative_iterations,
+                plot_max_cumulative_iterations=plot_max_cumulative_iterations,
                 fixed_store_keep=int(run_params["fixed_store_keep"]),
                 fixed_propagate_keep=int(run_params["fixed_propagate_keep"]),
                 run_labels=run_labels,
@@ -887,6 +1061,11 @@ def _run_qp_thick_trace(
         raise RuntimeError(f"No thick-restart iteration rows were recorded for {run_name}")
     below_fci_points = [row for row in limited_rows if float(row["delta_mHa"]) < -1.0e-9]
     effective_final_total = float(limited_rows[-1]["total_energy_eh"]) if final_total is None else float(final_total)
+    threshold_hit = (
+        next((row for row in limited_rows if early_stop_target is not None and float(row["abs_delta_mHa"]) <= early_stop_target), None)
+        if early_stop_target is not None
+        else None
+    )
     summary = {
         "backend": "qp",
         "qp_root": str(prepared.qp_root),
@@ -910,12 +1089,19 @@ def _run_qp_thick_trace(
         "improves_over_first_point": float(limited_rows[-1]["abs_delta_mHa"]) < float(limited_rows[0]["abs_delta_mHa"]),
         "early_stop_target_abs_delta_mHa": early_stop_target,
         "early_stop_reached": bool(early_stop_reached),
+        "threshold_hit_iteration": None if threshold_hit is None else int(threshold_hit["cum_new_krylov"]),
+        "threshold_hit_elapsed_s": None if threshold_hit is None else float(threshold_hit["elapsed_s"]),
         "wall_s": wall_s,
         "returncode": returncode,
         "plot_png": str((run_dir / "energy_error_vs_iteration.png")),
         "plot_pdf": str((run_dir / "energy_error_vs_iteration.pdf")),
+        "trace_csv": str((run_dir / "iteration_trace.csv")),
+        "trace_json": str((run_dir / "iteration_trace.json")),
         "stdout_log": str(stdout_path),
         "stderr_log": str(stderr_path),
+        "runtime_ezfio": str(runtime_ezfio),
+        "runtime_source_ezfio": str(restart_source_ezfio),
+        "restart_from_run": restart_from_run,
     }
     (run_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
@@ -958,6 +1144,7 @@ def _refresh_run_outputs(
     run_label: str,
     rows: list[dict[str, Any]],
     max_cumulative_iterations: int,
+    plot_max_cumulative_iterations: int,
     fixed_store_keep: int,
     fixed_propagate_keep: int,
     run_labels: dict[str, str],
@@ -971,7 +1158,7 @@ def _refresh_run_outputs(
         run_dir=run_dir,
         rows=limited_rows,
         title=_case_plot_title(case_label, run_label, fixed_store_keep, fixed_propagate_keep),
-        max_cumulative_iterations=max_cumulative_iterations,
+        max_cumulative_iterations=plot_max_cumulative_iterations,
     )
     latest = limited_rows[-1]
     write_live_status(
@@ -990,7 +1177,7 @@ def _refresh_run_outputs(
         case_dir=case_dir,
         case_label=case_label,
         run_labels=run_labels,
-        max_cumulative_iterations=max_cumulative_iterations,
+        max_cumulative_iterations=plot_max_cumulative_iterations,
     )
 
 
@@ -1008,6 +1195,7 @@ def _run_thick_trace(
     e_fci_total: float,
     params: CCIKThickRestartParams,
     max_cumulative_iterations: int,
+    plot_max_cumulative_iterations: int,
     stop_abs_delta_mha: float | None,
     run_labels: dict[str, str],
 ) -> dict[str, Any]:
@@ -1025,6 +1213,7 @@ def _run_thick_trace(
             run_label=run_label,
             rows=rows,
             max_cumulative_iterations=max_cumulative_iterations,
+            plot_max_cumulative_iterations=plot_max_cumulative_iterations,
             fixed_store_keep=int(params.fixed_store_keep),
             fixed_propagate_keep=int(params.fixed_propagate_keep),
             run_labels=run_labels,
@@ -1140,6 +1329,7 @@ def _run_baseline_no_restart_audit(
 
 
 def run_case(input_path: Path, *, force: bool = False) -> dict[str, Any]:
+    input_path = input_path.resolve()
     spec = load_study_input(input_path)
     case_dir = _case_dir_from_input(input_path)
     study_summary_path = case_dir / "study_summary.json"
@@ -1148,6 +1338,7 @@ def run_case(input_path: Path, *, force: bool = False) -> dict[str, Any]:
 
     case_label = str(spec["label"])
     max_cumulative_iterations = int(spec["study"]["max_cumulative_iterations"])
+    plot_max_cumulative_iterations = int(spec.get("study", {}).get("plot_max_cumulative_iterations", max_cumulative_iterations))
     stop_abs_delta_mha = (
         None if spec.get("study", {}).get("stop_abs_delta_mHa") is None else float(spec["study"]["stop_abs_delta_mHa"])
     )
@@ -1186,6 +1377,7 @@ def run_case(input_path: Path, *, force: bool = False) -> dict[str, Any]:
                 e_fci_total=e_fci_total,
                 params=params,
                 max_cumulative_iterations=max_cumulative_iterations,
+                plot_max_cumulative_iterations=plot_max_cumulative_iterations,
                 stop_abs_delta_mha=stop_abs_delta_mha,
                 run_labels=run_labels,
             )
@@ -1224,6 +1416,7 @@ def run_case(input_path: Path, *, force: bool = False) -> dict[str, Any]:
                 prepared=prepared,
                 run_params=dict(run_spec["solver"]["params"]),
                 max_cumulative_iterations=max_cumulative_iterations,
+                plot_max_cumulative_iterations=plot_max_cumulative_iterations,
                 stop_abs_delta_mha=stop_abs_delta_mha,
                 run_labels=run_labels,
             )
@@ -1235,7 +1428,7 @@ def run_case(input_path: Path, *, force: bool = False) -> dict[str, Any]:
         case_dir=case_dir,
         case_label=case_label,
         run_labels=run_labels,
-        max_cumulative_iterations=max_cumulative_iterations,
+        max_cumulative_iterations=plot_max_cumulative_iterations,
     )
     payload = {
         "input_path": str(input_path),
@@ -1246,6 +1439,7 @@ def run_case(input_path: Path, *, force: bool = False) -> dict[str, Any]:
         "reference_kind": None if backend != "qp" else prepared.reference_summary.get("reference_kind"),
         "reference_mode": None if backend != "qp" else prepared.reference_mode,
         "max_cumulative_iterations": max_cumulative_iterations,
+        "plot_max_cumulative_iterations": plot_max_cumulative_iterations,
         "stop_abs_delta_mHa": stop_abs_delta_mha,
         "runs": run_summaries,
         "comparison_plot_png": None if comparison is None else str(comparison[0]),

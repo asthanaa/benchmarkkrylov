@@ -2349,6 +2349,12 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
         write(restart_tag,'(A,I0,A,I0)') 'restart_fb_postorth_c', cycle_idx, '_r', i
         call ccik_debug_trace_vector(trim(restart_tag), trial)
       end if
+      ! The fixed-budget restart vectors must still satisfy the stored-vector
+      ! cap after the second Gram-Schmidt pass. Post-orthogonalization can
+      ! reintroduce determinants outside the initial top-K support, so compress
+      ! once more before normalizing/saving the restart vector for the next
+      ! cycle.
+      call ccik_vec_compress(trial, max(1, ccik_fixed_store_keep))
       call ccik_normalize_vector(trial, ok)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,ES24.16,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'final', cycle_idx, i, eig(i), trial%n, ok

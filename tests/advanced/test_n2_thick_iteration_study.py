@@ -60,6 +60,36 @@ def test_effective_reference_mode_uses_dmrg_for_large_cases() -> None:
     assert MODULE._effective_reference_mode(large) == "dmrg_then_cipsi"
 
 
+def test_qp_baseline_line_regex_parses_seed_iterations() -> None:
+    line = "ccik(baseline) iter=  31  total=       -108.800000000000  ref=       -108.861077882421  delta_mEh=       61.077882"
+
+    match = MODULE.QP_BASELINE_LINE_RE.search(line)
+
+    assert match is not None
+    assert int(match.group("iter")) == 31
+    assert float(match.group("total")) == pytest.approx(-108.8)
+    assert float(match.group("delta")) == pytest.approx(61.077882)
+
+
+def test_make_qp_thick_params_turns_on_existing_wf_for_restart_runs() -> None:
+    params = MODULE._make_qp_thick_params(
+        run_params={
+            "m_cycle": 7,
+            "ncycles": 20,
+            "nroot": 3,
+            "fixed_store_keep": 200000,
+            "fixed_propagate_keep": 1000,
+            "restart_from_run": "seed_m031",
+        },
+        reference_total_eh=-108.0,
+    )
+
+    assert params.ccik_basis_size == 7
+    assert params.ccik_restart_m_cycle == 7
+    assert params.ccik_restart_nroot == 3
+    assert params.ccik_use_existing_wf is True
+
+
 def test_resolve_qp_reference_falls_back_from_dmrg_to_cipsi(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     dmrg_calls = []
     cipsi_calls = []
@@ -333,3 +363,46 @@ def test_run_case_writes_two_run_layout(tmp_path: Path) -> None:
     assert summary["stop_abs_delta_mHa"] == pytest.approx(1.0e6)
     assert summary["runs"]["exact_oracle"]["early_stop_reached"] is True
     assert summary["runs"]["default_selected_ci"]["early_stop_reached"] is True
+
+
+def test_prepare_case_qp_cached_setup_uses_current_omp_threads(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    case_dir = tmp_path / "n2_case"
+    setup_dir = case_dir / "system_setup"
+    setup_dir.mkdir(parents=True)
+    ezfio = setup_dir / "n2.ezfio"
+    ezfio.mkdir()
+    fcidump = setup_dir / "qp_active.FCIDUMP"
+    fcidump.write_text("", encoding="utf-8")
+    (setup_dir / "system_setup.json").write_text(
+        json.dumps(
+            {
+                "qp_root": str(tmp_path / "qp_root_cached"),
+                "ezfio_path": str(ezfio),
+                "fcidump_path": str(fcidump),
+                "ecore": 0.5,
+                "norb": 6,
+                "nelec": [3, 3],
+                "reference_total_energy_eh": -1.25,
+                "reference_summary": {"reference_kind": "dmrg", "reference_label": "DMRG"},
+                "effective_reference_mode": "dmrg",
+                "omp_threads": 8,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(MODULE, "_select_qp_root", lambda _value: tmp_path / "qp_root_current")
+    monkeypatch.setattr(MODULE, "_ensure_qp_study_binaries", lambda _path: None)
+    monkeypatch.setattr(MODULE, "discover_qp_paths_from_root", lambda _path: object())
+
+    spec = {
+        "label": "N2 cached setup",
+        "molecule": {"distance_ang": 2.0, "basis": "6-31g", "unit": "Angstrom", "charge": 0, "spin": 0, "verbose": 0},
+        "cas": {"ncas": 4, "nelecas": 4, "ncore": 0},
+        "study": {"omp_threads": 16},
+    }
+
+    prepared = MODULE._prepare_case_qp(spec, case_dir=case_dir, force=False)
+
+    assert prepared.omp_threads == 16
+    assert prepared.qp_root == tmp_path / "qp_root_cached"

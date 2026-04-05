@@ -369,11 +369,12 @@ from ezfio import ezfio
 
 payload = json.loads(Path(r"{payload_path}").read_text())
 ezfio.set_file(payload["ezfio"])
+mo_coef = [list(col) for col in zip(*payload["mo_coef"])]
 ezfio.set_mo_basis_mo_num(int(payload["mo_num"]))
 ezfio.set_mo_basis_mo_label(str(payload["mo_label"]))
 ezfio.set_mo_basis_ao_md5(str(payload["ao_md5"]))
 ezfio.set_mo_basis_mo_occ([float(x) for x in payload["mo_occ"]])
-ezfio.set_mo_basis_mo_coef(payload["mo_coef"])
+ezfio.set_mo_basis_mo_coef(mo_coef)
 """
     bash(
         f"source {qp.quantum_package_rc} && python3 - <<'PY'\n{script}\nPY",
@@ -723,29 +724,29 @@ def _generate_qp_fcidump(qp: QPPaths, ezfio: Path, outdir: Path, *, case_spec: D
         quoted_rc = shlex.quote(str(qp.quantum_package_rc))
         quoted_binary = shlex.quote(str(fcidump_binary))
         short_ezfio = shlex.quote(ezfio.name)
-        tmpdir = outdir / "fcidump_tmp"
-        if tmpdir.exists():
-            shutil.rmtree(tmpdir)
-        tmpdir.mkdir(parents=True, exist_ok=True)
-        run = subprocess.run(
-            ["/bin/bash", "-lc", f"source {quoted_rc} && {quoted_binary} {short_ezfio}"],
-            check=False,
-            text=True,
-            cwd=ezfio.parent,
-            capture_output=True,
-            env={**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(tmpdir)},
-        )
-        (outdir / "fcidump_stdout.log").write_text(run.stdout, encoding="utf-8")
-        (outdir / "fcidump_stderr.log").write_text(run.stderr, encoding="utf-8")
-        if run.returncode != 0:
-            raise RuntimeError(
-                "QP FCIDUMP export failed "
-                f"(returncode={run.returncode}); see "
-                f"{outdir / 'fcidump_stdout.log'} and {outdir / 'fcidump_stderr.log'}"
+        tmpdir = Path(tempfile.mkdtemp(prefix="qp_fcidump_", dir="/tmp"))
+        try:
+            run = subprocess.run(
+                ["/bin/bash", "-lc", f"source {quoted_rc} && {quoted_binary} {short_ezfio}"],
+                check=False,
+                text=True,
+                cwd=ezfio.parent,
+                capture_output=True,
+                env={**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(tmpdir)},
             )
-        raw = ezfio.parent / f"{ezfio.name}.FCIDUMP"
-        shutil.copy2(raw, copied)
-        source_kind = "generated_from_qp"
+            (outdir / "fcidump_stdout.log").write_text(run.stdout, encoding="utf-8")
+            (outdir / "fcidump_stderr.log").write_text(run.stderr, encoding="utf-8")
+            if run.returncode != 0:
+                raise RuntimeError(
+                    "QP FCIDUMP export failed "
+                    f"(returncode={run.returncode}); see "
+                    f"{outdir / 'fcidump_stdout.log'} and {outdir / 'fcidump_stderr.log'}"
+                )
+            raw = ezfio.parent / f"{ezfio.name}.FCIDUMP"
+            shutil.copy2(raw, copied)
+            source_kind = "generated_from_qp"
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
     data = pyscf_fcidump.read(str(copied), verbose=False)
     norb = int(data["NORB"])
     nelec = int(data["NELEC"])

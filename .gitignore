@@ -34,6 +34,7 @@ experiments/*
 !experiments/README.md
 # Local-only manuscript workspace
 manuscripts/
+inputs/
 inputs/**/launcher.log
 inputs/**/runner.log
 inputs/**/study_summary.json

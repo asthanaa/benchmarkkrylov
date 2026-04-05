@@ -1,6 +1,0 @@
-# Keep study definitions in git. Ignore live outputs, logs, and runtime files.
-*
-!.gitignore
-!README.md
-!**/
-!**/input.json
