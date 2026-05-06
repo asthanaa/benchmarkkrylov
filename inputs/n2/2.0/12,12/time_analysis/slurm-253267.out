@@ -1,0 +1,6 @@
+time-analysis start 2026-05-06T10:57:58-05:00
+node=talon15
+job=253267
+allocated_cpus=8
+time-analysis cores=02 start 2026-05-06T10:57:58-05:00
+QP_MAXMEM=86 (derived from Slurm allocation ~96 GiB)

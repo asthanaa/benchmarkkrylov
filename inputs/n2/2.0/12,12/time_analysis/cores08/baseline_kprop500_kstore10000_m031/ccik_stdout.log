@@ -1,0 +1,816 @@
+ ============================================
+  Quantum Package plugin: baseline ccik
+  Determinant-driven compressed Krylov solver
+ ============================================
+ ccik_generator_keep  =          512
+ ccik_generator_fraction =    0.0000000000000000     
+ ccik_generator_abs_coeff_cutoff =    0.0000000000000000     
+ ccik_max_parents_for_expansion =          512
+ ccik_include_current_support =  T
+ ccik_selector_keep   =        10000
+ ccik_external_keep   =        10000
+ ccik_external_candidate_factor =            4
+ ccik_pt2_rank_weight =    1.0000000000000000     
+ ccik_selector_mode   = abs_residual
+ ccik_matvec_backend = connected_sd_fullq
+ ccik_compression_policy = fixed_budget
+ ccik_fixed_store_keep =        10000
+ ccik_fixed_propagate_keep =          500
+ ccik_secondortho    =  F
+ ccik_store_abs_tol  =    0.0000000000000000     
+ ccik_propagate_abs_tol =    0.0000000000000000     
+ ccik_nkeep           =        10000
+ ccik_tmp_keep_factor =            2
+ ccik_preserve_prev_support =  T
+ ccik_preserve_prev_support_cap =          512
+ ccik_total_det_budget=            0
+ ccik_basis_size      =           31
+ ccik_conv_tol        =    1.0000000000000000E-010
+ ccik_ritz_overlap_tol=    1.0000000000000000E-008
+ ccik_ritz_max_drop   =    0.0000000000000000     
+ ccik_save_final_wf   =  F
+ ccik_do_post_pt2     =  F
+ ccik_max_cycle       =            3
+ ccik_restart_m_cycle =           31
+ ccik_restart_nroot   =            3
+ ccik_exactized_checkpoint_every =            0
+ ccik_exactized_resid_tol =    1.0000000000000000E-010
+ ccik_exactized_max_iter =          200
+ ccik_exactized_max_subspace =           24
+ ccik_exactized_restart_keep =            4
+ ccik_verbose         =  T
+ ccik_debug_trace     =  F
+ ccik_debug_trace_topn=            8
+ ccik_debug_allow_legacy_fixed_budget =  F
+
+.. >>>>> [ RES  MEM :          0.007 GB ] [ VIRT MEM :          1.045 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.12  s ] <<<<< ..
+
+
+Nuclear Coordinates (Angstroms)
+===============================
+
+================ ============ ============ ============ ============
+      Atom          Charge          X            Y            Z 
+================ ============ ============ ============ ============
+N                    7.000000     0.000000     0.000000    -1.000000
+N                    7.000000     0.000000     0.000000     1.000000
+================ ============ ============ ============ ============
+
+Minimal interatomic distance found:       2.0000 Angstrom
+
+.. >>>>> [ RES  MEM :          0.007 GB ] [ VIRT MEM :          1.045 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.12  s ] <<<<< ..
+
+* Nuclear repulsion energy                           12.96484166144465    
+* mo_num                                                        18
+.. >>>>> [ IO READ: mo_class ] <<<<< ..
+* N_int                                                          1
+ MO map initialized:                 14706
+ Reading the MO integrals
+ MO integrals provided
+ MO integrals cache: (           1 ,           18 ),                  2048 MiB
+ Providing the one-electron integrals
+
+.. >>>>> [ RES  MEM :          0.113 GB ] [ VIRT MEM :          3.059 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.04  s ] [ CPU  TIME:           0.28  s ] <<<<< ..
+
+ Read  mo_coef
+ * mo_label          Canonical
+* Number of determinants                                         1
+ ccik_thick_effective_nkeep =        10000
+ccik(thick) cycle=   1 seed=   1  |q|=         1  nkeep=     10000
+ccik(hq) begin call=     1 backend= connected_sd_fullq  |q|=         1  fullq=         1  ngen=         1  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     1  rayleigh=       -121.274442306877  cpu_s=      0.0018
+* Number of active   MOs                                        12
+ Active MOs:
+           2           3           4           5           6           7           8           9          10          11          12          13
+ccik(hq) done  call=     1 backend= connected_sd_fullq  raw=      1818  uniq=      1818  n_ext=      1818  n_total=      1819  |vec|=      1693  fullq=         1  selector=abs_residual  select_s=      0.0079  sort_s=      0.0000  int_s=      0.0018  ext_s=      0.0077  assign_s=      0.0000
+ccik(thick) cycle=   1 seed_done=   1  |hq|=      1693  cpu_s=      0.0477
+ccik(thick) cycle=   1 iter=   1  total=       -108.309600645432  ref=       -108.775988593335  delta_mEh=      466.387948
+ccik(thick) cycle=   1 restart_basis=   1  ritz=       -121.274442306877
+ccik(next) parent=   1 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    121.2768  |v_temp|=    121.2768  dropped=      0.0000  |r_orth|=      0.7520  |r_keep|=      0.7520  tmp_keep=         0  final_keep=      1692  preserve_cap=         0  overlap=  0.0000E+00  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   2  parent=   1  |q|=      1692  nkeep=     10000
+ccik(hq) begin call=     2 backend= connected_sd_fullq  |q|=      1692  fullq=      1692  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     2  rayleigh=       -119.228945986970  cpu_s=      0.0348
+ccik(hq) done  call=     2 backend= connected_sd_fullq  raw=    786358  uniq=     96138  n_ext=     96138  n_total=     97830  |vec|=     89310  fullq=      1692  selector=abs_residual  select_s=      0.6960  sort_s=      0.0000  int_s=      0.0348  ext_s=      0.7487  assign_s=      0.0014
+ccik(thick) cycle=   1 iter=   2  total=       -108.556314116814  ref=       -108.775988593335  delta_mEh=      219.674477
+ccik(thick) cycle=   1 iter=   2  ritz=       -121.521155778259  rayleigh=       -119.228945986970  |q|=      1692  |hq|=     89310
+ccik(thick) projected_hq_cpu_s=      1.7150
+ccik(next) parent=   2 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    119.2616  |v_temp|=    119.2616  dropped=      0.0000  |r_orth|=      2.6883  |r_keep|=      2.6883  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.6713E-09  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   3  parent=   2  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     3 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     3  rayleigh=        -99.755896058122  cpu_s=      0.2083
+ccik(hq) done  call=     3 backend= connected_sd_fullq  raw=    822372  uniq=    195094  n_ext=    195094  n_total=    205094  |vec|=    189227  fullq=     10000  selector=abs_residual  select_s=      0.7989  sort_s=      0.0000  int_s=      0.2083  ext_s=      7.2520  assign_s=      0.0023
+ccik(thick) cycle=   1 iter=   3  total=       -108.592759427326  ref=       -108.775988593335  delta_mEh=      183.229166
+ccik(thick) cycle=   1 iter=   3  ritz=       -121.557601088771  rayleigh=        -99.755896058122  |q|=     10000  |hq|=    189227
+ccik(thick) projected_hq_cpu_s=      8.4377
+ccik(next) parent=   3 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    100.5797  |v_temp|=    100.5797  dropped=      0.0000  |r_orth|=     12.5627  |r_keep|=     12.5624  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.4831E-05  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   4  parent=   3  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     4 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     4  rayleigh=       -105.058488851493  cpu_s=      0.1962
+ccik(hq) done  call=     4 backend= connected_sd_fullq  raw=    822061  uniq=    203692  n_ext=    203692  n_total=    213692  |vec|=    196710  fullq=     10000  selector=abs_residual  select_s=      0.7860  sort_s=      0.0000  int_s=      0.1962  ext_s=      7.5828  assign_s=      0.0022
+ccik(thick) cycle=   1 iter=   4  total=       -108.628019750641  ref=       -108.775988593335  delta_mEh=      147.968843
+ccik(thick) cycle=   1 iter=   4  ritz=       -121.592861412086  rayleigh=       -105.058488851493  |q|=     10000  |hq|=    196710
+ccik(thick) projected_hq_cpu_s=      8.7456
+ccik(next) parent=   4 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.1445  |v_temp|=    106.1445  dropped=      0.0000  |r_orth|=      8.4589  |r_keep|=      8.4584  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.0608E-04  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   5  parent=   4  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     5 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     5  rayleigh=       -106.105434790395  cpu_s=      0.1993
+ccik(hq) done  call=     5 backend= connected_sd_fullq  raw=    823532  uniq=    213991  n_ext=    213991  n_total=    223991  |vec|=    209643  fullq=     10000  selector=abs_residual  select_s=      0.7634  sort_s=      0.0000  int_s=      0.1993  ext_s=      8.0259  assign_s=      0.0026
+ccik(thick) cycle=   1 iter=   5  total=       -108.669017882606  ref=       -108.775988593335  delta_mEh=      106.970711
+ccik(thick) cycle=   1 iter=   5  ritz=       -121.633859544051  rayleigh=       -106.105434790395  |q|=     10000  |hq|=    209643
+ccik(thick) projected_hq_cpu_s=      9.1760
+ccik(next) parent=   5 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.6036  |v_temp|=    106.6036  dropped=      0.0000  |r_orth|=      5.8698  |r_keep|=      5.8679  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.7250E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   6  parent=   5  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     6 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     6  rayleigh=        -96.832549298458  cpu_s=      0.1913
+ccik(hq) done  call=     6 backend= connected_sd_fullq  raw=    831543  uniq=    228856  n_ext=    228856  n_total=    238856  |vec|=    224822  fullq=     10000  selector=abs_residual  select_s=      0.7788  sort_s=      0.0000  int_s=      0.1913  ext_s=      8.3765  assign_s=      0.0029
+ccik(thick) cycle=   1 iter=   6  total=       -108.678510767924  ref=       -108.775988593335  delta_mEh=       97.477825
+ccik(thick) cycle=   1 iter=   6  ritz=       -121.643352429369  rayleigh=        -96.832549298458  |q|=     10000  |hq|=    224822
+ccik(thick) projected_hq_cpu_s=      9.5351
+ccik(next) parent=   6 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     97.9153  |v_temp|=     97.9153  dropped=      0.0000  |r_orth|=     13.2842  |r_keep|=     13.2807  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.7065E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   7  parent=   6  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     7 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     7  rayleigh=       -108.044292635135  cpu_s=      0.1896
+ccik(hq) done  call=     7 backend= connected_sd_fullq  raw=    830871  uniq=    230805  n_ext=    230805  n_total=    240805  |vec|=    226435  fullq=     10000  selector=abs_residual  select_s=      0.7699  sort_s=      0.0000  int_s=      0.1896  ext_s=      8.4679  assign_s=      0.0035
+ccik(thick) cycle=   1 iter=   7  total=       -108.695228741314  ref=       -108.775988593335  delta_mEh=       80.759852
+ccik(thick) cycle=   1 iter=   7  ritz=       -121.660070402759  rayleigh=       -108.044292635135  |q|=     10000  |hq|=    226435
+ccik(thick) projected_hq_cpu_s=      9.6271
+ccik(next) parent=   7 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    109.0211  |v_temp|=    109.0211  dropped=      0.0000  |r_orth|=      6.6840  |r_keep|=      6.6804  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.2999E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   8  parent=   7  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     8 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     8  rayleigh=       -100.431662525033  cpu_s=      0.1907
+ccik(hq) done  call=     8 backend= connected_sd_fullq  raw=    838036  uniq=    236803  n_ext=    236803  n_total=    246803  |vec|=    237929  fullq=     10000  selector=abs_residual  select_s=      0.7735  sort_s=      0.0000  int_s=      0.1907  ext_s=      8.5719  assign_s=      0.0029
+ccik(thick) cycle=   1 iter=   8  total=       -108.702783335942  ref=       -108.775988593335  delta_mEh=       73.205257
+ccik(thick) cycle=   1 iter=   8  ritz=       -121.667624997386  rayleigh=       -100.431662525033  |q|=     10000  |hq|=    237929
+ccik(thick) projected_hq_cpu_s=      9.7317
+ccik(next) parent=   8 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.3173  |v_temp|=    101.3173  dropped=      0.0000  |r_orth|=     40.7920  |r_keep|=     40.7833  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  8.2827E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=   9  parent=   8  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=     9 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=     9  rayleigh=       -107.293237218735  cpu_s=      0.1918
+ccik(hq) done  call=     9 backend= connected_sd_fullq  raw=    828931  uniq=    221300  n_ext=    221300  n_total=    231300  |vec|=    218930  fullq=     10000  selector=abs_residual  select_s=      0.7734  sort_s=      0.0000  int_s=      0.1918  ext_s=      8.2610  assign_s=      0.0026
+ccik(thick) cycle=   1 iter=   9  total=       -108.708324607923  ref=       -108.775988593335  delta_mEh=       67.663985
+ccik(thick) cycle=   1 iter=   9  ritz=       -121.673166269367  rayleigh=       -107.293237218735  |q|=     10000  |hq|=    218930
+ccik(thick) projected_hq_cpu_s=      9.4277
+ccik(next) parent=   9 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    107.9426  |v_temp|=    107.9426  dropped=      0.0000  |r_orth|=     25.0130  |r_keep|=     25.0014  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.1932E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  10  parent=   9  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    10 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    10  rayleigh=       -101.445993684856  cpu_s=      0.1877
+ccik(hq) done  call=    10 backend= connected_sd_fullq  raw=    841611  uniq=    248868  n_ext=    248868  n_total=    258868  |vec|=    245379  fullq=     10000  selector=abs_residual  select_s=      0.7760  sort_s=      0.0000  int_s=      0.1877  ext_s=      9.0062  assign_s=      0.0030
+ccik(thick) cycle=   1 iter=  10  total=       -108.715552463602  ref=       -108.775988593335  delta_mEh=       60.436130
+ccik(thick) cycle=   1 iter=  10  ritz=       -121.680394125047  rayleigh=       -101.445993684856  |q|=     10000  |hq|=    245379
+ccik(thick) projected_hq_cpu_s=     10.1716
+ccik(next) parent=  10 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    102.6929  |v_temp|=    102.6929  dropped=      0.0000  |r_orth|=     11.2118  |r_keep|=     11.1955  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.6385E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  11  parent=  10  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    11 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    11  rayleigh=       -105.158568853848  cpu_s=      0.1815
+ccik(hq) done  call=    11 backend= connected_sd_fullq  raw=    848793  uniq=    268378  n_ext=    268378  n_total=    278378  |vec|=    267039  fullq=     10000  selector=abs_residual  select_s=      0.7694  sort_s=      0.0000  int_s=      0.1815  ext_s=      9.6714  assign_s=      0.0032
+ccik(thick) cycle=   1 iter=  11  total=       -108.718685125409  ref=       -108.775988593335  delta_mEh=       57.303468
+ccik(thick) cycle=   1 iter=  11  ritz=       -121.683526786854  rayleigh=       -105.158568853848  |q|=     10000  |hq|=    267039
+ccik(thick) projected_hq_cpu_s=     10.8406
+ccik(next) parent=  11 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.9983  |v_temp|=    105.9983  dropped=      0.0000  |r_orth|=      7.6613  |r_keep|=      7.6441  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.2338E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  12  parent=  11  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    12 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    12  rayleigh=        -94.373805378028  cpu_s=      0.1825
+ccik(hq) done  call=    12 backend= connected_sd_fullq  raw=    848393  uniq=    248061  n_ext=    248061  n_total=    258061  |vec|=    247615  fullq=     10000  selector=abs_residual  select_s=      0.7623  sort_s=      0.0000  int_s=      0.1825  ext_s=      8.8985  assign_s=      0.0024
+ccik(thick) cycle=   1 iter=  12  total=       -108.722834653263  ref=       -108.775988593335  delta_mEh=       53.153940
+ccik(thick) cycle=   1 iter=  12  ritz=       -121.687676314707  rayleigh=        -94.373805378028  |q|=     10000  |hq|=    247615
+ccik(thick) projected_hq_cpu_s=     10.0463
+ccik(next) parent=  12 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     95.5498  |v_temp|=     95.5498  dropped=      0.0000  |r_orth|=     14.4535  |r_keep|=     14.4302  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.3805E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  13  parent=  12  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    13 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    13  rayleigh=       -104.056045745224  cpu_s=      0.1849
+ccik(hq) done  call=    13 backend= connected_sd_fullq  raw=    849325  uniq=    272788  n_ext=    272788  n_total=    282788  |vec|=    268513  fullq=     10000  selector=abs_residual  select_s=      0.7708  sort_s=      0.0000  int_s=      0.1849  ext_s=      9.7936  assign_s=      0.0034
+ccik(thick) cycle=   1 iter=  13  total=       -108.729008000072  ref=       -108.775988593335  delta_mEh=       46.980593
+ccik(thick) cycle=   1 iter=  13  ritz=       -121.693849661516  rayleigh=       -104.056045745224  |q|=     10000  |hq|=    268513
+ccik(thick) projected_hq_cpu_s=     10.9619
+ccik(next) parent=  13 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.1286  |v_temp|=    105.1286  dropped=      0.0000  |r_orth|=     43.1573  |r_keep|=     43.1394  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.4553E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  14  parent=  13  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    14 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    14  rayleigh=        -96.064938176421  cpu_s=      0.1913
+ccik(hq) done  call=    14 backend= connected_sd_fullq  raw=    837615  uniq=    242733  n_ext=    242733  n_total=    252733  |vec|=    238634  fullq=     10000  selector=abs_residual  select_s=      0.7750  sort_s=      0.0000  int_s=      0.1913  ext_s=      8.7958  assign_s=      0.0029
+ccik(thick) cycle=   1 iter=  14  total=       -108.733510820491  ref=       -108.775988593335  delta_mEh=       42.477773
+ccik(thick) cycle=   1 iter=  14  ritz=       -121.698352481935  rayleigh=        -96.064938176421  |q|=     10000  |hq|=    238634
+ccik(thick) projected_hq_cpu_s=      9.9574
+ccik(next) parent=  14 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     96.8219  |v_temp|=     96.8219  dropped=      0.0000  |r_orth|=     16.4903  |r_keep|=     16.4656  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.1234E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  15  parent=  14  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    15 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    15  rayleigh=        -98.530816268107  cpu_s=      0.1829
+ccik(hq) done  call=    15 backend= connected_sd_fullq  raw=    854481  uniq=    275713  n_ext=    275713  n_total=    285713  |vec|=    273988  fullq=     10000  selector=abs_residual  select_s=      0.7774  sort_s=      0.0000  int_s=      0.1829  ext_s=      9.8487  assign_s=      0.0041
+ccik(thick) cycle=   1 iter=  15  total=       -108.736795941088  ref=       -108.775988593335  delta_mEh=       39.192652
+ccik(thick) cycle=   1 iter=  15  ritz=       -121.701637602532  rayleigh=        -98.530816268107  |q|=     10000  |hq|=    273988
+ccik(thick) projected_hq_cpu_s=     11.0176
+ccik(next) parent=  15 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     99.6157  |v_temp|=     99.6157  dropped=      0.0000  |r_orth|=     12.7210  |r_keep|=     12.6906  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.8241E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  16  parent=  15  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    16 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    16  rayleigh=        -98.399897460565  cpu_s=      0.2093
+ccik(hq) done  call=    16 backend= connected_sd_fullq  raw=    854951  uniq=    275514  n_ext=    275514  n_total=    285514  |vec|=    272150  fullq=     10000  selector=abs_residual  select_s=      0.7819  sort_s=      0.0000  int_s=      0.2093  ext_s=      9.8447  assign_s=      0.0034
+ccik(thick) cycle=   1 iter=  16  total=       -108.737807439510  ref=       -108.775988593335  delta_mEh=       38.181154
+ccik(thick) cycle=   1 iter=  16  ritz=       -121.702649100954  rayleigh=        -98.399897460565  |q|=     10000  |hq|=    272150
+ccik(thick) projected_hq_cpu_s=     11.0481
+ccik(next) parent=  16 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     99.7822  |v_temp|=     99.7822  dropped=      0.0000  |r_orth|=     11.0944  |r_keep|=     11.0714  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.5763E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  17  parent=  16  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    17 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    17  rayleigh=       -105.102841871634  cpu_s=      0.1833
+ccik(hq) done  call=    17 backend= connected_sd_fullq  raw=    856198  uniq=    292634  n_ext=    292634  n_total=    302634  |vec|=    287932  fullq=     10000  selector=abs_residual  select_s=      0.7712  sort_s=      0.0000  int_s=      0.1833  ext_s=     10.4328  assign_s=      0.0036
+ccik(thick) cycle=   1 iter=  17  total=       -108.741597264397  ref=       -108.775988593335  delta_mEh=       34.391329
+ccik(thick) cycle=   1 iter=  17  ritz=       -121.706438925842  rayleigh=       -105.102841871634  |q|=     10000  |hq|=    287932
+ccik(thick) projected_hq_cpu_s=     11.6019
+ccik(next) parent=  17 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.1190  |v_temp|=    106.1190  dropped=      0.0000  |r_orth|=     29.3188  |r_keep|=     29.2708  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.1177E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  18  parent=  17  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    18 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    18  rayleigh=       -106.486627341731  cpu_s=      0.1879
+ccik(hq) done  call=    18 backend= connected_sd_fullq  raw=    851189  uniq=    272882  n_ext=    272882  n_total=    282882  |vec|=    269819  fullq=     10000  selector=abs_residual  select_s=      0.7800  sort_s=      0.0000  int_s=      0.1879  ext_s=      9.8016  assign_s=      0.0029
+ccik(thick) cycle=   1 iter=  18  total=       -108.744622671551  ref=       -108.775988593335  delta_mEh=       31.365922
+ccik(thick) cycle=   1 iter=  18  ritz=       -121.709464332996  rayleigh=       -106.486627341731  |q|=     10000  |hq|=    269819
+ccik(thick) projected_hq_cpu_s=     10.9764
+ccik(next) parent=  18 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    107.1206  |v_temp|=    107.1206  dropped=      0.0000  |r_orth|=     30.0077  |r_keep|=     29.9439  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.8659E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  19  parent=  18  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    19 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    19  rayleigh=        -95.788288323746  cpu_s=      0.1853
+ccik(hq) done  call=    19 backend= connected_sd_fullq  raw=    858519  uniq=    279271  n_ext=    279271  n_total=    289271  |vec|=    276494  fullq=     10000  selector=abs_residual  select_s=      0.7601  sort_s=      0.0000  int_s=      0.1853  ext_s=      9.9118  assign_s=      0.0033
+ccik(thick) cycle=   1 iter=  19  total=       -108.747400585970  ref=       -108.775988593335  delta_mEh=       28.588007
+ccik(thick) cycle=   1 iter=  19  ritz=       -121.712242247414  rayleigh=        -95.788288323746  |q|=     10000  |hq|=    276494
+ccik(thick) projected_hq_cpu_s=     11.0695
+ccik(next) parent=  19 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     97.1444  |v_temp|=     97.1444  dropped=      0.0000  |r_orth|=     13.9855  |r_keep|=     13.9405  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.3350E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  20  parent=  19  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    20 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    20  rayleigh=       -105.850515944551  cpu_s=      0.1831
+ccik(hq) done  call=    20 backend= connected_sd_fullq  raw=    856823  uniq=    285283  n_ext=    285283  n_total=    295283  |vec|=    279556  fullq=     10000  selector=abs_residual  select_s=      0.7618  sort_s=      0.0000  int_s=      0.1831  ext_s=     10.1661  assign_s=      0.0036
+ccik(thick) cycle=   1 iter=  20  total=       -108.748754817709  ref=       -108.775988593335  delta_mEh=       27.233776
+ccik(thick) cycle=   1 iter=  20  ritz=       -121.713596479154  rayleigh=       -105.850515944551  |q|=     10000  |hq|=    279556
+ccik(thick) projected_hq_cpu_s=     11.3251
+ccik(next) parent=  20 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.9437  |v_temp|=    106.9437  dropped=      0.0000  |r_orth|=      8.0608  |r_keep|=      8.0186  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.6163E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  21  parent=  20  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    21 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    21  rayleigh=        -99.177043994760  cpu_s=      0.1798
+ccik(hq) done  call=    21 backend= connected_sd_fullq  raw=    860622  uniq=    302239  n_ext=    302239  n_total=    312239  |vec|=    300311  fullq=     10000  selector=abs_residual  select_s=      0.7603  sort_s=      0.0000  int_s=      0.1798  ext_s=     10.8292  assign_s=      0.0036
+ccik(thick) cycle=   1 iter=  21  total=       -108.750846164572  ref=       -108.775988593335  delta_mEh=       25.142429
+ccik(thick) cycle=   1 iter=  21  ritz=       -121.715687826016  rayleigh=        -99.177043994760  |q|=     10000  |hq|=    300311
+ccik(thick) projected_hq_cpu_s=     11.9954
+ccik(next) parent=  21 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    100.1894  |v_temp|=    100.1894  dropped=      0.0000  |r_orth|=     28.4773  |r_keep|=     28.4127  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.0675E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  22  parent=  21  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    22 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    22  rayleigh=       -111.244681852400  cpu_s=      0.1785
+ccik(hq) done  call=    22 backend= connected_sd_fullq  raw=    849537  uniq=    255003  n_ext=    255003  n_total=    265003  |vec|=    250588  fullq=     10000  selector=abs_residual  select_s=      0.7596  sort_s=      0.0000  int_s=      0.1785  ext_s=      9.1584  assign_s=      0.0032
+ccik(thick) cycle=   1 iter=  22  total=       -108.752172485656  ref=       -108.775988593335  delta_mEh=       23.816108
+ccik(thick) cycle=   1 iter=  22  ritz=       -121.717014147101  rayleigh=       -111.244681852400  |q|=     10000  |hq|=    250588
+ccik(thick) projected_hq_cpu_s=     10.3047
+ccik(next) parent=  22 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    111.7857  |v_temp|=    111.7857  dropped=      0.0000  |r_orth|=     35.6550  |r_keep|=     35.5295  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.1461E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  23  parent=  22  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    23 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    23  rayleigh=       -101.255034924968  cpu_s=      0.1907
+ccik(hq) done  call=    23 backend= connected_sd_fullq  raw=    858229  uniq=    312389  n_ext=    312389  n_total=    322389  |vec|=    305916  fullq=     10000  selector=abs_residual  select_s=      0.7799  sort_s=      0.0000  int_s=      0.1907  ext_s=     11.0589  assign_s=      0.0037
+ccik(thick) cycle=   1 iter=  23  total=       -108.752693517483  ref=       -108.775988593335  delta_mEh=       23.295076
+ccik(thick) cycle=   1 iter=  23  ritz=       -121.717535178928  rayleigh=       -101.255034924968  |q|=     10000  |hq|=    305916
+ccik(thick) projected_hq_cpu_s=     12.2536
+ccik(next) parent=  23 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    102.4786  |v_temp|=    102.4786  dropped=      0.0000  |r_orth|=     11.6562  |r_keep|=     11.5879  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.5186E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  24  parent=  23  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    24 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    24  rayleigh=       -104.641027980467  cpu_s=      0.1814
+ccik(hq) done  call=    24 backend= connected_sd_fullq  raw=    859380  uniq=    315390  n_ext=    315390  n_total=    325390  |vec|=    309310  fullq=     10000  selector=abs_residual  select_s=      0.7740  sort_s=      0.0000  int_s=      0.1814  ext_s=     11.2012  assign_s=      0.0039
+ccik(thick) cycle=   1 iter=  24  total=       -108.753702864199  ref=       -108.775988593335  delta_mEh=       22.285729
+ccik(thick) cycle=   1 iter=  24  ritz=       -121.718544525643  rayleigh=       -104.641027980467  |q|=     10000  |hq|=    309310
+ccik(thick) projected_hq_cpu_s=     12.3771
+ccik(next) parent=  24 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.5148  |v_temp|=    105.5148  dropped=      0.0000  |r_orth|=      9.7845  |r_keep|=      9.7350  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.8631E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  25  parent=  24  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    25 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    25  rayleigh=       -100.441402137091  cpu_s=      0.1761
+ccik(hq) done  call=    25 backend= connected_sd_fullq  raw=    857507  uniq=    313605  n_ext=    313605  n_total=    323605  |vec|=    309972  fullq=     10000  selector=abs_residual  select_s=      0.7637  sort_s=      0.0000  int_s=      0.1761  ext_s=     11.1016  assign_s=      0.0039
+ccik(thick) cycle=   1 iter=  25  total=       -108.754075449995  ref=       -108.775988593335  delta_mEh=       21.913143
+ccik(thick) cycle=   1 iter=  25  ritz=       -121.718917111440  rayleigh=       -100.441402137091  |q|=     10000  |hq|=    309972
+ccik(thick) projected_hq_cpu_s=     12.2650
+ccik(next) parent=  25 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.4217  |v_temp|=    101.4217  dropped=      0.0000  |r_orth|=     45.3737  |r_keep|=     45.2590  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.1859E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  26  parent=  25  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    26 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    26  rayleigh=       -106.883765604011  cpu_s=      0.1788
+ccik(hq) done  call=    26 backend= connected_sd_fullq  raw=    849178  uniq=    269019  n_ext=    269019  n_total=    279019  |vec|=    267808  fullq=     10000  selector=abs_residual  select_s=      0.7716  sort_s=      0.0000  int_s=      0.1788  ext_s=      9.6849  assign_s=      0.0026
+ccik(thick) cycle=   1 iter=  26  total=       -108.754485719798  ref=       -108.775988593335  delta_mEh=       21.502874
+ccik(thick) cycle=   1 iter=  26  ritz=       -121.719327381242  rayleigh=       -106.883765604011  |q|=     10000  |hq|=    267808
+ccik(thick) projected_hq_cpu_s=     10.8313
+ccik(next) parent=  26 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    107.4865  |v_temp|=    107.4865  dropped=      0.0000  |r_orth|=     23.4939  |r_keep|=     23.4080  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.0688E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  27  parent=  26  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    27 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    27  rayleigh=       -103.192649302994  cpu_s=      0.1799
+ccik(hq) done  call=    27 backend= connected_sd_fullq  raw=    861536  uniq=    306017  n_ext=    306017  n_total=    316017  |vec|=    298086  fullq=     10000  selector=abs_residual  select_s=      0.7642  sort_s=      0.0000  int_s=      0.1799  ext_s=     10.8122  assign_s=      0.0036
+ccik(thick) cycle=   1 iter=  27  total=       -108.754599134638  ref=       -108.775988593335  delta_mEh=       21.389459
+ccik(thick) cycle=   1 iter=  27  ritz=       -121.719440796082  rayleigh=       -103.192649302994  |q|=     10000  |hq|=    298086
+ccik(thick) projected_hq_cpu_s=     11.9770
+ccik(next) parent=  27 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    104.3318  |v_temp|=    104.3318  dropped=      0.0000  |r_orth|=      8.6655  |r_keep|=      8.6064  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.9694E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  28  parent=  27  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    28 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    28  rayleigh=       -101.248552450311  cpu_s=      0.1774
+ccik(hq) done  call=    28 backend= connected_sd_fullq  raw=    862134  uniq=    299077  n_ext=    299077  n_total=    309077  |vec|=    297910  fullq=     10000  selector=abs_residual  select_s=      0.7716  sort_s=      0.0000  int_s=      0.1774  ext_s=     10.5905  assign_s=      0.0046
+ccik(thick) cycle=   1 iter=  28  total=       -108.754801045872  ref=       -108.775988593335  delta_mEh=       21.187547
+ccik(thick) cycle=   1 iter=  28  ritz=       -121.719642707316  rayleigh=       -101.248552450311  |q|=     10000  |hq|=    297910
+ccik(thick) projected_hq_cpu_s=     11.7519
+ccik(next) parent=  28 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    102.1699  |v_temp|=    102.1699  dropped=      0.0000  |r_orth|=     16.5746  |r_keep|=     16.5153  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.7116E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  29  parent=  28  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    29 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    29  rayleigh=       -101.017556306792  cpu_s=      0.1793
+ccik(hq) done  call=    29 backend= connected_sd_fullq  raw=    856755  uniq=    313784  n_ext=    313784  n_total=    323784  |vec|=    311079  fullq=     10000  selector=abs_residual  select_s=      0.7693  sort_s=      0.0000  int_s=      0.1793  ext_s=     11.1282  assign_s=      0.0040
+ccik(thick) cycle=   1 iter=  29  total=       -108.754852009553  ref=       -108.775988593335  delta_mEh=       21.136584
+ccik(thick) cycle=   1 iter=  29  ritz=       -121.719693670998  rayleigh=       -101.017556306792  |q|=     10000  |hq|=    311079
+ccik(thick) projected_hq_cpu_s=     12.2860
+ccik(next) parent=  29 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.9134  |v_temp|=    101.9134  dropped=      0.0000  |r_orth|=     48.8823  |r_keep|=     48.6295  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.1553E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  30  parent=  29  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    30 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    30  rayleigh=       -100.897714772690  cpu_s=      0.1855
+ccik(hq) done  call=    30 backend= connected_sd_fullq  raw=    860420  uniq=    329956  n_ext=    329956  n_total=    339956  |vec|=    324508  fullq=     10000  selector=abs_residual  select_s=      0.7643  sort_s=      0.0000  int_s=      0.1855  ext_s=     11.6445  assign_s=      0.0048
+ccik(thick) cycle=   1 iter=  30  total=       -108.754877661367  ref=       -108.775988593335  delta_mEh=       21.110932
+ccik(thick) cycle=   1 iter=  30  ritz=       -121.719719322812  rayleigh=       -100.897714772690  |q|=     10000  |hq|=    324508
+ccik(thick) projected_hq_cpu_s=     12.8083
+ccik(next) parent=  30 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    102.0017  |v_temp|=    102.0017  dropped=      0.0000  |r_orth|=     16.1790  |r_keep|=     16.0741  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.6565E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   1 build_hq_for_iter=  31  parent=  30  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    31 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    31  rayleigh=       -103.691290566717  cpu_s=      0.1793
+ccik(hq) done  call=    31 backend= connected_sd_fullq  raw=    860951  uniq=    302139  n_ext=    302139  n_total=    312139  |vec|=    299193  fullq=     10000  selector=abs_residual  select_s=      0.7643  sort_s=      0.0000  int_s=      0.1793  ext_s=     10.7215  assign_s=      0.0034
+ccik(thick) cycle=   1 iter=  31  total=       -108.754907245755  ref=       -108.775988593335  delta_mEh=       21.081348
+ccik(thick) cycle=   1 iter=  31  ritz=       -121.719748907199  rayleigh=       -103.691290566717  |q|=     10000  |hq|=    299193
+ccik(thick) projected_hq_cpu_s=     11.8703
+ccik(thick) cycle=   2 seed=   1  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    32 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    32  rayleigh=       -121.719941474105  cpu_s=      0.1823
+ccik(hq) done  call=    32 backend= connected_sd_fullq  raw=    833247  uniq=    203030  n_ext=    203030  n_total=    213030  |vec|=    192036  fullq=     10000  selector=abs_residual  select_s=      0.7613  sort_s=      0.0000  int_s=      0.1823  ext_s=      7.4321  assign_s=      0.0026
+ccik(thick) cycle=   2 seed_done=   1  |hq|=    192036  cpu_s=      8.5648
+ccik(thick) cycle=   2 seed=   2  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    33 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    33  rayleigh=       -121.512197120848  cpu_s=      0.1803
+ccik(hq) done  call=    33 backend= connected_sd_fullq  raw=    838651  uniq=    215453  n_ext=    215453  n_total=    225453  |vec|=    205846  fullq=     10000  selector=abs_residual  select_s=      0.7696  sort_s=      0.0000  int_s=      0.1803  ext_s=      7.8349  assign_s=      0.0020
+ccik(thick) cycle=   2 seed_done=   2  |hq|=    205846  cpu_s=      8.9693
+ccik(thick) cycle=   2 seed=   3  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    34 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    34  rayleigh=       -120.952996786540  cpu_s=      0.1839
+ccik(hq) done  call=    34 backend= connected_sd_fullq  raw=    839742  uniq=    219183  n_ext=    219183  n_total=    229183  |vec|=    210039  fullq=     10000  selector=abs_residual  select_s=      0.7757  sort_s=      0.0000  int_s=      0.1839  ext_s=      7.9544  assign_s=      0.0024
+ccik(thick) cycle=   2 seed_done=   3  |hq|=    210039  cpu_s=      9.0972
+ccik(thick) cycle=   2 iter=   3  total=       -108.755102262797  ref=       -108.775988593335  delta_mEh=       20.886331
+ccik(thick) cycle=   2 restart_basis=   3  ritz=       -121.719943924242
+ccik(next) parent=   1 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    121.7202  |v_temp|=    121.7202  dropped=      0.0000  |r_orth|=      0.2722  |r_keep|=      0.2709  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.4639E-04  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=   4  parent=   1  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    35 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    35  rayleigh=       -106.106868211299  cpu_s=      0.1742
+ccik(hq) done  call=    35 backend= connected_sd_fullq  raw=    874075  uniq=    389919  n_ext=    389919  n_total=    399919  |vec|=    380568  fullq=     10000  selector=abs_residual  select_s=      0.7662  sort_s=      0.0000  int_s=      0.1742  ext_s=     13.9177  assign_s=      0.0042
+ccik(thick) cycle=   2 iter=   4  total=       -108.760501378811  ref=       -108.775988593335  delta_mEh=       15.487215
+ccik(thick) cycle=   2 iter=   4  ritz=       -121.725343040256  rayleigh=       -106.106868211299  |q|=     10000  |hq|=    380568
+ccik(thick) projected_hq_cpu_s=     15.0968
+ccik(next) parent=   2 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    121.5137  |v_temp|=    121.5137  dropped=      0.0000  |r_orth|=      0.1926  |r_keep|=      0.1899  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.9477E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=   5  parent=   2  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    36 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    36  rayleigh=       -100.296154322453  cpu_s=      0.1731
+ccik(hq) done  call=    36 backend= connected_sd_fullq  raw=    881434  uniq=    327713  n_ext=    327713  n_total=    337713  |vec|=    324004  fullq=     10000  selector=abs_residual  select_s=      0.7595  sort_s=      0.0000  int_s=      0.1731  ext_s=     11.3965  assign_s=      0.0031
+ccik(thick) cycle=   2 iter=   5  total=       -108.760505141287  ref=       -108.775988593335  delta_mEh=       15.483452
+ccik(thick) cycle=   2 iter=   5  ritz=       -121.725346802732  rayleigh=       -100.296154322453  |q|=     10000  |hq|=    324004
+ccik(thick) projected_hq_cpu_s=     12.5417
+ccik(next) parent=   3 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    120.9556  |v_temp|=    120.9556  dropped=      0.0000  |r_orth|=      0.4397  |r_keep|=      0.4342  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.9887E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=   6  parent=   3  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    37 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    37  rayleigh=        -98.798544944971  cpu_s=      0.1718
+ccik(hq) done  call=    37 backend= connected_sd_fullq  raw=    874907  uniq=    329207  n_ext=    329207  n_total=    339207  |vec|=    326741  fullq=     10000  selector=abs_residual  select_s=      0.7558  sort_s=      0.0000  int_s=      0.1718  ext_s=     11.5336  assign_s=      0.0040
+ccik(thick) cycle=   2 iter=   6  total=       -108.760505268321  ref=       -108.775988593335  delta_mEh=       15.483325
+ccik(thick) cycle=   2 iter=   6  ritz=       -121.725346929766  rayleigh=        -98.798544944971  |q|=     10000  |hq|=    326741
+ccik(thick) projected_hq_cpu_s=     12.6827
+ccik(next) parent=   4 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.9402  |v_temp|=    106.9402  dropped=      0.0000  |r_orth|=     13.2867  |r_keep|=     13.2695  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.1894E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=   7  parent=   4  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    38 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    38  rayleigh=        -99.116995062168  cpu_s=      0.1771
+ccik(hq) done  call=    38 backend= connected_sd_fullq  raw=    880482  uniq=    327335  n_ext=    327335  n_total=    337335  |vec|=    321714  fullq=     10000  selector=abs_residual  select_s=      0.7810  sort_s=      0.0000  int_s=      0.1771  ext_s=     11.3837  assign_s=      0.0038
+ccik(thick) cycle=   2 iter=   7  total=       -108.767389958928  ref=       -108.775988593335  delta_mEh=        8.598634
+ccik(thick) cycle=   2 iter=   7  ritz=       -121.732231620373  rayleigh=        -99.116995062168  |q|=     10000  |hq|=    321714
+ccik(thick) projected_hq_cpu_s=     12.5594
+ccik(next) parent=   5 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.2735  |v_temp|=    101.2735  dropped=      0.0000  |r_orth|=     13.5969  |r_keep|=     13.5389  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.6907E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=   8  parent=   5  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    39 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    39  rayleigh=       -102.442980374817  cpu_s=      0.1775
+ccik(hq) done  call=    39 backend= connected_sd_fullq  raw=    878780  uniq=    387745  n_ext=    387745  n_total=    397745  |vec|=    377601  fullq=     10000  selector=abs_residual  select_s=      0.7758  sort_s=      0.0000  int_s=      0.1775  ext_s=     13.5746  assign_s=      0.0046
+ccik(thick) cycle=   2 iter=   8  total=       -108.767522944080  ref=       -108.775988593335  delta_mEh=        8.465649
+ccik(thick) cycle=   2 iter=   8  ritz=       -121.732364605525  rayleigh=       -102.442980374817  |q|=     10000  |hq|=    377601
+ccik(thick) projected_hq_cpu_s=     14.7713
+ccik(next) parent=   6 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     99.7564  |v_temp|=     99.7564  dropped=      0.0000  |r_orth|=     13.2319  |r_keep|=     13.1544  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.5618E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=   9  parent=   6  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    40 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    40  rayleigh=       -104.133910998501  cpu_s=      0.1752
+ccik(hq) done  call=    40 backend= connected_sd_fullq  raw=    877112  uniq=    389414  n_ext=    389414  n_total=    399414  |vec|=    378599  fullq=     10000  selector=abs_residual  select_s=      0.7754  sort_s=      0.0000  int_s=      0.1752  ext_s=     13.6824  assign_s=      0.0042
+ccik(thick) cycle=   2 iter=   9  total=       -108.767566829300  ref=       -108.775988593335  delta_mEh=        8.421764
+ccik(thick) cycle=   2 iter=   9  ritz=       -121.732408490745  rayleigh=       -104.133910998501  |q|=     10000  |hq|=    378599
+ccik(thick) projected_hq_cpu_s=     14.8757
+ccik(next) parent=   7 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    100.3757  |v_temp|=    100.3757  dropped=      0.0000  |r_orth|=      8.6222  |r_keep|=      8.5996  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  7.0721E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  10  parent=   7  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    41 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    41  rayleigh=       -102.808505145353  cpu_s=      0.1745
+ccik(hq) done  call=    41 backend= connected_sd_fullq  raw=    870733  uniq=    323218  n_ext=    323218  n_total=    333218  |vec|=    320423  fullq=     10000  selector=abs_residual  select_s=      0.7874  sort_s=      0.0000  int_s=      0.1745  ext_s=     11.4297  assign_s=      0.0039
+ccik(thick) cycle=   2 iter=  10  total=       -108.771983046351  ref=       -108.775988593335  delta_mEh=        4.005547
+ccik(thick) cycle=   2 iter=  10  ritz=       -121.736824707796  rayleigh=       -102.808505145353  |q|=     10000  |hq|=    320423
+ccik(thick) projected_hq_cpu_s=     12.6081
+ccik(next) parent=   8 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.6939  |v_temp|=    103.6939  dropped=      0.0000  |r_orth|=      8.7616  |r_keep|=      8.7036  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.8465E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  11  parent=   8  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    42 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    42  rayleigh=       -104.529054630380  cpu_s=      0.1686
+ccik(hq) done  call=    42 backend= connected_sd_fullq  raw=    872920  uniq=    360950  n_ext=    360950  n_total=    370950  |vec|=    356448  fullq=     10000  selector=abs_residual  select_s=      0.7730  sort_s=      0.0000  int_s=      0.1686  ext_s=     12.7237  assign_s=      0.0045
+ccik(thick) cycle=   2 iter=  11  total=       -108.772113671375  ref=       -108.775988593335  delta_mEh=        3.874922
+ccik(thick) cycle=   2 iter=  11  ritz=       -121.736955332820  rayleigh=       -104.529054630380  |q|=     10000  |hq|=    356448
+ccik(thick) projected_hq_cpu_s=     13.9140
+ccik(next) parent=   9 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.3305  |v_temp|=    105.3305  dropped=      0.0000  |r_orth|=      9.3500  |r_keep|=      9.2854  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.8610E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  12  parent=   9  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    43 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    43  rayleigh=       -103.902233638535  cpu_s=      0.1740
+ccik(hq) done  call=    43 backend= connected_sd_fullq  raw=    870025  uniq=    362721  n_ext=    362721  n_total=    372721  |vec|=    358019  fullq=     10000  selector=abs_residual  select_s=      0.7808  sort_s=      0.0000  int_s=      0.1740  ext_s=     12.7957  assign_s=      0.0054
+ccik(thick) cycle=   2 iter=  12  total=       -108.772132797402  ref=       -108.775988593335  delta_mEh=        3.855796
+ccik(thick) cycle=   2 iter=  12  ritz=       -121.736974458847  rayleigh=       -103.902233638535  |q|=     10000  |hq|=    358019
+ccik(thick) projected_hq_cpu_s=     13.9819
+ccik(next) parent=  10 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.3026  |v_temp|=    103.3026  dropped=      0.0000  |r_orth|=      9.9201  |r_keep|=      9.7925  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.3518E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  13  parent=  10  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    44 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    44  rayleigh=       -104.970732150622  cpu_s=      0.1747
+ccik(hq) done  call=    44 backend= connected_sd_fullq  raw=    868719  uniq=    356376  n_ext=    356376  n_total=    366376  |vec|=    350194  fullq=     10000  selector=abs_residual  select_s=      0.7728  sort_s=      0.0000  int_s=      0.1747  ext_s=     12.7189  assign_s=      0.0044
+ccik(thick) cycle=   2 iter=  13  total=       -108.772823127105  ref=       -108.775988593335  delta_mEh=        3.165466
+ccik(thick) cycle=   2 iter=  13  ritz=       -121.737664788549  rayleigh=       -104.970732150622  |q|=     10000  |hq|=    350194
+ccik(thick) projected_hq_cpu_s=     13.9338
+ccik(next) parent=  11 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.1683  |v_temp|=    105.1683  dropped=      0.0000  |r_orth|=     32.7712  |r_keep|=     32.5860  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.8195E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  14  parent=  11  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    45 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    45  rayleigh=       -108.316478871885  cpu_s=      0.1707
+ccik(hq) done  call=    45 backend= connected_sd_fullq  raw=    863237  uniq=    324620  n_ext=    324620  n_total=    334620  |vec|=    322861  fullq=     10000  selector=abs_residual  select_s=      0.7694  sort_s=      0.0000  int_s=      0.1707  ext_s=     11.5258  assign_s=      0.0042
+ccik(thick) cycle=   2 iter=  14  total=       -108.772832139282  ref=       -108.775988593335  delta_mEh=        3.156454
+ccik(thick) cycle=   2 iter=  14  ritz=       -121.737673800727  rayleigh=       -108.316478871885  |q|=     10000  |hq|=    322861
+ccik(thick) projected_hq_cpu_s=     12.6916
+ccik(next) parent=  12 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    104.6905  |v_temp|=    104.6905  dropped=      0.0000  |r_orth|=     26.5151  |r_keep|=     26.3557  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.9306E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  15  parent=  12  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    46 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    46  rayleigh=        -98.838601926187  cpu_s=      0.1760
+ccik(hq) done  call=    46 backend= connected_sd_fullq  raw=    871909  uniq=    334107  n_ext=    334107  n_total=    344107  |vec|=    329794  fullq=     10000  selector=abs_residual  select_s=      0.7674  sort_s=      0.0000  int_s=      0.1760  ext_s=     11.7367  assign_s=      0.0040
+ccik(thick) cycle=   2 iter=  15  total=       -108.772839696037  ref=       -108.775988593335  delta_mEh=        3.148897
+ccik(thick) cycle=   2 iter=  15  ritz=       -121.737681357482  rayleigh=        -98.838601926187  |q|=     10000  |hq|=    329794
+ccik(thick) projected_hq_cpu_s=     12.8989
+ccik(next) parent=  13 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.9699  |v_temp|=    105.9699  dropped=      0.0000  |r_orth|=     36.4756  |r_keep|=     36.1623  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.4916E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  16  parent=  13  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    47 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    47  rayleigh=       -113.537421417608  cpu_s=      0.1759
+ccik(hq) done  call=    47 backend= connected_sd_fullq  raw=    861978  uniq=    327605  n_ext=    327605  n_total=    337605  |vec|=    318947  fullq=     10000  selector=abs_residual  select_s=      0.7818  sort_s=      0.0000  int_s=      0.1759  ext_s=     11.6650  assign_s=      0.0041
+ccik(thick) cycle=   2 iter=  16  total=       -108.773354264397  ref=       -108.775988593335  delta_mEh=        2.634329
+ccik(thick) cycle=   2 iter=  16  ritz=       -121.738195925842  rayleigh=       -113.537421417608  |q|=     10000  |hq|=    318947
+ccik(thick) projected_hq_cpu_s=     12.8442
+ccik(next) parent=  14 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    109.1066  |v_temp|=    109.1066  dropped=      0.0000  |r_orth|=     19.7451  |r_keep|=     19.5566  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.1771E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  17  parent=  14  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    48 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    48  rayleigh=       -102.716167151562  cpu_s=      0.1684
+ccik(hq) done  call=    48 backend= connected_sd_fullq  raw=    869710  uniq=    344787  n_ext=    344787  n_total=    354787  |vec|=    338292  fullq=     10000  selector=abs_residual  select_s=      0.7766  sort_s=      0.0000  int_s=      0.1684  ext_s=     12.1249  assign_s=      0.0045
+ccik(thick) cycle=   2 iter=  17  total=       -108.773461260695  ref=       -108.775988593335  delta_mEh=        2.527333
+ccik(thick) cycle=   2 iter=  17  ritz=       -121.738302922140  rayleigh=       -102.716167151562  |q|=     10000  |hq|=    338292
+ccik(thick) projected_hq_cpu_s=     13.2939
+ccik(next) parent=  15 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    100.0947  |v_temp|=    100.0947  dropped=      0.0000  |r_orth|=     24.3359  |r_keep|=     24.1238  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.3945E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  18  parent=  15  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    49 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    49  rayleigh=       -104.805319675274  cpu_s=      0.1672
+ccik(hq) done  call=    49 backend= connected_sd_fullq  raw=    873210  uniq=    381152  n_ext=    381152  n_total=    391152  |vec|=    370483  fullq=     10000  selector=abs_residual  select_s=      0.7654  sort_s=      0.0000  int_s=      0.1672  ext_s=     13.3967  assign_s=      0.0045
+ccik(thick) cycle=   2 iter=  18  total=       -108.773549527102  ref=       -108.775988593335  delta_mEh=        2.439066
+ccik(thick) cycle=   2 iter=  18  ritz=       -121.738391188546  rayleigh=       -104.805319675274  |q|=     10000  |hq|=    370483
+ccik(thick) projected_hq_cpu_s=     14.5608
+ccik(next) parent=  16 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    114.1051  |v_temp|=    114.1051  dropped=      0.0000  |r_orth|=     23.9547  |r_keep|=     23.7663  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.2714E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  19  parent=  16  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    50 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    50  rayleigh=        -99.669413546533  cpu_s=      0.1723
+ccik(hq) done  call=    50 backend= connected_sd_fullq  raw=    871318  uniq=    353454  n_ext=    353454  n_total=    363454  |vec|=    346396  fullq=     10000  selector=abs_residual  select_s=      0.7816  sort_s=      0.0000  int_s=      0.1723  ext_s=     12.4358  assign_s=      0.0034
+ccik(thick) cycle=   2 iter=  19  total=       -108.773882612806  ref=       -108.775988593335  delta_mEh=        2.105981
+ccik(thick) cycle=   2 iter=  19  ritz=       -121.738724274250  rayleigh=        -99.669413546533  |q|=     10000  |hq|=    346396
+ccik(thick) projected_hq_cpu_s=     13.6157
+ccik(next) parent=  17 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.9148  |v_temp|=    103.9148  dropped=      0.0000  |r_orth|=     14.7008  |r_keep|=     14.5759  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.6850E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  20  parent=  17  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    51 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    51  rayleigh=       -102.039915249216  cpu_s=      0.1719
+ccik(hq) done  call=    51 backend= connected_sd_fullq  raw=    870912  uniq=    349079  n_ext=    349079  n_total=    359079  |vec|=    342259  fullq=     10000  selector=abs_residual  select_s=      0.7666  sort_s=      0.0000  int_s=      0.1719  ext_s=     12.2882  assign_s=      0.0045
+ccik(thick) cycle=   2 iter=  20  total=       -108.773889490026  ref=       -108.775988593335  delta_mEh=        2.099103
+ccik(thick) cycle=   2 iter=  20  ritz=       -121.738731151471  rayleigh=       -102.039915249216  |q|=     10000  |hq|=    342259
+ccik(thick) projected_hq_cpu_s=     13.4505
+ccik(next) parent=  18 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.9972  |v_temp|=    105.9972  dropped=      0.0000  |r_orth|=     15.2716  |r_keep|=     15.0906  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  8.7173E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  21  parent=  18  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    52 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    52  rayleigh=       -100.041519152588  cpu_s=      0.1711
+ccik(hq) done  call=    52 backend= connected_sd_fullq  raw=    873552  uniq=    325105  n_ext=    325105  n_total=    335105  |vec|=    321696  fullq=     10000  selector=abs_residual  select_s=      0.7660  sort_s=      0.0000  int_s=      0.1711  ext_s=     11.3860  assign_s=      0.0038
+ccik(thick) cycle=   2 iter=  21  total=       -108.773891752858  ref=       -108.775988593335  delta_mEh=        2.096840
+ccik(thick) cycle=   2 iter=  21  ritz=       -121.738733414303  rayleigh=       -100.041519152588  |q|=     10000  |hq|=    321696
+ccik(thick) projected_hq_cpu_s=     12.5420
+ccik(next) parent=  19 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    100.9676  |v_temp|=    100.9676  dropped=      0.0000  |r_orth|=      8.9969  |r_keep|=      8.8680  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.9642E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  22  parent=  19  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    53 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    53  rayleigh=       -107.293437636404  cpu_s=      0.1715
+ccik(hq) done  call=    53 backend= connected_sd_fullq  raw=    867060  uniq=    334018  n_ext=    334018  n_total=    344018  |vec|=    329724  fullq=     10000  selector=abs_residual  select_s=      0.7892  sort_s=      0.0000  int_s=      0.1715  ext_s=     11.8307  assign_s=      0.0036
+ccik(thick) cycle=   2 iter=  22  total=       -108.774006951012  ref=       -108.775988593335  delta_mEh=        1.981642
+ccik(thick) cycle=   2 iter=  22  ritz=       -121.738848612457  rayleigh=       -107.293437636404  |q|=     10000  |hq|=    329724
+ccik(thick) projected_hq_cpu_s=     13.0097
+ccik(next) parent=  20 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.2912  |v_temp|=    103.2912  dropped=      0.0000  |r_orth|=     12.5626  |r_keep|=     12.3994  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.9305E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  23  parent=  20  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    54 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    54  rayleigh=       -107.946020855792  cpu_s=      0.1699
+ccik(hq) done  call=    54 backend= connected_sd_fullq  raw=    870967  uniq=    379663  n_ext=    379663  n_total=    389663  |vec|=    372932  fullq=     10000  selector=abs_residual  select_s=      0.7816  sort_s=      0.0000  int_s=      0.1699  ext_s=     13.4128  assign_s=      0.0047
+ccik(thick) cycle=   2 iter=  23  total=       -108.774009034892  ref=       -108.775988593335  delta_mEh=        1.979558
+ccik(thick) cycle=   2 iter=  23  ritz=       -121.738850696336  rayleigh=       -107.946020855792  |q|=     10000  |hq|=    372932
+ccik(thick) projected_hq_cpu_s=     14.6049
+ccik(next) parent=  21 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.2733  |v_temp|=    101.2733  dropped=      0.0000  |r_orth|=     15.7643  |r_keep|=     15.5968  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.4838E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  24  parent=  21  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    55 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    55  rayleigh=       -107.087316706586  cpu_s=      0.1696
+ccik(hq) done  call=    55 backend= connected_sd_fullq  raw=    870648  uniq=    379033  n_ext=    379033  n_total=    389033  |vec|=    371827  fullq=     10000  selector=abs_residual  select_s=      0.7652  sort_s=      0.0000  int_s=      0.1696  ext_s=     13.3550  assign_s=      0.0045
+ccik(thick) cycle=   2 iter=  24  total=       -108.774014980855  ref=       -108.775988593335  delta_mEh=        1.973612
+ccik(thick) cycle=   2 iter=  24  ritz=       -121.738856642299  rayleigh=       -107.087316706586  |q|=     10000  |hq|=    371827
+ccik(thick) projected_hq_cpu_s=     14.5275
+ccik(next) parent=  22 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    108.0424  |v_temp|=    108.0424  dropped=      0.0000  |r_orth|=     27.1120  |r_keep|=     26.8486  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.8678E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  25  parent=  22  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    56 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    56  rayleigh=       -107.509244696853  cpu_s=      0.1713
+ccik(hq) done  call=    56 backend= connected_sd_fullq  raw=    873750  uniq=    387115  n_ext=    387115  n_total=    397115  |vec|=    378125  fullq=     10000  selector=abs_residual  select_s=      0.7784  sort_s=      0.0000  int_s=      0.1713  ext_s=     13.6449  assign_s=      0.0052
+ccik(thick) cycle=   2 iter=  25  total=       -108.774040891237  ref=       -108.775988593335  delta_mEh=        1.947702
+ccik(thick) cycle=   2 iter=  25  ritz=       -121.738882552682  rayleigh=       -107.509244696853  |q|=     10000  |hq|=    378125
+ccik(thick) projected_hq_cpu_s=     14.8329
+ccik(next) parent=  23 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    108.7162  |v_temp|=    108.7162  dropped=      0.0000  |r_orth|=     44.1053  |r_keep|=     43.6511  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.6584E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  26  parent=  23  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    57 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    57  rayleigh=       -105.842775315208  cpu_s=      0.1701
+ccik(hq) done  call=    57 backend= connected_sd_fullq  raw=    866389  uniq=    345899  n_ext=    345899  n_total=    355899  |vec|=    342264  fullq=     10000  selector=abs_residual  select_s=      0.7934  sort_s=      0.0000  int_s=      0.1701  ext_s=     12.2530  assign_s=      0.0040
+ccik(thick) cycle=   2 iter=  26  total=       -108.774043427788  ref=       -108.775988593335  delta_mEh=        1.945166
+ccik(thick) cycle=   2 iter=  26  ritz=       -121.738885089232  rayleigh=       -105.842775315208  |q|=     10000  |hq|=    342264
+ccik(thick) projected_hq_cpu_s=     13.4515
+ccik(next) parent=  24 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    108.0736  |v_temp|=    108.0736  dropped=      0.0000  |r_orth|=     30.0569  |r_keep|=     29.7275  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.3295E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  27  parent=  24  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    58 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    58  rayleigh=       -102.888135777285  cpu_s=      0.1729
+ccik(hq) done  call=    58 backend= connected_sd_fullq  raw=    875150  uniq=    391535  n_ext=    391535  n_total=    401535  |vec|=    384938  fullq=     10000  selector=abs_residual  select_s=      0.7998  sort_s=      0.0000  int_s=      0.1729  ext_s=     13.7890  assign_s=      0.0045
+ccik(thick) cycle=   2 iter=  27  total=       -108.774045302583  ref=       -108.775988593335  delta_mEh=        1.943291
+ccik(thick) cycle=   2 iter=  27  ritz=       -121.738886964028  rayleigh=       -102.888135777285  |q|=     10000  |hq|=    384938
+ccik(thick) projected_hq_cpu_s=     14.9937
+ccik(next) parent=  25 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    108.3317  |v_temp|=    108.3317  dropped=      0.0000  |r_orth|=     32.6514  |r_keep|=     32.3809  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.5214E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  28  parent=  25  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    59 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    59  rayleigh=       -101.025474786990  cpu_s=      0.1692
+ccik(hq) done  call=    59 backend= connected_sd_fullq  raw=    874106  uniq=    352674  n_ext=    352674  n_total=    362674  |vec|=    346481  fullq=     10000  selector=abs_residual  select_s=      0.7719  sort_s=      0.0000  int_s=      0.1692  ext_s=     12.3263  assign_s=      0.0044
+ccik(thick) cycle=   2 iter=  28  total=       -108.774050983449  ref=       -108.775988593335  delta_mEh=        1.937610
+ccik(thick) cycle=   2 iter=  28  ritz=       -121.738892644893  rayleigh=       -101.025474786990  |q|=     10000  |hq|=    346481
+ccik(thick) projected_hq_cpu_s=     13.4979
+ccik(next) parent=  26 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.5657  |v_temp|=    106.5657  dropped=      0.0000  |r_orth|=     12.8020  |r_keep|=     12.6432  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.7310E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  29  parent=  26  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    60 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    60  rayleigh=       -102.417134865583  cpu_s=      0.1743
+ccik(hq) done  call=    60 backend= connected_sd_fullq  raw=    872614  uniq=    347994  n_ext=    347994  n_total=    357994  |vec|=    340831  fullq=     10000  selector=abs_residual  select_s=      0.7630  sort_s=      0.0000  int_s=      0.1743  ext_s=     12.2009  assign_s=      0.0038
+ccik(thick) cycle=   2 iter=  29  total=       -108.774051367680  ref=       -108.775988593335  delta_mEh=        1.937226
+ccik(thick) cycle=   2 iter=  29  ritz=       -121.738893029124  rayleigh=       -102.417134865583  |q|=     10000  |hq|=    340831
+ccik(thick) projected_hq_cpu_s=     13.3577
+ccik(next) parent=  27 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.7712  |v_temp|=    103.7712  dropped=      0.0000  |r_orth|=     16.2249  |r_keep|=     16.0359  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.0060E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  30  parent=  27  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    61 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    61  rayleigh=       -101.669514936134  cpu_s=      0.1673
+ccik(hq) done  call=    61 backend= connected_sd_fullq  raw=    871589  uniq=    359912  n_ext=    359912  n_total=    369912  |vec|=    352710  fullq=     10000  selector=abs_residual  select_s=      0.7429  sort_s=      0.0000  int_s=      0.1673  ext_s=     12.7153  assign_s=      0.0044
+ccik(thick) cycle=   2 iter=  30  total=       -108.774053535282  ref=       -108.775988593335  delta_mEh=        1.935058
+ccik(thick) cycle=   2 iter=  30  ritz=       -121.738895196727  rayleigh=       -101.669514936134  |q|=     10000  |hq|=    352710
+ccik(thick) projected_hq_cpu_s=     13.8521
+ccik(next) parent=  28 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    102.2483  |v_temp|=    102.2483  dropped=      0.0000  |r_orth|=     13.7871  |r_keep|=     13.6160  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  9.6450E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   2 build_hq_for_iter=  31  parent=  28  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    62 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    62  rayleigh=       -100.000944481896  cpu_s=      0.1708
+ccik(hq) done  call=    62 backend= connected_sd_fullq  raw=    873292  uniq=    341066  n_ext=    341066  n_total=    351066  |vec|=    337646  fullq=     10000  selector=abs_residual  select_s=      0.7812  sort_s=      0.0000  int_s=      0.1708  ext_s=     11.9435  assign_s=      0.0043
+ccik(thick) cycle=   2 iter=  31  total=       -108.774057313863  ref=       -108.775988593335  delta_mEh=        1.931279
+ccik(thick) cycle=   2 iter=  31  ritz=       -121.738898975307  rayleigh=       -100.000944481896  |q|=     10000  |hq|=    337646
+ccik(thick) projected_hq_cpu_s=     13.1139
+ccik(thick) cycle=   3 seed=   1  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    63 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    63  rayleigh=       -121.738884375815  cpu_s=      0.1900
+ccik(hq) done  call=    63 backend= connected_sd_fullq  raw=    830539  uniq=    198182  n_ext=    198182  n_total=    208182  |vec|=    185223  fullq=     10000  selector=abs_residual  select_s=      0.7726  sort_s=      0.0000  int_s=      0.1900  ext_s=      7.2722  assign_s=      0.0023
+ccik(thick) cycle=   3 seed_done=   1  |hq|=    185223  cpu_s=      8.4109
+ccik(thick) cycle=   3 seed=   2  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    64 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    64  rayleigh=       -121.578563140560  cpu_s=      0.1864
+ccik(hq) done  call=    64 backend= connected_sd_fullq  raw=    831629  uniq=    202184  n_ext=    202184  n_total=    212184  |vec|=    190292  fullq=     10000  selector=abs_residual  select_s=      0.7757  sort_s=      0.0000  int_s=      0.1864  ext_s=      7.4052  assign_s=      0.0021
+ccik(thick) cycle=   3 seed_done=   2  |hq|=    190292  cpu_s=      8.5440
+ccik(thick) cycle=   3 seed=   3  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    65 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    65  rayleigh=       -121.100445627254  cpu_s=      0.1915
+ccik(hq) done  call=    65 backend= connected_sd_fullq  raw=    832640  uniq=    204879  n_ext=    204879  n_total=    214879  |vec|=    195539  fullq=     10000  selector=abs_residual  select_s=      0.7688  sort_s=      0.0000  int_s=      0.1915  ext_s=      7.4942  assign_s=      0.0022
+ccik(thick) cycle=   3 seed_done=   3  |hq|=    195539  cpu_s=      8.6319
+ccik(thick) cycle=   3 iter=   3  total=       -108.774042717967  ref=       -108.775988593335  delta_mEh=        1.945875
+ccik(thick) cycle=   3 restart_basis=   3  ritz=       -121.738884379412
+ccik(next) parent=   1 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    121.7389  |v_temp|=    121.7389  dropped=      0.0000  |r_orth|=      0.0743  |r_keep|=      0.0730  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.0135E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=   4  parent=   1  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    66 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    66  rayleigh=       -109.684844834756  cpu_s=      0.1813
+ccik(hq) done  call=    66 backend= connected_sd_fullq  raw=    874774  uniq=    380060  n_ext=    380060  n_total=    390060  |vec|=    370975  fullq=     10000  selector=abs_residual  select_s=      0.7716  sort_s=      0.0000  int_s=      0.1813  ext_s=     13.3431  assign_s=      0.0045
+ccik(thick) cycle=   3 iter=   4  total=       -108.774490584346  ref=       -108.775988593335  delta_mEh=        1.498009
+ccik(thick) cycle=   3 iter=   4  ritz=       -121.739332245790  rayleigh=       -109.684844834756  |q|=     10000  |hq|=    370975
+ccik(thick) projected_hq_cpu_s=     14.5290
+ccik(next) parent=   2 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    121.5786  |v_temp|=    121.5786  dropped=      0.0000  |r_orth|=      0.0754  |r_keep|=      0.0737  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.8602E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=   5  parent=   2  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    67 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    67  rayleigh=       -105.535516250412  cpu_s=      0.1721
+ccik(hq) done  call=    67 backend= connected_sd_fullq  raw=    877469  uniq=    370333  n_ext=    370333  n_total=    380333  |vec|=    363107  fullq=     10000  selector=abs_residual  select_s=      0.7777  sort_s=      0.0000  int_s=      0.1721  ext_s=     13.0030  assign_s=      0.0043
+ccik(thick) cycle=   3 iter=   5  total=       -108.774493975407  ref=       -108.775988593335  delta_mEh=        1.494618
+ccik(thick) cycle=   3 iter=   5  ritz=       -121.739335636852  rayleigh=       -105.535516250412  |q|=     10000  |hq|=    363107
+ccik(thick) projected_hq_cpu_s=     14.1802
+ccik(next) parent=   3 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    121.1013  |v_temp|=    121.1013  dropped=      0.0000  |r_orth|=      0.3432  |r_keep|=      0.3391  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.4916E-03  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=   6  parent=   3  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    68 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    68  rayleigh=       -106.407962666953  cpu_s=      0.1753
+ccik(hq) done  call=    68 backend= connected_sd_fullq  raw=    880870  uniq=    369602  n_ext=    369602  n_total=    379602  |vec|=    362483  fullq=     10000  selector=abs_residual  select_s=      0.7347  sort_s=      0.0000  int_s=      0.1753  ext_s=     12.9011  assign_s=      0.0049
+ccik(thick) cycle=   3 iter=   6  total=       -108.774496206781  ref=       -108.775988593335  delta_mEh=        1.492387
+ccik(thick) cycle=   3 iter=   6  ritz=       -121.739337868225  rayleigh=       -106.407962666953  |q|=     10000  |hq|=    362483
+ccik(thick) projected_hq_cpu_s=     14.0415
+ccik(next) parent=   4 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    110.2867  |v_temp|=    110.2867  dropped=      0.0000  |r_orth|=     11.4606  |r_keep|=     11.4337  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.1029E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=   7  parent=   4  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    69 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    69  rayleigh=        -98.777304702214  cpu_s=      0.1781
+ccik(hq) done  call=    69 backend= connected_sd_fullq  raw=    872360  uniq=    326976  n_ext=    326976  n_total=    336976  |vec|=    318665  fullq=     10000  selector=abs_residual  select_s=      0.7558  sort_s=      0.0000  int_s=      0.1781  ext_s=     11.5059  assign_s=      0.0044
+ccik(thick) cycle=   3 iter=   7  total=       -108.774911894629  ref=       -108.775988593335  delta_mEh=        1.076699
+ccik(thick) cycle=   3 iter=   7  ritz=       -121.739753556074  rayleigh=        -98.777304702214  |q|=     10000  |hq|=    318665
+ccik(thick) projected_hq_cpu_s=     12.6568
+ccik(next) parent=   5 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    106.2820  |v_temp|=    106.2820  dropped=      0.0000  |r_orth|=     12.0408  |r_keep|=     11.9960  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.6111E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=   8  parent=   5  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    70 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    70  rayleigh=       -100.480775960501  cpu_s=      0.1735
+ccik(hq) done  call=    70 backend= connected_sd_fullq  raw=    877348  uniq=    354428  n_ext=    354428  n_total=    364428  |vec|=    343766  fullq=     10000  selector=abs_residual  select_s=      0.7753  sort_s=      0.0000  int_s=      0.1735  ext_s=     12.4172  assign_s=      0.0042
+ccik(thick) cycle=   3 iter=   8  total=       -108.774919090690  ref=       -108.775988593335  delta_mEh=        1.069503
+ccik(thick) cycle=   3 iter=   8  ritz=       -121.739760752134  rayleigh=       -100.480775960501  |q|=     10000  |hq|=    343766
+ccik(thick) projected_hq_cpu_s=     13.5885
+ccik(next) parent=   6 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    107.2172  |v_temp|=    107.2172  dropped=      0.0000  |r_orth|=     12.5693  |r_keep|=     12.5239  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.1800E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=   9  parent=   6  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    71 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    71  rayleigh=       -100.305862231320  cpu_s=      0.1766
+ccik(hq) done  call=    71 backend= connected_sd_fullq  raw=    882341  uniq=    334243  n_ext=    334243  n_total=    344243  |vec|=    326954  fullq=     10000  selector=abs_residual  select_s=      0.7343  sort_s=      0.0000  int_s=      0.1766  ext_s=     11.6277  assign_s=      0.0040
+ccik(thick) cycle=   3 iter=   9  total=       -108.774921525553  ref=       -108.775988593335  delta_mEh=        1.067068
+ccik(thick) cycle=   3 iter=   9  ritz=       -121.739763186998  rayleigh=       -100.305862231320  |q|=     10000  |hq|=    326954
+ccik(thick) projected_hq_cpu_s=     12.7541
+ccik(next) parent=   7 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     99.9354  |v_temp|=     99.9354  dropped=      0.0000  |r_orth|=     10.1253  |r_keep|=     10.1019  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  9.7877E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  10  parent=   7  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    72 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    72  rayleigh=       -102.390663468997  cpu_s=      0.1729
+ccik(hq) done  call=    72 backend= connected_sd_fullq  raw=    870741  uniq=    353556  n_ext=    353556  n_total=    363556  |vec|=    347304  fullq=     10000  selector=abs_residual  select_s=      0.7755  sort_s=      0.0000  int_s=      0.1729  ext_s=     12.4637  assign_s=      0.0048
+ccik(thick) cycle=   3 iter=  10  total=       -108.775210571587  ref=       -108.775988593335  delta_mEh=        0.778022
+ccik(thick) cycle=   3 iter=  10  ritz=       -121.740052233031  rayleigh=       -102.390663468997  |q|=     10000  |hq|=    347304
+ccik(thick) projected_hq_cpu_s=     13.6364
+ccik(next) parent=   8 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.6979  |v_temp|=    101.6979  dropped=      0.0000  |r_orth|=     10.2991  |r_keep|=     10.2488  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.5534E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  11  parent=   8  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    73 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    73  rayleigh=       -103.727819077853  cpu_s=      0.1724
+ccik(hq) done  call=    73 backend= connected_sd_fullq  raw=    876703  uniq=    371350  n_ext=    371350  n_total=    381350  |vec|=    364593  fullq=     10000  selector=abs_residual  select_s=      0.7796  sort_s=      0.0000  int_s=      0.1724  ext_s=     13.0592  assign_s=      0.0045
+ccik(thick) cycle=   3 iter=  11  total=       -108.775214533278  ref=       -108.775988593335  delta_mEh=        0.774060
+ccik(thick) cycle=   3 iter=  11  ritz=       -121.740056194722  rayleigh=       -103.727819077853  |q|=     10000  |hq|=    364593
+ccik(thick) projected_hq_cpu_s=     14.2410
+ccik(next) parent=   9 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    101.5638  |v_temp|=    101.5638  dropped=      0.0000  |r_orth|=     10.1843  |r_keep|=     10.1489  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.0333E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  12  parent=   9  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    74 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    74  rayleigh=       -102.767900332706  cpu_s=      0.1739
+ccik(hq) done  call=    74 backend= connected_sd_fullq  raw=    873670  uniq=    379394  n_ext=    379394  n_total=    389394  |vec|=    370703  fullq=     10000  selector=abs_residual  select_s=      0.7252  sort_s=      0.0000  int_s=      0.1739  ext_s=     13.3438  assign_s=      0.0049
+ccik(thick) cycle=   3 iter=  12  total=       -108.775216650298  ref=       -108.775988593335  delta_mEh=        0.771943
+ccik(thick) cycle=   3 iter=  12  ritz=       -121.740058311743  rayleigh=       -102.767900332706  |q|=     10000  |hq|=    370703
+ccik(thick) projected_hq_cpu_s=     14.4705
+ccik(next) parent=  10 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.0637  |v_temp|=    103.0637  dropped=      0.0000  |r_orth|=     19.7226  |r_keep|=     19.5829  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.8209E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  13  parent=  10  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    75 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    75  rayleigh=       -114.750966240676  cpu_s=      0.1745
+ccik(hq) done  call=    75 backend= connected_sd_fullq  raw=    866546  uniq=    354486  n_ext=    354486  n_total=    364486  |vec|=    346346  fullq=     10000  selector=abs_residual  select_s=      0.7591  sort_s=      0.0000  int_s=      0.1745  ext_s=     12.5084  assign_s=      0.0042
+ccik(thick) cycle=   3 iter=  13  total=       -108.775294694392  ref=       -108.775988593335  delta_mEh=        0.693899
+ccik(thick) cycle=   3 iter=  13  ritz=       -121.740136355837  rayleigh=       -114.750966240676  |q|=     10000  |hq|=    346346
+ccik(thick) projected_hq_cpu_s=     13.6663
+ccik(next) parent=  11 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    104.3973  |v_temp|=    104.3973  dropped=      0.0000  |r_orth|=     25.6569  |r_keep|=     25.5396  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.7200E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  14  parent=  11  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    76 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    76  rayleigh=       -111.102652639955  cpu_s=      0.1794
+ccik(hq) done  call=    76 backend= connected_sd_fullq  raw=    872413  uniq=    335694  n_ext=    335694  n_total=    345694  |vec|=    329243  fullq=     10000  selector=abs_residual  select_s=      0.7555  sort_s=      0.0000  int_s=      0.1794  ext_s=     11.7816  assign_s=      0.0039
+ccik(thick) cycle=   3 iter=  14  total=       -108.775300909734  ref=       -108.775988593335  delta_mEh=        0.687684
+ccik(thick) cycle=   3 iter=  14  ritz=       -121.740142571178  rayleigh=       -111.102652639955  |q|=     10000  |hq|=    329243
+ccik(thick) projected_hq_cpu_s=     12.9330
+ccik(next) parent=  12 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.4702  |v_temp|=    103.4702  dropped=      0.0000  |r_orth|=     25.4901  |r_keep|=     25.3929  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.5893E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  15  parent=  12  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    77 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    77  rayleigh=       -102.405610975798  cpu_s=      0.1720
+ccik(hq) done  call=    77 backend= connected_sd_fullq  raw=    872478  uniq=    320948  n_ext=    320948  n_total=    330948  |vec|=    315843  fullq=     10000  selector=abs_residual  select_s=      0.7657  sort_s=      0.0000  int_s=      0.1720  ext_s=     11.2704  assign_s=      0.0041
+ccik(thick) cycle=   3 iter=  15  total=       -108.775307201835  ref=       -108.775988593335  delta_mEh=        0.681392
+ccik(thick) cycle=   3 iter=  15  ritz=       -121.740148863280  rayleigh=       -102.405610975798  |q|=     10000  |hq|=    315843
+ccik(thick) projected_hq_cpu_s=     12.4179
+ccik(next) parent=  13 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    115.2147  |v_temp|=    115.2147  dropped=      0.0000  |r_orth|=     32.1444  |r_keep|=     31.9607  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.8193E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  16  parent=  13  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    78 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    78  rayleigh=       -112.115470598068  cpu_s=      0.1712
+ccik(hq) done  call=    78 backend= connected_sd_fullq  raw=    867359  uniq=    388030  n_ext=    388030  n_total=    398030  |vec|=    374431  fullq=     10000  selector=abs_residual  select_s=      0.7774  sort_s=      0.0000  int_s=      0.1712  ext_s=     13.7125  assign_s=      0.0047
+ccik(thick) cycle=   3 iter=  16  total=       -108.775379721847  ref=       -108.775988593335  delta_mEh=        0.608871
+ccik(thick) cycle=   3 iter=  16  ritz=       -121.740221383292  rayleigh=       -112.115470598068  |q|=     10000  |hq|=    374431
+ccik(thick) projected_hq_cpu_s=     14.8986
+ccik(next) parent=  14 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    111.9487  |v_temp|=    111.9487  dropped=      0.0000  |r_orth|=     21.3992  |r_keep|=     21.1939  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.1263E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  17  parent=  14  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    79 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    79  rayleigh=       -109.061145366695  cpu_s=      0.1760
+ccik(hq) done  call=    79 backend= connected_sd_fullq  raw=    870037  uniq=    383109  n_ext=    383109  n_total=    393109  |vec|=    370724  fullq=     10000  selector=abs_residual  select_s=      0.7541  sort_s=      0.0000  int_s=      0.1760  ext_s=     13.5094  assign_s=      0.0041
+ccik(thick) cycle=   3 iter=  17  total=       -108.775383639657  ref=       -108.775988593335  delta_mEh=        0.604954
+ccik(thick) cycle=   3 iter=  17  ritz=       -121.740225301102  rayleigh=       -109.061145366695  |q|=     10000  |hq|=    370724
+ccik(thick) projected_hq_cpu_s=     14.6753
+ccik(next) parent=  15 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    103.5182  |v_temp|=    103.5182  dropped=      0.0000  |r_orth|=     25.0333  |r_keep|=     24.8036  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  1.6226E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  18  parent=  15  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    80 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    80  rayleigh=       -108.900496550187  cpu_s=      0.1686
+ccik(hq) done  call=    80 backend= connected_sd_fullq  raw=    876500  uniq=    412063  n_ext=    412063  n_total=    422063  |vec|=    396995  fullq=     10000  selector=abs_residual  select_s=      0.7641  sort_s=      0.0000  int_s=      0.1686  ext_s=     14.4500  assign_s=      0.0041
+ccik(thick) cycle=   3 iter=  18  total=       -108.775388259929  ref=       -108.775988593335  delta_mEh=        0.600333
+ccik(thick) cycle=   3 iter=  18  ritz=       -121.740229921373  rayleigh=       -108.900496550187  |q|=     10000  |hq|=    396995
+ccik(thick) projected_hq_cpu_s=     15.6276
+ccik(next) parent=  16 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    112.7755  |v_temp|=    112.7755  dropped=      0.0000  |r_orth|=     11.5670  |r_keep|=     11.5277  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  7.5596E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  19  parent=  16  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    81 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    81  rayleigh=        -94.423802462184  cpu_s=      0.1718
+ccik(hq) done  call=    81 backend= connected_sd_fullq  raw=    875136  uniq=    302719  n_ext=    302719  n_total=    312719  |vec|=    297634  fullq=     10000  selector=abs_residual  select_s=      0.7704  sort_s=      0.0000  int_s=      0.1718  ext_s=     10.5911  assign_s=      0.0037
+ccik(thick) cycle=   3 iter=  19  total=       -108.775435812337  ref=       -108.775988593335  delta_mEh=        0.552781
+ccik(thick) cycle=   3 iter=  19  ritz=       -121.740277473782  rayleigh=        -94.423802462184  |q|=     10000  |hq|=    297634
+ccik(thick) projected_hq_cpu_s=     11.7420
+ccik(next) parent=  17 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    109.9469  |v_temp|=    109.9469  dropped=      0.0000  |r_orth|=     12.7982  |r_keep|=     12.7366  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  7.6635E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  20  parent=  17  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    82 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    82  rayleigh=        -97.536897489190  cpu_s=      0.1754
+ccik(hq) done  call=    82 backend= connected_sd_fullq  raw=    873734  uniq=    293688  n_ext=    293688  n_total=    303688  |vec|=    289376  fullq=     10000  selector=abs_residual  select_s=      0.7623  sort_s=      0.0000  int_s=      0.1754  ext_s=     10.3297  assign_s=      0.0036
+ccik(thick) cycle=   3 iter=  20  total=       -108.775442078155  ref=       -108.775988593335  delta_mEh=        0.546515
+ccik(thick) cycle=   3 iter=  20  ritz=       -121.740283739599  rayleigh=        -97.536897489190  |q|=     10000  |hq|=    289376
+ccik(thick) projected_hq_cpu_s=     11.4816
+ccik(next) parent=  18 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    109.8882  |v_temp|=    109.8882  dropped=      0.0000  |r_orth|=     12.6202  |r_keep|=     12.5570  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  5.9960E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  21  parent=  18  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    83 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    83  rayleigh=        -94.486016357277  cpu_s=      0.1718
+ccik(hq) done  call=    83 backend= connected_sd_fullq  raw=    877861  uniq=    309485  n_ext=    309485  n_total=    319485  |vec|=    304190  fullq=     10000  selector=abs_residual  select_s=      0.7630  sort_s=      0.0000  int_s=      0.1718  ext_s=     10.7985  assign_s=      0.0038
+ccik(thick) cycle=   3 iter=  21  total=       -108.775447230875  ref=       -108.775988593335  delta_mEh=        0.541362
+ccik(thick) cycle=   3 iter=  21  ritz=       -121.740288892320  rayleigh=        -94.486016357277  |q|=     10000  |hq|=    304190
+ccik(thick) projected_hq_cpu_s=     11.9549
+ccik(next) parent=  19 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     95.4859  |v_temp|=     95.4859  dropped=      0.0000  |r_orth|=     13.6633  |r_keep|=     13.4665  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.9612E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  22  parent=  19  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    84 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    84  rayleigh=       -113.189079111359  cpu_s=      0.1742
+ccik(hq) done  call=    84 backend= connected_sd_fullq  raw=    866674  uniq=    359841  n_ext=    359841  n_total=    369841  |vec|=    351297  fullq=     10000  selector=abs_residual  select_s=      0.7767  sort_s=      0.0000  int_s=      0.1742  ext_s=     12.7272  assign_s=      0.0042
+ccik(thick) cycle=   3 iter=  22  total=       -108.775485978188  ref=       -108.775988593335  delta_mEh=        0.502615
+ccik(thick) cycle=   3 iter=  22  ritz=       -121.740327639633  rayleigh=       -113.189079111359  |q|=     10000  |hq|=    351297
+ccik(thick) projected_hq_cpu_s=     13.8983
+ccik(next) parent=  20 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     98.7208  |v_temp|=     98.7208  dropped=      0.0000  |r_orth|=     12.0544  |r_keep|=     11.9457  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  4.7199E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  23  parent=  20  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    85 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    85  rayleigh=       -108.896314127323  cpu_s=      0.1711
+ccik(hq) done  call=    85 backend= connected_sd_fullq  raw=    872971  uniq=    370841  n_ext=    370841  n_total=    380841  |vec|=    363699  fullq=     10000  selector=abs_residual  select_s=      0.7719  sort_s=      0.0000  int_s=      0.1711  ext_s=     13.0399  assign_s=      0.0035
+ccik(thick) cycle=   3 iter=  23  total=       -108.775489401149  ref=       -108.775988593335  delta_mEh=        0.499192
+ccik(thick) cycle=   3 iter=  23  ritz=       -121.740331062594  rayleigh=       -108.896314127323  |q|=     10000  |hq|=    363699
+ccik(thick) projected_hq_cpu_s=     14.2088
+ccik(next) parent=  21 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=     95.6297  |v_temp|=     95.6297  dropped=      0.0000  |r_orth|=     10.5610  |r_keep|=     10.4832  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.8870E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  24  parent=  21  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    86 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    86  rayleigh=       -109.321954922130  cpu_s=      0.1698
+ccik(hq) done  call=    86 backend= connected_sd_fullq  raw=    868054  uniq=    358740  n_ext=    358740  n_total=    368740  |vec|=    350932  fullq=     10000  selector=abs_residual  select_s=      0.7654  sort_s=      0.0000  int_s=      0.1698  ext_s=     12.6365  assign_s=      0.0040
+ccik(thick) cycle=   3 iter=  24  total=       -108.775491788005  ref=       -108.775988593335  delta_mEh=        0.496805
+ccik(thick) cycle=   3 iter=  24  ritz=       -121.740333449450  rayleigh=       -109.321954922130  |q|=     10000  |hq|=    350932
+ccik(thick) projected_hq_cpu_s=     13.7999
+ccik(next) parent=  22 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    113.6177  |v_temp|=    113.6177  dropped=      0.0000  |r_orth|=     49.0617  |r_keep|=     48.6758  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.3906E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  25  parent=  22  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    87 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    87  rayleigh=       -110.651009549526  cpu_s=      0.1695
+ccik(hq) done  call=    87 backend= connected_sd_fullq  raw=    867753  uniq=    376900  n_ext=    376900  n_total=    386900  |vec|=    366305  fullq=     10000  selector=abs_residual  select_s=      0.7711  sort_s=      0.0000  int_s=      0.1695  ext_s=     13.3252  assign_s=      0.0044
+ccik(thick) cycle=   3 iter=  25  total=       -108.775498910706  ref=       -108.775988593335  delta_mEh=        0.489683
+ccik(thick) cycle=   3 iter=  25  ritz=       -121.740340572151  rayleigh=       -110.651009549526  |q|=     10000  |hq|=    366305
+ccik(thick) projected_hq_cpu_s=     14.4966
+ccik(next) parent=  23 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    109.6268  |v_temp|=    109.6268  dropped=      0.0000  |r_orth|=     48.8195  |r_keep|=     48.4324  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.6248E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  26  parent=  23  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    88 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    88  rayleigh=       -107.615235867782  cpu_s=      0.1726
+ccik(hq) done  call=    88 backend= connected_sd_fullq  raw=    869271  uniq=    364315  n_ext=    364315  n_total=    374315  |vec|=    356580  fullq=     10000  selector=abs_residual  select_s=      0.7668  sort_s=      0.0000  int_s=      0.1726  ext_s=     12.9983  assign_s=      0.0042
+ccik(thick) cycle=   3 iter=  26  total=       -108.775499202359  ref=       -108.775988593335  delta_mEh=        0.489391
+ccik(thick) cycle=   3 iter=  26  ritz=       -121.740340863803  rayleigh=       -107.615235867782  |q|=     10000  |hq|=    356580
+ccik(thick) projected_hq_cpu_s=     14.1628
+ccik(next) parent=  24 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    110.0423  |v_temp|=    110.0423  dropped=      0.0000  |r_orth|=     49.8349  |r_keep|=     49.5213  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  3.4026E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  27  parent=  24  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    89 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    89  rayleigh=       -109.611866435879  cpu_s=      0.1774
+ccik(hq) done  call=    89 backend= connected_sd_fullq  raw=    871692  uniq=    380603  n_ext=    380603  n_total=    390603  |vec|=    372521  fullq=     10000  selector=abs_residual  select_s=      0.7725  sort_s=      0.0000  int_s=      0.1774  ext_s=     13.4251  assign_s=      0.0047
+ccik(thick) cycle=   3 iter=  27  total=       -108.775502266573  ref=       -108.775988593335  delta_mEh=        0.486327
+ccik(thick) cycle=   3 iter=  27  ritz=       -121.740343928018  rayleigh=       -109.611866435879  |q|=     10000  |hq|=    372521
+ccik(thick) projected_hq_cpu_s=     14.6061
+ccik(next) parent=  25 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    111.3735  |v_temp|=    111.3735  dropped=      0.0000  |r_orth|=     13.2858  |r_keep|=     13.1206  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  9.2214E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  28  parent=  25  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    90 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    90  rayleigh=       -104.657820295771  cpu_s=      0.1756
+ccik(hq) done  call=    90 backend= connected_sd_fullq  raw=    873967  uniq=    368354  n_ext=    368354  n_total=    378354  |vec|=    359997  fullq=     10000  selector=abs_residual  select_s=      0.7650  sort_s=      0.0000  int_s=      0.1756  ext_s=     12.9342  assign_s=      0.0043
+ccik(thick) cycle=   3 iter=  28  total=       -108.775514193140  ref=       -108.775988593335  delta_mEh=        0.474400
+ccik(thick) cycle=   3 iter=  28  ritz=       -121.740355854585  rayleigh=       -104.657820295771  |q|=     10000  |hq|=    359997
+ccik(thick) projected_hq_cpu_s=     14.1062
+ccik(next) parent=  26 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    108.4112  |v_temp|=    108.4112  dropped=      0.0000  |r_orth|=     12.6260  |r_keep|=     12.4337  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  7.0794E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  29  parent=  26  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    91 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    91  rayleigh=       -104.388834019328  cpu_s=      0.1697
+ccik(hq) done  call=    91 backend= connected_sd_fullq  raw=    871827  uniq=    366989  n_ext=    366989  n_total=    376989  |vec|=    357545  fullq=     10000  selector=abs_residual  select_s=      0.7765  sort_s=      0.0000  int_s=      0.1697  ext_s=     12.9445  assign_s=      0.0046
+ccik(thick) cycle=   3 iter=  29  total=       -108.775515282898  ref=       -108.775988593335  delta_mEh=        0.473310
+ccik(thick) cycle=   3 iter=  29  ritz=       -121.740356944342  rayleigh=       -104.388834019328  |q|=     10000  |hq|=    357545
+ccik(thick) projected_hq_cpu_s=     14.1169
+ccik(next) parent=  27 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    110.3444  |v_temp|=    110.3444  dropped=      0.0000  |r_orth|=     16.1320  |r_keep|=     15.9470  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  6.8302E-02  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  30  parent=  27  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    92 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    92  rayleigh=       -102.170753272936  cpu_s=      0.1722
+ccik(hq) done  call=    92 backend= connected_sd_fullq  raw=    875872  uniq=    392690  n_ext=    392690  n_total=    402690  |vec|=    379834  fullq=     10000  selector=abs_residual  select_s=      0.7767  sort_s=      0.0000  int_s=      0.1722  ext_s=     13.7481  assign_s=      0.0047
+ccik(thick) cycle=   3 iter=  30  total=       -108.775515409447  ref=       -108.775988593335  delta_mEh=        0.473184
+ccik(thick) cycle=   3 iter=  30  ritz=       -121.740357070892  rayleigh=       -102.170753272936  |q|=     10000  |hq|=    379834
+ccik(thick) projected_hq_cpu_s=     14.9334
+ccik(next) parent=  28 policy=fixed_budget selector=abs_residual  |q|=      1.0000  |v_proj|=    105.7377  |v_temp|=    105.7377  dropped=      0.0000  |r_orth|=     13.3168  |r_keep|=     13.2079  tmp_keep=         0  final_keep=     10000  preserve_cap=         0  overlap=  2.4886E-01  store_drop=  0.0000E+00
+ccik(thick) cycle=   3 build_hq_for_iter=  31  parent=  28  |q|=     10000  nkeep=     10000
+ccik(hq) begin call=    93 backend= connected_sd_fullq  |q|=     10000  fullq=     10000  ngen=       500  ext_keep=     10000  rayleigh=          0.000000000000
+ccik(hq) internal pass call=    93  rayleigh=        -99.357712333696  cpu_s=      0.1692
+ccik(hq) done  call=    93 backend= connected_sd_fullq  raw=    874356  uniq=    337379  n_ext=    337379  n_total=    347379  |vec|=    331642  fullq=     10000  selector=abs_residual  select_s=      0.7668  sort_s=      0.0000  int_s=      0.1692  ext_s=     11.7886  assign_s=      0.0040
+ccik(thick) cycle=   3 iter=  31  total=       -108.775518939265  ref=       -108.775988593335  delta_mEh=        0.469654
+ccik(thick) cycle=   3 iter=  31  ritz=       -121.740360600710  rayleigh=        -99.357712333696  |q|=     10000  |hq|=    331642
+ccik(thick) projected_hq_cpu_s=     12.9423
+CCIK_FINAL_ELECTRONIC_ENERGY =        -121.740360600710
+CCIK_FINAL_TOTAL_ENERGY =        -108.775518939265
+CCIK_FINAL_BASIS =       31
