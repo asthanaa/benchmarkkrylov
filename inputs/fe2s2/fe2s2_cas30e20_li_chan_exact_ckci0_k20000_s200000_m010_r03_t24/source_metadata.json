@@ -1,0 +1,19 @@
+{
+  "paper_url": "https://arxiv.org/html/2501.07231v4",
+  "repository_url": "https://github.com/zhendongli2008/Active-space-model-for-Iron-Sulfur-Clusters",
+  "repository_commit": "84433831a680f70665cf43fc8692e0210da92be3",
+  "repository_path": "Fe2S2_and_Fe4S4/Fe2S2/fe2s2",
+  "local_fcidump": "hamiltonian/FCIDUMP",
+  "system": "[2Fe-2S]",
+  "active_space": {
+    "electrons": 30,
+    "orbitals": 20,
+    "ms2": 0
+  },
+  "reference": {
+    "active_energy_eh": -116.6056091,
+    "core_energy_eh": -4976.26532397,
+    "total_energy_eh": -5092.87093307,
+    "label": "Repository README reports Fe2S2 active-space DMRG(d=8000) as exact."
+  }
+}

@@ -1,0 +1,187 @@
+ ============================================
+  Quantum Package plugin: baseline ccik
+  Determinant-driven compressed Krylov solver
+ ============================================
+ ccik_generator_keep  =          512
+ ccik_generator_fraction =    0.0000000000000000     
+ ccik_generator_abs_coeff_cutoff =    0.0000000000000000     
+ ccik_max_parents_for_expansion =          512
+ ccik_include_current_support =  T
+ ccik_selector_keep   =      1000000
+ ccik_external_keep   =        50000
+ ccik_external_candidate_factor =            4
+ ccik_pt2_rank_weight =    1.0000000000000000     
+ ccik_selector_mode   = abs_residual
+ ccik_matvec_backend = connected_sd_fullq
+ ccik_compression_policy = fixed_budget
+ ccik_fixed_store_keep =      1000000
+ ccik_fixed_propagate_keep =         1000
+ ccik_store_abs_tol  =    0.0000000000000000     
+ ccik_propagate_abs_tol =    0.0000000000000000     
+ ccik_nkeep           =      1000000
+ ccik_tmp_keep_factor =            2
+ ccik_preserve_prev_support =  T
+ ccik_preserve_prev_support_cap =          512
+ ccik_total_det_budget=            0
+ ccik_basis_size      =           31
+ ccik_conv_tol        =    1.0000000000000000E-010
+ ccik_ritz_overlap_tol=    1.0000000000000000E-008
+ ccik_ritz_max_drop   =    0.0000000000000000     
+ ccik_save_final_wf   =  T
+ ccik_do_post_pt2     =  F
+ ccik_max_cycle       =           10
+ ccik_restart_m_cycle =           31
+ ccik_restart_nroot   =            3
+ ccik_verbose         =  F
+ ccik_debug_trace     =  F
+ ccik_debug_trace_topn=            8
+
+.. >>>>> [ RES  MEM :          0.006 GB ] [ VIRT MEM :          1.545 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.06  s ] <<<<< ..
+
+
+Nuclear Coordinates (Angstroms)
+===============================
+
+================ ============ ============ ============ ============
+      Atom          Charge          X            Y            Z 
+================ ============ ============ ============ ============
+C                    6.000000    -8.684376    -1.012167     0.000000
+C                    6.000000    -7.334376    -1.012167     0.000000
+C                    6.000000    -6.609375     0.243570     0.000000
+C                    6.000000    -5.934375    -0.925565     0.000000
+C                    6.000000    -5.209375     0.330172     0.000000
+C                    6.000000    -4.534375    -0.838962     0.000000
+C                    6.000000    -3.809375     0.416775     0.000000
+C                    6.000000    -3.134375    -0.752360     0.000000
+C                    6.000000    -2.409375     0.503377     0.000000
+C                    6.000000    -1.734375    -0.665757     0.000000
+C                    6.000000    -1.009375     0.589980     0.000000
+C                    6.000000    -0.334375    -0.579155     0.000000
+C                    6.000000     0.390625     0.676582     0.000000
+C                    6.000000     1.065625    -0.492552     0.000000
+C                    6.000000     1.790625     0.763185     0.000000
+C                    6.000000     2.465625    -0.405949     0.000000
+C                    6.000000     3.190625     0.849787     0.000000
+C                    6.000000     3.865625    -0.319347     0.000000
+C                    6.000000     4.590625     0.936390     0.000000
+C                    6.000000     5.265625    -0.232744     0.000000
+C                    6.000000     5.990625     1.022993     0.000000
+C                    6.000000     6.665625    -0.146142     0.000000
+C                    6.000000     7.390626     1.109595     0.000000
+C                    6.000000     8.065626    -0.059539     0.000000
+H                    1.000000    -9.224376    -0.076860     0.000000
+H                    1.000000    -9.224376    -1.947475     0.000000
+H                    1.000000    -6.794375    -1.947475     0.000000
+H                    1.000000    -6.609375     1.323570     0.000000
+H                    1.000000    -5.934375    -2.005565     0.000000
+H                    1.000000    -5.209375     1.410172     0.000000
+H                    1.000000    -4.534375    -1.918962     0.000000
+H                    1.000000    -3.809375     1.496775     0.000000
+H                    1.000000    -3.134375    -1.832360     0.000000
+H                    1.000000    -2.409375     1.583377     0.000000
+H                    1.000000    -1.734375    -1.745757     0.000000
+H                    1.000000    -1.009375     1.669980     0.000000
+H                    1.000000    -0.334375    -1.659155     0.000000
+H                    1.000000     0.390625     1.756582     0.000000
+H                    1.000000     1.065625    -1.572552     0.000000
+H                    1.000000     1.790625     1.843185     0.000000
+H                    1.000000     2.465625    -1.485950     0.000000
+H                    1.000000     3.190625     1.929788     0.000000
+H                    1.000000     3.865625    -1.399347     0.000000
+H                    1.000000     4.590625     2.016390     0.000000
+H                    1.000000     5.265625    -1.312744     0.000000
+H                    1.000000     5.990625     2.102993     0.000000
+H                    1.000000     6.665625    -1.226142     0.000000
+H                    1.000000     7.390626     2.189595     0.000000
+H                    1.000000     7.525626    -0.994847     0.000000
+H                    1.000000     9.145626    -0.059539     0.000000
+================ ============ ============ ============ ============
+
+Minimal interatomic distance found:       0.8620 Angstrom
+
+.. >>>>> [ RES  MEM :          0.006 GB ] [ VIRT MEM :          1.545 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.06  s ] <<<<< ..
+
+* Nuclear repulsion energy                           1988.725383325660    
+* mo_num                                                        97
+.. >>>>> [ IO READ: mo_class ] <<<<< ..
+* N_int                                                          2
+ MO map initialized:              11297881
+* Total available memory (GB)                                 3022
+* Target maximum memory (GB)                                   921
+.. >>>>> [ RES  MEM :          0.009 GB ] [ VIRT MEM :          1.579 GB ] <<<<< ..
+ 
+ Cholesky decomposition of AO integrals
+ ======================================
+ 
+ ============ =============
+     Rank       Threshold
+ ============ =============
+        63       3.195E-01
+       544       3.188E-02
+      1123       3.149E-03
+      1673       3.137E-04
+      2368       3.135E-05
+      3115       3.119E-06
+      4312       3.117E-07
+      5497       3.108E-08
+      6957       3.088E-09
+      8422       3.081E-10
+      9701       3.073E-11
+     11109       3.059E-12
+     11839       9.999E-13
+ ============ =============
+ 
+ Writing Cholesky AO vectors to disk...
+ Rank  :        11839 (   4.9308621407746775       %)
+ 
+ Time to provide AO cholesky vectors =    13.984993527363985       min
+ Read  mo_coef
+ 
+ AO->MO Transformation of Cholesky vectors
+ -----------------------------------------
+ 
+ Time to provide MO cholesky vectors =    2.8156839838872353E-002  min
+ Molecular integrals provided:
+  Size of MO map              261.77898597717285      MB
+  Number of MO integrals:              10008653
+  cpu  time :   9698.2128839999987      s
+  wall time :   846.41595359146595      s  ( x    11.457975056884351      )
+ Writing data to disk...
+ Done
+ MO integrals cache: (          22 ,           97 ),                  2048 MiB
+ Providing the one-electron integrals
+ * mo_label          PySCF_RHF_CCPVDZ_POLYENE_PI
+* Number of determinants                                         1
+* Number of active   MOs                                        24
+ Active MOs:
+          74          75          76          77          78          79          80          81          82          83          84          85          86          87          88          89          90          91          92          93          94          95          96          97
+ccik(thick) cycle=   1 iter=   1  total=       -915.719032107247  ref=       -917.996820842210  delta_mEh=     2277.788735
+ccik(thick) cycle=   1 iter=   2  total=       -915.993376587655  ref=       -917.996820842210  delta_mEh=     2003.444255
+ccik(thick) cycle=   1 iter=   3  total=       -916.177632125648  ref=       -917.996820842210  delta_mEh=     1819.188717
+ccik(thick) cycle=   1 iter=   4  total=       -916.310203922334  ref=       -917.996820842210  delta_mEh=     1686.616920
+ccik(thick) cycle=   1 iter=   5  total=       -916.405361286443  ref=       -917.996820842210  delta_mEh=     1591.459556
+ccik(thick) cycle=   1 iter=   6  total=       -916.406348305499  ref=       -917.996820842210  delta_mEh=     1590.472537
+ccik(thick) cycle=   1 iter=   7  total=       -916.406826401969  ref=       -917.996820842210  delta_mEh=     1589.994440
+ccik(thick) cycle=   1 iter=   8  total=       -916.406828486578  ref=       -917.996820842210  delta_mEh=     1589.992356
+ccik(thick) cycle=   1 iter=   9  total=       -916.407210864138  ref=       -917.996820842210  delta_mEh=     1589.609978
+ccik(thick) cycle=   1 iter=  10  total=       -916.413013196762  ref=       -917.996820842210  delta_mEh=     1583.807645
+ccik(thick) cycle=   1 iter=  11  total=       -916.413133299563  ref=       -917.996820842210  delta_mEh=     1583.687543
+ccik(thick) cycle=   1 iter=  12  total=       -916.414293815697  ref=       -917.996820842210  delta_mEh=     1582.527027
+ccik(thick) cycle=   1 iter=  13  total=       -916.414315811537  ref=       -917.996820842210  delta_mEh=     1582.505031
+ccik(thick) cycle=   1 iter=  14  total=       -916.414435979143  ref=       -917.996820842210  delta_mEh=     1582.384863
+ccik(thick) cycle=   1 iter=  15  total=       -916.417754735904  ref=       -917.996820842210  delta_mEh=     1579.066106
+ccik(thick) cycle=   1 iter=  16  total=       -916.417895911385  ref=       -917.996820842210  delta_mEh=     1578.924931
+ccik(thick) cycle=   1 iter=  17  total=       -916.418067008018  ref=       -917.996820842210  delta_mEh=     1578.753834
+ccik(thick) cycle=   1 iter=  18  total=       -916.419562279638  ref=       -917.996820842210  delta_mEh=     1577.258563
+ccik(thick) cycle=   1 iter=  19  total=       -916.420943403456  ref=       -917.996820842210  delta_mEh=     1575.877439
+ccik(thick) cycle=   1 iter=  20  total=       -916.420984136832  ref=       -917.996820842210  delta_mEh=     1575.836705
+ccik(thick) cycle=   1 iter=  21  total=       -916.423274960972  ref=       -917.996820842210  delta_mEh=     1573.545881
+ccik(thick) cycle=   1 iter=  22  total=       -916.425409678021  ref=       -917.996820842210  delta_mEh=     1571.411164
+ccik(thick) cycle=   1 iter=  23  total=       -916.425504991939  ref=       -917.996820842210  delta_mEh=     1571.315850
+ccik(thick) cycle=   1 iter=  24  total=       -916.426266073475  ref=       -917.996820842210  delta_mEh=     1570.554769
+ccik(thick) cycle=   1 iter=  25  total=       -916.427672083567  ref=       -917.996820842210  delta_mEh=     1569.148759
+ccik(thick) cycle=   1 iter=  26  total=       -916.447727343375  ref=       -917.996820842210  delta_mEh=     1549.093499
+ccik(thick) cycle=   1 iter=  27  total=       -916.448820487295  ref=       -917.996820842210  delta_mEh=     1548.000355
+ccik(thick) cycle=   1 iter=  28  total=       -916.484915915513  ref=       -917.996820842210  delta_mEh=     1511.904927

@@ -85,7 +85,8 @@ mkdocs build
 - shared advanced helpers belong in `scripts/_shared/`
 - vendored Quantum Package plugin sources belong in `ccik_qp/`
 - tracked teaching study definitions belong in `sample_inputs/`
-- local-only live study workspaces belong in `inputs/`
+- tracked Talon study inputs and shareable result files belong in `inputs/`
+- raw `.ezfio/work/` runtime tensors and other large regenerable blobs stay local
 - public package code belongs in `src/ccik/`
 
 ## Adding a new example

@@ -1,0 +1,31 @@
+QP_ROOT=/home/ayush.asthana/quantum_package/qp2_medora_arm
+Already on 'master'
+Your branch is up to date with 'origin/master'.
+Already up to date.
+Architecture: aarch64
+Disabling GPU acceleration
+[0;31m
+#########################################################
+#                                                       #
+#       Automatic installation of dependencies          #
+#                                                       #
+# USE AT YOUR OWN RISK :                                #
+# No support will be provided by the quantum package    #
+# developers for the installation of external software. #
+#                                                       #
+# You may refer to the INSTALL.rst file for help.       #
+#                                                       #
+#########################################################
+[m
+Executing:
+   cd "${QP_ROOT}"/external
+   tar --gunzip --extract --file qp2-dependencies/resultsFile-v2.3.tar.gz
+   mv resultsFile-*/resultsFile "${QP_ROOT}/external/Python/"
+
+[0;94m++ cd /home/ayush.asthana/quantum_package/qp2_medora_arm/external
+++ tar --gunzip --extract --file qp2-dependencies/resultsFile-v2.3.tar.gz
+++ mv resultsFile-v2.3/resultsFile /home/ayush.asthana/quantum_package/qp2_medora_arm/external/Python/
+mv: cannot overwrite '/home/ayush.asthana/quantum_package/qp2_medora_arm/external/Python/resultsFile': File exists
+++ set +x
+[m
+configure: TREXIO (trexio | trexio-nohdf5) is not installed. If you don't have HDF5, use trexio-nohdf5

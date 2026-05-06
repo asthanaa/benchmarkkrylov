@@ -59,5 +59,12 @@ Tracked `sample_inputs/` folders are source definitions, not artifact dumps.
 - treat generated plots, traces, logs, and runtime setup folders as local
   output
 
-The local-only `inputs/` workspace can still be used for exploratory QP runs
-and larger sweeps.
+The `inputs/` tree tracks Talon study inputs and shareable result files such
+as JSON summaries, CSV traces, plots, logs, and captions. Raw `.ezfio/work/`
+runtime tensors and oversized archives stay local.
+
+Before committing a large result sync, check the file-size guard:
+
+```bash
+python scripts/check_large_files.py inputs --max-mb 500
+```

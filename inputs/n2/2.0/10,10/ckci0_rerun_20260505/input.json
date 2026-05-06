@@ -1,0 +1,245 @@
+{
+  "name": "n2_cas10_10_R2p00_kstore_sweep_kprop500_s001000_320000_i050_t24_ckci0_rerun_20260505",
+  "label": "N2 CAS(10,10) R=2.00 A | QP thick fixed-budget sweep | Kprop=500 | Kstore=1000/5000/10000/20000/40000/80000/160000/320000 | i=50 | t24 | CKCI-0 diagnostics | clean rerun 2026-05-05",
+  "molecule": {
+    "distance_ang": 2.0,
+    "basis": "6-31g",
+    "unit": "Angstrom",
+    "charge": 0,
+    "spin": 0,
+    "verbose": 0
+  },
+  "cas": {
+    "ncas": 10,
+    "nelecas": 10,
+    "ncore": 2
+  },
+  "study": {
+    "max_cumulative_iterations": 50,
+    "plot_max_cumulative_iterations": 50,
+    "stop_abs_delta_mHa": null,
+    "error_unit": "mHa",
+    "plot_yscale": "log",
+    "omp_threads": 24,
+    "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+    "reference_mode": "exact_fci"
+  },
+  "runs": [
+    {
+      "name": "kstore1000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=1000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 1000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore5000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=5000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 5000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore10000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=10000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 10000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore20000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=20000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 20000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore40000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=40000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 40000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore80000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=80000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 80000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore160000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=160000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 160000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    },
+    {
+      "name": "kstore320000_kprop500_m031_ckci0",
+      "label": "CKCI-0 Kstore=320000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 320000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true,
+          "exactized_checkpoint_every": 1,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_max_subspace": 24,
+          "exactized_restart_keep": 4
+        },
+        "backend": "qp"
+      }
+    }
+  ]
+}

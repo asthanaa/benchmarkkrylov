@@ -1,0 +1,18 @@
+{
+  "basis": "cc-pvdz-dk",
+  "case": "cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon",
+  "distance_ang": 1.5,
+  "ezfio_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/cr2.ezfio",
+  "fcidump_backend": "pyscf_cas_hamiltonian",
+  "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/qp_active.FCIDUMP",
+  "hf_total_energy_eh": -2080.8173559881293,
+  "ncas": 22,
+  "ncore": 18,
+  "nelecas": 12,
+  "nmo_total": 98,
+  "setup_backend": "pyscf_constructed_shell_fallback",
+  "setup_fallback_reason": "CalledProcessError: Command '['/bin/bash', '-lc', 'source /home/ayush.asthana/quantum_package/qp2/quantum_package.rc && /home/ayush.asthana/quantum_package/qp2/ocaml/qp_create_ezfio -b cc-pvdz-dk -m 1 -o /home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/cr2.ezfio /home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/cr2.xyz']' returned non-zero exit status 2.",
+  "setup_kind": "pyscf_constructed_shell",
+  "title": "Cr2 CAS(12e,22o) R=1.50 A | cc-pVDZ-DK | DMRG M=6000 reference | restart m=31 | Kprop=1500 Kstore=500000 | t36",
+  "xyz_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/cr2.xyz"
+}

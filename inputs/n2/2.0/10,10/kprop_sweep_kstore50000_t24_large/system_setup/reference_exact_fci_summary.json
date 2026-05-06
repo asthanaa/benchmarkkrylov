@@ -1,0 +1,13 @@
+{
+  "ecore_eh": -82.84538709607953,
+  "electronic_energy_eh": -25.915496450016136,
+  "nelec": [
+    5,
+    5
+  ],
+  "norb": 10,
+  "reference_kind": "exact_fci",
+  "reference_label": "Exact FCI",
+  "success": true,
+  "total_energy_eh": -108.76088354609567
+}

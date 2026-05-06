@@ -1,0 +1,11 @@
+{
+  "ecore": 12.964841667123501,
+  "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/qp_active.FCIDUMP",
+  "nelec": [
+    7,
+    7
+  ],
+  "norb": 18,
+  "source_kind": "generated_from_qp",
+  "source_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/n2.ezfio.FCIDUMP"
+}

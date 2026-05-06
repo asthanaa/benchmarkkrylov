@@ -1,0 +1,13 @@
+{
+  "label": "Baseline m=31 resume from t24 snapshot | Kprop=1000 Kstore=500000",
+  "cum_new_krylov": 62,
+  "cycle": 3,
+  "basis_size": 7,
+  "support_union_size": null,
+  "total_energy_eh": -108.860089134309,
+  "delta_mHa": 0.992329,
+  "abs_delta_mHa": 0.992329,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null
+}

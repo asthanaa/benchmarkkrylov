@@ -1,0 +1,106 @@
+{
+  "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+  "omp_threads": 48,
+  "label": "N2 CAS(14e,18o) R=2.00 A | DMRG M=1000 | baseline m=31 resume from t24 snapshot | Kprop=1000 Kstore=500000 | t48",
+  "ezfio_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/n2.ezfio",
+  "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/qp_active.FCIDUMP",
+  "ecore": 12.964841667123501,
+  "norb": 18,
+  "nelec": [
+    7,
+    7
+  ],
+  "reference_mode": "dmrg_only",
+  "effective_reference_mode": "dmrg_only",
+  "reference_total_energy_eh": -108.86108146319904,
+  "reference_summary": {
+    "reference_kind": "dmrg",
+    "reference_label": "DMRG",
+    "success": true,
+    "init_api": "explicit_hamiltonian",
+    "init_mode": "fci_init",
+    "norb": 18,
+    "nelec": 14,
+    "ms2": 0,
+    "isym": 1,
+    "orb_sym": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "ecore_eh": 12.964841667123501,
+    "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/qp_active.FCIDUMP",
+    "log_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/reference_dmrg_runtime/dmrg.log",
+    "threads": 16,
+    "memory_gb": 128,
+    "conv_tol": 1e-08,
+    "bond_dims": [
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "noises": [
+      1e-05,
+      1e-06,
+      1e-07,
+      1e-08
+    ],
+    "dav_thrds": [
+      1e-06,
+      1e-06,
+      1e-07,
+      1e-07
+    ],
+    "n_steps": 10,
+    "preflight": {
+      "success": true,
+      "attempts": [
+        {
+          "label": "preflight_fci_init",
+          "bond_dims": [
+            200,
+            200
+          ],
+          "n_steps": 2,
+          "success": true,
+          "energy_eh": -108.80878436822721
+        }
+      ],
+      "init_mode": "fci_init"
+    },
+    "total_energy_eh": -108.86108146319904,
+    "electronic_energy_eh": -121.82592313032254,
+    "wall_s": 694.9914434859529,
+    "largest_file_path": "/tmp/cka_dmrg/qp_active_dmrg_u2pihyt4/fci_init/F0.PART.DMRG.RIGHT.8",
+    "largest_file_mb": 695.3004035949707,
+    "peak_total_scratch_gb": 4.779828233644366,
+    "max_file_mb": 4096,
+    "max_total_scratch_gb": 120.0,
+    "scratch_root": "/tmp/cka_dmrg/qp_active_dmrg_u2pihyt4"
+  },
+  "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/reference_choice.json",
+  "basis": "6-31g",
+  "setup_backend": "donor_ezfio_fallback",
+  "setup_fallback_reason": "CalledProcessError: Command '['/bin/bash', '-lc', 'source /home/ayush.asthana/quantum_package/qp2/quantum_package.rc && /home/ayush.asthana/quantum_package/qp2/src/hartree_fock/scf /home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t48/system_setup/n2.ezfio']' returned non-zero exit status 1.",
+  "distance_ang": 2.0,
+  "ncas": 18,
+  "nelecas": 14,
+  "ncore": 0,
+  "nmo_total": 18
+}

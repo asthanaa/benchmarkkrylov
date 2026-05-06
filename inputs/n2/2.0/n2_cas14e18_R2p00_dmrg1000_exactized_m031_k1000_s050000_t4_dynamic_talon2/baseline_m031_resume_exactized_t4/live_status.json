@@ -1,0 +1,16 @@
+{
+  "label": "Baseline m=31 resume from t24 snapshot | Kprop=1000 Kstore=50000 | exactized every iter | t4 | talon2",
+  "cum_new_krylov": 149,
+  "cycle": 6,
+  "basis_size": 10,
+  "support_union_size": null,
+  "total_energy_eh": -108.860104407228,
+  "delta_mHa": 0.977056,
+  "abs_delta_mHa": 0.977056,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null,
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}

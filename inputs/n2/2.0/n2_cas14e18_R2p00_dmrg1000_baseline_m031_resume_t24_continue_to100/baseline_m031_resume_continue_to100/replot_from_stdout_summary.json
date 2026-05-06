@@ -1,0 +1,9 @@
+{
+  "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t24_continue_to100/baseline_m031_resume_continue_to100/ccik_stdout.log",
+  "output_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t24_continue_to100/baseline_m031_resume_continue_to100/iteration_trace_from_stdout.csv",
+  "output_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t24_continue_to100/baseline_m031_resume_continue_to100/energy_error_vs_iteration.png",
+  "output_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_baseline_m031_resume_t24_continue_to100/baseline_m031_resume_continue_to100/energy_error_vs_iteration.pdf",
+  "points": 141,
+  "final_cum_new_krylov": 136,
+  "final_abs_delta_mHa": 0.193108
+}

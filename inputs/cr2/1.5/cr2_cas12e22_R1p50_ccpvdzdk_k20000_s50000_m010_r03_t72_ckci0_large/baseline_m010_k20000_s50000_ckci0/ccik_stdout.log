@@ -1,0 +1,201 @@
+ ============================================
+  Quantum Package plugin: baseline ccik
+  Determinant-driven compressed Krylov solver
+ ============================================
+ ccik_generator_keep  =          512
+ ccik_generator_fraction =    0.0000000000000000     
+ ccik_generator_abs_coeff_cutoff =    0.0000000000000000     
+ ccik_max_parents_for_expansion =          512
+ ccik_include_current_support =  T
+ ccik_selector_keep   =        50000
+ ccik_external_keep   =        50000
+ ccik_external_candidate_factor =            4
+ ccik_pt2_rank_weight =    1.0000000000000000     
+ ccik_selector_mode   = abs_residual
+ ccik_matvec_backend = connected_sd_fullq
+ ccik_compression_policy = fixed_budget
+ ccik_fixed_store_keep =        50000
+ ccik_fixed_propagate_keep =        20000
+ ccik_store_abs_tol  =    0.0000000000000000     
+ ccik_propagate_abs_tol =    0.0000000000000000     
+ ccik_nkeep           =        50000
+ ccik_tmp_keep_factor =            2
+ ccik_preserve_prev_support =  T
+ ccik_preserve_prev_support_cap =          512
+ ccik_total_det_budget=            0
+ ccik_basis_size      =           10
+ ccik_conv_tol        =    1.0000000000000000E-010
+ ccik_ritz_overlap_tol=    1.0000000000000000E-008
+ ccik_ritz_max_drop   =    0.0000000000000000     
+ ccik_save_final_wf   =  T
+ ccik_do_post_pt2     =  F
+ ccik_max_cycle       =           50
+ ccik_restart_m_cycle =           10
+ ccik_restart_nroot   =            3
+ ccik_exactized_checkpoint_every =            1
+ ccik_exactized_resid_tol =    1.0000000000000000E-010
+ ccik_exactized_max_iter =          200
+ ccik_exactized_max_subspace =           24
+ ccik_exactized_restart_keep =            4
+ ccik_verbose         =  F
+ ccik_debug_trace     =  F
+ ccik_debug_trace_topn=            8
+ ccik_debug_allow_legacy_fixed_budget =  F
+
+.. >>>>> [ RES  MEM :          0.000 GB ] [ VIRT MEM :          2.305 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.03  s ] [ CPU  TIME:           0.43  s ] <<<<< ..
+
+
+Nuclear Coordinates (Angstroms)
+===============================
+
+================ ============ ============ ============ ============
+      Atom          Charge          X            Y            Z 
+================ ============ ============ ============ ============
+Cr                  24.000000     0.000000     0.000000    -0.750000
+Cr                  24.000000     0.000000     0.000000     0.750000
+================ ============ ============ ============ ============
+
+Minimal interatomic distance found:       1.5000 Angstrom
+
+.. >>>>> [ RES  MEM :          0.000 GB ] [ VIRT MEM :          2.305 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.03  s ] [ CPU  TIME:           0.43  s ] <<<<< ..
+
+* Nuclear repulsion energy                           203.2040489932801    
+* mo_num                                                        98
+.. >>>>> [ IO READ: mo_class ] <<<<< ..
+* N_int                                                          2
+ MO map initialized:              11768526
+* Total available memory (GB)                                  572
+* Target maximum memory (GB)                                   572
+ Read  mo_coef
+ AO map initialized :              11768526
+ Providing the AO integrals
+ Sorting the map
+ AO integrals provided:
+  Size of AO map :            35.096418380737305      MB
+  Number of AO integrals :              2901204
+  cpu  time :   9990.6703189999989      s
+  wall time :   138.90011634794064      s  ( x    71.927011882219517       )
+ Writing data to disk...
+ Done
+ 
+ DGEMM-based AO->MO Transformation
+ ---------------------------------
+ 
+ Getting AOs
+ 1st transformation
+ 2nd transformation
+ 3rd transformation
+ 4th transformation
+ Molecular integrals provided:
+  Size of MO map              199.46606826782227      MB
+  Number of MO integrals:               8424763
+  cpu  time :   10068.179595000000      s
+  wall time :   140.18649249500595      s  ( x    71.819898021620531      )
+ Writing data to disk...
+ Done
+ MO integrals cache: (           1 ,           98 ),                  2048 MiB
+ Providing the one-electron integrals
+ * mo_label          PySCF_RHF_CCPVDZDK
+* Number of determinants                                         1
+* Number of active   MOs                                        22
+ Active MOs:
+          19          20          21          22          23          24          25          26          27          28          29          30          31          32          33          34          35          36          37          38          39          40
+ccik(thick) cycle=   1 iter=   1  total=      -2073.427850497798  ref=      -2081.196110918900  delta_mEh=     7768.260421
+ccik(thick) cycle=   1 iter=   2  total=      -2076.854881525086  ref=      -2081.196110918900  delta_mEh=     4341.229394
+ ccik(exactized) cycle=           1  iter=           2  k=           1  support=        7963  total=  -2079.6639240659097       ref=  -2081.1961109189001       delta_mEh=   1532.1868529904350       resid=   4.1301435258429237E-011  solver=davidson iters=          39  matvecs=          38  converged= T  t_union_s=   6.8985830293968320E-003  t_prep_s=  0.50769838306587189       t_solve_s=   8.9882362999487668       t_wall_s=   9.5028930749977008       t_cpu_s=   9.4646490000013728     
+CCIK_TRACE_EXACTIZED cycle=1 iter=2 k=1 support=7963 electronic=-2.2828679730591898E+03 total=-2.0796639240659097E+03 ref=-2.0811961109189001E+03 delta_mEh=1.5321868529904350E+03 solver=davidson iters=39 matvecs=38 converged=T resid=4.1301435258429237E-11 t_union_s=6.8985830293968320E-03 t_prep_s=5.0769838306587189E-01 t_solve_s=8.9882362999487668E+00 t_wall_s=9.5028930749977008E+00 t_cpu_s=9.4646490000013728E+00
+ccik(thick) cycle=   1 iter=   3  total=      -2078.902062265041  ref=      -2081.196110918900  delta_mEh=     2294.048654
+ ccik(exactized) cycle=           1  iter=           3  k=           2  support=       55535  total=  -2080.3206338602672       ref=  -2081.1961109189001       delta_mEh=   875.47705863289593       resid=   7.6126064310779552E-011  solver=davidson iters=         105  matvecs=         101  converged= T  t_union_s=   9.8827979527413845E-003  t_prep_s=   19.504253612016328       t_solve_s=   94.000597172067501       t_wall_s=   113.51482116803527       t_cpu_s=   113.14429499999824     
+CCIK_TRACE_EXACTIZED cycle=1 iter=3 k=2 support=55535 electronic=-2.2835246828535473E+03 total=-2.0803206338602672E+03 ref=-2.0811961109189001E+03 delta_mEh=8.7547705863289593E+02 solver=davidson iters=105 matvecs=101 converged=T resid=7.6126064310779552E-11 t_union_s=9.8827979527413845E-03 t_prep_s=1.9504253612016328E+01 t_solve_s=9.4000597172067501E+01 t_wall_s=1.1351482116803527E+02 t_cpu_s=1.1314429499999824E+02
+ccik(thick) cycle=   1 iter=   4  total=      -2079.095233908268  ref=      -2081.196110918900  delta_mEh=     2100.877011
+ ccik(exactized) cycle=           1  iter=           4  k=           3  support=       77664  total=  -2080.3634894769530       ref=  -2081.1961109189001       delta_mEh=   832.62144194713983       resid=   8.2216335162184294E-011  solver=davidson iters=          98  matvecs=          94  converged= T  t_union_s=   2.0209921989589930E-002  t_prep_s=   37.793298452044837       t_solve_s=   112.71783581201453       t_wall_s=   150.53145800996572       t_cpu_s=   150.06617199999891     
+CCIK_TRACE_EXACTIZED cycle=1 iter=4 k=3 support=77664 electronic=-2.2835675384702331E+03 total=-2.0803634894769530E+03 ref=-2.0811961109189001E+03 delta_mEh=8.3262144194713983E+02 solver=davidson iters=98 matvecs=94 converged=T resid=8.2216335162184294E-11 t_union_s=2.0209921989589930E-02 t_prep_s=3.7793298452044837E+01 t_solve_s=1.1271783581201453E+02 t_wall_s=1.5053145800996572E+02 t_cpu_s=1.5006617199999891E+02
+ccik(thick) cycle=   1 iter=   5  total=      -2079.170871374696  ref=      -2081.196110918900  delta_mEh=     2025.239544
+ ccik(exactized) cycle=           1  iter=           5  k=           4  support=       96975  total=  -2080.4473749462350       ref=  -2081.1961109189001       delta_mEh=   748.73597266514480       resid=   5.9831352678384217E-011  solver=davidson iters=          86  matvecs=          83  converged= T  t_union_s=   3.0496407998725772E-002  t_prep_s=   59.401694944011979       t_solve_s=   121.69403524091467       t_wall_s=   181.12629315303639       t_cpu_s=   180.56006899999920     
+CCIK_TRACE_EXACTIZED cycle=1 iter=5 k=4 support=96975 electronic=-2.2836514239395151E+03 total=-2.0804473749462350E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4873597266514480E+02 solver=davidson iters=86 matvecs=83 converged=T resid=5.9831352678384217E-11 t_union_s=3.0496407998725772E-02 t_prep_s=5.9401694944011979E+01 t_solve_s=1.2169403524091467E+02 t_wall_s=1.8112629315303639E+02 t_cpu_s=1.8056006899999920E+02
+ccik(thick) cycle=   1 iter=   6  total=      -2079.173807379584  ref=      -2081.196110918900  delta_mEh=     2022.303539
+ ccik(exactized) cycle=           1  iter=           6  k=           5  support=       96975  total=  -2080.4473749462172       ref=  -2081.1961109189001       delta_mEh=   748.73597268287995       resid=   5.9861156654831673E-011  solver=davidson iters=          86  matvecs=          83  converged= T  t_union_s=   4.2543290997855365E-002  t_prep_s=   60.020200956962071       t_solve_s=   121.33131284604315       t_wall_s=   181.39415095001459       t_cpu_s=   180.84921800000302     
+CCIK_TRACE_EXACTIZED cycle=1 iter=6 k=5 support=96975 electronic=-2.2836514239394974E+03 total=-2.0804473749462172E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4873597268287995E+02 solver=davidson iters=86 matvecs=83 converged=T resid=5.9861156654831673E-11 t_union_s=4.2543290997855365E-02 t_prep_s=6.0020200956962071E+01 t_solve_s=1.2133131284604315E+02 t_wall_s=1.8139415095001459E+02 t_cpu_s=1.8084921800000302E+02
+ccik(thick) cycle=   1 iter=   7  total=      -2079.186183134620  ref=      -2081.196110918900  delta_mEh=     2009.927784
+ ccik(exactized) cycle=           1  iter=           7  k=           6  support=       96975  total=  -2080.4473749462354       ref=  -2081.1961109189001       delta_mEh=   748.73597266469005       resid=   6.0826555613312412E-011  solver=davidson iters=          86  matvecs=          83  converged= T  t_union_s=   5.3521130932494998E-002  t_prep_s=   60.746155541040935       t_solve_s=   121.89912561699748       t_wall_s=   182.69888740894385       t_cpu_s=   182.17217599999276     
+CCIK_TRACE_EXACTIZED cycle=1 iter=7 k=6 support=96975 electronic=-2.2836514239395156E+03 total=-2.0804473749462354E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4873597266469005E+02 solver=davidson iters=86 matvecs=83 converged=T resid=6.0826555613312412E-11 t_union_s=5.3521130932494998E-02 t_prep_s=6.0746155541040935E+01 t_solve_s=1.2189912561699748E+02 t_wall_s=1.8269888740894385E+02 t_cpu_s=1.8217217599999276E+02
+ccik(thick) cycle=   1 iter=   8  total=      -2079.186185345594  ref=      -2081.196110918900  delta_mEh=     2009.925573
+ ccik(exactized) cycle=           1  iter=           8  k=           7  support=       98211  total=  -2080.4474256981839       ref=  -2081.1961109189001       delta_mEh=   748.68522071619736       resid=   6.0429837777836376E-011  solver=davidson iters=          86  matvecs=          83  converged= T  t_union_s=   6.6079668002203107E-002  t_prep_s=   63.368588248966262       t_solve_s=   124.09727247396950       t_wall_s=   187.53202179900836       t_cpu_s=   186.98834199999692     
+CCIK_TRACE_EXACTIZED cycle=1 iter=8 k=7 support=98211 electronic=-2.2836514746914640E+03 total=-2.0804474256981839E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4868522071619736E+02 solver=davidson iters=86 matvecs=83 converged=T resid=6.0429837777836376E-11 t_union_s=6.6079668002203107E-02 t_prep_s=6.3368588248966262E+01 t_solve_s=1.2409727247396950E+02 t_wall_s=1.8753202179900836E+02 t_cpu_s=1.8698834199999692E+02
+ccik(thick) cycle=   1 iter=   9  total=      -2079.186206633728  ref=      -2081.196110918900  delta_mEh=     2009.904285
+ ccik(exactized) cycle=           1  iter=           9  k=           8  support=       98211  total=  -2080.4474256981821       ref=  -2081.1961109189001       delta_mEh=   748.68522071801635       resid=   6.1011199768829863E-011  solver=davidson iters=          86  matvecs=          83  converged= T  t_union_s=   7.8328834031708539E-002  t_prep_s=   64.532018709927797       t_solve_s=   123.56890147097874       t_wall_s=   188.17932975199074       t_cpu_s=   187.59570599999279     
+CCIK_TRACE_EXACTIZED cycle=1 iter=9 k=8 support=98211 electronic=-2.2836514746914622E+03 total=-2.0804474256981821E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4868522071801635E+02 solver=davidson iters=86 matvecs=83 converged=T resid=6.1011199768829863E-11 t_union_s=7.8328834031708539E-02 t_prep_s=6.4532018709927797E+01 t_solve_s=1.2356890147097874E+02 t_wall_s=1.8817932975199074E+02 t_cpu_s=1.8759570599999279E+02
+ccik(thick) cycle=   1 iter=  10  total=      -2079.186804899412  ref=      -2081.196110918900  delta_mEh=     2009.306019
+ ccik(exactized) cycle=           1  iter=          10  k=           9  support=       98283  total=  -2080.4474287319467       ref=  -2081.1961109189001       delta_mEh=   748.68218695337418       resid=   5.3084059274369718E-011  solver=davidson iters=          89  matvecs=          85  converged= T  t_union_s=   9.3379689962603152E-002  t_prep_s=   66.226861001923680       t_solve_s=   126.52129715704359       t_wall_s=   192.84160655399319       t_cpu_s=   192.25588899999275     
+CCIK_TRACE_EXACTIZED cycle=1 iter=10 k=9 support=98283 electronic=-2.2836514777252269E+03 total=-2.0804474287319467E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4868218695337418E+02 solver=davidson iters=89 matvecs=85 converged=T resid=5.3084059274369718E-11 t_union_s=9.3379689962603152E-02 t_prep_s=6.6226861001923680E+01 t_solve_s=1.2652129715704359E+02 t_wall_s=1.9284160655399319E+02 t_cpu_s=1.9225588899999275E+02
+ccik(thick) cycle=   2 iter=   3  total=      -2079.186705508458  ref=      -2081.196110918900  delta_mEh=     2009.405410
+ ccik(exactized) cycle=           2  iter=           3  k=           9  support=       70622  total=  -2080.4455665881692       ref=  -2081.1961109189001       delta_mEh=   750.54433073091786       resid=   8.3195430670359685E-011  solver=davidson iters=          80  matvecs=          77  converged= T  t_union_s=   2.8966280049644411E-002  t_prep_s=   31.731387172010727       t_solve_s=   55.855517604039051       t_wall_s=   87.615941935917363       t_cpu_s=   87.373760999995284     
+CCIK_TRACE_EXACTIZED cycle=2 iter=3 k=9 support=70622 electronic=-2.2836496155814493E+03 total=-2.0804455665881692E+03 ref=-2.0811961109189001E+03 delta_mEh=7.5054433073091786E+02 solver=davidson iters=80 matvecs=77 converged=T resid=8.3195430670359685E-11 t_union_s=2.8966280049644411E-02 t_prep_s=3.1731387172010727E+01 t_solve_s=5.5855517604039051E+01 t_wall_s=8.7615941935917363E+01 t_cpu_s=8.7373760999995284E+01
+ccik(thick) cycle=   2 iter=   4  total=      -2079.223212074648  ref=      -2081.196110918900  delta_mEh=     1972.898844
+ ccik(exactized) cycle=           2  iter=           4  k=          10  support=       79971  total=  -2080.4464141959234       ref=  -2081.1961109189001       delta_mEh=   749.69672297675061       resid=   9.5724483489930407E-011  solver=davidson iters=          84  matvecs=          81  converged= T  t_union_s=   4.0524999145418406E-002  t_prep_s=   41.003462652908638       t_solve_s=   69.366428041132167       t_wall_s=   110.41048695705831       t_cpu_s=   110.06227200001013     
+CCIK_TRACE_EXACTIZED cycle=2 iter=4 k=10 support=79971 electronic=-2.2836504631892035E+03 total=-2.0804464141959234E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4969672297675061E+02 solver=davidson iters=84 matvecs=81 converged=T resid=9.5724483489930407E-11 t_union_s=4.0524999145418406E-02 t_prep_s=4.1003462652908638E+01 t_solve_s=6.9366428041132167E+01 t_wall_s=1.1041048695705831E+02 t_cpu_s=1.1006227200001013E+02
+ccik(thick) cycle=   2 iter=   5  total=      -2079.223305376913  ref=      -2081.196110918900  delta_mEh=     1972.805542
+ ccik(exactized) cycle=           2  iter=           5  k=          11  support=       89921  total=  -2080.4505052930876       ref=  -2081.1961109189001       delta_mEh=   745.60562581245904       resid=   7.7521885451220449E-011  solver=davidson iters=         100  matvecs=          96  converged= T  t_union_s=   5.1621631952002645E-002  t_prep_s=   52.225218323059380       t_solve_s=   94.754674837924540       t_wall_s=   147.03158068098128       t_cpu_s=   146.57779399998253     
+CCIK_TRACE_EXACTIZED cycle=2 iter=5 k=11 support=89921 electronic=-2.2836545542863678E+03 total=-2.0804505052930876E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4560562581245904E+02 solver=davidson iters=100 matvecs=96 converged=T resid=7.7521885451220449E-11 t_union_s=5.1621631952002645E-02 t_prep_s=5.2225218323059380E+01 t_solve_s=9.4754674837924540E+01 t_wall_s=1.4703158068098128E+02 t_cpu_s=1.4657779399998253E+02
+ccik(thick) cycle=   2 iter=   6  total=      -2079.224670908350  ref=      -2081.196110918900  delta_mEh=     1971.440011
+ ccik(exactized) cycle=           2  iter=           6  k=          12  support=      101204  total=  -2080.4516666145000       ref=  -2081.1961109189001       delta_mEh=   744.44430440007636       resid=   7.7399165690772250E-011  solver=davidson iters=         101  matvecs=          97  converged= T  t_union_s=   6.5211212961003184E-002  t_prep_s=   66.908124399138615       t_solve_s=   110.56461439095438       t_wall_s=   177.53804299584590       t_cpu_s=   177.04839799995534     
+CCIK_TRACE_EXACTIZED cycle=2 iter=6 k=12 support=101204 electronic=-2.2836557156077802E+03 total=-2.0804516666145000E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4444430440007636E+02 solver=davidson iters=101 matvecs=97 converged=T resid=7.7399165690772250E-11 t_union_s=6.5211212961003184E-02 t_prep_s=6.6908124399138615E+01 t_solve_s=1.1056461439095438E+02 t_wall_s=1.7753804299584590E+02 t_cpu_s=1.7704839799995534E+02
+ccik(thick) cycle=   2 iter=   7  total=      -2079.231690807715  ref=      -2081.196110918900  delta_mEh=     1964.420111
+ ccik(exactized) cycle=           2  iter=           7  k=          13  support=      101204  total=  -2080.4516666144873       ref=  -2081.1961109189001       delta_mEh=   744.44430441280929       resid=   7.7482998272484395E-011  solver=davidson iters=         101  matvecs=          97  converged= T  t_union_s=   7.8234067885205150E-002  t_prep_s=   68.466765678953379       t_solve_s=   111.23100492591038       t_wall_s=   179.77610259409994       t_cpu_s=   179.20852699998068     
+CCIK_TRACE_EXACTIZED cycle=2 iter=7 k=13 support=101204 electronic=-2.2836557156077674E+03 total=-2.0804516666144873E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4444430441280929E+02 solver=davidson iters=101 matvecs=97 converged=T resid=7.7482998272484395E-11 t_union_s=7.8234067885205150E-02 t_prep_s=6.8466765678953379E+01 t_solve_s=1.1123100492591038E+02 t_wall_s=1.7977610259409994E+02 t_cpu_s=1.7920852699998068E+02
+ccik(thick) cycle=   2 iter=   8  total=      -2079.232115488275  ref=      -2081.196110918900  delta_mEh=     1963.995431
+ ccik(exactized) cycle=           2  iter=           8  k=          14  support=      101204  total=  -2080.4516666144846       ref=  -2081.1961109189001       delta_mEh=   744.44430441553777       resid=   7.9855659897579593E-011  solver=davidson iters=         101  matvecs=          97  converged= T  t_union_s=   9.3194701010361314E-002  t_prep_s=   69.568588841939345       t_solve_s=   111.28403436392546       t_wall_s=   180.94589336286299       t_cpu_s=   180.44014799996512     
+CCIK_TRACE_EXACTIZED cycle=2 iter=8 k=14 support=101204 electronic=-2.2836557156077647E+03 total=-2.0804516666144846E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4444430441553777E+02 solver=davidson iters=101 matvecs=97 converged=T resid=7.9855659897579593E-11 t_union_s=9.3194701010361314E-02 t_prep_s=6.9568588841939345E+01 t_solve_s=1.1128403436392546E+02 t_wall_s=1.8094589336286299E+02 t_cpu_s=1.8044014799996512E+02
+ccik(thick) cycle=   2 iter=   9  total=      -2079.232118282885  ref=      -2081.196110918900  delta_mEh=     1963.992636
+ ccik(exactized) cycle=           2  iter=           9  k=          15  support=      101204  total=  -2080.4516666144882       ref=  -2081.1961109189001       delta_mEh=   744.44430441189979       resid=   9.7326322744145907E-011  solver=davidson iters=         100  matvecs=          96  converged= T  t_union_s=  0.10602327995002270       t_prep_s=   71.296790774911642       t_solve_s=   110.59420733596198       t_wall_s=   181.99709134292789       t_cpu_s=   181.48890600004233     
+CCIK_TRACE_EXACTIZED cycle=2 iter=9 k=15 support=101204 electronic=-2.2836557156077683E+03 total=-2.0804516666144882E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4444430441189979E+02 solver=davidson iters=100 matvecs=96 converged=T resid=9.7326322744145907E-11 t_union_s=1.0602327995002270E-01 t_prep_s=7.1296790774911642E+01 t_solve_s=1.1059420733596198E+02 t_wall_s=1.8199709134292789E+02 t_cpu_s=1.8148890600004233E+02
+ccik(thick) cycle=   2 iter=  10  total=      -2079.232199619369  ref=      -2081.196110918900  delta_mEh=     1963.911300
+ ccik(exactized) cycle=           2  iter=          10  k=          16  support=      101204  total=  -2080.4516666144909       ref=  -2081.1961109189001       delta_mEh=   744.44430440917131       resid=   9.3542815355128176E-011  solver=davidson iters=         100  matvecs=          96  converged= T  t_union_s=  0.11786410305649042       t_prep_s=   73.757483702152967       t_solve_s=   110.32479328778572       t_wall_s=   184.20022400515154       t_cpu_s=   183.68250699999044     
+CCIK_TRACE_EXACTIZED cycle=2 iter=10 k=16 support=101204 electronic=-2.2836557156077711E+03 total=-2.0804516666144909E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4444430440917131E+02 solver=davidson iters=100 matvecs=96 converged=T resid=9.3542815355128176E-11 t_union_s=1.1786410305649042E-01 t_prep_s=7.3757483702152967E+01 t_solve_s=1.1032479328778572E+02 t_wall_s=1.8420022400515154E+02 t_cpu_s=1.8368250699999044E+02
+ccik(thick) cycle=   3 iter=   3  total=      -2079.232715782578  ref=      -2081.196110918900  delta_mEh=     1963.395136
+ ccik(exactized) cycle=           3  iter=           3  k=          16  support=       75619  total=  -2080.4497409817445       ref=  -2081.1961109189001       delta_mEh=   746.36993715557765       resid=   8.1758838740317522E-011  solver=davidson iters=          95  matvecs=          91  converged= T  t_union_s=   2.8882584068924189E-002  t_prep_s=   35.977549052098766       t_solve_s=   68.286568608833477       t_wall_s=   104.29308645310812       t_cpu_s=   104.00087800004985     
+CCIK_TRACE_EXACTIZED cycle=3 iter=3 k=16 support=75619 electronic=-2.2836537899750247E+03 total=-2.0804497409817445E+03 ref=-2.0811961109189001E+03 delta_mEh=7.4636993715557765E+02 solver=davidson iters=95 matvecs=91 converged=T resid=8.1758838740317522E-11 t_union_s=2.8882584068924189E-02 t_prep_s=3.5977549052098766E+01 t_solve_s=6.8286568608833477E+01 t_wall_s=1.0429308645310812E+02 t_cpu_s=1.0400087800004985E+02
+ccik(thick) cycle=   3 iter=   4  total=      -2079.248819076198  ref=      -2081.196110918900  delta_mEh=     1947.291843
+ ccik(exactized) cycle=           3  iter=           4  k=          17  support=       91008  total=  -2080.4815492026009       ref=  -2081.1961109189001       delta_mEh=   714.56171629915843       resid=   9.8978827281161784E-011  solver=davidson iters=          96  matvecs=          92  converged= T  t_union_s=   4.0564937051385641E-002  t_prep_s=   52.501683712936938       t_solve_s=   89.768971543991938       t_wall_s=   142.31131699611433       t_cpu_s=   141.89844000001904     
+CCIK_TRACE_EXACTIZED cycle=3 iter=4 k=17 support=91008 electronic=-2.2836855981958811E+03 total=-2.0804815492026009E+03 ref=-2.0811961109189001E+03 delta_mEh=7.1456171629915843E+02 solver=davidson iters=96 matvecs=92 converged=T resid=9.8978827281161784E-11 t_union_s=4.0564937051385641E-02 t_prep_s=5.2501683712936938E+01 t_solve_s=8.9768971543991938E+01 t_wall_s=1.4231131699611433E+02 t_cpu_s=1.4189844000001904E+02
+ccik(thick) cycle=   3 iter=   5  total=      -2079.249059917508  ref=      -2081.196110918900  delta_mEh=     1947.051001
+ ccik(exactized) cycle=           3  iter=           5  k=          18  support=      103646  total=  -2080.6499857507310       ref=  -2081.1961109189001       delta_mEh=   546.12516816905554       resid=   2.8003266455969873E-010  solver=davidson iters=         138  matvecs=         132  converged= F  t_union_s=   5.1529920892789960E-002  t_prep_s=   68.753016494913027       t_solve_s=   148.07188662607223       t_wall_s=   216.87650708993897       t_cpu_s=   216.25288800004637     
+CCIK_TRACE_EXACTIZED cycle=3 iter=5 k=18 support=103646 electronic=-2.2838540347440112E+03 total=-2.0806499857507310E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612516816905554E+02 solver=davidson iters=138 matvecs=132 converged=F resid=2.8003266455969873E-10 t_union_s=5.1529920892789960E-02 t_prep_s=6.8753016494913027E+01 t_solve_s=1.4807188662607223E+02 t_wall_s=2.1687650708993897E+02 t_cpu_s=2.1625288800004637E+02
+ccik(thick) cycle=   3 iter=   6  total=      -2079.250430052024  ref=      -2081.196110918900  delta_mEh=     1945.680867
+ ccik(exactized) cycle=           3  iter=           6  k=          19  support=      108796  total=  -2080.6499862755304       ref=  -2081.1961109189001       delta_mEh=   546.12464336969424       resid=   1.2631302999156717E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   6.5753395901992917E-002  t_prep_s=   76.683102149982005       t_solve_s=   226.58767818589695       t_wall_s=   303.33662966918200       t_cpu_s=   302.45549099997152     
+CCIK_TRACE_EXACTIZED cycle=3 iter=6 k=19 support=108796 electronic=-2.2838540352688105E+03 total=-2.0806499862755304E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612464336969424E+02 solver=davidson iters=200 matvecs=192 converged=F resid=1.2631302999156717E-09 t_union_s=6.5753395901992917E-02 t_prep_s=7.6683102149982005E+01 t_solve_s=2.2658767818589695E+02 t_wall_s=3.0333662966918200E+02 t_cpu_s=3.0245549099997152E+02
+ccik(thick) cycle=   3 iter=   7  total=      -2079.263794427422  ref=      -2081.196110918900  delta_mEh=     1932.316491
+ ccik(exactized) cycle=           3  iter=           7  k=          20  support=      108926  total=  -2080.6499872701802       ref=  -2081.1961109189001       delta_mEh=   546.12364871991304       resid=   2.3920133690600600E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   7.8860454028472304E-002  t_prep_s=   77.979786575073376       t_solve_s=   227.96919975802302       t_wall_s=   306.02791949105449       t_cpu_s=   305.08942100004060     
+CCIK_TRACE_EXACTIZED cycle=3 iter=7 k=20 support=108926 electronic=-2.2838540362634603E+03 total=-2.0806499872701802E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612364871991304E+02 solver=davidson iters=200 matvecs=192 converged=F resid=2.3920133690600600E-09 t_union_s=7.8860454028472304E-02 t_prep_s=7.7979786575073376E+01 t_solve_s=2.2796919975802302E+02 t_wall_s=3.0602791949105449E+02 t_cpu_s=3.0508942100004060E+02
+ccik(thick) cycle=   3 iter=   8  total=      -2079.264007036379  ref=      -2081.196110918900  delta_mEh=     1932.103883
+ ccik(exactized) cycle=           3  iter=           8  k=          21  support=      108926  total=  -2080.6499872701665       ref=  -2081.1961109189001       delta_mEh=   546.12364873355546       resid=   1.1467850968783924E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   9.2964221024885774E-002  t_prep_s=   79.139800071949139       t_solve_s=   227.15791378496215       t_wall_s=   306.39076534402557       t_cpu_s=   305.41261900006793     
+CCIK_TRACE_EXACTIZED cycle=3 iter=8 k=21 support=108926 electronic=-2.2838540362634467E+03 total=-2.0806499872701665E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612364873355546E+02 solver=davidson iters=200 matvecs=192 converged=F resid=1.1467850968783924E-09 t_union_s=9.2964221024885774E-02 t_prep_s=7.9139800071949139E+01 t_solve_s=2.2715791378496215E+02 t_wall_s=3.0639076534402557E+02 t_cpu_s=3.0541261900006793E+02
+ccik(thick) cycle=   3 iter=   9  total=      -2079.264017216179  ref=      -2081.196110918900  delta_mEh=     1932.093703
+ ccik(exactized) cycle=           3  iter=           9  k=          22  support=      108926  total=  -2080.6499872701797       ref=  -2081.1961109189001       delta_mEh=   546.12364872036778       resid=   5.6724254946373064E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=  0.10616666311398149       t_prep_s=   81.604227209929377       t_solve_s=   228.17620354401879       t_wall_s=   309.88668205798604       t_cpu_s=   308.93602600006852     
+CCIK_TRACE_EXACTIZED cycle=3 iter=9 k=22 support=108926 electronic=-2.2838540362634599E+03 total=-2.0806499872701797E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612364872036778E+02 solver=davidson iters=200 matvecs=192 converged=F resid=5.6724254946373064E-09 t_union_s=1.0616666311398149E-01 t_prep_s=8.1604227209929377E+01 t_solve_s=2.2817620354401879E+02 t_wall_s=3.0988668205798604E+02 t_cpu_s=3.0893602600006852E+02
+ccik(thick) cycle=   3 iter=  10  total=      -2079.264043677327  ref=      -2081.196110918900  delta_mEh=     1932.067242
+ ccik(exactized) cycle=           3  iter=          10  k=          23  support=      108926  total=  -2080.6499872701820       ref=  -2081.1961109189001       delta_mEh=   546.12364871809405       resid=   4.7434919075124164E-010  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=  0.12084967410191894       t_prep_s=   83.394498048117384       t_solve_s=   229.15258634579368       t_wall_s=   312.66799854906276       t_cpu_s=   311.66274900001008     
+CCIK_TRACE_EXACTIZED cycle=3 iter=10 k=23 support=108926 electronic=-2.2838540362634621E+03 total=-2.0806499872701820E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612364871809405E+02 solver=davidson iters=200 matvecs=192 converged=F resid=4.7434919075124164E-10 t_union_s=1.2084967410191894E-01 t_prep_s=8.3394498048117384E+01 t_solve_s=2.2915258634579368E+02 t_wall_s=3.1266799854906276E+02 t_cpu_s=3.1166274900001008E+02
+ccik(thick) cycle=   4 iter=   3  total=      -2079.264633662536  ref=      -2081.196110918900  delta_mEh=     1931.477256
+ ccik(exactized) cycle=           4  iter=           3  k=          23  support=       75029  total=  -2080.6499809631341       ref=  -2081.1961109189001       delta_mEh=   546.12995576599133       resid=   6.6552940796525888E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   2.8854232979938388E-002  t_prep_s=   35.585403311997652       t_solve_s=   136.89556344295852       t_wall_s=   172.50992383691482       t_cpu_s=   171.93306499999017     
+CCIK_TRACE_EXACTIZED cycle=4 iter=3 k=23 support=75029 electronic=-2.2838540299564143E+03 total=-2.0806499809631341E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4612995576599133E+02 solver=davidson iters=200 matvecs=192 converged=F resid=6.6552940796525888E-09 t_union_s=2.8854232979938388E-02 t_prep_s=3.5585403311997652E+01 t_solve_s=1.3689556344295852E+02 t_wall_s=1.7250992383691482E+02 t_cpu_s=1.7193306499999017E+02
+ccik(thick) cycle=   4 iter=   4  total=      -2079.289529756524  ref=      -2081.196110918900  delta_mEh=     1906.581162
+ ccik(exactized) cycle=           4  iter=           4  k=          24  support=       90081  total=  -2080.6501388514712       ref=  -2081.1961109189001       delta_mEh=   545.97206742892013       resid=   1.4531057946317122E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   4.1012367000803351E-002  t_prep_s=   51.279193294001743       t_solve_s=   176.02699535503052       t_wall_s=   227.34728296799585       t_cpu_s=   226.62953499995638     
+CCIK_TRACE_EXACTIZED cycle=4 iter=4 k=24 support=90081 electronic=-2.2838541878447513E+03 total=-2.0806501388514712E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4597206742892013E+02 solver=davidson iters=200 matvecs=192 converged=F resid=1.4531057946317122E-09 t_union_s=4.1012367000803351E-02 t_prep_s=5.1279193294001743E+01 t_solve_s=1.7602699535503052E+02 t_wall_s=2.2734728296799585E+02 t_cpu_s=2.2662953499995638E+02
+ccik(thick) cycle=   4 iter=   5  total=      -2079.291886797779  ref=      -2081.196110918900  delta_mEh=     1904.224121
+ ccik(exactized) cycle=           4  iter=           5  k=          25  support=      100307  total=  -2080.6501401269684       ref=  -2081.1961109189001       delta_mEh=   545.97079193172249       resid=   1.9989025394675140E-009  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   5.2943537011742592E-002  t_prep_s=   64.530832386109978       t_solve_s=   201.60948662087321       t_wall_s=   266.19337716884911       t_cpu_s=   265.31279899994843     
+CCIK_TRACE_EXACTIZED cycle=4 iter=5 k=25 support=100307 electronic=-2.2838541891202485E+03 total=-2.0806501401269684E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4597079193172249E+02 solver=davidson iters=200 matvecs=192 converged=F resid=1.9989025394675140E-09 t_union_s=5.2943537011742592E-02 t_prep_s=6.4530832386109978E+01 t_solve_s=2.0160948662087321E+02 t_wall_s=2.6619337716884911E+02 t_cpu_s=2.6531279899994843E+02
+ccik(thick) cycle=   4 iter=   6  total=      -2079.293165976765  ref=      -2081.196110918900  delta_mEh=     1902.944942
+ ccik(exactized) cycle=           4  iter=           6  k=          26  support=      104232  total=  -2080.6501403822699       ref=  -2081.1961109189001       delta_mEh=   545.97053663019324       resid=   2.7957448341735918E-010  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   6.5141492057591677E-002  t_prep_s=   70.652852369006723       t_solve_s=   211.81392758619040       t_wall_s=   282.53200404113159       t_cpu_s=   281.68972300004680     
+CCIK_TRACE_EXACTIZED cycle=4 iter=6 k=26 support=104232 electronic=-2.2838541893755500E+03 total=-2.0806501403822699E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4597053663019324E+02 solver=davidson iters=200 matvecs=192 converged=F resid=2.7957448341735918E-10 t_union_s=6.5141492057591677E-02 t_prep_s=7.0652852369006723E+01 t_solve_s=2.1181392758619040E+02 t_wall_s=2.8253200404113159E+02 t_cpu_s=2.8168972300004680E+02
+ccik(thick) cycle=   4 iter=   7  total=      -2079.343698518902  ref=      -2081.196110918900  delta_mEh=     1852.412400
+ ccik(exactized) cycle=           4  iter=           7  k=          27  support=      104352  total=  -2080.6501426897057       ref=  -2081.1961109189001       delta_mEh=   545.96822919438637       resid=   2.7472162603379364E-010  solver=davidson iters=         190  matvecs=         182  converged= F  t_union_s=   7.7653073938563466E-002  t_prep_s=   72.247872424079105       t_solve_s=   202.85135958902538       t_wall_s=   275.17696271999739       t_cpu_s=   274.33035900001414     
+CCIK_TRACE_EXACTIZED cycle=4 iter=7 k=27 support=104352 electronic=-2.2838541916829859E+03 total=-2.0806501426897057E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4596822919438637E+02 solver=davidson iters=190 matvecs=182 converged=F resid=2.7472162603379364E-10 t_union_s=7.7653073938563466E-02 t_prep_s=7.2247872424079105E+01 t_solve_s=2.0285135958902538E+02 t_wall_s=2.7517696271999739E+02 t_cpu_s=2.7433035900001414E+02
+ccik(thick) cycle=   4 iter=   8  total=      -2079.344011112085  ref=      -2081.196110918900  delta_mEh=     1852.099807
+ ccik(exactized) cycle=           4  iter=           8  k=          28  support=      104352  total=  -2080.6501426896930       ref=  -2081.1961109189001       delta_mEh=   545.96822920711929       resid=   3.4199538315523496E-010  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=   9.2298728181049228E-002  t_prep_s=   73.319737978978083       t_solve_s=   213.43504353100434       t_wall_s=   286.84715143917128       t_cpu_s=   285.96376499999315     
+CCIK_TRACE_EXACTIZED cycle=4 iter=8 k=28 support=104352 electronic=-2.2838541916829731E+03 total=-2.0806501426896930E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4596822920711929E+02 solver=davidson iters=200 matvecs=192 converged=F resid=3.4199538315523496E-10 t_union_s=9.2298728181049228E-02 t_prep_s=7.3319737978978083E+01 t_solve_s=2.1343504353100434E+02 t_wall_s=2.8684715143917128E+02 t_cpu_s=2.8596376499999315E+02
+ccik(thick) cycle=   4 iter=   9  total=      -2079.344207768892  ref=      -2081.196110918900  delta_mEh=     1851.903150
+ ccik(exactized) cycle=           4  iter=           9  k=          29  support=      104352  total=  -2080.6501426897062       ref=  -2081.1961109189001       delta_mEh=   545.96822919393162       resid=   5.4866239973569158E-010  solver=davidson iters=         200  matvecs=         192  converged= F  t_union_s=  0.10555167007260025       t_prep_s=   75.512293589999899       t_solve_s=   212.22810596995987       t_wall_s=   287.84601894207299       t_cpu_s=   286.92810799996369     
+CCIK_TRACE_EXACTIZED cycle=4 iter=9 k=29 support=104352 electronic=-2.2838541916829863E+03 total=-2.0806501426897062E+03 ref=-2.0811961109189001E+03 delta_mEh=5.4596822919393162E+02 solver=davidson iters=200 matvecs=192 converged=F resid=5.4866239973569158E-10 t_union_s=1.0555167007260025E-01 t_prep_s=7.5512293589999899E+01 t_solve_s=2.1222810596995987E+02 t_wall_s=2.8784601894207299E+02 t_cpu_s=2.8692810799996369E+02

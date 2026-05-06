@@ -121,7 +121,7 @@ For most learners, `ccik_ground_energy_dense_thick_restart(...)` is the best pla
 - `scripts/_shared/`: helpers used by advanced scripts
 - `ccik_qp/`: vendored Quantum Package plugin source
 - `sample_inputs/`: tracked teaching inputs and one-command plotting wrappers
-- `inputs/`: local-only live QP study workspace
+- `inputs/`: tracked Talon study inputs and shareable result files
 - `tests/`: beginner, core, and advanced checks
 
 ## Documentation site
@@ -191,3 +191,12 @@ For the maintained large-space `N2` workflow on a fresh machine:
 
 The DMRG bootstrap spec is tracked in `environment.dmrg.yml`. The binary
 environment under `.conda/` is local-only and intentionally not committed.
+
+To copy Talon result files into the current checkout without pulling raw
+runtime tensors, run:
+
+```bash
+bash scripts/advanced/sync_talon_inputs_to_local.sh
+```
+
+The sync uses `--max-size=500m` and skips `.ezfio/work/` runtime blobs.

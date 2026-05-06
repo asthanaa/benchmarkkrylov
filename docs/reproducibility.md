@@ -170,7 +170,7 @@ cumulative new Krylov vectors.
 
 ## Large-case input policy
 
-For local-only `inputs/` studies, the historical large-case default run pair is:
+For tracked `inputs/` studies, the historical large-case default run pair is:
 
 - `Kprop = 500`
 - `Kstore = 50000`
@@ -184,3 +184,21 @@ The exception is `CAS(14e,16o)`, which keeps a single fixed-budget line:
 
 This keeps large-case studies cheap enough to reproduce while still matching
 the current benchmark/debug workflow.
+
+## Syncing Talon Results
+
+Use the helper from the checkout you want to update:
+
+```bash
+bash scripts/advanced/sync_talon_inputs_to_local.sh
+```
+
+The default mode copies shareable result files under `inputs/`: JSON summaries,
+CSV traces, plots, logs, text notes, TOML files, shell launchers, and captions.
+It skips nested `.git/` directories, archives, `.ezfio/work/` runtime tensors,
+and anything over 500 MB. To copy every non-excluded file under the 500 MB cap,
+set:
+
+```bash
+SYNC_ALL_UNDER_LIMIT=1 bash scripts/advanced/sync_talon_inputs_to_local.sh
+```

@@ -1,0 +1,76 @@
+{
+  "source_comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/energy_error_vs_iteration_comparison.pdf",
+  "output_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/pub/energy_error_vs_iteration_comparison_jcp.pdf",
+  "output_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/pub/energy_error_vs_iteration_comparison_jcp.png",
+  "curve_family_label": "CK",
+  "legend_title": "CK, Kprop=500",
+  "reference_line_label": "1 Kcal/mole",
+  "chemical_accuracy_mHa": 1.5936014378007624,
+  "x_max_displayed": 50,
+  "runs": [
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore1000_kprop500_m031/iteration_trace.csv",
+      "kstore": 1000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 27.297154,
+      "min_abs_delta_mHa_in_source": 27.297154
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore5000_kprop500_m031/iteration_trace.csv",
+      "kstore": 5000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 4.968105,
+      "min_abs_delta_mHa_in_source": 4.968105
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore10000_kprop500_m031/iteration_trace.csv",
+      "kstore": 10000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 1.978581,
+      "min_abs_delta_mHa_in_source": 1.978581
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore20000_kprop500_m031/iteration_trace.csv",
+      "kstore": 20000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 0.751635,
+      "min_abs_delta_mHa_in_source": 0.751635
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore40000_kprop500_m031/iteration_trace.csv",
+      "kstore": 40000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 0.406397,
+      "min_abs_delta_mHa_in_source": 0.406397
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore80000_kprop500_m031/iteration_trace.csv",
+      "kstore": 80000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 0.211293,
+      "min_abs_delta_mHa_in_source": 0.211293
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore160000_kprop500_m031/iteration_trace.csv",
+      "kstore": 160000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 0.168358,
+      "min_abs_delta_mHa_in_source": 0.168358
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/kstore320000_kprop500_m031/iteration_trace.csv",
+      "kstore": 320000,
+      "points": 52,
+      "final_cum_new_krylov_in_source": 50,
+      "final_abs_delta_mHa_in_source": 0.168386,
+      "min_abs_delta_mHa_in_source": 0.168386
+    }
+  ]
+}

@@ -119,8 +119,14 @@ Those samples use:
 - `m_cycle = 31`
 - `nroot = 3`
 
-The broader `inputs/` tree is a local-only workspace for live studies and
-runtime artifacts.
+The broader `inputs/` tree tracks Talon study inputs and shareable result files
+from live studies. Raw `.ezfio/work/` runtime tensors, nested repository
+metadata, and large archives stay local. To update a local checkout from Talon
+without copying files over 500 MB:
+
+```bash
+bash scripts/advanced/sync_talon_inputs_to_local.sh
+```
 
 Cycle 1 starts from one seed vector, so the first restart happens after
 `51 - 1 = 50` newly generated Krylov vectors.

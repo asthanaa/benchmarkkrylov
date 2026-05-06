@@ -1,0 +1,108 @@
+{
+  "archive_name": "corrected_reference_6000dmrg",
+  "best_row": null,
+  "case_root": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5",
+  "reference_label": "DMRG M=6000 override",
+  "reference_source": "user supplied Cr2 CAS(12e,22o) DMRG M=6000 override",
+  "reference_total_energy_eh": -2081.1961109189,
+  "refreshed_cases": [
+    {
+      "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/corrected_reference_6000dmrg",
+      "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24",
+      "comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.pdf",
+      "comparison_png": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.png",
+      "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/reference_choice.json",
+      "reference_dmrg_summary_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1000_s500000_m031_r03_t24/system_setup/reference_dmrg_summary.json",
+      "reference_metadata_updated": true,
+      "runs": [
+        {
+          "latest_abs_delta_mHa": 3094.6702541759805,
+          "latest_k": 148,
+          "run_name": "baseline_m031"
+        }
+      ]
+    },
+    {
+      "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s5000000_m031_r03_t12_i050/corrected_reference_6000dmrg",
+      "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s5000000_m031_r03_t12_i050",
+      "comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s5000000_m031_r03_t12_i050/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.pdf",
+      "comparison_png": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s5000000_m031_r03_t12_i050/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.png",
+      "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s5000000_m031_r03_t12_i050/system_setup/reference_choice.json",
+      "reference_dmrg_summary_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s5000000_m031_r03_t12_i050/system_setup/reference_dmrg_summary.json",
+      "reference_metadata_updated": true,
+      "runs": [
+        {
+          "latest_abs_delta_mHa": 0.977548645096249,
+          "latest_k": 30,
+          "run_name": "baseline_m031_k1500_s5m_t12"
+        }
+      ]
+    },
+    {
+      "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24/corrected_reference_6000dmrg",
+      "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24",
+      "comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.pdf",
+      "comparison_png": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.png",
+      "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24/system_setup/reference_choice.json",
+      "reference_dmrg_summary_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24/system_setup/reference_dmrg_summary.json",
+      "reference_metadata_updated": true,
+      "runs": [
+        {
+          "latest_abs_delta_mHa": 11.807322046024638,
+          "latest_k": 17,
+          "run_name": "baseline_m031_k1500"
+        }
+      ]
+    },
+    {
+      "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon/corrected_reference_6000dmrg",
+      "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon",
+      "comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.pdf",
+      "comparison_png": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.png",
+      "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon/system_setup/reference_choice.json",
+      "reference_dmrg_summary_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t36_dmrg6000_talon/system_setup/reference_dmrg_summary.json",
+      "reference_metadata_updated": true,
+      "runs": [
+        {
+          "latest_abs_delta_mHa": 1904.09118305206,
+          "latest_k": 143,
+          "run_name": "baseline_m031_k1500_dmrg6000"
+        }
+      ]
+    },
+    {
+      "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24/corrected_reference_6000dmrg",
+      "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24",
+      "comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.pdf",
+      "comparison_png": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.png",
+      "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24/system_setup/reference_choice.json",
+      "reference_dmrg_summary_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24/system_setup/reference_dmrg_summary.json",
+      "reference_metadata_updated": true,
+      "runs": [
+        {
+          "latest_abs_delta_mHa": 25972.774610254874,
+          "latest_k": 48,
+          "run_name": "baseline_m031"
+        }
+      ]
+    },
+    {
+      "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k5000_s500000_m031_r03_t24_talon08/corrected_reference_6000dmrg",
+      "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k5000_s500000_m031_r03_t24_talon08",
+      "comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k5000_s500000_m031_r03_t24_talon08/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.pdf",
+      "comparison_png": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k5000_s500000_m031_r03_t24_talon08/corrected_reference_6000dmrg/energy_error_vs_iteration_comparison.png",
+      "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k5000_s500000_m031_r03_t24_talon08/system_setup/reference_choice.json",
+      "reference_dmrg_summary_path": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k5000_s500000_m031_r03_t24_talon08/system_setup/reference_dmrg_summary.json",
+      "reference_metadata_updated": true,
+      "runs": [
+        {
+          "latest_abs_delta_mHa": 1260.9209593520063,
+          "latest_k": 156,
+          "run_name": "baseline_m031"
+        }
+      ]
+    }
+  ],
+  "scan_json": null,
+  "update_native": true
+}

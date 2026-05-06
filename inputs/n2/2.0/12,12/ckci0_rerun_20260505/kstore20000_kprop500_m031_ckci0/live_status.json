@@ -1,0 +1,16 @@
+{
+  "label": "CKCI-0 Kstore=20000 Kprop=500 | m=31 nroot=3 ncycles=10",
+  "cum_new_krylov": 50,
+  "cycle": 2,
+  "basis_size": 23,
+  "support_union_size": 31617,
+  "total_energy_eh": -108.775239135622,
+  "delta_mHa": 0.749458,
+  "abs_delta_mHa": 0.749458,
+  "exactized_total_energy_eh": -108.7759752423209,
+  "exactized_abs_delta_mHa": 0.013351014601425959,
+  "exactized_solver_kind": "davidson",
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}

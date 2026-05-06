@@ -42,5 +42,5 @@ If you are new to the project, follow the beginner path first.
 - `scripts/_shared`: helpers for the advanced workflows
 - `ccik_qp`: vendored Quantum Package plugin source
 - `sample_inputs`: tracked teaching inputs and one-command plotting wrappers
-- `inputs`: local-only runtime study definitions for QP iteration studies
+- `inputs`: tracked Talon study inputs and shareable result files
 - `tests`: checks that keep examples, API behavior, and advanced scripts working

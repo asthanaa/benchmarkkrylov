@@ -35,23 +35,16 @@ experiments/*
 # Local-only manuscript workspace
 manuscript/
 manuscripts/
-inputs/
-inputs/**/launcher.log
-inputs/**/runner.log
-inputs/**/study_summary.json
-inputs/**/energy_error_vs_iteration*.png
-inputs/**/energy_error_vs_iteration*.pdf
-inputs/**/iteration_trace.csv
-inputs/**/iteration_trace.json
-inputs/**/live_status.json
-inputs/**/summary.json
-inputs/**/ccik_stdout.log
-inputs/**/ccik_stderr.log
-inputs/**/reference_*.json
-inputs/**/system_setup/
-inputs/**/k0500_s050000/
-inputs/**/k1000_s050000/
-inputs/**/k1000_s100000/
+
+# Tracked input/result surface. Large regenerable runtime blobs stay local.
+!inputs/**/data/
+!inputs/**/data/**
+!inputs/**/plots*/
+!inputs/**/plots*/**
+!inputs/**/*.log
+inputs/**/.git/
+inputs/**/*.tar.gz
+inputs/**/*.ezfio/work/
 
 # Generated outputs from tracked teaching samples
 sample_inputs/**/plots/

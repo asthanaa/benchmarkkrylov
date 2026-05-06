@@ -1,0 +1,24 @@
+      |Q|=01 parent=01: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.071089e+02 |v_proj|=1.071089e+02 drop=0.000000e+00 |r_orth|=3.028983e-01 |r_keep|=3.028983e-01 overlap=0.000e+00 cand=10609 tmp=5534 final=5533 prop_supp=1
+k=   1 CK=+8735.739385 mHa abs=8735.739385 mHa | CKCI-0=+3446.912202 mHa abs=3446.912202 mHa dim=5534
+      |Q|=02 parent=02: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.077535e+02 |v_proj|=1.077535e+02 drop=0.000000e+00 |r_orth|=8.978889e-01 |r_keep|=8.978881e-01 overlap=5.865e-09 cand=218089 tmp=207337 final=50000 prop_supp=5533
+k=   2 CK=+7478.172504 mHa abs=7478.172504 mHa | CKCI-0=+2864.899309 mHa abs=2864.899309 mHa dim=50137
+      |Q|=03 parent=03: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.085364e+02 |v_proj|=1.085364e+02 drop=0.000000e+00 |r_orth|=1.791861e+00 |r_keep|=1.791706e+00 overlap=3.310e-05 cand=469225 tmp=467943 final=50000 prop_supp=20000
+k=   3 CK=+6167.360088 mHa abs=6167.360088 mHa | CKCI-0=+2863.355081 mHa abs=2863.355081 mHa dim=55052
+      |Q|=04 parent=04: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.077654e+02 |v_proj|=1.077654e+02 drop=0.000000e+00 |r_orth|=1.628006e+01 |r_keep|=1.627974e+01 overlap=2.382e-04 cand=688900 tmp=687088 final=50000 prop_supp=20000
+k=   4 CK=+6098.234629 mHa abs=6098.234629 mHa | CKCI-0=+2863.355071 mHa abs=2863.355071 mHa dim=55145
+      |Q|=05 parent=05: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.082229e+02 |v_proj|=1.082229e+02 drop=0.000000e+00 |r_orth|=2.142342e+01 |r_keep|=2.142179e+01 overlap=1.189e-03 cand=2515396 tmp=2402337 final=50000 prop_supp=20000
+k=   5 CK=+6031.072072 mHa abs=6031.072072 mHa | CKCI-0=+2863.355062 mHa abs=2863.355062 mHa dim=55202
+      |Q|=06 parent=06: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.065343e+02 |v_proj|=1.065343e+02 drop=0.000000e+00 |r_orth|=2.056567e+01 |r_keep|=2.056420e+01 overlap=6.176e-03 cand=2531281 tmp=2257628 final=50000 prop_supp=20000
+k=   6 CK=+5818.153088 mHa abs=5818.153088 mHa | CKCI-0=+2863.354698 mHa abs=2863.354698 mHa dim=55294
+      |Q|=07 parent=07: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.066786e+02 |v_proj|=1.066786e+02 drop=0.000000e+00 |r_orth|=2.241470e+01 |r_keep|=2.241342e+01 overlap=2.921e-02 cand=2324100 tmp=2191936 final=50000 prop_supp=20000
+k=   7 CK=+5446.950039 mHa abs=5446.950039 mHa | CKCI-0=+2863.070619 mHa abs=2863.070619 mHa dim=55900
+      |Q|=08 parent=08: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.056971e+02 |v_proj|=1.056971e+02 drop=0.000000e+00 |r_orth|=2.883209e+01 |r_keep|=2.883086e+01 overlap=1.046e-01 cand=2458624 tmp=2321941 final=50000 prop_supp=20000
+k=   8 CK=+5402.339252 mHa abs=5402.339252 mHa | CKCI-0=+2863.070619 mHa abs=2863.070619 mHa dim=55900
+      |Q|=09 parent=09: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.066204e+02 |v_proj|=1.066204e+02 drop=0.000000e+00 |r_orth|=2.530374e+01 |r_keep|=2.530228e+01 overlap=4.382e-01 cand=2640625 tmp=2471993 final=50000 prop_supp=20000
+k=   9 CK=+5344.755126 mHa abs=5344.755126 mHa | CKCI-0=+2863.070619 mHa abs=2863.070619 mHa dim=55900
+    [CCIK cycle 1] E0=-111.2608539738
+      |Q|=03 parent=01: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.057910e+02 |v_proj|=1.057910e+02 drop=0.000000e+00 |r_orth|=3.273220e+01 |r_keep|=3.273107e+01 overlap=1.251e-04 cand=2797256 tmp=2514327 final=50000 prop_supp=20000
+k=  10 CK=+5167.299475 mHa abs=5167.299475 mHa | CKCI-0=+2863.464359 mHa abs=2863.464359 mHa dim=51522
+      |Q|=04 parent=02: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.041542e+02 |v_proj|=1.041542e+02 drop=0.000000e+00 |r_orth|=3.137601e+01 |r_keep|=3.137443e+01 overlap=1.118e-04 cand=2913849 tmp=2574233 final=50000 prop_supp=20000
+k=  11 CK=+5140.796459 mHa abs=5140.796459 mHa | CKCI-0=+2863.464359 mHa abs=2863.464359 mHa dim=51522
+      |Q|=05 parent=03: policy=fixed_budget selector=abs_residual candidate=selected_ci |q|=1.000000e+00 |Hq|≈1.025971e+02 |v_proj|=1.025971e+02 drop=0.000000e+00 |r_orth|=3.735265e+01 |r_keep|=3.735138e+01 overlap=2.591e-04 cand=2681406 tmp=2448845 final=50000 prop_supp=20000

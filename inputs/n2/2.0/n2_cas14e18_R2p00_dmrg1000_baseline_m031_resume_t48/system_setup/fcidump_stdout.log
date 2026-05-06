@@ -1,0 +1,75 @@
+
+.. >>>>> [ RES  MEM :          0.007 GB ] [ VIRT MEM :          9.044 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.05  s ] <<<<< ..
+
+
+Nuclear Coordinates (Angstroms)
+===============================
+
+================ ============ ============ ============ ============
+      Atom          Charge          X            Y            Z 
+================ ============ ============ ============ ============
+N                    7.000000     0.000000     0.000000    -1.000000
+N                    7.000000     0.000000     0.000000     1.000000
+================ ============ ============ ============ ============
+
+Minimal interatomic distance found:       2.0000 Angstrom
+
+.. >>>>> [ RES  MEM :          0.007 GB ] [ VIRT MEM :          9.044 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.05  s ] <<<<< ..
+
+* Nuclear repulsion energy                           12.96484166712350    
+* mo_num                                                        18
+ MO map initialized:                 14706
+ MO integrals cache: (           1 ,           18 ),                  2048 MiB
+.. >>>>> [ IO READ: mo_class ] <<<<< ..
+* N_int                                                          1
+* Total available memory (GB)                                 3022
+* Target maximum memory (GB)                                  3022
+
+.. >>>>> [ RES  MEM :          0.012 GB ] [ VIRT MEM :          9.136 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.02  s ] [ CPU  TIME:           0.41  s ] <<<<< ..
+
+.. >>>>> [ RES  MEM :          0.012 GB ] [ VIRT MEM :          9.136 GB ] <<<<< ..
+ 
+ Cholesky decomposition of AO integrals
+ ======================================
+ 
+ ============ =============
+     Rank       Threshold
+ ============ =============
+         6       2.017E-01
+        41       1.503E-02
+        52       8.436E-04
+        70       6.557E-05
+        95       4.071E-06
+       103       3.878E-07
+       125       1.140E-08
+       134       2.195E-10
+       140       1.092E-11
+       145       8.874E-16
+ ============ =============
+ 
+ Rank  :          145 (   44.753086419753089       %)
+ 
+ Time to provide AO cholesky vectors =    1.4411656496425469E-003  min
+ Read  mo_coef
+ 
+ AO->MO Transformation of Cholesky vectors
+ -----------------------------------------
+ 
+ Time to provide MO cholesky vectors =    1.5257423122723897E-005  min
+ Molecular integrals provided:
+  Size of MO map             0.39073371887207031      MB
+  Number of MO integrals:                 13970
+  cpu  time :   5.2412190000000001      s
+  wall time :  0.11371072102338076      s  ( x    46.092566759138933      )
+ Writing data to disk...
+ Done
+* Number of core     MOs                                         0
+ Core MOs:
+
+ Providing the one-electron integrals
+* Number of active   MOs                                        18
+ Active MOs:
+           1           2           3           4           5           6           7           8           9          10          11          12          13          14          15          16          17          18

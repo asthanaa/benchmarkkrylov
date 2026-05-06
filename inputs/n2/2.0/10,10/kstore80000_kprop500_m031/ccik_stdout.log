@@ -1,0 +1,206 @@
+ ============================================
+  Quantum Package plugin: baseline ccik
+  Determinant-driven compressed Krylov solver
+ ============================================
+ ccik_generator_keep  =          512
+ ccik_generator_fraction =    0.0000000000000000     
+ ccik_generator_abs_coeff_cutoff =    0.0000000000000000     
+ ccik_max_parents_for_expansion =          512
+ ccik_include_current_support =  T
+ ccik_selector_keep   =        80000
+ ccik_external_keep   =        80000
+ ccik_external_candidate_factor =            4
+ ccik_pt2_rank_weight =    1.0000000000000000     
+ ccik_selector_mode   = abs_residual
+ ccik_matvec_backend = connected_sd_fullq
+ ccik_compression_policy = fixed_budget
+ ccik_fixed_store_keep =        80000
+ ccik_fixed_propagate_keep =          500
+ ccik_store_abs_tol  =    0.0000000000000000     
+ ccik_propagate_abs_tol =    0.0000000000000000     
+ ccik_nkeep           =        80000
+ ccik_tmp_keep_factor =            2
+ ccik_preserve_prev_support =  T
+ ccik_preserve_prev_support_cap =          512
+ ccik_total_det_budget=            0
+ ccik_basis_size      =           31
+ ccik_conv_tol        =    1.0000000000000000E-010
+ ccik_ritz_overlap_tol=    1.0000000000000000E-008
+ ccik_ritz_max_drop   =    0.0000000000000000     
+ ccik_save_final_wf   =  T
+ ccik_do_post_pt2     =  F
+ ccik_max_cycle       =           10
+ ccik_restart_m_cycle =           31
+ ccik_restart_nroot   =            3
+ ccik_exactized_checkpoint_every =            0
+ ccik_exactized_resid_tol =    1.0000000000000000E-010
+ ccik_exactized_max_iter =          200
+ ccik_exactized_max_subspace =           24
+ ccik_exactized_restart_keep =            4
+ ccik_verbose         =  F
+ ccik_debug_trace     =  F
+ ccik_debug_trace_topn=            8
+ ccik_debug_allow_legacy_fixed_budget =  F
+
+.. >>>>> [ RES  MEM :          0.006 GB ] [ VIRT MEM :          3.045 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.09  s ] <<<<< ..
+
+
+Nuclear Coordinates (Angstroms)
+===============================
+
+================ ============ ============ ============ ============
+      Atom          Charge          X            Y            Z 
+================ ============ ============ ============ ============
+N                    7.000000     0.000000     0.000000    -1.000000
+N                    7.000000     0.000000     0.000000     1.000000
+================ ============ ============ ============ ============
+
+Minimal interatomic distance found:       2.0000 Angstrom
+
+.. >>>>> [ RES  MEM :          0.006 GB ] [ VIRT MEM :          3.045 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.01  s ] [ CPU  TIME:           0.09  s ] <<<<< ..
+
+* Nuclear repulsion energy                           12.96484166144465    
+* mo_num                                                        18
+.. >>>>> [ IO READ: mo_class ] <<<<< ..
+* N_int                                                          1
+ MO map initialized:                 14706
+ Reading the MO integrals
+ MO integrals provided
+ MO integrals cache: (           1 ,           18 ),                  2048 MiB
+ Providing the one-electron integrals
+
+.. >>>>> [ RES  MEM :          0.114 GB ] [ VIRT MEM :          5.090 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.03  s ] [ CPU  TIME:           0.51  s ] <<<<< ..
+
+ Read  mo_coef
+ * mo_label          Canonical
+* Number of determinants                                         1
+* Number of active   MOs                                        10
+ Active MOs:
+           3           4           5           6           7           8           9          10          11          12
+ccik(thick) cycle=   1 iter=   1  total=       -108.309600645432  ref=       -108.760883546096  delta_mEh=      451.282901
+ccik(thick) cycle=   1 iter=   2  total=       -108.574185277475  ref=       -108.760883546096  delta_mEh=      186.698269
+ccik(thick) cycle=   1 iter=   3  total=       -108.653285680314  ref=       -108.760883546096  delta_mEh=      107.597866
+ccik(thick) cycle=   1 iter=   4  total=       -108.681791028385  ref=       -108.760883546096  delta_mEh=       79.092518
+ccik(thick) cycle=   1 iter=   5  total=       -108.695091980443  ref=       -108.760883546096  delta_mEh=       65.791566
+ccik(thick) cycle=   1 iter=   6  total=       -108.708171865021  ref=       -108.760883546096  delta_mEh=       52.711681
+ccik(thick) cycle=   1 iter=   7  total=       -108.719760183456  ref=       -108.760883546096  delta_mEh=       41.123363
+ccik(thick) cycle=   1 iter=   8  total=       -108.728245071157  ref=       -108.760883546096  delta_mEh=       32.638475
+ccik(thick) cycle=   1 iter=   9  total=       -108.739814569280  ref=       -108.760883546096  delta_mEh=       21.068977
+ccik(thick) cycle=   1 iter=  10  total=       -108.751592200030  ref=       -108.760883546096  delta_mEh=        9.291346
+ccik(thick) cycle=   1 iter=  11  total=       -108.756319617509  ref=       -108.760883546096  delta_mEh=        4.563929
+ccik(thick) cycle=   1 iter=  12  total=       -108.758444132935  ref=       -108.760883546096  delta_mEh=        2.439413
+ccik(thick) cycle=   1 iter=  13  total=       -108.758505647406  ref=       -108.760883546096  delta_mEh=        2.377899
+ccik(thick) cycle=   1 iter=  14  total=       -108.759415495565  ref=       -108.760883546096  delta_mEh=        1.468051
+ccik(thick) cycle=   1 iter=  15  total=       -108.759896248662  ref=       -108.760883546096  delta_mEh=        0.987297
+ccik(thick) cycle=   1 iter=  16  total=       -108.760261829879  ref=       -108.760883546096  delta_mEh=        0.621716
+ccik(thick) cycle=   1 iter=  17  total=       -108.760498416536  ref=       -108.760883546096  delta_mEh=        0.385130
+ccik(thick) cycle=   1 iter=  18  total=       -108.760666765695  ref=       -108.760883546096  delta_mEh=        0.216780
+ccik(thick) cycle=   1 iter=  19  total=       -108.760774729886  ref=       -108.760883546096  delta_mEh=        0.108816
+ccik(thick) cycle=   1 iter=  20  total=       -108.760821004822  ref=       -108.760883546096  delta_mEh=        0.062541
+ccik(thick) cycle=   1 iter=  21  total=       -108.760850587456  ref=       -108.760883546096  delta_mEh=        0.032959
+ccik(thick) cycle=   1 iter=  22  total=       -108.760863365491  ref=       -108.760883546096  delta_mEh=        0.020181
+ccik(thick) cycle=   1 iter=  23  total=       -108.760865120757  ref=       -108.760883546096  delta_mEh=        0.018425
+ccik(thick) cycle=   1 iter=  24  total=       -108.760872360874  ref=       -108.760883546096  delta_mEh=        0.011185
+ccik(thick) cycle=   1 iter=  25  total=       -108.760877594125  ref=       -108.760883546096  delta_mEh=        0.005952
+ccik(thick) cycle=   1 iter=  26  total=       -108.760879567564  ref=       -108.760883546096  delta_mEh=        0.003979
+ccik(thick) cycle=   1 iter=  27  total=       -108.760880680579  ref=       -108.760883546096  delta_mEh=        0.002866
+ccik(thick) cycle=   1 iter=  28  total=       -108.760881478862  ref=       -108.760883546096  delta_mEh=        0.002067
+ccik(thick) cycle=   1 iter=  29  total=       -108.760881836585  ref=       -108.760883546096  delta_mEh=        0.001710
+ccik(thick) cycle=   1 iter=  30  total=       -108.760881928319  ref=       -108.760883546096  delta_mEh=        0.001618
+ccik(thick) cycle=   1 iter=  31  total=       -108.760882335498  ref=       -108.760883546096  delta_mEh=        0.001211
+ccik(thick) cycle=   2 iter=   3  total=       -108.760857980878  ref=       -108.760883546096  delta_mEh=        0.025565
+ccik(thick) cycle=   2 iter=   4  total=       -108.760882737600  ref=       -108.760883546096  delta_mEh=        0.000808
+ccik(thick) cycle=   2 iter=   5  total=       -108.760882749808  ref=       -108.760883546096  delta_mEh=        0.000796
+ccik(thick) cycle=   2 iter=   6  total=       -108.760882858351  ref=       -108.760883546096  delta_mEh=        0.000688
+ccik(thick) cycle=   2 iter=   7  total=       -108.760883448004  ref=       -108.760883546096  delta_mEh=        0.000098
+ccik(thick) cycle=   2 iter=   8  total=       -108.760883448015  ref=       -108.760883546096  delta_mEh=        0.000098
+ccik(thick) cycle=   2 iter=   9  total=       -108.760883455697  ref=       -108.760883546096  delta_mEh=        0.000090
+ccik(thick) cycle=   2 iter=  10  total=       -108.760883512851  ref=       -108.760883546096  delta_mEh=        0.000033
+ccik(thick) cycle=   2 iter=  11  total=       -108.760883515467  ref=       -108.760883546096  delta_mEh=        0.000031
+ccik(thick) cycle=   2 iter=  12  total=       -108.760883518120  ref=       -108.760883546096  delta_mEh=        0.000028
+ccik(thick) cycle=   2 iter=  13  total=       -108.760883529191  ref=       -108.760883546096  delta_mEh=        0.000017
+ccik(thick) cycle=   2 iter=  14  total=       -108.760883532823  ref=       -108.760883546096  delta_mEh=        0.000013
+ccik(thick) cycle=   2 iter=  15  total=       -108.760883533192  ref=       -108.760883546096  delta_mEh=        0.000013
+ccik(thick) cycle=   2 iter=  16  total=       -108.760883536330  ref=       -108.760883546096  delta_mEh=        0.000010
+ccik(thick) cycle=   2 iter=  17  total=       -108.760883539131  ref=       -108.760883546096  delta_mEh=        0.000007
+ccik(thick) cycle=   2 iter=  18  total=       -108.760883539180  ref=       -108.760883546096  delta_mEh=        0.000007
+ccik(thick) cycle=   2 iter=  19  total=       -108.760883540813  ref=       -108.760883546096  delta_mEh=        0.000005
+ccik(thick) cycle=   2 iter=  20  total=       -108.760883542077  ref=       -108.760883546096  delta_mEh=        0.000004
+ccik(thick) cycle=   2 iter=  21  total=       -108.760883542125  ref=       -108.760883546096  delta_mEh=        0.000004
+ccik(thick) cycle=   2 iter=  22  total=       -108.760883543167  ref=       -108.760883546096  delta_mEh=        0.000003
+ccik(thick) cycle=   2 iter=  23  total=       -108.760883543892  ref=       -108.760883546096  delta_mEh=        0.000002
+ccik(thick) cycle=   2 iter=  24  total=       -108.760883543939  ref=       -108.760883546096  delta_mEh=        0.000002
+ccik(thick) cycle=   2 iter=  25  total=       -108.760883544579  ref=       -108.760883546096  delta_mEh=        0.000002
+ccik(thick) cycle=   2 iter=  26  total=       -108.760883544902  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   2 iter=  27  total=       -108.760883544941  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   2 iter=  28  total=       -108.760883545311  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   2 iter=  29  total=       -108.760883545507  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   2 iter=  30  total=       -108.760883545436  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   2 iter=  31  total=       -108.760883544323  ref=       -108.760883546096  delta_mEh=        0.000002
+ccik(thick) cycle=   3 iter=   3  total=       -108.760883544325  ref=       -108.760883546096  delta_mEh=        0.000002
+ccik(thick) cycle=   3 iter=   4  total=       -108.760883545232  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   3 iter=   5  total=       -108.760883545244  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   3 iter=   6  total=       -108.760883545244  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   3 iter=   7  total=       -108.760883545564  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   3 iter=   8  total=       -108.760883545582  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   3 iter=   9  total=       -108.760883545582  ref=       -108.760883546096  delta_mEh=        0.000001
+ccik(thick) cycle=   3 iter=  10  total=       -108.760883545771  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  11  total=       -108.760883545781  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  12  total=       -108.760883545781  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  13  total=       -108.760883545904  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  14  total=       -108.760883545908  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  15  total=       -108.760883545908  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  16  total=       -108.760883545986  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  17  total=       -108.760883545987  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  18  total=       -108.760883545987  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  19  total=       -108.760883546034  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  20  total=       -108.760883546035  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  21  total=       -108.760883546035  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  22  total=       -108.760883546058  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  23  total=       -108.760883546058  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  24  total=       -108.760883546059  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  25  total=       -108.760883546068  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  26  total=       -108.760883525716  ref=       -108.760883546096  delta_mEh=        0.000020
+ccik(thick) cycle=   3 iter=  27  total=       -108.760883525906  ref=       -108.760883546096  delta_mEh=        0.000020
+ccik(thick) cycle=   3 iter=  28  total=       -108.760883546036  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  29  total=       -108.760883546065  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  30  total=       -108.760883546066  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   3 iter=  31  total=       -108.760883546075  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   3  total=       -108.760883546074  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   4  total=       -108.760883546076  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   5  total=       -108.760883546076  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   6  total=       -108.760883546076  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   7  total=       -108.760883546079  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   8  total=       -108.760883546079  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=   9  total=       -108.760883546079  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  10  total=       -108.760883546081  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  11  total=       -108.760883546081  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  12  total=       -108.760883546082  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  13  total=       -108.760883546083  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  14  total=       -108.760883546084  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  15  total=       -108.760883546084  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  16  total=       -108.760883546085  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  17  total=       -108.760883546087  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  18  total=       -108.760883546086  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  19  total=       -108.760883546087  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  20  total=       -108.760883546088  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  21  total=       -108.760883546088  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  22  total=       -108.760883546089  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  23  total=       -108.760883522409  ref=       -108.760883546096  delta_mEh=        0.000024
+ccik(thick) cycle=   4 iter=  24  total=       -108.760883545760  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  25  total=       -108.760883546072  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  26  total=       -108.760883546076  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  27  total=       -108.760883546072  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  28  total=       -108.760883546092  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  29  total=       -108.760883546092  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  30  total=       -108.760883546092  ref=       -108.760883546096  delta_mEh=        0.000000
+ccik(thick) cycle=   4 iter=  31  total=       -108.760883546093  ref=       -108.760883546096  delta_mEh=        0.000000
+CCIK_FINAL_SUPPORT_PATH = n2.ezfio/work/ccik_final_support_union.txt
+CCIK_FINAL_SUPPORT_SIZE = 63504
+* Saved determinants                                         56132
+CCIK_FINAL_ELECTRONIC_ENERGY =        -121.725725207538
+CCIK_FINAL_TOTAL_ENERGY =        -108.760883546093
+CCIK_FINAL_BASIS =       31

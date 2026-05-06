@@ -1,0 +1,9 @@
+{
+  "label": "Baseline m=31 | Kprop=1000 Kstore=1000000",
+  "cum_new_krylov": 27,
+  "cycle": 1,
+  "basis_size": 28,
+  "total_energy_eh": -916.484915915513,
+  "delta_mHa": 1511.904927,
+  "abs_delta_mHa": 1511.904927
+}

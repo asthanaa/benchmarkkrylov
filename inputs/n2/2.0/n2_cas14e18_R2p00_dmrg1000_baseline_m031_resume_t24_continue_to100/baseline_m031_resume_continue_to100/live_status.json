@@ -1,0 +1,16 @@
+{
+  "label": "Resume from saved WF after stopped run | remaining 38 additions to global k=100 | t24",
+  "cum_new_krylov": 38,
+  "cycle": 2,
+  "basis_size": 11,
+  "support_union_size": null,
+  "total_energy_eh": -108.856075668337,
+  "delta_mHa": 5.005795,
+  "abs_delta_mHa": 5.005795,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null,
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}
