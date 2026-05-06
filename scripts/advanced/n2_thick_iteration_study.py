@@ -1117,7 +1117,7 @@ def _make_qp_thick_params(
     # first thick restart happens after 50 newly generated vectors because cycle
     # 1 starts from a single seed vector.
     # Avoid passing any override twice when it is already present in `bridge`.
-    params_kwargs: dict[str, Any] = {
+    params_defaults: dict[str, Any] = {
         "ccik_basis_size": m_cycle,
         "ccik_selector_mode": selector_mode,
         "ccik_matvec_backend": matvec_backend,
@@ -1131,6 +1131,7 @@ def _make_qp_thick_params(
         "ccik_print_iteration_error": True,
         "ccik_verbose": False if verbose is None else verbose,
     }
+    params_kwargs: dict[str, Any] = {key: value for key, value in params_defaults.items() if key not in bridge}
     if "ccik_debug_trace" not in bridge:
         params_kwargs["ccik_debug_trace"] = False if debug_trace is None else debug_trace
     if "ccik_debug_trace_topn" not in bridge:
