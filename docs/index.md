@@ -41,5 +41,6 @@ If you are new to the project, follow the beginner path first.
 - `scripts/advanced`: benchmark, sweep, parity, and QP workflows
 - `scripts/_shared`: helpers for the advanced workflows
 - `ccik_qp`: vendored Quantum Package plugin source
-- `inputs`: tracked study definitions for QP iteration studies
+- `sample_inputs`: tracked teaching inputs and one-command plotting wrappers
+- `inputs`: local-only runtime study definitions for QP iteration studies
 - `tests`: checks that keep examples, API behavior, and advanced scripts working

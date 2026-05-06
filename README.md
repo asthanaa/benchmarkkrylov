@@ -120,7 +120,8 @@ For most learners, `ccik_ground_energy_dense_thick_restart(...)` is the best pla
 - `scripts/advanced/`: research, benchmark, and QP workflows
 - `scripts/_shared/`: helpers used by advanced scripts
 - `ccik_qp/`: vendored Quantum Package plugin source
-- `inputs/`: tracked study definitions for live QP runs
+- `sample_inputs/`: tracked teaching inputs and one-command plotting wrappers
+- `inputs/`: local-only live QP study workspace
 - `tests/`: beginner, core, and advanced checks
 
 ## Documentation site
@@ -176,20 +177,16 @@ For the maintained large-space `N2` workflow on a fresh machine:
    python scripts/advanced/qp_ccik_bridge.py rebuild-plugin
    ```
 
-7. launch a representative QP `N2` study:
+7. launch the tracked teaching sample for `N2` CAS(10e,10o) and CAS(12e,12o):
 
    ```bash
-   python scripts/advanced/n2_thick_iteration_study.py \
-     --input inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+   python sample_inputs/n2_error_iterations/run_n2_error_plots.py
    ```
 
-8. open the generated plots:
+8. open the generated combined CCIK/CKCI-0 plot:
 
    ```bash
-   CASE=inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3
-   open "$CASE/energy_error_vs_iteration_comparison.png"
-   open "$CASE/k0500_s050000/energy_error_vs_iteration.png"
-   open "$CASE/k1000_s100000/energy_error_vs_iteration.png"
+   open sample_inputs/n2_error_iterations/plots/n2_error_vs_iteration_k1000_s050000.png
    ```
 
 The DMRG bootstrap spec is tracked in `environment.dmrg.yml`. The binary

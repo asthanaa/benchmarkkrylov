@@ -33,6 +33,7 @@ docs/assets/
 experiments/*
 !experiments/README.md
 # Local-only manuscript workspace
+manuscript/
 manuscripts/
 inputs/
 inputs/**/launcher.log
@@ -51,6 +52,24 @@ inputs/**/system_setup/
 inputs/**/k0500_s050000/
 inputs/**/k1000_s050000/
 inputs/**/k1000_s100000/
+
+# Generated outputs from tracked teaching samples
+sample_inputs/**/plots/
+sample_inputs/**/launcher.log
+sample_inputs/**/runner.log
+sample_inputs/**/study_summary.json
+sample_inputs/**/energy_error_vs_iteration*.png
+sample_inputs/**/energy_error_vs_iteration*.pdf
+sample_inputs/**/iteration_trace.csv
+sample_inputs/**/iteration_trace.json
+sample_inputs/**/live_status.json
+sample_inputs/**/summary.json
+sample_inputs/**/ccik_stdout.log
+sample_inputs/**/ccik_stderr.log
+sample_inputs/**/reference_*.json
+sample_inputs/**/system_setup/
+sample_inputs/**/runtime/
+sample_inputs/**/k*_s*/
 
 # LaTeX build products
 *.aux

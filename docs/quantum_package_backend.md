@@ -105,23 +105,22 @@ This remains more reliable here than relying on `qp run ccik`.
 
 ## Representative study inputs
 
-The tracked `inputs/` tree is the source surface for live QP studies.
+The tracked student-facing source surface is:
 
-- small and medium cases may keep several `(Kprop, Kstore)` lines
-- the tracked default run pair is:
-  - `Kprop=500`, `Kstore=50000`
-  - `Kprop=1000`, `Kstore=100000`
-- `CAS(14e,16o)` is the exception and keeps:
-  - `Kprop=5000`, `Kstore=50000`
+- `sample_inputs/n2_error_iterations/run_n2_error_plots.py`
+- `sample_inputs/n2_error_iterations/cases/n2_cas10_10_k1000_s050000/input.json`
+- `sample_inputs/n2_error_iterations/cases/n2_cas12_12_k1000_s050000/input.json`
 
-The special restart-after-50 case is:
+Those samples use:
 
-- `inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json`
-
-Its restart settings are:
-
-- `m_cycle = 51`
+- `Kprop=1000`
+- `Kstore=50000`
+- CKCI-0 checkpoints every 10 cumulative new Krylov vectors
+- `m_cycle = 31`
 - `nroot = 3`
+
+The broader `inputs/` tree is a local-only workspace for live studies and
+runtime artifacts.
 
 Cycle 1 starts from one seed vector, so the first restart happens after
 `51 - 1 = 50` newly generated Krylov vectors.

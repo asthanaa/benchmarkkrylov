@@ -84,7 +84,8 @@ mkdocs build
 - research workflows belong in `scripts/advanced/`
 - shared advanced helpers belong in `scripts/_shared/`
 - vendored Quantum Package plugin sources belong in `ccik_qp/`
-- tracked study definitions belong in `inputs/`
+- tracked teaching study definitions belong in `sample_inputs/`
+- local-only live study workspaces belong in `inputs/`
 - public package code belongs in `src/ccik/`
 
 ## Adding a new example

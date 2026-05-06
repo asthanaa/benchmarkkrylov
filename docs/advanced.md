@@ -51,13 +51,13 @@ transfer story are summarized in [fixed_budget_results.md](fixed_budget_results.
 
 ## Study inputs
 
-Tracked `inputs/` folders are source definitions, not artifact dumps.
+Tracked `sample_inputs/` folders are source definitions, not artifact dumps.
 
 - keep `input.json`
+- keep wrapper scripts that produce teaching plots
 - keep the case folder names stable
-- treat generated plots, traces, logs, and `system_setup/` as local runtime
+- treat generated plots, traces, logs, and runtime setup folders as local
   output
 
-For `CAS(14,14)` and larger, the tracked study definitions now keep only the
-`Kprop=500`, `Kstore=50000` line by default unless a new sweep is being added
-intentionally.
+The local-only `inputs/` workspace can still be used for exploratory QP runs
+and larger sweeps.
