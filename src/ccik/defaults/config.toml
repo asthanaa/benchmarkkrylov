@@ -36,6 +36,7 @@ propagate_abs_tol = 0.0
 # Default fixed-budget knobs used by the teaching and benchmark workflows.
 fixed_store_keep = 65536
 fixed_propagate_keep = 512
+secondortho = false
 candidate_mode = "selected_ci"
 projected_ritz_mode = "exact_on_basis"
 selector_mode = "abs_residual"
@@ -68,6 +69,7 @@ propagate_abs_tol = 0.0
 # Default fixed-budget knobs used by the teaching and benchmark workflows.
 fixed_store_keep = 65536
 fixed_propagate_keep = 512
+secondortho = false
 candidate_mode = "selected_ci"
 projected_ritz_mode = "exact_on_basis"
 selector_mode = "abs_residual"
@@ -97,6 +99,7 @@ propagate_abs_tol = 0.0
 # Default fixed-budget knobs used by the teaching and benchmark workflows.
 fixed_store_keep = 65536
 fixed_propagate_keep = 512
+secondortho = false
 candidate_mode = "stochastic"
 selector_mode = "abs_residual"
 selector_depth = 1

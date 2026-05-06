@@ -19,10 +19,12 @@ from ccik.selection import (
 )
 from ccik.sparse_ci import (
     SparseCIVector,
+    inner_sparse,
     linear_combination_sparse,
     make_hf_sparse_vector,
     normalize_sparse,
     project_sparse_to_support,
+    sparse_norm,
     sparse_from_dense,
     topk_abs_keys_sparse,
 )
@@ -547,6 +549,73 @@ def test_fixed_budget_mode_dense_step_keeps_at_most_fixed_store_support() -> Non
 
     assert len(q1.coeffs) <= 1
     assert diag.num_final_kept <= 1
+
+
+def test_secondortho_default_false_matches_explicit_false() -> None:
+    from pyscf.fci import direct_spin1
+
+    h1, eri8, _, ncas, nelec = _build_h4_chain_cas()
+    q0 = make_hf_sparse_vector(norb=ncas, nelec=nelec)
+    h2eff = direct_spin1.absorb_h1e(h1, eri8, ncas, nelec, fac=0.5)  # type: ignore[arg-type]
+    common = dict(
+        compression_policy="fixed_budget",
+        candidate_mode="connected_sd",
+        selector_mode="abs_residual",
+        fixed_store_keep=4,
+        fixed_propagate_keep=4,
+    )
+
+    q_default, diag_default, _ = build_next_krylov_vector(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(**common),
+    )
+    q_false, diag_false, _ = build_next_krylov_vector(
+        q0,
+        [q0],
+        h1=h1,
+        eri8=eri8,
+        h2eff=h2eff,
+        norb=ncas,
+        nelec=nelec,
+        params=CCIKParams(secondortho=False, **common),
+    )
+
+    assert q_default.coeffs == pytest.approx(q_false.coeffs)
+    assert diag_default.max_basis_overlap == pytest.approx(diag_false.max_basis_overlap, abs=0.0)
+
+
+def test_secondortho_reduces_post_truncation_overlap_without_growing_support() -> None:
+    from ccik.propagation import _support_restricted_second_orthogonalize
+
+    key_a = (1, 1)
+    key_b = (2, 2)
+    key_c = (3, 3)
+    basis = [
+        normalize_sparse(SparseCIVector({key_a: 1.0, key_b: 1.0})),
+        normalize_sparse(SparseCIVector({key_b: 1.0, key_c: 1.0})),
+    ]
+    selected = SparseCIVector({key_a: 1.0, key_b: 2.0, key_c: 0.5})
+    support = set(selected.coeffs)
+    before = max(abs(inner_sparse(selected, project_sparse_to_support(q, support))) for q in basis)
+
+    out = _support_restricted_second_orthogonalize(
+        selected,
+        basis,
+        CCIKParams(compression_policy="fixed_budget", secondortho=True, orth_tol=1.0e-12),
+    )
+    after = max(abs(inner_sparse(out, project_sparse_to_support(q, support))) for q in basis)
+
+    assert set(out.coeffs).issubset(support)
+    assert len(out.coeffs) <= len(selected.coeffs)
+    assert sparse_norm(out) > 0.0
+    assert after < before
+    assert after <= 1.0e-10
 
 
 def test_ground_state_pt2_requires_fixed_budget_policy() -> None:

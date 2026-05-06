@@ -34,7 +34,12 @@ if str(SCRIPTS) not in sys.path:
 import debug_selector_parity as dsp  # noqa: E402
 import cr2_qp_fixed_budget_sweep_plots as cr2_fixed  # noqa: E402
 import n2_thick_iteration_study as n2_study  # noqa: E402
-from qp_ccik_common import _set_mo_class_direct, ensure_ezfio_defaults, validate_rebuildable_qp_root  # noqa: E402
+from qp_ccik_common import (  # noqa: E402
+    _set_mo_class_direct,
+    ensure_ezfio_defaults,
+    validate_rebuildable_qp_root,
+    write_ezfio_value,
+)
 
 
 @dataclass(frozen=True)
@@ -273,19 +278,21 @@ def _build_active_orbital_model(case: PolyeneCase) -> dict[str, Any]:
         pz_groups=pz_groups,
     )
 
-    full_mo = np.column_stack([mf.mo_coeff[:, core_idx], ordered_active, mf.mo_coeff[:, deleted_idx]])
+    # The QP thick-restart path only needs the inactive core plus the active
+    # pi window. Keeping the trailing deleted virtuals forces a much larger
+    # AO->MO transformation without changing the CAS Hamiltonian.
+    qp_mo = np.column_stack([mf.mo_coeff[:, core_idx], ordered_active])
     active_occ_value = float(case.nelecas) / float(case.ncas)
-    full_occ = np.concatenate(
+    qp_occ = np.concatenate(
         [
             np.full(len(core_idx), 2.0, dtype=float),
             np.full(int(case.ncas), active_occ_value, dtype=float),
-            np.zeros(len(deleted_idx), dtype=float),
         ]
     )
 
     mc = mcscf.CASCI(mf, int(case.ncas), int(case.nelecas))
     mc.ncore = int(case.ncore)
-    mc.mo_coeff = np.asarray(full_mo, dtype=float)
+    mc.mo_coeff = np.column_stack([mf.mo_coeff[:, core_idx], ordered_active, mf.mo_coeff[:, deleted_idx]])
     h1eff, ecore = mc.get_h1eff()
     eri_packed = mc.get_h2eff()
     eri8 = ao2mo.restore(8, eri_packed, int(case.ncas))
@@ -294,8 +301,8 @@ def _build_active_orbital_model(case: PolyeneCase) -> dict[str, Any]:
     payload = _build_generic_shell_payload(
         mol=mol,
         basis_name=case.basis,
-        mo_coeff=np.asarray(full_mo, dtype=float),
-        mo_occ=np.asarray(full_occ, dtype=float),
+        mo_coeff=np.asarray(qp_mo, dtype=float),
+        mo_occ=np.asarray(qp_occ, dtype=float),
         mo_label=f"PySCF_RHF_{case.basis.upper().replace('-', '')}_POLYENE_PI",
         total_energy_eh=float(mf.e_tot),
     )
@@ -305,8 +312,10 @@ def _build_active_orbital_model(case: PolyeneCase) -> dict[str, Any]:
         "carbon_coords": carbon_coords,
         "payload": payload,
         "nmo_total": nmo_total,
-        "full_mo": np.asarray(full_mo, dtype=float),
-        "full_occ": np.asarray(full_occ, dtype=float),
+        "full_nmo_total": nmo_total,
+        "qp_mo": np.asarray(qp_mo, dtype=float),
+        "qp_occ": np.asarray(qp_occ, dtype=float),
+        "qp_mo_num": int(qp_mo.shape[1]),
         "active_window_start": active_start,
         "active_window_stop": active_stop,
         "active_centers": active_centers,
@@ -459,6 +468,10 @@ def _load_or_create_system_setup(
             target.unlink()
     cr2_fixed._inject_pyscf_template_shell(qp, ezfio_path, payload, setup_dir / "pyscf_shell_payload.json")
     _set_mo_class_direct(qp, ezfio_path, mo_num=int(payload["mo_num"]), ncore=int(case.ncore), ncas=int(case.ncas))
+    write_ezfio_value(ezfio_path, "ao_two_e_ints/do_ao_cholesky", True)
+    write_ezfio_value(ezfio_path, "ao_two_e_ints/io_ao_cholesky", "Write")
+    write_ezfio_value(ezfio_path, "mo_two_e_ints/do_mo_cholesky", False)
+    write_ezfio_value(ezfio_path, "mo_two_e_ints/io_mo_cholesky", "None")
     dsp._force_integral_rebuild(qp, ezfio_path)
 
     from pyscf.tools import fcidump as pyscf_fcidump
@@ -493,7 +506,9 @@ def _load_or_create_system_setup(
         "active_centers": [float(x) for x in model["active_centers"]],
         "active_dominant_carbons": [int(x) for x in model["active_dominant_carbons"]],
         "active_dominant_weights": [float(x) for x in model["active_dominant_weights"]],
-        "nmo_total": int(model["nmo_total"]),
+        "nmo_total": int(model["qp_mo_num"]),
+        "qp_mo_num": int(model["qp_mo_num"]),
+        "full_nmo_total": int(model["full_nmo_total"]),
         "ezfio_path": str(ezfio_path),
         "fcidump_path": str(fcidump_path),
         "xyz_path": str(xyz_path),

@@ -86,6 +86,59 @@ def hf_occ_vector(norb: int, nelec_tot: int) -> list[float]:
     return occs
 
 
+def closed_shell_hf_total_energy_from_fcidump(
+    *,
+    fcidump_path: Path,
+    occ_vector: list[float] | None = None,
+) -> dict[str, object]:
+    from pyscf import ao2mo
+
+    data = pyscf_fcidump.read(str(fcidump_path), verbose=False)
+    norb = int(data["NORB"])
+    nelec_tot = int(data["NELEC"])
+    ecore = float(data.get("ECORE", 0.0))
+    h1 = data["H1"]
+    eri = ao2mo.restore(1, data["H2"], norb)
+    occs = list(hf_occ_vector(norb, nelec_tot) if occ_vector is None else occ_vector)
+    if len(occs) != norb:
+        raise ValueError(f"HF occupation vector length mismatch for {fcidump_path}: expected {norb}, got {len(occs)}")
+
+    alpha_occ = [1.0 if float(occ) >= 1.0 else 0.0 for occ in occs]
+    beta_occ = [1.0 if float(occ) >= 2.0 else 0.0 for occ in occs]
+
+    total = float(ecore)
+    for p in range(norb):
+        occ = float(alpha_occ[p] + beta_occ[p])
+        if occ == 0.0:
+            continue
+        total += occ * float(h1[p, p])
+
+    for p in range(norb):
+        occ_p = float(alpha_occ[p] + beta_occ[p])
+        if occ_p == 0.0:
+            continue
+        for q in range(norb):
+            occ_q = float(alpha_occ[q] + beta_occ[q])
+            if occ_q == 0.0:
+                continue
+            coulomb = float(eri[p, p, q, q])
+            exchange = float(eri[p, q, q, p])
+            same_spin = float(alpha_occ[p] * alpha_occ[q] + beta_occ[p] * beta_occ[q])
+            total += 0.5 * (occ_p * occ_q * coulomb - same_spin * exchange)
+
+    return {
+        "reference_kind": "hf_anchor",
+        "reference_label": "Closed-shell HF determinant",
+        "fcidump_path": str(fcidump_path),
+        "norb": int(norb),
+        "nelec": int(nelec_tot),
+        "ecore_eh": float(ecore),
+        "occ_vector": [float(x) for x in occs],
+        "total_energy_eh": float(total),
+        "electronic_energy_eh": float(total - ecore),
+    }
+
+
 def _normalized_c1_isym(value: object) -> int:
     try:
         parsed = int(value)

@@ -24,7 +24,7 @@ BEGIN_PROVIDER [ integer, N_det_propagators ]
       return
     end if
 
-    count = min(N_det, max(1, ccik_fixed_propagate_keep))
+    count = min(min(N_det, psi_det_size), max(1, ccik_fixed_propagate_keep))
     allocate(abs_sorted(max(1, N_det)), idx(max(1, N_det)))
     dropped_sq = 0.d0
     do i = 1, N_det
@@ -120,6 +120,77 @@ BEGIN_PROVIDER [ integer, N_det_propagators ]
   end if
 END_PROVIDER
 
+BEGIN_PROVIDER [ integer, ccik_fixed_budget_propagator_idx, (psi_det_size) ]
+  implicit none
+  integer, allocatable :: idx(:)
+  integer :: i, j, nkeep, left, right, ii, jj, tmp_idx
+  double precision, allocatable :: abscoef(:)
+  double precision :: tmp_abs, tie_tol
+  character(len=32) :: compression_policy
+  logical :: fixed_budget_mode
+
+  ccik_fixed_budget_propagator_idx = 0
+  compression_policy = trim(adjustl(ccik_compression_policy))
+  if (len_trim(compression_policy) == 0) compression_policy = 'topk'
+  fixed_budget_mode = (compression_policy == 'fixed_budget')
+
+  if (.not. fixed_budget_mode) return
+  if (N_det <= 0 .or. N_det_propagators <= 0) return
+
+  allocate(abscoef(max(1, N_det)), idx(max(1, N_det)))
+  do i = 1, N_det
+    j = psi_det_working_sorted_order(i)
+    if (j <= 0 .or. j > N_det) then
+      write(*,'(A)') 'ccik error: invalid psi_det_working_sorted_order during fixed-budget propagator packing'
+      write(*,'(A,I10,A,I10,A,I10)') 'ccik error: i=', i, '  order=', j, '  N_det=', N_det
+      call flush(6)
+      stop 2
+    end if
+    abscoef(i) = dabs(psi_coef(j,1))
+    idx(i) = i
+  end do
+  if (N_det > 1) call dsort(abscoef, idx, N_det)
+
+  left = 1
+  do while (left <= N_det)
+    tie_tol = max(1.d-15, 1.d-12 * max(1.d0, dabs(abscoef(left))))
+    right = left
+    do while (right < N_det)
+      if (dabs(abscoef(right+1) - abscoef(left)) > tie_tol) exit
+      right = right + 1
+    end do
+    if (right > left) then
+      do ii = left + 1, right
+        tmp_idx = idx(ii)
+        tmp_abs = abscoef(ii)
+        jj = ii - 1
+        do while (jj >= left .and. idx(jj) > tmp_idx)
+          idx(jj+1) = idx(jj)
+          abscoef(jj+1) = abscoef(jj)
+          jj = jj - 1
+        end do
+        idx(jj+1) = tmp_idx
+        abscoef(jj+1) = tmp_abs
+      end do
+    end if
+    left = right + 1
+  end do
+
+  nkeep = min(N_det_propagators, N_det)
+  do i = 1, nkeep
+    j = psi_det_working_sorted_order(idx(N_det - nkeep + i))
+    if (j <= 0 .or. j > N_det) then
+      write(*,'(A)') 'ccik error: invalid selected propagator index during fixed-budget propagator packing'
+      write(*,'(A,I10,A,I10,A,I10)') 'ccik error: slot=', i, '  selected=', j, '  N_det=', N_det
+      call flush(6)
+      stop 2
+    end if
+    ccik_fixed_budget_propagator_idx(i) = j
+  end do
+
+  deallocate(abscoef, idx)
+END_PROVIDER
+
 BEGIN_PROVIDER [ integer(bit_kind), psi_det_propagators, (N_int,2,psi_det_size) ]
 &BEGIN_PROVIDER [ double precision, psi_coef_propagators, (psi_det_size,N_states) ]
   implicit none
@@ -138,47 +209,21 @@ BEGIN_PROVIDER [ integer(bit_kind), psi_det_propagators, (N_int,2,psi_det_size) 
 
   if (fixed_budget_mode) then
     if (N_det <= 0) return
-    allocate(abscoef(max(1, N_det)), idx(max(1, N_det)))
-    do i = 1, N_det
-      j = psi_det_working_sorted_order(i)
-      abscoef(i) = dabs(psi_coef(j,1))
-      idx(i) = i
-    end do
-    if (N_det > 1) call dsort(abscoef, idx, N_det)
-    left = 1
-    do while (left <= N_det)
-      tie_tol = max(1.d-15, 1.d-12 * max(1.d0, dabs(abscoef(left))))
-      right = left
-      do while (right < N_det)
-        if (dabs(abscoef(right+1) - abscoef(left)) > tie_tol) exit
-        right = right + 1
-      end do
-      if (right > left) then
-        do ii = left + 1, right
-          tmp_idx = idx(ii)
-          tmp_abs = abscoef(ii)
-          jj = ii - 1
-          do while (jj >= left .and. idx(jj) > tmp_idx)
-            idx(jj+1) = idx(jj)
-            abscoef(jj+1) = abscoef(jj)
-            jj = jj - 1
-          end do
-          idx(jj+1) = tmp_idx
-          abscoef(jj+1) = tmp_abs
-        end do
-      end if
-      left = right + 1
-    end do
     nkeep = min(N_det_propagators, N_det)
     do i = 1, nkeep
-      j = psi_det_working_sorted_order(idx(N_det - nkeep + i))
+      j = ccik_fixed_budget_propagator_idx(i)
+      if (j <= 0 .or. j > N_det) then
+        write(*,'(A)') 'ccik error: fixed-budget propagator packing produced an invalid source determinant index'
+        write(*,'(A,I10,A,I10,A,I10)') 'ccik error: slot=', i, '  source=', j, '  N_det=', N_det
+        call flush(6)
+        stop 2
+      end if
       do k = 1, N_int
         psi_det_propagators(k,1,i) = psi_det(k,1,j)
         psi_det_propagators(k,2,i) = psi_det(k,2,j)
       end do
       psi_coef_propagators(i,:) = psi_coef(j,:)
     end do
-    deallocate(abscoef, idx)
     return
   end if
 

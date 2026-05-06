@@ -43,6 +43,8 @@ class CCIKParams:
     fixed_store_keep: int = 65_536
     # Fixed-budget propagation cap used when compression_policy="fixed_budget".
     fixed_propagate_keep: int = 512
+    # Optional support-restricted reorthogonalization after fixed-budget storage compression.
+    secondortho: bool = False
     # Candidate discovery mode: connected_sd, selected_ci (default), stochastic, or full.
     candidate_mode: str = "selected_ci"
     # Projected Ritz policy for deterministic solvers: exact_on_basis or approximate.
@@ -98,6 +100,21 @@ class CCIKThickRestartParams:
     nroot: int = 3
     # Stop when successive restart energies differ by less than tol.
     tol: float = 1e-6
+    # Optional diagnostic cadence. When set to a positive integer, the Python
+    # thick-restart solver exact-diagonalizes the Hamiltonian on the union of
+    # determinants currently present in the Krylov basis every N cumulative new
+    # Krylov vectors. This does not alter restart seeds or the standard CCIK
+    # iteration path.
+    exactized_checkpoint_every: int | None = None
+    # Optional diagnostic refinement built on top of exactized checkpoints.
+    # When enabled, the lowest exactized eigenvector is used to pick the top
+    # parent determinants, one Hamiltonian shell is added from those parents,
+    # and the enlarged support is exact-diagonalized once more. This remains
+    # diagnostic-only and does not alter the live thick-restart basis.
+    exactizeplus_enabled: bool = False
+    # Number of largest-|c_i| parent determinants retained from the exactized
+    # lowest eigenvector before the one-shell support expansion.
+    exactizeplus_top_parents: int = 500
 
     # Legacy top-k knobs from baseline CCIK. These are only active when
     # compression_policy="topk".
@@ -109,6 +126,8 @@ class CCIKThickRestartParams:
     propagate_abs_tol: float = 0.0
     fixed_store_keep: int = 65_536
     fixed_propagate_keep: int = 512
+    # Optional support-restricted reorthogonalization after fixed-budget storage compression.
+    secondortho: bool = False
     candidate_mode: str = "selected_ci"
     projected_ritz_mode: str = "exact_on_basis"
     # Selector mode used to rank the projected H q_k, its orthogonal residual,
@@ -154,6 +173,8 @@ class CCIKStochasticParams:
     propagate_abs_tol: float = 0.0
     fixed_store_keep: int = 65_536
     fixed_propagate_keep: int = 512
+    # Optional support-restricted reorthogonalization after fixed-budget storage compression.
+    secondortho: bool = False
     # Candidate discovery mode: stochastic (default), connected_sd, selected_ci, or full.
     candidate_mode: str = "stochastic"
     # Selector mode used to rank the projected H q_k or its orthogonal residual.

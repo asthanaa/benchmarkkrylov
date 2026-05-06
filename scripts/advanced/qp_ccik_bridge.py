@@ -118,6 +118,9 @@ def _params_from_args(args: argparse.Namespace) -> dict[str, str]:
         "ccik_selector_mode",
         "ccik_matvec_backend",
         "ccik_compression_policy",
+        "ccik_fixed_store_keep",
+        "ccik_fixed_propagate_keep",
+        "ccik_secondortho",
         "ccik_store_abs_tol",
         "ccik_propagate_abs_tol",
         "ccik_nkeep",
@@ -135,6 +138,9 @@ def _params_from_args(args: argparse.Namespace) -> dict[str, str]:
         "ccik_restart_m_cycle",
         "ccik_restart_nroot",
         "ccik_verbose",
+        "ccik_debug_trace",
+        "ccik_debug_trace_topn",
+        "ccik_debug_allow_legacy_fixed_budget",
     ):
         val = getattr(args, name, None)
         if val is not None:
@@ -178,6 +184,9 @@ def make_parser() -> argparse.ArgumentParser:
     p_set.add_argument("--ccik-selector-mode", dest="ccik_selector_mode", default=None)
     p_set.add_argument("--ccik-matvec-backend", dest="ccik_matvec_backend", default=None)
     p_set.add_argument("--ccik-compression-policy", dest="ccik_compression_policy", choices=("topk", "threshold", "fixed_budget"), default=None)
+    p_set.add_argument("--ccik-fixed-store-keep", dest="ccik_fixed_store_keep", type=int, default=None)
+    p_set.add_argument("--ccik-fixed-propagate-keep", dest="ccik_fixed_propagate_keep", type=int, default=None)
+    p_set.add_argument("--ccik-secondortho", dest="ccik_secondortho", choices=("true", "false"), default=None)
     p_set.add_argument("--ccik-store-abs-tol", dest="ccik_store_abs_tol", type=float, default=None)
     p_set.add_argument("--ccik-propagate-abs-tol", dest="ccik_propagate_abs_tol", type=float, default=None)
     p_set.add_argument("--ccik-nkeep", dest="ccik_nkeep", type=int, default=None)
@@ -195,6 +204,14 @@ def make_parser() -> argparse.ArgumentParser:
     p_set.add_argument("--ccik-restart-m-cycle", dest="ccik_restart_m_cycle", type=int, default=None)
     p_set.add_argument("--ccik-restart-nroot", dest="ccik_restart_nroot", type=int, default=None)
     p_set.add_argument("--ccik-verbose", dest="ccik_verbose", choices=("true", "false"), default=None)
+    p_set.add_argument("--ccik-debug-trace", dest="ccik_debug_trace", choices=("true", "false"), default=None)
+    p_set.add_argument("--ccik-debug-trace-topn", dest="ccik_debug_trace_topn", type=int, default=None)
+    p_set.add_argument(
+        "--ccik-debug-allow-legacy-fixed-budget",
+        dest="ccik_debug_allow_legacy_fixed_budget",
+        choices=("true", "false"),
+        default=None,
+    )
 
     p_run = sub.add_parser("run", help="Run the ccik plugin on an EZFIO directory")
     p_run.add_argument("ezfio", help="Target EZFIO directory")

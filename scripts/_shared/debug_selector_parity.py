@@ -36,6 +36,7 @@ from ccik.pyscf_cas import CASSpec  # noqa: E402
 from ccik.reference_debug import trace_ccik_run_with_energy  # noqa: E402
 from n2_utils import make_n2_atom  # noqa: E402
 from qp_ccik_common import (  # noqa: E402
+    _with_qp_build_env,
     PreparedActiveSpace,
     QPPaths,
     bash,
@@ -732,7 +733,7 @@ def _generate_qp_fcidump(qp: QPPaths, ezfio: Path, outdir: Path, *, case_spec: D
                 text=True,
                 cwd=ezfio.parent,
                 capture_output=True,
-                env={**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(tmpdir)},
+                env=_with_qp_build_env({**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(tmpdir)}),
             )
             (outdir / "fcidump_stdout.log").write_text(run.stdout, encoding="utf-8")
             (outdir / "fcidump_stderr.log").write_text(run.stderr, encoding="utf-8")
@@ -820,14 +821,14 @@ def run_qp_trace(
             cwd=workdir,
             capture_output=True,
             timeout=timeout_s,
-            env={
+            env=_with_qp_build_env({
                 **os.environ,
                 "QP_ROOT": str(qp_root),
                 "TMPDIR": str(tmpdir),
                 "TMP": str(tmpdir),
                 "TEMP": str(tmpdir),
                 **qp_parallel_env(omp_threads),
-            },
+            }),
         )
         wall_time_s = time.perf_counter() - t0
         stdout_path.write_text(run.stdout, encoding="utf-8")

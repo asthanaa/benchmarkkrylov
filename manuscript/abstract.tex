@@ -1,0 +1,17 @@
+\begin{abstract}
+We present a compressed Krylov framework together with two practical algorithms
+for strongly correlated quantum many-body problems. In each Krylov step, the
+Hamiltonian acts on a compressed propagation vector, the resulting update is
+orthogonalized against the current Krylov basis, compressed under fixed
+propagation and storage budgets, and incorporated through a projected
+generalized eigenvalue problem in the resulting compressed, generally
+nonorthogonal Krylov space. A thick-restart variant preserves the accuracy of
+this budget-limited Krylov procedure by retaining several low-lying Ritz
+vectors between cycles, while a selected-configuration-interaction refinement
+built on the compressed Krylov support further reduces the resources required
+to reach highly accurate solutions. We demonstrate these algorithms for
+stretched N$_2$ and Cr$_2$ active spaces of up to 22 orbitals, and show that
+they recover the exact solution of the 49-qubit synthetic Hamiltonian used as
+a benchmark for quantum Krylov calculations in a regime where other selected
+configuration-interaction methods have limited reach.
+\end{abstract}

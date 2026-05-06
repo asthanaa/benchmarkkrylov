@@ -36,6 +36,7 @@ DEFAULT_TALON_OPENBLAS_LIB = Path(
     "/cm/shared/apps/spack/opt/spack/linux-rhel9-icelake/gcc-11.3.1/"
     "openblas-0.3.27-tjsex4shr6vfowj3tgp23jyvftvaxl2q/lib"
 )
+DEFAULT_QP_PORTABLE_MARCH = "x86-64-v3"
 
 
 def _prepend_env_path(env: dict[str, str], key: str, path: str) -> None:
@@ -57,6 +58,28 @@ def _with_qp_build_env(base_env: Mapping[str, str] | None = None) -> dict[str, s
         _prepend_env_path(env, "LD_LIBRARY_PATH", openblas_lib)
         _prepend_env_path(env, "LIBRARY_PATH", openblas_lib)
     return env
+
+
+def _qp_target_march() -> str:
+    override = str(os.environ.get("CKA_QP_TARGET_MARCH", "")).strip()
+    if override:
+        return override
+    return DEFAULT_QP_PORTABLE_MARCH
+
+
+def _patch_qp_build_ninja_arch(build_ninja: Path, *, target_march: str) -> dict[str, object]:
+    text = build_ninja.read_text()
+    replacement = f"-march={target_march}" if target_march else ""
+    updated = text.replace("-march=native", replacement)
+    changed = updated != text
+    if changed:
+        build_ninja.write_text(updated)
+    return {
+        "path": str(build_ninja),
+        "target_march": target_march,
+        "changed": changed,
+        "had_native_flag": "-march=native" in text,
+    }
 
 
 @dataclass(frozen=True)
@@ -99,6 +122,7 @@ class CCIKParams:
     ccik_compression_policy: str = "fixed_budget"
     ccik_fixed_store_keep: int = 65_536
     ccik_fixed_propagate_keep: int = 512
+    ccik_secondortho: bool = False
     ccik_store_abs_tol: float = 0.0
     ccik_propagate_abs_tol: float = 0.0
     ccik_nkeep: int = 2048
@@ -115,9 +139,17 @@ class CCIKParams:
     ccik_max_cycle: int = 1
     ccik_restart_m_cycle: int = 0
     ccik_restart_nroot: int = 2
+    ccik_exactized_checkpoint_every: int = 0
+    ccik_exactized_resid_tol: float = 1e-10
+    ccik_exactized_max_iter: int = 200
+    ccik_exactized_max_subspace: int = 24
+    ccik_exactized_restart_keep: int = 4
     ccik_reference_total_energy: float = 0.0
     ccik_print_iteration_error: bool = False
     ccik_verbose: bool = False
+    ccik_debug_trace: bool = False
+    ccik_debug_trace_topn: int = 8
+    ccik_debug_allow_legacy_fixed_budget: bool = False
 
 
 def fixed_budget_bridge_kwargs(
@@ -160,7 +192,7 @@ def bash(cmd: str, env: dict[str, str] | None = None) -> subprocess.CompletedPro
         check=True,
         text=True,
         capture_output=True,
-        env=env,
+        env=_with_qp_build_env(env),
     )
 
 
@@ -930,6 +962,16 @@ def rebuild_ccik_plugin(
             build_ninja = resolve_qp_build_ninja(qp)
             build_ninja_kind = "top_level"
 
+    portable_build_summary: list[dict[str, object]] = []
+    target_march = _qp_target_march()
+    seen_ninja_paths: set[Path] = set()
+    for ninja_path in (resolve_qp_build_ninja(qp), build_ninja):
+        ninja_path = ninja_path.resolve()
+        if ninja_path in seen_ninja_paths or not ninja_path.exists():
+            continue
+        seen_ninja_paths.add(ninja_path)
+        portable_build_summary.append(_patch_qp_build_ninja_arch(ninja_path, target_march=target_march))
+
     quoted_build_ninja = shlex.quote(str(build_ninja))
     run_cwd = plugin_dir if build_ninja_kind == "plugin_local" else qp.qp_root
     if build_ninja_kind == "plugin_local":
@@ -975,6 +1017,7 @@ def rebuild_ccik_plugin(
         "plugin_dir": str(plugin_dir),
         "build_ninja": str(build_ninja),
         "build_ninja_kind": build_ninja_kind,
+        "portable_build_summary": portable_build_summary,
         "install_summary": install_summary,
         "bootstrap_summary": bootstrap_summary,
         "command": cmd,
@@ -1188,6 +1231,7 @@ def ensure_ezfio_defaults(ezfio: Path, *, qp_root: Path | None = None) -> None:
         "ccik/ccik_compression_policy": "fixed_budget\n",
         "ccik/ccik_fixed_store_keep": "               65536\n",
         "ccik/ccik_fixed_propagate_keep": "                 512\n",
+        "ccik/ccik_secondortho": "F\n\n",
         "ccik/ccik_store_abs_tol": "   0.000000000000000E+00\n",
         "ccik/ccik_propagate_abs_tol": "   0.000000000000000E+00\n",
         "ccik/ccik_ritz_overlap_tol": "   1.000000000000000E-08\n",
@@ -1196,6 +1240,7 @@ def ensure_ezfio_defaults(ezfio: Path, *, qp_root: Path | None = None) -> None:
         "ccik/ccik_print_iteration_error": "F\n\n",
         "ccik/ccik_debug_trace": "F\n\n",
         "ccik/ccik_debug_trace_topn": "                   8\n",
+        "ccik/ccik_debug_allow_legacy_fixed_budget": "F\n\n",
         "ccik/ccik_save_final_wf": "T\n\n",
         "ccik/ccik_use_existing_wf": "F\n\n",
         "ccik/ccik_do_post_pt2": "F\n\n",
@@ -1271,6 +1316,25 @@ def ensure_ezfio_defaults(ezfio: Path, *, qp_root: Path | None = None) -> None:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(source.read_bytes())
 
+    ensure_ezfio_workdir(ezfio)
+
+
+def ensure_ezfio_workdir(ezfio: Path) -> None:
+    work_dir = ezfio / "work"
+    work_dir.mkdir(parents=True, exist_ok=True)
+
+    work_version = work_dir / ".version"
+    if not work_version.exists():
+        root_version = ezfio / ".version"
+        if root_version.exists():
+            work_version.write_bytes(root_version.read_bytes())
+        else:
+            work_version.write_text("2.0.7\n", encoding="ascii")
+
+    work_empty = work_dir / "empty"
+    if not work_empty.exists():
+        work_empty.write_text("F\n", encoding="ascii")
+
 
 def ezfio_scalar_text(value: object) -> str:
     if isinstance(value, bool):
@@ -1340,6 +1404,7 @@ PARAM_ORDER = (
     "ccik_compression_policy",
     "ccik_fixed_store_keep",
     "ccik_fixed_propagate_keep",
+    "ccik_secondortho",
     "ccik_store_abs_tol",
     "ccik_propagate_abs_tol",
     "ccik_nkeep",
@@ -1356,9 +1421,17 @@ PARAM_ORDER = (
     "ccik_max_cycle",
     "ccik_restart_m_cycle",
     "ccik_restart_nroot",
+    "ccik_exactized_checkpoint_every",
+    "ccik_exactized_resid_tol",
+    "ccik_exactized_max_iter",
+    "ccik_exactized_max_subspace",
+    "ccik_exactized_restart_keep",
     "ccik_reference_total_energy",
     "ccik_print_iteration_error",
     "ccik_verbose",
+    "ccik_debug_trace",
+    "ccik_debug_trace_topn",
+    "ccik_debug_allow_legacy_fixed_budget",
 )
 
 
