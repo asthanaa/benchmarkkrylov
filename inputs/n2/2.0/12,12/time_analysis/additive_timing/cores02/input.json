@@ -1,0 +1,79 @@
+{
+  "name": "n2_cas12_12_additive_time_analysis_cores02",
+  "label": "N2 CAS(12,12) R=2.00 A | QP thick fixed-budget | additive timing | Kprop=500 Kstore=10000 | cores=2 | ncycles=3",
+  "molecule": {
+    "distance_ang": 2.0,
+    "basis": "6-31g",
+    "unit": "Angstrom",
+    "charge": 0,
+    "spin": 0,
+    "verbose": 0
+  },
+  "cas": {
+    "ncas": 12,
+    "nelecas": 12,
+    "ncore": 1
+  },
+  "study": {
+    "max_cumulative_iterations": 86,
+    "plot_max_cumulative_iterations": 86,
+    "stop_abs_delta_mHa": null,
+    "error_unit": "mHa",
+    "plot_yscale": "log",
+    "omp_threads": 2,
+    "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+    "reference_mode": "exact_fci"
+  },
+  "runs": [
+    {
+      "name": "baseline_kprop500_kstore10000_m031",
+      "label": "baseline | Kprop=500 Kstore=10000 | m=31 nroot=3 ncycles=3 | cores=2",
+      "solver": {
+        "backend": "qp",
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 3,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 10000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "secondortho": false,
+          "verbose": true,
+          "debug_trace": false,
+          "save_final_wf": false
+        }
+      }
+    },
+    {
+      "name": "secondortho_kprop500_kstore10000_m031",
+      "label": "secondortho | Kprop=500 Kstore=10000 | m=31 nroot=3 ncycles=3 | cores=2",
+      "solver": {
+        "backend": "qp",
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 3,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 10000,
+          "fixed_propagate_keep": 500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "secondortho": true,
+          "verbose": true,
+          "debug_trace": false,
+          "save_final_wf": false
+        }
+      }
+    }
+  ]
+}
