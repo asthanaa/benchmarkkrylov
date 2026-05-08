@@ -1,0 +1,9 @@
+{
+  "label": "Kprop=512 Kstore=65536",
+  "cum_new_krylov": 178,
+  "cycle": 8,
+  "basis_size": 25,
+  "total_energy_eh": -108.981241500762,
+  "delta_mHa": -8e-05,
+  "abs_delta_mHa": 8e-05
+}

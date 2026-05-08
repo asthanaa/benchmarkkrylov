@@ -1,0 +1,299 @@
+How the result in ccik_high_accuracy_refinement.png was obtained
+================================================================
+
+Folder
+------
+/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare
+
+Main output described here
+--------------------------
+- Plot:
+  ccik_high_accuracy_refinement.png
+- PDF:
+  ccik_high_accuracy_refinement.pdf
+- Stage data:
+  data/high_accuracy_refinement.csv
+- Budget note:
+  data/high_accuracy_budget_plan.json
+- Exact-reference metadata:
+  exact_reference.json
+
+
+1. Problem instance
+-------------------
+This result was produced for the public 49-qubit guided sparse ground-state
+problem from arXiv:2603.03496.
+
+Public inputs used:
+- raw/49Q_v1_hamiltonian.npy
+- raw/49Q_v1_initial_state_index.npy
+
+Important instance facts from exact_reference.json:
+- n_qubits = 49
+- n_pauli_terms = 419
+- public_initial_state_index = 520067465026659
+- recovered exact reference energy = -85.58662506613156 Eh
+
+
+2. Exact reference used for the error axis
+------------------------------------------
+The local public Pauli Hamiltonian appears to omit a global identity shift
+relative to the paper’s construction.
+
+Because of that, the exact-energy reference for all local CCIK numbers in this
+folder was not taken directly from the raw public Hamiltonian.
+
+Instead, the exact reference was recovered as follows:
+- Use the paper’s known local row-0 diagonal construction for the public
+  initial state.
+- Match that to the public initial-state diagonal energy from the downloaded
+  Pauli list.
+- Infer the missing global identity shift.
+- Add that shift back to recover the exact public-instance ground energy.
+
+This is recorded in exact_reference.json as:
+- method = paper_construction_plus_public_identity_shift_recovery
+- recovered_dropped_identity_shift = 85.58662506613156
+- exact_energy = -85.58662506613156
+
+
+3. Where the baseline CCIK setting came from
+--------------------------------------------
+The high-accuracy refinement did not start from an arbitrary restart run.
+
+It started from the best strict-restart D = 17 local CCIK setting found in the
+targeted restart scan:
+- data/targeted_restart_scan.csv
+
+The winning baseline row used for refinement was:
+- mode = strict_restart
+- krylov_dimension = 17
+- kprop = 1000
+- kstore = 1000
+- nroot = 5
+- ncycles = 16
+- largest_projected_subspace_dimension = 2051
+- baseline variational energy = -85.38881014040072
+- baseline absolute error = 1.978149257308388e-01
+
+This is the same configuration hard-coded in high_accuracy_refinement.py:
+- BASELINE_CONFIG["krylov_dimension"] = 17
+- BASELINE_CONFIG["kprop"] = 1000
+- BASELINE_CONFIG["kstore"] = 1000
+- BASELINE_CONFIG["nroot"] = 5
+- BASELINE_CONFIG["ncycles"] = 16
+
+
+4. What "exactize" means here
+-----------------------------
+"Exactize" does NOT mean diagonalizing the full 49-qubit Hilbert space.
+
+It means:
+- take the determinant/configuration pool discovered by the sparse CCIK run,
+- build the Hamiltonian exactly inside that discovered pool only,
+- diagonalize that restricted Hamiltonian exactly,
+- and keep the lowest eigenpair in that restricted subspace.
+
+In code this is handled by:
+- collect_pool(...)
+- exactize_sparse(...)
+- grow_from_top(...)
+in high_accuracy_refinement.py
+
+
+5. Stage A: collect a sparse pool with strict-restart CCIK
+---------------------------------------------------------
+Script:
+- high_accuracy_refinement.py
+
+The sparse discovery stage works like this:
+- start from the single public guiding state
+- run strict-restart CCIK with
+  - dimension = 17
+  - Kprop = 1000
+  - Kstore = 1000
+  - nroot = 5
+  - ncycles = 16
+- in every cycle:
+  - build up to 17 Krylov vectors
+  - apply H to the latest vector
+  - compress the propagated vector to at most 1000 coefficients
+  - orthogonalize against the current basis
+  - solve the projected Ritz problem
+  - keep the lowest 5 Ritz vectors as restart seeds
+  - compress each retained restart vector to at most 1000 coefficients
+- record the union of every determinant/configuration that appears during this
+  process
+
+Output of this stage:
+- pool size = 8522
+- variational energy = -85.38881014040072
+- absolute error = 1.978149257308388e-01
+
+This is the first row in data/high_accuracy_refinement.csv:
+- baseline_variational,8522,-85.38881014040072,0.1978149257308388
+
+
+6. Stage B: exactize the discovered pool
+----------------------------------------
+Next, the 8522 discovered configurations were exactized.
+
+Mechanically:
+- build the restricted Hamiltonian H restricted to the 8522 discovered states
+- solve the lowest eigenvalue with scipy.sparse.linalg.eigsh
+
+Output:
+- pool size = 8522
+- Hamiltonian nnz = 122356
+- exactized energy = -85.4604587659041
+- absolute error = 1.2616630022746733e-01
+
+This is:
+- exactized_pool0 in data/high_accuracy_refinement.csv
+
+So the first exactization step alone improved the baseline error from:
+- 1.978149257308388e-01
+to
+- 1.2616630022746733e-01
+
+
+7. Stage C: first Hamiltonian-shell expansion + exactization
+------------------------------------------------------------
+The next step was to enlarge the restricted pool, but in a controlled way.
+
+Rule used:
+- take the current exactized lowest eigenvector
+- rank its coefficients by absolute value
+- keep the top 512 states by |c_i|
+- for each of those 512 states, add every state reachable by one Hamiltonian
+  application
+- take the union of the old pool and these connected states
+- exactize again in the enlarged pool
+
+In the code:
+- REFINE_TOPN = 512
+- grow_from_top(pool0, vec0, terms, topn=512)
+
+Output:
+- new pool size = 74539
+- Hamiltonian nnz = 1582703
+- exactized energy = -85.57662506986449
+- absolute error = 9.999996267069378e-03
+
+This is:
+- exactized_pool1 in data/high_accuracy_refinement.csv
+
+
+8. Stage D: second Hamiltonian-shell expansion + exactization
+-------------------------------------------------------------
+The same expansion rule was applied one more time:
+- take the exactized lowest vector from the 74539-state pool
+- keep the top 512 states by |c_i|
+- add all one-Hamiltonian-step connected states
+- exactize in the enlarged pool
+
+Output:
+- new pool size = 130013
+- Hamiltonian nnz = 2803107
+- exactized energy = -85.586625069864
+- absolute error = 3.732438358383661e-09
+
+This is:
+- exactized_pool2 in data/high_accuracy_refinement.csv
+
+This final stage is the source of the sub-1e-5 and sub-1e-4 result.
+
+
+9. Determinant budget interpretation
+------------------------------------
+The user requested a total determinant budget of 10^7.
+
+The bookkeeping used in this folder was:
+- total determinant budget = 10,000,000
+- nroot = 5
+- if that full budget were to be interpreted as a restart-store budget, the
+  corresponding per-root cap would be:
+  10,000,000 / 5 = 2,000,000
+
+This is recorded in data/high_accuracy_budget_plan.json as:
+- total_determinant_budget = 10000000
+- planned_kstore_per_root = 2000000
+
+What actually happened is much cheaper:
+- final converged exactized pool size = 130013
+- this is only about 1.3001% of the requested 10^7 allowance
+
+
+10. Final numbers
+-----------------
+Reference:
+- exact energy = -85.58662506613156
+
+Final refined solution:
+- energy = -85.586625069864
+- absolute error = 3.732438358383661e-09
+
+Stage-by-stage summary:
+- baseline_variational:
+  pool = 8522
+  energy = -85.38881014040072
+  error = 1.978149257308388e-01
+
+- exactized_pool0:
+  pool = 8522
+  energy = -85.4604587659041
+  error = 1.2616630022746733e-01
+
+- exactized_pool1:
+  pool = 74539
+  energy = -85.57662506986449
+  error = 9.999996267069378e-03
+
+- exactized_pool2:
+  pool = 130013
+  energy = -85.586625069864
+  error = 3.732438358383661e-09
+
+
+11. What the plotted figure shows
+---------------------------------
+The current ccik_high_accuracy_refinement.png overlays:
+- the local CCIK-guided refinement stages above
+- the paper experimental SKQD points from data/paper_experimental_skqd.csv
+
+One plotting detail:
+- the paper figure contains digitized zero-error endpoints
+- because the local plot uses a log-scale error axis, those zero-error points
+  are displayed as near-zero markers at the plot floor
+
+
+12. Reproducibility commands
+----------------------------
+From this folder:
+
+1. Rebuild the benchmark assets / public reference / targeted comparison:
+   python run_benchmark.py --fetch-paper-data --recover-reference --targeted-report
+
+2. Reproduce the high-accuracy refinement:
+   python high_accuracy_refinement.py
+
+The second command is the one that directly generates:
+- data/high_accuracy_refinement.csv
+- data/high_accuracy_budget_plan.json
+- ccik_high_accuracy_refinement.png
+- ccik_high_accuracy_refinement.pdf
+- SUMMARY_high_accuracy.md
+
+
+13. Short interpretation
+------------------------
+This result was NOT obtained by a huge plain CCIK run with Kstore near 10^7.
+
+It was obtained by:
+- a relatively compact strict-restart sparse CCIK discovery run
+  (D = 17, Kprop = 1000, Kstore = 1000, nroot = 5, ncycles = 16),
+- followed by exact diagonalization in the discovered sparse support,
+- followed by two controlled Hamiltonian-shell expansions driven by the top 512
+  amplitudes of the exactized vector.
+
+That combination is what produced the 3.73e-09 final absolute error.

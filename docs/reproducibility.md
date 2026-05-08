@@ -46,20 +46,16 @@ source /path/to/quantum_package.rc
 python scripts/advanced/qp_ccik_bridge.py rebuild-plugin
 ```
 
-7. Launch a representative `N2` QP study:
+7. Launch the tracked `N2` CAS(10e,10o) and CAS(12e,12o) teaching sample:
 
 ```bash
-python scripts/advanced/n2_thick_iteration_study.py \
-  --input inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+python sample_inputs/n2_error_iterations/run_n2_error_plots.py
 ```
 
-8. Open the generated plots:
+8. Open the combined CCIK/CKCI-0 plot:
 
 ```bash
-CASE=inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3
-open "$CASE/energy_error_vs_iteration_comparison.png"
-open "$CASE/k0500_s050000/energy_error_vs_iteration.png"
-open "$CASE/k1000_s100000/energy_error_vs_iteration.png"
+open sample_inputs/n2_error_iterations/plots/n2_error_vs_iteration_k1000_s050000.png
 ```
 
 ## What runs where
@@ -149,36 +145,32 @@ python scripts/advanced/qp_ccik_bridge.py rebuild-plugin
 
 ## Representative QP study
 
-The active `inputs/` tree keeps only study definitions in version control.
-Generated logs, live plots, and runtime folders are local-only.
+The public teaching samples live under `sample_inputs/`. Generated logs, live
+plots, runtime folders, and trace files are local-only.
 
 Example:
 
 ```bash
-python scripts/advanced/n2_thick_iteration_study.py \
-  --input inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3/input.json
+python sample_inputs/n2_error_iterations/run_n2_error_plots.py
 ```
 
-Open the corresponding plots with:
+Open the combined CCIK/CKCI-0 plot with:
 
 ```bash
-CASE=inputs/n2/2.0/n2_cas14_14_R2p00_restart_after50_c11_r3
-open "$CASE/energy_error_vs_iteration_comparison.png"
-open "$CASE/k0500_s050000/energy_error_vs_iteration.png"
-open "$CASE/k1000_s100000/energy_error_vs_iteration.png"
+open sample_inputs/n2_error_iterations/plots/n2_error_vs_iteration_k1000_s050000.png
 ```
 
-That case demonstrates the restart-after-50 setup:
+The tracked sample inputs are:
 
-- `m_cycle = 51`
-- `nroot = 3`
+- `sample_inputs/n2_error_iterations/cases/n2_cas10_10_k1000_s050000/input.json`
+- `sample_inputs/n2_error_iterations/cases/n2_cas12_12_k1000_s050000/input.json`
 
-Cycle 1 starts from one seed vector, so `m_cycle = 51` means the first restart
-happens after `51 - 1 = 50` newly generated Krylov vectors.
+Both use `Kprop = 1000`, `Kstore = 50000`, and CKCI-0 checkpoints every 10
+cumulative new Krylov vectors.
 
 ## Large-case input policy
 
-For the tracked `N2` studies, the default run pair is:
+For tracked `inputs/` studies, the historical large-case default run pair is:
 
 - `Kprop = 500`
 - `Kstore = 50000`
@@ -192,3 +184,21 @@ The exception is `CAS(14e,16o)`, which keeps a single fixed-budget line:
 
 This keeps large-case studies cheap enough to reproduce while still matching
 the current benchmark/debug workflow.
+
+## Syncing Talon Results
+
+Use the helper from the checkout you want to update:
+
+```bash
+bash scripts/advanced/sync_talon_inputs_to_local.sh
+```
+
+The default mode copies shareable result files under `inputs/`: JSON summaries,
+CSV traces, plots, logs, text notes, TOML files, shell launchers, and captions.
+It skips nested `.git/` directories, archives, `.ezfio/work/` runtime tensors,
+and anything over 500 MB. To copy every non-excluded file under the 500 MB cap,
+set:
+
+```bash
+SYNC_ALL_UNDER_LIMIT=1 bash scripts/advanced/sync_talon_inputs_to_local.sh
+```

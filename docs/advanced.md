@@ -51,13 +51,20 @@ transfer story are summarized in [fixed_budget_results.md](fixed_budget_results.
 
 ## Study inputs
 
-Tracked `inputs/` folders are source definitions, not artifact dumps.
+Tracked `sample_inputs/` folders are source definitions, not artifact dumps.
 
 - keep `input.json`
+- keep wrapper scripts that produce teaching plots
 - keep the case folder names stable
-- treat generated plots, traces, logs, and `system_setup/` as local runtime
+- treat generated plots, traces, logs, and runtime setup folders as local
   output
 
-For `CAS(14,14)` and larger, the tracked study definitions now keep only the
-`Kprop=500`, `Kstore=50000` line by default unless a new sweep is being added
-intentionally.
+The `inputs/` tree tracks Talon study inputs and shareable result files such
+as JSON summaries, CSV traces, plots, logs, and captions. Raw `.ezfio/work/`
+runtime tensors and oversized archives stay local.
+
+Before committing a large result sync, check the file-size guard:
+
+```bash
+python scripts/check_large_files.py inputs --max-mb 500
+```

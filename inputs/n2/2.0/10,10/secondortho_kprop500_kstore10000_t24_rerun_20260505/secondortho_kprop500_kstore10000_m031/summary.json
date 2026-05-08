@@ -1,0 +1,269 @@
+{
+  "backend": "qp",
+  "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+  "omp_threads": 24,
+  "run_name": "secondortho_kprop500_kstore10000_m031",
+  "run_label": "secondortho | Kprop=500 Kstore=10000 | m=31 nroot=3 ncycles=10",
+  "reference_mode": "exact_fci",
+  "reference_kind": "exact_fci",
+  "reference_label": "Exact FCI",
+  "reference_total_energy_eh": -108.76088354609567,
+  "final_total_energy_eh": -108.760883529964,
+  "final_delta_mHa": 1.6131664892782283e-05,
+  "final_abs_delta_mHa": 1.6131664892782283e-05,
+  "first_logged_abs_delta_mHa": 451.282901,
+  "plotted_final_total_energy_eh": -108.760883546832,
+  "plotted_final_abs_delta_mHa": 1e-06,
+  "plotted_iterations": 100,
+  "trace_points": 104,
+  "exactized_trace_points": 0,
+  "below_fci_detected": true,
+  "below_reference_points": [
+    {
+      "cycle": 2,
+      "cum_new_krylov": 37,
+      "total_energy_eh": -108.760883567293,
+      "delta_mHa": -2.1e-05,
+      "abs_delta_mHa": 2.1e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 38,
+      "total_energy_eh": -108.76088357411,
+      "delta_mHa": -2.8e-05,
+      "abs_delta_mHa": 2.8e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 39,
+      "total_energy_eh": -108.760883575345,
+      "delta_mHa": -2.9e-05,
+      "abs_delta_mHa": 2.9e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 40,
+      "total_energy_eh": -108.760883587093,
+      "delta_mHa": -4.1e-05,
+      "abs_delta_mHa": 4.1e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 41,
+      "total_energy_eh": -108.760883591321,
+      "delta_mHa": -4.5e-05,
+      "abs_delta_mHa": 4.5e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 42,
+      "total_energy_eh": -108.760883591658,
+      "delta_mHa": -4.6e-05,
+      "abs_delta_mHa": 4.6e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 43,
+      "total_energy_eh": -108.760883594936,
+      "delta_mHa": -4.9e-05,
+      "abs_delta_mHa": 4.9e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 44,
+      "total_energy_eh": -108.760883597261,
+      "delta_mHa": -5.1e-05,
+      "abs_delta_mHa": 5.1e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 45,
+      "total_energy_eh": -108.76088360163,
+      "delta_mHa": -5.6e-05,
+      "abs_delta_mHa": 5.6e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 46,
+      "total_energy_eh": -108.760883602435,
+      "delta_mHa": -5.6e-05,
+      "abs_delta_mHa": 5.6e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 47,
+      "total_energy_eh": -108.760883604166,
+      "delta_mHa": -5.8e-05,
+      "abs_delta_mHa": 5.8e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 48,
+      "total_energy_eh": -108.760883606321,
+      "delta_mHa": -6e-05,
+      "abs_delta_mHa": 6e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 49,
+      "total_energy_eh": -108.760883606534,
+      "delta_mHa": -6e-05,
+      "abs_delta_mHa": 6e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 50,
+      "total_energy_eh": -108.760883607602,
+      "delta_mHa": -6.2e-05,
+      "abs_delta_mHa": 6.2e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 51,
+      "total_energy_eh": -108.760883607802,
+      "delta_mHa": -6.2e-05,
+      "abs_delta_mHa": 6.2e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 52,
+      "total_energy_eh": -108.760883607908,
+      "delta_mHa": -6.2e-05,
+      "abs_delta_mHa": 6.2e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 53,
+      "total_energy_eh": -108.760883608333,
+      "delta_mHa": -6.2e-05,
+      "abs_delta_mHa": 6.2e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 54,
+      "total_energy_eh": -108.760883608406,
+      "delta_mHa": -6.2e-05,
+      "abs_delta_mHa": 6.2e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 55,
+      "total_energy_eh": -108.760883608484,
+      "delta_mHa": -6.2e-05,
+      "abs_delta_mHa": 6.2e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 56,
+      "total_energy_eh": -108.760883608708,
+      "delta_mHa": -6.3e-05,
+      "abs_delta_mHa": 6.3e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 57,
+      "total_energy_eh": -108.760883608715,
+      "delta_mHa": -6.3e-05,
+      "abs_delta_mHa": 6.3e-05
+    },
+    {
+      "cycle": 2,
+      "cum_new_krylov": 58,
+      "total_energy_eh": -108.760883608911,
+      "delta_mHa": -6.3e-05,
+      "abs_delta_mHa": 6.3e-05
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 93,
+      "total_energy_eh": -108.760883546722,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 94,
+      "total_energy_eh": -108.760883546724,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 95,
+      "total_energy_eh": -108.760883546733,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 96,
+      "total_energy_eh": -108.760883546809,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 97,
+      "total_energy_eh": -108.76088354681,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 98,
+      "total_energy_eh": -108.76088354683,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 99,
+      "total_energy_eh": -108.76088354683,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    },
+    {
+      "cycle": 4,
+      "cum_new_krylov": 100,
+      "total_energy_eh": -108.760883546832,
+      "delta_mHa": -1e-06,
+      "abs_delta_mHa": 1e-06
+    }
+  ],
+  "best_below_reference_total_energy_eh": -108.760883608911,
+  "min_signed_delta_mHa": -6.3e-05,
+  "improves_over_first_point": true,
+  "chemical_accuracy_target_mHa": 1.0,
+  "standard_reached_chemical_accuracy": true,
+  "standard_first_chemical_accuracy_iteration": 14,
+  "exactized_reached_chemical_accuracy": false,
+  "exactized_first_chemical_accuracy_iteration": null,
+  "exactized_first_chemical_accuracy_support_union_size": null,
+  "best_exactized_total_energy_eh": null,
+  "best_exactized_abs_delta_mHa": null,
+  "early_stop_target_abs_delta_mHa": null,
+  "early_stop_reached": false,
+  "exactized_total_checkpoint_wall_s": 0.0,
+  "exactized_total_support_build_s": 0.0,
+  "exactized_total_prep_s": 0.0,
+  "exactized_total_solve_s": 0.0,
+  "exactized_total_checkpoint_cpu_s": 0.0,
+  "exactized_total_matvec_count": 0,
+  "exactized_mean_checkpoint_wall_s": null,
+  "exactized_mean_support_build_s": null,
+  "exactized_mean_prep_s": null,
+  "exactized_mean_solve_s": null,
+  "threshold_hit_iteration": null,
+  "threshold_hit_elapsed_s": null,
+  "wall_s": 291.37021000499954,
+  "returncode": 0,
+  "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/energy_error_vs_iteration.png",
+  "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/energy_error_vs_iteration.pdf",
+  "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/iteration_trace.csv",
+  "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/iteration_trace.json",
+  "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/ccik_stdout.log",
+  "stderr_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/ccik_stderr.log",
+  "runtime_ezfio": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/secondortho_kprop500_kstore10000_m031/runtime/n2.ezfio",
+  "runtime_source_ezfio": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24_rerun_20260505/system_setup/n2.ezfio",
+  "restart_from_run": null
+}

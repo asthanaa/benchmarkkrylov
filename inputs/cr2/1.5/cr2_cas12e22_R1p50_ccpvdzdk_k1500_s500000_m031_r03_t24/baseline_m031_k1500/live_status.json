@@ -1,0 +1,16 @@
+{
+  "label": "Baseline m=31 fresh relaunch | Kprop=1500 Kstore=500000",
+  "cum_new_krylov": 17,
+  "cycle": 1,
+  "basis_size": 18,
+  "support_union_size": null,
+  "total_energy_eh": -2081.184303596854,
+  "delta_mHa": 11.807322046024638,
+  "abs_delta_mHa": 11.807322046024638,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null,
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}

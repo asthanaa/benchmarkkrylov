@@ -1,0 +1,45 @@
+{
+  "generated_at_utc": "2026-04-29T20:28:27+00:00",
+  "target_error": 1e-08,
+  "max_iterations": 30,
+  "max_pool_size_safety_cap": 300000,
+  "cipsi_epsilon_range": [
+    0.0001,
+    9.999999999999999e-18
+  ],
+  "hci_epsilon_range": [
+    9.999999999999999e-06,
+    1e-20
+  ],
+  "epsilon_count_per_method": 31,
+  "run_count": 62,
+  "best_threshold_points": {
+    "cipsi": {
+      "epsilon": 2.5118864315095823e-07,
+      "run_label": "cipsi_eps2.512e-07",
+      "determinant_count": 18027,
+      "iteration": 21,
+      "energy": -85.57662506986493,
+      "absolute_error": 0.009999996266628841
+    },
+    "hci": {
+      "epsilon": 3.162277660168379e-08,
+      "run_label": "hci_eps3.162e-08",
+      "determinant_count": 202383,
+      "iteration": 16,
+      "energy": -85.576625069865,
+      "absolute_error": 0.009999996266557787
+    }
+  },
+  "best_ckci_n": {
+    "stage_label": "exactized_pool2",
+    "determinant_count": 37483,
+    "energy": -85.58662506986425,
+    "absolute_error": 3.732694153768534e-09
+  },
+  "iteration_csv": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_threshold_comparison/data/threshold_iteration_trace.csv",
+  "run_summary_csv": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_threshold_comparison/data/threshold_run_summary.csv",
+  "envelope_csv": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_threshold_comparison/data/threshold_envelope.csv",
+  "output_pdf": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_threshold_comparison/pub/skqd_ckci_hci_cipsi_threshold_comparison.pdf",
+  "output_png": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_threshold_comparison/pub/skqd_ckci_hci_cipsi_threshold_comparison.png"
+}

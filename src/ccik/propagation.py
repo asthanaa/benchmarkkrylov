@@ -378,6 +378,57 @@ def _max_basis_overlap(vec: SparseCIVector, basis: list[SparseCIVector]) -> floa
     return max(abs(inner_sparse(vec, q)) for q in basis)
 
 
+def _secondortho_enabled(params: Any) -> bool:
+    return bool(getattr(params, "secondortho", False))
+
+
+def _support_restricted_second_orthogonalize(
+    vec: SparseCIVector,
+    basis: list[SparseCIVector],
+    params: Any,
+) -> SparseCIVector:
+    """Reorthogonalize after Kstore compression without changing the support."""
+
+    support = set(vec.coeffs)
+    if not support or not basis:
+        return vec.copy()
+
+    orth_tol = max(0.0, float(getattr(params, "orth_tol", 1e-12)))
+    norm_floor_sq = max(1.0e-30, orth_tol * orth_tol)
+    projected_basis = [
+        projected
+        for q in basis
+        if (projected := project_sparse_to_support(q, support)).coeffs and sparse_norm_sq(projected) > norm_floor_sq
+    ]
+    if not projected_basis:
+        return vec.copy()
+
+    m = len(projected_basis)
+    gram = np.empty((m, m), dtype=float)
+    rhs = np.empty(m, dtype=float)
+    for i, qi in enumerate(projected_basis):
+        rhs[i] = inner_sparse(qi, vec)
+        for j in range(i, m):
+            val = inner_sparse(qi, projected_basis[j])
+            gram[i, j] = val
+            gram[j, i] = val
+
+    evals, evecs = np.linalg.eigh(0.5 * (gram + gram.T))
+    max_eval = float(np.max(evals)) if evals.size else 0.0
+    cutoff = max(1.0e-14, orth_tol * max(1.0, abs(max_eval)))
+    keep = evals > cutoff
+    if not bool(np.any(keep)):
+        return vec.copy()
+
+    rhs_eig = evecs[:, keep].T @ rhs
+    coeffs = evecs[:, keep] @ (rhs_eig / evals[keep])
+    out = vec.copy()
+    for coeff, projected in zip(coeffs, projected_basis, strict=False):
+        if abs(float(coeff)) > 0.0:
+            out = add_scaled_sparse(out, -float(coeff), projected)
+    return project_sparse_to_support(out, support)
+
+
 def _analyze_fixed_budget_pt2_residual(
     *,
     qk: SparseCIVector,
@@ -570,6 +621,18 @@ def analyze_krylov_step(
             discarded_weight = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
             v_temp = compressed.copy()
             store_dropped_norm = discarded_weight
+            if _secondortho_enabled(params):
+                compressed = _support_restricted_second_orthogonalize(compressed, basis, params)
+                q_probe = normalize_sparse(compressed)
+                propagate_scores = _pt2_score_map(
+                    vec=q_probe,
+                    hdiag=ws.hdiag,
+                    energy=float(selector_reference_energy),
+                    eps_denom=float(getattr(params, "eps_denom", 1e-12)),
+                )
+                propagation_score_support = _topk_score_keys(propagate_scores, _fixed_budget_propagate_keep(params))
+                if not propagation_score_support:
+                    propagation_score_support = topk_abs_keys_sparse(q_probe, _fixed_budget_propagate_keep(params))
             q_next = normalize_sparse(compressed)
         else:
             (
@@ -599,6 +662,8 @@ def analyze_krylov_step(
             v_temp = ws.v_proj.copy()
             store_dropped_norm = float(np.sqrt(max(sparse_norm_sq(orth_residual) - sparse_norm_sq(compressed), 0.0)))
             storage_score_mode = "orth_residual_topk"
+            if _secondortho_enabled(params):
+                compressed = _support_restricted_second_orthogonalize(compressed, basis, params)
             q_next = normalize_sparse(compressed)
     else:
         if used_selector == "pt2_legacy":

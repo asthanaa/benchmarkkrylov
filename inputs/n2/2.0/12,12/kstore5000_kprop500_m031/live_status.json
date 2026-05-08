@@ -1,0 +1,16 @@
+{
+  "label": "Kstore=5000 Kprop=500 | m=31 nroot=3 ncycles=10",
+  "cum_new_krylov": 50,
+  "cycle": 2,
+  "basis_size": 23,
+  "support_union_size": null,
+  "total_energy_eh": -108.77102048839,
+  "delta_mHa": 4.968105,
+  "abs_delta_mHa": 4.968105,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null,
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}

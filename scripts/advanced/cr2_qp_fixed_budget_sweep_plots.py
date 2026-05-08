@@ -361,6 +361,13 @@ from ezfio import ezfio
 
 payload = json.loads(Path(r"{payload_path}").read_text())
 ezfio.set_file(r"{ezfio}")
+ao_power = [list(col) for col in zip(*payload["ao_power"])]
+ao_coef = [list(col) for col in zip(*payload["ao_coef"])]
+ao_expo = [list(col) for col in zip(*payload["ao_expo"])]
+# EZFIO stores the MO coefficient table in (MO, AO) order, whereas PySCF
+# exposes it in (AO, MO) order. Writing the PySCF matrix directly transposes
+# the orbital transformation and produces a catastrophically wrong Hamiltonian.
+mo_coef = [list(col) for col in zip(*payload["mo_coef"])]
 ezfio.set_nuclei_nucl_num(int(payload["nucl_num"]))
 ezfio.set_nuclei_nucl_charge([float(x) for x in payload["nucl_charge"]])
 ezfio.set_nuclei_nucl_label([str(x) for x in payload["nucl_label"]])
@@ -386,9 +393,9 @@ ezfio.set_ao_basis_ao_num(int(payload["ao_num"]))
 ezfio.set_ao_basis_ao_basis(str(payload["ao_basis_name"]))
 ezfio.set_ao_basis_ao_prim_num([int(x) for x in payload["ao_prim_num"]])
 ezfio.set_ao_basis_ao_nucl([int(x) for x in payload["ao_nucl"]])
-ezfio.set_ao_basis_ao_power([[int(v) for v in row] for row in payload["ao_power"]])
-ezfio.set_ao_basis_ao_coef([[float(v) for v in row] for row in payload["ao_coef"]])
-ezfio.set_ao_basis_ao_expo([[float(v) for v in row] for row in payload["ao_expo"]])
+ezfio.set_ao_basis_ao_power([[int(v) for v in row] for row in ao_power])
+ezfio.set_ao_basis_ao_coef([[float(v) for v in row] for row in ao_coef])
+ezfio.set_ao_basis_ao_expo([[float(v) for v in row] for row in ao_expo])
 ezfio.set_ao_basis_ao_cartesian(bool(payload["ao_cartesian"]))
 ezfio.set_ao_basis_use_cgtos(False)
 ezfio.set_electrons_elec_alpha_num(int(payload["elec_alpha_num"]))
@@ -396,7 +403,7 @@ ezfio.set_electrons_elec_beta_num(int(payload["elec_beta_num"]))
 ezfio.set_mo_basis_mo_num(int(payload["mo_num"]))
 ezfio.set_mo_basis_mo_label(str(payload["mo_label"]))
 ezfio.set_mo_basis_mo_occ([float(x) for x in payload["mo_occ"]])
-ezfio.set_mo_basis_mo_coef(payload["mo_coef"])
+ezfio.set_mo_basis_mo_coef(mo_coef)
 ezfio.set_mo_basis_mo_symmetry([1] * int(payload["mo_num"]))
 """
     subprocess.run(

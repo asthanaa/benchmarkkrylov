@@ -1,0 +1,109 @@
+{
+  "source_comparison_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/energy_error_vs_iteration_comparison.pdf",
+  "output_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/pub/energy_error_vs_iteration_kprop_sweep_kstore10000_jcp.pdf",
+  "output_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/pub/energy_error_vs_iteration_kprop_sweep_kstore10000_jcp.png",
+  "curve_family_label": "CK",
+  "legend_title": "CK, Kstore=10k",
+  "reference_line_label": "1 Kcal/mole",
+  "chemical_accuracy_mHa": 1.5936014378007624,
+  "x_max_displayed": 100,
+  "plot_floor_mHa": 1e-08,
+  "runs": [
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/iteration_trace.csv",
+      "kprop": 100,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 1.117433,
+      "min_abs_delta_mHa_in_source": 0.000501
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/iteration_trace.csv",
+      "kprop": 200,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.059058,
+      "min_abs_delta_mHa_in_source": 0.00238
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/iteration_trace.csv",
+      "kprop": 500,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.003936,
+      "min_abs_delta_mHa_in_source": 0.000492
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/iteration_trace.csv",
+      "kprop": 1000,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.002693,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/iteration_trace.csv",
+      "kprop": 1500,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 6e-06,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/iteration_trace.csv",
+      "kprop": 2000,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/iteration_trace.csv",
+      "kprop": 2500,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/iteration_trace.csv",
+      "kprop": 3000,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/iteration_trace.csv",
+      "kprop": 3500,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/iteration_trace.csv",
+      "kprop": 4000,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/iteration_trace.csv",
+      "kprop": 4500,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    },
+    {
+      "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/iteration_trace.csv",
+      "kprop": 5000,
+      "points": 104,
+      "final_cum_new_krylov_in_source": 100,
+      "final_abs_delta_mHa_in_source": 0.0,
+      "min_abs_delta_mHa_in_source": 0.0
+    }
+  ]
+}

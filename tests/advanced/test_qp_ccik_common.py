@@ -140,6 +140,7 @@ def test_fixed_budget_bridge_kwargs_tracks_public_budgets() -> None:
     assert bridge["ccik_tmp_keep_factor"] == 4
     assert bridge["ccik_preserve_prev_support"] is True
     assert bridge["ccik_preserve_prev_support_cap"] == 2_048
+    assert CCIKParams().ccik_secondortho is False
 
 
 def test_ensure_ezfio_defaults_writes_threshold_knobs(tmp_path: Path) -> None:
@@ -148,6 +149,7 @@ def test_ensure_ezfio_defaults_writes_threshold_knobs(tmp_path: Path) -> None:
     assert (ezfio / "ccik" / "ccik_compression_policy").read_text(encoding="ascii").strip() == "fixed_budget"
     assert (ezfio / "ccik" / "ccik_fixed_store_keep").read_text(encoding="ascii").strip() == "65536"
     assert (ezfio / "ccik" / "ccik_fixed_propagate_keep").read_text(encoding="ascii").strip() == "512"
+    assert (ezfio / "ccik" / "ccik_secondortho").read_text(encoding="ascii").strip() == "F"
     assert float((ezfio / "ccik" / "ccik_store_abs_tol").read_text(encoding="ascii").strip()) == 0.0
     assert float((ezfio / "ccik" / "ccik_propagate_abs_tol").read_text(encoding="ascii").strip()) == 0.0
     assert float((ezfio / "ccik" / "ccik_reference_total_energy").read_text(encoding="ascii").strip()) == 0.0

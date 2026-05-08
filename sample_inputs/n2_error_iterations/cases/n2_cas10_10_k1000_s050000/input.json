@@ -1,0 +1,49 @@
+{
+  "name": "n2_cas10_10_k1000_s050000",
+  "label": "N2 CAS(10e,10o) R=2.00 A",
+  "molecule": {
+    "distance_ang": 2.0,
+    "basis": "6-31g",
+    "unit": "Angstrom",
+    "charge": 0,
+    "spin": 0,
+    "verbose": 0
+  },
+  "cas": {
+    "ncas": 10,
+    "nelecas": 10,
+    "ncore": 2
+  },
+  "study": {
+    "max_cumulative_iterations": 300,
+    "plot_max_cumulative_iterations": 300,
+    "error_unit": "mHa",
+    "plot_yscale": "log",
+    "omp_threads": 8,
+    "reference_mode": "exact_fci"
+  },
+  "runs": [
+    {
+      "name": "k1000_s050000",
+      "label": "Kprop=1000 Kstore=50000",
+      "solver": {
+        "backend": "qp",
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 11,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 50000,
+          "fixed_propagate_keep": 1000,
+          "exactized_checkpoint_every": 10,
+          "exactized_resid_tol": 1e-10,
+          "exactized_max_iter": 200,
+          "exactized_restart_keep": 4,
+          "save_final_wf": false,
+          "do_post_pt2": false
+        }
+      }
+    }
+  ]
+}

@@ -37,6 +37,23 @@ DEFAULT_MAX_FILE_MB = 500
 DEFAULT_TOTAL_SCRATCH_GB = 45.0
 DEFAULT_CIPSI_RUNGS: tuple[int, ...] = (100_000, 300_000, 1_000_000, 2_000_000)
 DEFAULT_PYSCF_CIPSI_CUTOFFS: tuple[float, ...] = (5.0e-4, 2.0e-4, 1.0e-4, 5.0e-5, 2.0e-5)
+DEFAULT_DMRG_BOND_DIMS: tuple[int, ...] = (500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 6000)
+DEFAULT_DMRG_NOISES: tuple[float, ...] = (1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 0.0, 0.0, 0.0)
+DEFAULT_DMRG_DAV_THRDS: tuple[float, ...] = (1e-6, 1e-6, 1e-7, 1e-7, 1e-8, 1e-8, 1e-9, 1e-9, 1e-10, 1e-10)
+DEFAULT_DMRG_PREFLIGHT_BOND_DIMS: tuple[int, ...] = (200, 200)
+DEFAULT_DMRG_PREFLIGHT_NOISES: tuple[float, ...] = (1e-5, 0.0)
+DEFAULT_DMRG_PREFLIGHT_DAV_THRDS: tuple[float, ...] = (1e-6, 1e-7)
+
+
+def _fit_schedule_length(values: tuple[int | float, ...], target_len: int) -> list[int | float]:
+    if target_len <= 0:
+        raise ValueError("DMRG schedule must contain at least one stage")
+    seq = list(values)
+    if not seq:
+        raise ValueError("DMRG schedule helper received an empty template")
+    if len(seq) >= target_len:
+        return seq[:target_len]
+    return seq + [seq[-1]] * (target_len - len(seq))
 
 
 def normalize_reference_summary(summary: dict[str, object]) -> dict[str, object]:
@@ -67,6 +84,59 @@ def hf_occ_vector(norb: int, nelec_tot: int) -> list[float]:
     if int(nelec_tot) % 2 == 1 and ndoubly < int(norb):
         occs[ndoubly] = 1.0
     return occs
+
+
+def closed_shell_hf_total_energy_from_fcidump(
+    *,
+    fcidump_path: Path,
+    occ_vector: list[float] | None = None,
+) -> dict[str, object]:
+    from pyscf import ao2mo
+
+    data = pyscf_fcidump.read(str(fcidump_path), verbose=False)
+    norb = int(data["NORB"])
+    nelec_tot = int(data["NELEC"])
+    ecore = float(data.get("ECORE", 0.0))
+    h1 = data["H1"]
+    eri = ao2mo.restore(1, data["H2"], norb)
+    occs = list(hf_occ_vector(norb, nelec_tot) if occ_vector is None else occ_vector)
+    if len(occs) != norb:
+        raise ValueError(f"HF occupation vector length mismatch for {fcidump_path}: expected {norb}, got {len(occs)}")
+
+    alpha_occ = [1.0 if float(occ) >= 1.0 else 0.0 for occ in occs]
+    beta_occ = [1.0 if float(occ) >= 2.0 else 0.0 for occ in occs]
+
+    total = float(ecore)
+    for p in range(norb):
+        occ = float(alpha_occ[p] + beta_occ[p])
+        if occ == 0.0:
+            continue
+        total += occ * float(h1[p, p])
+
+    for p in range(norb):
+        occ_p = float(alpha_occ[p] + beta_occ[p])
+        if occ_p == 0.0:
+            continue
+        for q in range(norb):
+            occ_q = float(alpha_occ[q] + beta_occ[q])
+            if occ_q == 0.0:
+                continue
+            coulomb = float(eri[p, p, q, q])
+            exchange = float(eri[p, q, q, p])
+            same_spin = float(alpha_occ[p] * alpha_occ[q] + beta_occ[p] * beta_occ[q])
+            total += 0.5 * (occ_p * occ_q * coulomb - same_spin * exchange)
+
+    return {
+        "reference_kind": "hf_anchor",
+        "reference_label": "Closed-shell HF determinant",
+        "fcidump_path": str(fcidump_path),
+        "norb": int(norb),
+        "nelec": int(nelec_tot),
+        "ecore_eh": float(ecore),
+        "occ_vector": [float(x) for x in occs],
+        "total_energy_eh": float(total),
+        "electronic_energy_eh": float(total - ecore),
+    }
 
 
 def _normalized_c1_isym(value: object) -> int:
@@ -420,6 +490,10 @@ def load_or_compute_dmrg_reference_from_fcidump(
     max_file_mb: int = DEFAULT_MAX_FILE_MB,
     max_total_scratch_gb: float = DEFAULT_TOTAL_SCRATCH_GB,
     scratch_root: Path = DEFAULT_DMRG_SCRATCH_ROOT,
+    bond_dims: tuple[int, ...] | None = None,
+    noises: tuple[float, ...] | None = None,
+    dav_thrds: tuple[float, ...] | None = None,
+    n_steps: int = 40,
 ) -> dict[str, object]:
     path = outdir / "reference_dmrg_summary.json"
     attempt_path = outdir / "reference_dmrg_attempt.json"
@@ -456,12 +530,30 @@ def load_or_compute_dmrg_reference_from_fcidump(
     isym = _normalized_c1_isym(data.get("ISYM", 0))
     hf_occs = hf_occ_vector(norb, nelec)
 
-    bond_dims = [500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 6000]
-    noises = [1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 0.0, 0.0, 0.0]
-    dav_thrds = [1e-6, 1e-6, 1e-7, 1e-7, 1e-8, 1e-8, 1e-9, 1e-9, 1e-10, 1e-10]
-    preflight_bond_dims = [200, 200]
-    preflight_noises = [1e-5, 0.0]
-    preflight_dav_thrds = [1e-6, 1e-7]
+    requested_bond_dims = (
+        [int(x) for x in bond_dims]
+        if bond_dims is not None
+        else [int(x) for x in DEFAULT_DMRG_BOND_DIMS]
+    )
+    if not requested_bond_dims:
+        raise ValueError("DMRG reference requires at least one bond dimension")
+    requested_noises = (
+        [float(x) for x in noises]
+        if noises is not None
+        else [float(x) for x in _fit_schedule_length(DEFAULT_DMRG_NOISES, len(requested_bond_dims))]
+    )
+    requested_dav_thrds = (
+        [float(x) for x in dav_thrds]
+        if dav_thrds is not None
+        else [float(x) for x in _fit_schedule_length(DEFAULT_DMRG_DAV_THRDS, len(requested_bond_dims))]
+    )
+    if len(requested_noises) != len(requested_bond_dims):
+        raise ValueError("DMRG noise schedule must match the bond-dimension schedule length")
+    if len(requested_dav_thrds) != len(requested_bond_dims):
+        raise ValueError("DMRG Davidson-threshold schedule must match the bond-dimension schedule length")
+    preflight_bond_dims = [int(x) for x in DEFAULT_DMRG_PREFLIGHT_BOND_DIMS]
+    preflight_noises = [float(x) for x in DEFAULT_DMRG_PREFLIGHT_NOISES]
+    preflight_dav_thrds = [float(x) for x in DEFAULT_DMRG_PREFLIGHT_DAV_THRDS]
     script = _dmrg_reference_script()
     env = os.environ.copy()
     env.update(
@@ -472,10 +564,10 @@ def load_or_compute_dmrg_reference_from_fcidump(
             "CKA_MEMORY_GB": str(int(memory_gb)),
             "CKA_THREADS": str(int(threads)),
             "CKA_CONV_TOL": str(float(conv_tol)),
-            "CKA_BOND_DIMS": json.dumps(bond_dims),
-            "CKA_NOISES": json.dumps(noises),
-            "CKA_DAV_THRDS": json.dumps(dav_thrds),
-            "CKA_N_STEPS": "40",
+            "CKA_BOND_DIMS": json.dumps(requested_bond_dims),
+            "CKA_NOISES": json.dumps(requested_noises),
+            "CKA_DAV_THRDS": json.dumps(requested_dav_thrds),
+            "CKA_N_STEPS": str(int(n_steps)),
             "CKA_OCCS_JSON": json.dumps(hf_occs),
             "CKA_ISYM": str(isym),
             "CKA_ORBSYM_JSON": json.dumps(orb_sym),

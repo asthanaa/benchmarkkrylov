@@ -102,6 +102,12 @@ def test_params_from_args_accepts_threshold_and_matvec_knobs() -> None:
             "connected_sd_fullq",
             "--ccik-compression-policy",
             "threshold",
+            "--ccik-fixed-store-keep",
+            "10000",
+            "--ccik-fixed-propagate-keep",
+            "500",
+            "--ccik-secondortho",
+            "true",
             "--ccik-store-abs-tol",
             "1e-5",
             "--ccik-propagate-abs-tol",
@@ -112,6 +118,9 @@ def test_params_from_args_accepts_threshold_and_matvec_knobs() -> None:
     assert params["ccik_selector_mode"] == "abs_residual"
     assert params["ccik_matvec_backend"] == "connected_sd_fullq"
     assert params["ccik_compression_policy"] == "threshold"
+    assert params["ccik_fixed_store_keep"] == "10000"
+    assert params["ccik_fixed_propagate_keep"] == "500"
+    assert params["ccik_secondortho"] == "true"
     assert params["ccik_store_abs_tol"] == "1e-05"
     assert params["ccik_propagate_abs_tol"] == "1e-06"
 

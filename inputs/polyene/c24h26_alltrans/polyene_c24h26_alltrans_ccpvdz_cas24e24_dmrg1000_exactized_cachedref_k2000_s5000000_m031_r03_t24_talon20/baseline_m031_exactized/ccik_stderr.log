@@ -1,0 +1,32 @@
+Talon Setup log saved to: /home/ayush.asthana/.xdg-log/talon/xdg-setup-20260418-172508.log
+File exists: File exists
+File exists: File exists
+File exists: File exists
+File exists: File exists
+File exists: File exists
+File exists: File exists
+File exists: File exists
+File exists: File exists
+File exists: File exists
+
+Program received signal SIGSEGV: Segmentation fault - invalid memory reference.
+
+Backtrace for this error:
+#0  0x1555530258b2 in ???
+#1  0x155553024a45 in ???
+#2  0x155552c3e6ef in ???
+#3  0x155552d6a9b0 in ???
+#4  0x43042c in ccik_fill_exactized_cache_
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik_driver.irp.F90:884
+#5  0x437320 in ccik_maybe_run_exactized_checkpoint_
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik_driver.irp.F90:1139
+#6  0x44264c in ccik_thick_restart_driver_
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik_driver.irp.F90:1442
+#7  0x404d76 in ccik_
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik.irp.F90:31
+#8  0x404d76 in ccik_
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik.irp.F90:15
+#9  0x404b85 in irp_program
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik.irp.F90:11
+#10  0x404b85 in main
+	at /home/ayush.asthana/quantum_package/qp2/plugins/ccik_qp/stable/ccik/IRPF90_temp/ccik.irp.F90:14

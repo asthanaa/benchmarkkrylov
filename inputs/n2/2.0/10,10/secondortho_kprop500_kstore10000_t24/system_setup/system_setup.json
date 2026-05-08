@@ -1,0 +1,40 @@
+{
+  "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+  "omp_threads": 24,
+  "label": "N2 CAS(10,10) R=2.00 A | QP thick fixed-budget sweep | Kstore=50000 | Kprop=100/200/500/1000/1500/2000/2500/3000/3500/4000/4500/5000 | i=50 | t24 large",
+  "ezfio_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24/system_setup/n2.ezfio",
+  "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24/system_setup/qp_active.FCIDUMP",
+  "ecore": -82.84538709607953,
+  "norb": 10,
+  "nelec": [
+    5,
+    5
+  ],
+  "reference_mode": "exact_fci",
+  "effective_reference_mode": "exact_fci",
+  "reference_total_energy_eh": -108.76088354609567,
+  "reference_summary": {
+    "success": true,
+    "reference_kind": "exact_fci",
+    "reference_label": "Exact FCI",
+    "total_energy_eh": -108.76088354609567,
+    "electronic_energy_eh": -25.915496450016136,
+    "ecore_eh": -82.84538709607953,
+    "norb": 10,
+    "nelec": [
+      5,
+      5
+    ]
+  },
+  "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/system_setup/reference_choice.json",
+  "basis": "6-31g",
+  "setup_backend": "fresh_qp_setup",
+  "setup_fallback_reason": null,
+  "distance_ang": 2.0,
+  "ncas": 10,
+  "nelecas": 10,
+  "ncore": 2,
+  "nmo_total": 18,
+  "setup_dir": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/secondortho_kprop500_kstore10000_t24/system_setup",
+  "copied_from_setup_dir": "inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/system_setup"
+}

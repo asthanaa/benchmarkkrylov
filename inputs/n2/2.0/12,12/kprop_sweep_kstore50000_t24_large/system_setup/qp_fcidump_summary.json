@@ -1,0 +1,11 @@
+{
+  "ecore": -37.39676191601299,
+  "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/system_setup/qp_active.FCIDUMP",
+  "nelec": [
+    6,
+    6
+  ],
+  "norb": 12,
+  "source_kind": "generated_from_qp",
+  "source_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/system_setup/n2.ezfio.FCIDUMP"
+}

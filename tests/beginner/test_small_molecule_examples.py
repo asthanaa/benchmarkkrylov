@@ -26,6 +26,9 @@ def test_public_param_defaults_now_use_fixed_budget() -> None:
     assert CCIKStochasticParams().compression_policy == "fixed_budget"
     assert CCIKParams().projected_ritz_mode == "exact_on_basis"
     assert CCIKThickRestartParams().projected_ritz_mode == "exact_on_basis"
+    assert CCIKParams().secondortho is False
+    assert CCIKThickRestartParams().secondortho is False
+    assert CCIKStochasticParams().secondortho is False
 
 
 def _build_h2_cas() -> tuple[np.ndarray, np.ndarray, float, int, tuple[int, int], float]:

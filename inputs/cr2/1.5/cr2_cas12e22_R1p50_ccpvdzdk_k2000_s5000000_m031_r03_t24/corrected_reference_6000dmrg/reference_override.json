@@ -1,0 +1,10 @@
+{
+  "archive_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24/corrected_reference_6000dmrg",
+  "best_row": null,
+  "case_dir": "/home/ayush.asthana/code/CompressK/inputs/cr2/1.5/cr2_cas12e22_R1p50_ccpvdzdk_k2000_s5000000_m031_r03_t24",
+  "reference_label": "DMRG M=6000 override",
+  "reference_source": "user supplied Cr2 CAS(12e,22o) DMRG M=6000 override",
+  "reference_total_energy_eh": -2081.1961109189,
+  "scan_json": null,
+  "update_native": true
+}

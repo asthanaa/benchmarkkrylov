@@ -1,0 +1,14 @@
+{
+  "source_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_exactized_m031_k1000_s050000_t4_dynamic_talon2/baseline_m031_resume_exactized_t4/iteration_trace.csv",
+  "output_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_exactized_m031_k1000_s050000_t4_dynamic_talon2/baseline_m031_resume_exactized_t4/pub/energy_error_vs_iteration_jcp.pdf",
+  "output_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/n2_cas14e18_R2p00_dmrg1000_exactized_m031_k1000_s050000_t4_dynamic_talon2/baseline_m031_resume_exactized_t4/pub/energy_error_vs_iteration_jcp.png",
+  "points": 155,
+  "x_max_displayed": 149,
+  "final_cum_new_krylov_in_source": 149,
+  "final_abs_delta_mHa_in_source": 0.977056,
+  "curve_label": "CK",
+  "exactized_curve_label": "CKCI",
+  "exactized_points": 153,
+  "reference_line_label": "1 Kcal/mole",
+  "chemical_accuracy_mHa": 1.5936014378007624
+}

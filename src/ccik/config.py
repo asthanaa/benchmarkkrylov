@@ -62,7 +62,7 @@ def ccik_params_from_dict(d: dict[str, Any]) -> CCIKParams:
         base["preserve_prev_support_cap"] = None if d["preserve_prev_support_cap"] is None else int(d["preserve_prev_support_cap"])
     if "verbose" in d:
         base["verbose"] = bool(d["verbose"])
-    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics"):
+    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics", "secondortho"):
         if key in d:
             base[key] = bool(d[key])
     if "orth_tol" in d:
@@ -87,9 +87,24 @@ def ccik_thick_restart_params_from_dict(d: dict[str, Any]) -> CCIKThickRestartPa
     """Create ``CCIKThickRestartParams`` from a parsed TOML section."""
 
     base = asdict(CCIKThickRestartParams())
-    for key in ("m_cycle", "ncycles", "nroot", "nadd", "nkeep", "Kv", "generator_keep", "tmp_keep_factor", "fixed_store_keep", "fixed_propagate_keep"):
+    for key in (
+        "m_cycle",
+        "ncycles",
+        "nroot",
+        "nadd",
+        "nkeep",
+        "Kv",
+        "generator_keep",
+        "tmp_keep_factor",
+        "fixed_store_keep",
+        "fixed_propagate_keep",
+    ):
         if key in d:
             base[key] = int(d[key])
+    if "exactized_checkpoint_every" in d:
+        base["exactized_checkpoint_every"] = (
+            None if d["exactized_checkpoint_every"] is None else int(d["exactized_checkpoint_every"])
+        )
     if "tol" in d:
         base["tol"] = float(d["tol"])
     if "max_parents_for_expansion" in d:
@@ -98,7 +113,7 @@ def ccik_thick_restart_params_from_dict(d: dict[str, Any]) -> CCIKThickRestartPa
         base["preserve_prev_support_cap"] = None if d["preserve_prev_support_cap"] is None else int(d["preserve_prev_support_cap"])
     if "verbose" in d:
         base["verbose"] = bool(d["verbose"])
-    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics"):
+    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics", "secondortho"):
         if key in d:
             base[key] = bool(d[key])
     if "orth_tol" in d:
@@ -137,7 +152,7 @@ def ccik_stochastic_params_from_dict(d: dict[str, Any]) -> CCIKStochasticParams:
             base[key] = float(d[key])
     if "verbose" in d:
         base["verbose"] = bool(d["verbose"])
-    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics"):
+    for key in ("include_current_support", "preserve_prev_support", "exact_hq_diagnostics", "secondortho"):
         if key in d:
             base[key] = bool(d[key])
     if "orth_tol" in d:

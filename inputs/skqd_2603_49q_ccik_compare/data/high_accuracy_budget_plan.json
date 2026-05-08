@@ -1,0 +1,15 @@
+{
+  "total_determinant_budget": 10000000,
+  "restart_budget_interpretation": {
+    "nroot": 5,
+    "planned_kstore_per_root": 2000000
+  },
+  "baseline_ccik_run": {
+    "krylov_dimension": 17,
+    "kprop": 1000,
+    "kstore": 1000,
+    "nroot": 5,
+    "ncycles": 16
+  },
+  "refine_topn": 512
+}

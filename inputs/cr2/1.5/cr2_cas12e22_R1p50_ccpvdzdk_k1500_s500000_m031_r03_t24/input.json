@@ -1,0 +1,68 @@
+{
+  "name": "cr2_cas12e22_R1p50_ccpvdzdk_k1500_s500000_m031_r03_t24",
+  "label": "Cr2 CAS(12e,22o) R=1.50 A | cc-pVDZ-DK | DMRG M=1000 | baseline m=31 fresh relaunch | Kprop=1500 Kstore=500000 | t24",
+  "molecule": {
+    "distance_ang": 1.5,
+    "basis": "cc-pvdz-dk",
+    "unit": "Angstrom",
+    "charge": 0,
+    "spin": 0,
+    "verbose": 0
+  },
+  "cas": {
+    "ncas": 22,
+    "nelecas": 12,
+    "ncore": 18
+  },
+  "study": {
+    "max_cumulative_iterations": 5000,
+    "plot_max_cumulative_iterations": 300,
+    "stop_abs_delta_mHa": 1.0,
+    "error_unit": "mHa",
+    "plot_yscale": "log",
+    "omp_threads": 24,
+    "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+    "reference_mode": "dmrg_only",
+    "dmrg_python": "/home/ayush.asthana/code/CompressK/.conda/cka-dmrg-py312/bin/python",
+    "dmrg_bond_dims": [
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "dmrg_n_steps": 10,
+    "dmrg_memory_gb": 128,
+    "dmrg_threads": 24,
+    "dmrg_conv_tol": 1e-08,
+    "dmrg_total_scratch_gb": 120,
+    "dmrg_max_file_mb": 4096,
+    "dmrg_scratch_root": "/tmp/cka_dmrg",
+    "cipsi_total_scratch_gb": 120,
+    "cipsi_max_file_mb": 4096,
+    "cipsi_scratch_root": "/tmp/cka_cipsi"
+  },
+  "runs": [
+    {
+      "name": "baseline_m031_k1500",
+      "label": "Baseline m=31 fresh relaunch | Kprop=1500 Kstore=500000",
+      "solver": {
+        "kind": "ccik_thick",
+        "params": {
+          "m_cycle": 31,
+          "ncycles": 10,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 500000,
+          "fixed_propagate_keep": 1500,
+          "selector_mode": "abs_residual",
+          "generator_keep": 512,
+          "max_parents_for_expansion": 512,
+          "external_keep": 50000,
+          "tmp_keep_factor": 2,
+          "preserve_prev_support_cap": 512,
+          "save_final_wf": true
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "label": "Baseline m=17 | Kprop=1000 Kstore=1000 | nroot=5 ncycles=16 | CK only",
+  "cum_new_krylov": 196,
+  "cycle": 16,
+  "basis_size": 17,
+  "support_union_size": null,
+  "total_energy_eh": -916.436021541517,
+  "delta_mHa": 1560.799301,
+  "abs_delta_mHa": 1560.799301,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null,
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}

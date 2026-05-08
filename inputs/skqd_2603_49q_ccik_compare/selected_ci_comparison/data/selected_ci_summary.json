@@ -1,0 +1,38 @@
+{
+  "generated_at_utc": "2026-04-29T15:50:08+00:00",
+  "selected_ci_budgets": [
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+    32768,
+    65536,
+    131072
+  ],
+  "target_error": 1e-08,
+  "best_by_method": {
+    "hci": {
+      "determinant_count": 131072,
+      "energy": -85.33438099430862,
+      "absolute_error": 0.2522440718229433,
+      "budget": 131072
+    },
+    "cipsi": {
+      "determinant_count": 131072,
+      "energy": -85.33438099454729,
+      "absolute_error": 0.252244071584272,
+      "budget": 131072
+    }
+  },
+  "best_ckci_n": {
+    "stage_label": "exactized_pool2",
+    "determinant_count": 37483,
+    "energy": -85.58662506986425,
+    "absolute_error": 3.732694153768534e-09
+  },
+  "selected_ci_csv": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_comparison/data/selected_ci_runs.csv",
+  "output_pdf": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_comparison/pub/skqd_ckci_hci_cipsi_comparison.pdf",
+  "output_png": "/home/ayush.asthana/code/CompressK/inputs/skqd_2603_49q_ccik_compare/selected_ci_comparison/pub/skqd_ckci_hci_cipsi_comparison.png"
+}

@@ -1,0 +1,1671 @@
+{
+  "input_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/input.json",
+  "case_dir": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large",
+  "label": "N2 CAS(10,10) R=2.00 A | QP thick fixed-budget sweep | Kstore=10000 | Kprop=100/200/500/1000/1500/2000/2500/3000/3500/4000/4500/5000 | i=100 | t24 large",
+  "backend": "qp",
+  "postprocess_only": true,
+  "reference_total_energy_eh": -108.760883546432,
+  "max_cumulative_iterations": 100,
+  "plot_max_cumulative_iterations": 100,
+  "runs": {
+    "kstore10000_kprop100_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop100_m031",
+      "run_label": "Kstore=10000 Kprop=100 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.762000979501,
+      "final_delta_mHa": -1.117433,
+      "final_abs_delta_mHa": 1.117433,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.762000979501,
+      "plotted_final_abs_delta_mHa": 1.117433,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 282,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": true,
+      "below_reference_points": [
+        {
+          "cycle": 1,
+          "cum_new_krylov": 19,
+          "total_energy_eh": -108.760917070943,
+          "delta_mHa": -0.033525,
+          "abs_delta_mHa": 0.033525
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 20,
+          "total_energy_eh": -108.760930381634,
+          "delta_mHa": -0.046836,
+          "abs_delta_mHa": 0.046836
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 21,
+          "total_energy_eh": -108.760989537234,
+          "delta_mHa": -0.105991,
+          "abs_delta_mHa": 0.105991
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 22,
+          "total_energy_eh": -108.761032847696,
+          "delta_mHa": -0.149302,
+          "abs_delta_mHa": 0.149302
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 23,
+          "total_energy_eh": -108.761032966037,
+          "delta_mHa": -0.14942,
+          "abs_delta_mHa": 0.14942
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 24,
+          "total_energy_eh": -108.761279040341,
+          "delta_mHa": -0.395494,
+          "abs_delta_mHa": 0.395494
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 25,
+          "total_energy_eh": -108.761377220471,
+          "delta_mHa": -0.493674,
+          "abs_delta_mHa": 0.493674
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 26,
+          "total_energy_eh": -108.761378204009,
+          "delta_mHa": -0.494658,
+          "abs_delta_mHa": 0.494658
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 27,
+          "total_energy_eh": -108.761378349807,
+          "delta_mHa": -0.494804,
+          "abs_delta_mHa": 0.494804
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 28,
+          "total_energy_eh": -108.761378441833,
+          "delta_mHa": -0.494896,
+          "abs_delta_mHa": 0.494896
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 29,
+          "total_energy_eh": -108.761688690537,
+          "delta_mHa": -0.805144,
+          "abs_delta_mHa": 0.805144
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 30,
+          "total_energy_eh": -108.761838678694,
+          "delta_mHa": -0.955133,
+          "abs_delta_mHa": 0.955133
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 46,
+          "total_energy_eh": -108.760886605592,
+          "delta_mHa": -0.003059,
+          "abs_delta_mHa": 0.003059
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 47,
+          "total_energy_eh": -108.760891555728,
+          "delta_mHa": -0.00801,
+          "abs_delta_mHa": 0.00801
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 48,
+          "total_energy_eh": -108.76089582078,
+          "delta_mHa": -0.012275,
+          "abs_delta_mHa": 0.012275
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 49,
+          "total_energy_eh": -108.760895821061,
+          "delta_mHa": -0.012275,
+          "abs_delta_mHa": 0.012275
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 50,
+          "total_energy_eh": -108.76089582893,
+          "delta_mHa": -0.012283,
+          "abs_delta_mHa": 0.012283
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 51,
+          "total_energy_eh": -108.760895841753,
+          "delta_mHa": -0.012296,
+          "abs_delta_mHa": 0.012296
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 52,
+          "total_energy_eh": -108.760895970213,
+          "delta_mHa": -0.012424,
+          "abs_delta_mHa": 0.012424
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 53,
+          "total_energy_eh": -108.760896639967,
+          "delta_mHa": -0.013094,
+          "abs_delta_mHa": 0.013094
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 54,
+          "total_energy_eh": -108.760899419305,
+          "delta_mHa": -0.015873,
+          "abs_delta_mHa": 0.015873
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 55,
+          "total_energy_eh": -108.760986323236,
+          "delta_mHa": -0.102777,
+          "abs_delta_mHa": 0.102777
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 56,
+          "total_energy_eh": -108.761217392222,
+          "delta_mHa": -0.333846,
+          "abs_delta_mHa": 0.333846
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 57,
+          "total_energy_eh": -108.761279141933,
+          "delta_mHa": -0.395596,
+          "abs_delta_mHa": 0.395596
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 58,
+          "total_energy_eh": -108.761377353778,
+          "delta_mHa": -0.493808,
+          "abs_delta_mHa": 0.493808
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 70,
+          "total_energy_eh": -108.760884870672,
+          "delta_mHa": -0.001325,
+          "abs_delta_mHa": 0.001325
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 71,
+          "total_energy_eh": -108.760893153107,
+          "delta_mHa": -0.009607,
+          "abs_delta_mHa": 0.009607
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 72,
+          "total_energy_eh": -108.760896260459,
+          "delta_mHa": -0.012714,
+          "abs_delta_mHa": 0.012714
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 73,
+          "total_energy_eh": -108.760897068741,
+          "delta_mHa": -0.013523,
+          "abs_delta_mHa": 0.013523
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 74,
+          "total_energy_eh": -108.760897559326,
+          "delta_mHa": -0.014013,
+          "abs_delta_mHa": 0.014013
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 75,
+          "total_energy_eh": -108.760897788652,
+          "delta_mHa": -0.014243,
+          "abs_delta_mHa": 0.014243
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 76,
+          "total_energy_eh": -108.760897960423,
+          "delta_mHa": -0.014414,
+          "abs_delta_mHa": 0.014414
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 77,
+          "total_energy_eh": -108.760898346788,
+          "delta_mHa": -0.014801,
+          "abs_delta_mHa": 0.014801
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 78,
+          "total_energy_eh": -108.760898690119,
+          "delta_mHa": -0.015144,
+          "abs_delta_mHa": 0.015144
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 79,
+          "total_energy_eh": -108.760899050171,
+          "delta_mHa": -0.015504,
+          "abs_delta_mHa": 0.015504
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 80,
+          "total_energy_eh": -108.760903557394,
+          "delta_mHa": -0.020011,
+          "abs_delta_mHa": 0.020011
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 81,
+          "total_energy_eh": -108.76090454492,
+          "delta_mHa": -0.020999,
+          "abs_delta_mHa": 0.020999
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 82,
+          "total_energy_eh": -108.760905892172,
+          "delta_mHa": -0.022346,
+          "abs_delta_mHa": 0.022346
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 83,
+          "total_energy_eh": -108.760906094147,
+          "delta_mHa": -0.022548,
+          "abs_delta_mHa": 0.022548
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 84,
+          "total_energy_eh": -108.760906215497,
+          "delta_mHa": -0.022669,
+          "abs_delta_mHa": 0.022669
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 85,
+          "total_energy_eh": -108.760906216826,
+          "delta_mHa": -0.022671,
+          "abs_delta_mHa": 0.022671
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 86,
+          "total_energy_eh": -108.760906389235,
+          "delta_mHa": -0.022843,
+          "abs_delta_mHa": 0.022843
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 89,
+          "total_energy_eh": -108.760884046652,
+          "delta_mHa": -0.000501,
+          "abs_delta_mHa": 0.000501
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 90,
+          "total_energy_eh": -108.760885879585,
+          "delta_mHa": -0.002333,
+          "abs_delta_mHa": 0.002333
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 91,
+          "total_energy_eh": -108.760886006434,
+          "delta_mHa": -0.00246,
+          "abs_delta_mHa": 0.00246
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 92,
+          "total_energy_eh": -108.760886560794,
+          "delta_mHa": -0.003015,
+          "abs_delta_mHa": 0.003015
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 93,
+          "total_energy_eh": -108.760887040547,
+          "delta_mHa": -0.003494,
+          "abs_delta_mHa": 0.003494
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 94,
+          "total_energy_eh": -108.760911769316,
+          "delta_mHa": -0.028223,
+          "abs_delta_mHa": 0.028223
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 95,
+          "total_energy_eh": -108.761243481623,
+          "delta_mHa": -0.359936,
+          "abs_delta_mHa": 0.359936
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 96,
+          "total_energy_eh": -108.76125000841,
+          "delta_mHa": -0.366462,
+          "abs_delta_mHa": 0.366462
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 97,
+          "total_energy_eh": -108.761895349388,
+          "delta_mHa": -1.011803,
+          "abs_delta_mHa": 1.011803
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 98,
+          "total_energy_eh": -108.761904795653,
+          "delta_mHa": -1.02125,
+          "abs_delta_mHa": 1.02125
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 99,
+          "total_energy_eh": -108.761976329771,
+          "delta_mHa": -1.092784,
+          "abs_delta_mHa": 1.092784
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 100,
+          "total_energy_eh": -108.762000979501,
+          "delta_mHa": -1.117433,
+          "abs_delta_mHa": 1.117433
+        }
+      ],
+      "min_signed_delta_mHa": -1.117433,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 100,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop100_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop200_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop200_m031",
+      "run_label": "Kstore=10000 Kprop=200 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760942604216,
+      "final_delta_mHa": -0.059058,
+      "final_abs_delta_mHa": 0.059058,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760942604216,
+      "plotted_final_abs_delta_mHa": 0.059058,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 282,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": true,
+      "below_reference_points": [
+        {
+          "cycle": 1,
+          "cum_new_krylov": 20,
+          "total_energy_eh": -108.760899036352,
+          "delta_mHa": -0.01549,
+          "abs_delta_mHa": 0.01549
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 21,
+          "total_energy_eh": -108.76091385252,
+          "delta_mHa": -0.030306,
+          "abs_delta_mHa": 0.030306
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 22,
+          "total_energy_eh": -108.760921718939,
+          "delta_mHa": -0.038173,
+          "abs_delta_mHa": 0.038173
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 23,
+          "total_energy_eh": -108.760955213412,
+          "delta_mHa": -0.071667,
+          "abs_delta_mHa": 0.071667
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 24,
+          "total_energy_eh": -108.760975549569,
+          "delta_mHa": -0.092003,
+          "abs_delta_mHa": 0.092003
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 25,
+          "total_energy_eh": -108.760975588322,
+          "delta_mHa": -0.092042,
+          "abs_delta_mHa": 0.092042
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 26,
+          "total_energy_eh": -108.760980843056,
+          "delta_mHa": -0.097297,
+          "abs_delta_mHa": 0.097297
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 27,
+          "total_energy_eh": -108.761036432883,
+          "delta_mHa": -0.152887,
+          "abs_delta_mHa": 0.152887
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 28,
+          "total_energy_eh": -108.761315254681,
+          "delta_mHa": -0.431709,
+          "abs_delta_mHa": 0.431709
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 29,
+          "total_energy_eh": -108.761317783696,
+          "delta_mHa": -0.434238,
+          "abs_delta_mHa": 0.434238
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 30,
+          "total_energy_eh": -108.761319410092,
+          "delta_mHa": -0.435864,
+          "abs_delta_mHa": 0.435864
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 44,
+          "total_energy_eh": -108.761024854207,
+          "delta_mHa": -0.141308,
+          "abs_delta_mHa": 0.141308
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 45,
+          "total_energy_eh": -108.761100322988,
+          "delta_mHa": -0.216777,
+          "abs_delta_mHa": 0.216777
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 46,
+          "total_energy_eh": -108.761381230095,
+          "delta_mHa": -0.497684,
+          "abs_delta_mHa": 0.497684
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 47,
+          "total_energy_eh": -108.762313662413,
+          "delta_mHa": -1.430116,
+          "abs_delta_mHa": 1.430116
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 48,
+          "total_energy_eh": -108.762319024177,
+          "delta_mHa": -1.435478,
+          "abs_delta_mHa": 1.435478
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 49,
+          "total_energy_eh": -108.762319668525,
+          "delta_mHa": -1.436122,
+          "abs_delta_mHa": 1.436122
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 50,
+          "total_energy_eh": -108.762324723443,
+          "delta_mHa": -1.441177,
+          "abs_delta_mHa": 1.441177
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 51,
+          "total_energy_eh": -108.762327609745,
+          "delta_mHa": -1.444064,
+          "abs_delta_mHa": 1.444064
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 52,
+          "total_energy_eh": -108.762329257119,
+          "delta_mHa": -1.445711,
+          "abs_delta_mHa": 1.445711
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 53,
+          "total_energy_eh": -108.762333032097,
+          "delta_mHa": -1.449486,
+          "abs_delta_mHa": 1.449486
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 54,
+          "total_energy_eh": -108.762375230166,
+          "delta_mHa": -1.491684,
+          "abs_delta_mHa": 1.491684
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 55,
+          "total_energy_eh": -108.762375278024,
+          "delta_mHa": -1.491732,
+          "abs_delta_mHa": 1.491732
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 56,
+          "total_energy_eh": -108.762608015635,
+          "delta_mHa": -1.72447,
+          "abs_delta_mHa": 1.72447
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 57,
+          "total_energy_eh": -108.762973160611,
+          "delta_mHa": -2.089615,
+          "abs_delta_mHa": 2.089615
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 58,
+          "total_energy_eh": -108.762982355578,
+          "delta_mHa": -2.098809,
+          "abs_delta_mHa": 2.098809
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 68,
+          "total_energy_eh": -108.760888003557,
+          "delta_mHa": -0.004457,
+          "abs_delta_mHa": 0.004457
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 69,
+          "total_energy_eh": -108.760888801918,
+          "delta_mHa": -0.005256,
+          "abs_delta_mHa": 0.005256
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 70,
+          "total_energy_eh": -108.760970346551,
+          "delta_mHa": -0.0868,
+          "abs_delta_mHa": 0.0868
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 71,
+          "total_energy_eh": -108.760972713158,
+          "delta_mHa": -0.089167,
+          "abs_delta_mHa": 0.089167
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 72,
+          "total_energy_eh": -108.761000845244,
+          "delta_mHa": -0.117299,
+          "abs_delta_mHa": 0.117299
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 73,
+          "total_energy_eh": -108.76102798822,
+          "delta_mHa": -0.144442,
+          "abs_delta_mHa": 0.144442
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 74,
+          "total_energy_eh": -108.761029208374,
+          "delta_mHa": -0.145662,
+          "abs_delta_mHa": 0.145662
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 75,
+          "total_energy_eh": -108.7610297364,
+          "delta_mHa": -0.14619,
+          "abs_delta_mHa": 0.14619
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 76,
+          "total_energy_eh": -108.761031048201,
+          "delta_mHa": -0.147502,
+          "abs_delta_mHa": 0.147502
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 77,
+          "total_energy_eh": -108.761032607815,
+          "delta_mHa": -0.149062,
+          "abs_delta_mHa": 0.149062
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 78,
+          "total_energy_eh": -108.761046671048,
+          "delta_mHa": -0.163125,
+          "abs_delta_mHa": 0.163125
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 79,
+          "total_energy_eh": -108.761092858864,
+          "delta_mHa": -0.209313,
+          "abs_delta_mHa": 0.209313
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 80,
+          "total_energy_eh": -108.7611022621,
+          "delta_mHa": -0.218716,
+          "abs_delta_mHa": 0.218716
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 81,
+          "total_energy_eh": -108.761165634167,
+          "delta_mHa": -0.282088,
+          "abs_delta_mHa": 0.282088
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 82,
+          "total_energy_eh": -108.761179517022,
+          "delta_mHa": -0.295971,
+          "abs_delta_mHa": 0.295971
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 83,
+          "total_energy_eh": -108.761262887945,
+          "delta_mHa": -0.379342,
+          "abs_delta_mHa": 0.379342
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 84,
+          "total_energy_eh": -108.761272152845,
+          "delta_mHa": -0.388607,
+          "abs_delta_mHa": 0.388607
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 85,
+          "total_energy_eh": -108.761274422584,
+          "delta_mHa": -0.390876,
+          "abs_delta_mHa": 0.390876
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 86,
+          "total_energy_eh": -108.761274649217,
+          "delta_mHa": -0.391103,
+          "abs_delta_mHa": 0.391103
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 97,
+          "total_energy_eh": -108.760899876296,
+          "delta_mHa": -0.01633,
+          "abs_delta_mHa": 0.01633
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 98,
+          "total_energy_eh": -108.760900143823,
+          "delta_mHa": -0.016598,
+          "abs_delta_mHa": 0.016598
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 99,
+          "total_energy_eh": -108.760920017622,
+          "delta_mHa": -0.036472,
+          "abs_delta_mHa": 0.036472
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 100,
+          "total_energy_eh": -108.760942604216,
+          "delta_mHa": -0.059058,
+          "abs_delta_mHa": 0.059058
+        }
+      ],
+      "min_signed_delta_mHa": -2.098809,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 15,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 200,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop200_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop500_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop500_m031",
+      "run_label": "Kstore=10000 Kprop=500 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760879610446,
+      "final_delta_mHa": 0.003936,
+      "final_abs_delta_mHa": 0.003936,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760879610446,
+      "plotted_final_abs_delta_mHa": 0.003936,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 282,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": true,
+      "below_reference_points": [
+        {
+          "cycle": 1,
+          "cum_new_krylov": 22,
+          "total_energy_eh": -108.760895858087,
+          "delta_mHa": -0.012312,
+          "abs_delta_mHa": 0.012312
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 23,
+          "total_energy_eh": -108.76090583707,
+          "delta_mHa": -0.022291,
+          "abs_delta_mHa": 0.022291
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 24,
+          "total_energy_eh": -108.76090591598,
+          "delta_mHa": -0.02237,
+          "abs_delta_mHa": 0.02237
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 25,
+          "total_energy_eh": -108.760906997626,
+          "delta_mHa": -0.023452,
+          "abs_delta_mHa": 0.023452
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 26,
+          "total_energy_eh": -108.760917354328,
+          "delta_mHa": -0.033808,
+          "abs_delta_mHa": 0.033808
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 27,
+          "total_energy_eh": -108.760917366843,
+          "delta_mHa": -0.033821,
+          "abs_delta_mHa": 0.033821
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 28,
+          "total_energy_eh": -108.760918686179,
+          "delta_mHa": -0.03514,
+          "abs_delta_mHa": 0.03514
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 29,
+          "total_energy_eh": -108.760918695543,
+          "delta_mHa": -0.035149,
+          "abs_delta_mHa": 0.035149
+        },
+        {
+          "cycle": 1,
+          "cum_new_krylov": 30,
+          "total_energy_eh": -108.760929749587,
+          "delta_mHa": -0.046203,
+          "abs_delta_mHa": 0.046203
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 43,
+          "total_energy_eh": -108.760884698708,
+          "delta_mHa": -0.001153,
+          "abs_delta_mHa": 0.001153
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 44,
+          "total_energy_eh": -108.760884713919,
+          "delta_mHa": -0.001168,
+          "abs_delta_mHa": 0.001168
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 45,
+          "total_energy_eh": -108.760887345297,
+          "delta_mHa": -0.003799,
+          "abs_delta_mHa": 0.003799
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 46,
+          "total_energy_eh": -108.760890714621,
+          "delta_mHa": -0.007169,
+          "abs_delta_mHa": 0.007169
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 47,
+          "total_energy_eh": -108.760900371754,
+          "delta_mHa": -0.016826,
+          "abs_delta_mHa": 0.016826
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 48,
+          "total_energy_eh": -108.760900372786,
+          "delta_mHa": -0.016827,
+          "abs_delta_mHa": 0.016827
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 49,
+          "total_energy_eh": -108.760900391896,
+          "delta_mHa": -0.016846,
+          "abs_delta_mHa": 0.016846
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 50,
+          "total_energy_eh": -108.760900434488,
+          "delta_mHa": -0.016888,
+          "abs_delta_mHa": 0.016888
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 51,
+          "total_energy_eh": -108.760901230431,
+          "delta_mHa": -0.017684,
+          "abs_delta_mHa": 0.017684
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 52,
+          "total_energy_eh": -108.760901233454,
+          "delta_mHa": -0.017687,
+          "abs_delta_mHa": 0.017687
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 53,
+          "total_energy_eh": -108.760908423352,
+          "delta_mHa": -0.024877,
+          "abs_delta_mHa": 0.024877
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 54,
+          "total_energy_eh": -108.760917086274,
+          "delta_mHa": -0.03354,
+          "abs_delta_mHa": 0.03354
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 55,
+          "total_energy_eh": -108.760928143693,
+          "delta_mHa": -0.044598,
+          "abs_delta_mHa": 0.044598
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 56,
+          "total_energy_eh": -108.760929168043,
+          "delta_mHa": -0.045622,
+          "abs_delta_mHa": 0.045622
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 57,
+          "total_energy_eh": -108.760930168879,
+          "delta_mHa": -0.046623,
+          "abs_delta_mHa": 0.046623
+        },
+        {
+          "cycle": 2,
+          "cum_new_krylov": 58,
+          "total_energy_eh": -108.760930279137,
+          "delta_mHa": -0.046733,
+          "abs_delta_mHa": 0.046733
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 70,
+          "total_energy_eh": -108.760889180293,
+          "delta_mHa": -0.005634,
+          "abs_delta_mHa": 0.005634
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 71,
+          "total_energy_eh": -108.760889180707,
+          "delta_mHa": -0.005635,
+          "abs_delta_mHa": 0.005635
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 72,
+          "total_energy_eh": -108.760908636929,
+          "delta_mHa": -0.025091,
+          "abs_delta_mHa": 0.025091
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 73,
+          "total_energy_eh": -108.761041031018,
+          "delta_mHa": -0.157485,
+          "abs_delta_mHa": 0.157485
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 74,
+          "total_energy_eh": -108.761041574629,
+          "delta_mHa": -0.158029,
+          "abs_delta_mHa": 0.158029
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 75,
+          "total_energy_eh": -108.761060148892,
+          "delta_mHa": -0.176603,
+          "abs_delta_mHa": 0.176603
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 76,
+          "total_energy_eh": -108.761061855777,
+          "delta_mHa": -0.17831,
+          "abs_delta_mHa": 0.17831
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 77,
+          "total_energy_eh": -108.761070058263,
+          "delta_mHa": -0.186512,
+          "abs_delta_mHa": 0.186512
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 78,
+          "total_energy_eh": -108.761070169363,
+          "delta_mHa": -0.186623,
+          "abs_delta_mHa": 0.186623
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 79,
+          "total_energy_eh": -108.761072953797,
+          "delta_mHa": -0.189408,
+          "abs_delta_mHa": 0.189408
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 80,
+          "total_energy_eh": -108.761077877563,
+          "delta_mHa": -0.194331,
+          "abs_delta_mHa": 0.194331
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 81,
+          "total_energy_eh": -108.761097870262,
+          "delta_mHa": -0.214324,
+          "abs_delta_mHa": 0.214324
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 82,
+          "total_energy_eh": -108.761268810301,
+          "delta_mHa": -0.385264,
+          "abs_delta_mHa": 0.385264
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 83,
+          "total_energy_eh": -108.761270222886,
+          "delta_mHa": -0.386677,
+          "abs_delta_mHa": 0.386677
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 84,
+          "total_energy_eh": -108.761271954252,
+          "delta_mHa": -0.388408,
+          "abs_delta_mHa": 0.388408
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 85,
+          "total_energy_eh": -108.761272969787,
+          "delta_mHa": -0.389424,
+          "abs_delta_mHa": 0.389424
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 86,
+          "total_energy_eh": -108.761277348783,
+          "delta_mHa": -0.393803,
+          "abs_delta_mHa": 0.393803
+        }
+      ],
+      "min_signed_delta_mHa": -0.393803,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 500,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop500_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop1000_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop1000_m031",
+      "run_label": "Kstore=10000 Kprop=1000 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.7608862395,
+      "final_delta_mHa": -0.002693,
+      "final_abs_delta_mHa": 0.002693,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.7608862395,
+      "plotted_final_abs_delta_mHa": 0.002693,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 282,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": true,
+      "below_reference_points": [
+        {
+          "cycle": 2,
+          "cum_new_krylov": 58,
+          "total_energy_eh": -108.760883547065,
+          "delta_mHa": -1e-06,
+          "abs_delta_mHa": 1e-06
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 70,
+          "total_energy_eh": -108.760883547617,
+          "delta_mHa": -2e-06,
+          "abs_delta_mHa": 2e-06
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 71,
+          "total_energy_eh": -108.760883628767,
+          "delta_mHa": -8.3e-05,
+          "abs_delta_mHa": 8.3e-05
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 72,
+          "total_energy_eh": -108.76088363827,
+          "delta_mHa": -9.2e-05,
+          "abs_delta_mHa": 9.2e-05
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 73,
+          "total_energy_eh": -108.760883641575,
+          "delta_mHa": -9.5e-05,
+          "abs_delta_mHa": 9.5e-05
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 74,
+          "total_energy_eh": -108.760883644938,
+          "delta_mHa": -9.9e-05,
+          "abs_delta_mHa": 9.9e-05
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 75,
+          "total_energy_eh": -108.760883645545,
+          "delta_mHa": -9.9e-05,
+          "abs_delta_mHa": 9.9e-05
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 76,
+          "total_energy_eh": -108.76088364555,
+          "delta_mHa": -9.9e-05,
+          "abs_delta_mHa": 9.9e-05
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 77,
+          "total_energy_eh": -108.760883649939,
+          "delta_mHa": -0.000104,
+          "abs_delta_mHa": 0.000104
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 78,
+          "total_energy_eh": -108.760883650268,
+          "delta_mHa": -0.000104,
+          "abs_delta_mHa": 0.000104
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 79,
+          "total_energy_eh": -108.760883661192,
+          "delta_mHa": -0.000115,
+          "abs_delta_mHa": 0.000115
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 80,
+          "total_energy_eh": -108.760883944455,
+          "delta_mHa": -0.000398,
+          "abs_delta_mHa": 0.000398
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 81,
+          "total_energy_eh": -108.760883987585,
+          "delta_mHa": -0.000441,
+          "abs_delta_mHa": 0.000441
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 82,
+          "total_energy_eh": -108.760883998802,
+          "delta_mHa": -0.000453,
+          "abs_delta_mHa": 0.000453
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 83,
+          "total_energy_eh": -108.7608840131,
+          "delta_mHa": -0.000467,
+          "abs_delta_mHa": 0.000467
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 84,
+          "total_energy_eh": -108.760884021707,
+          "delta_mHa": -0.000476,
+          "abs_delta_mHa": 0.000476
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 85,
+          "total_energy_eh": -108.760884026687,
+          "delta_mHa": -0.000481,
+          "abs_delta_mHa": 0.000481
+        },
+        {
+          "cycle": 3,
+          "cum_new_krylov": 86,
+          "total_energy_eh": -108.760884026687,
+          "delta_mHa": -0.000481,
+          "abs_delta_mHa": 0.000481
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 97,
+          "total_energy_eh": -108.760883590704,
+          "delta_mHa": -4.5e-05,
+          "abs_delta_mHa": 4.5e-05
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 98,
+          "total_energy_eh": -108.76088359092,
+          "delta_mHa": -4.5e-05,
+          "abs_delta_mHa": 4.5e-05
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 99,
+          "total_energy_eh": -108.760883620213,
+          "delta_mHa": -7.4e-05,
+          "abs_delta_mHa": 7.4e-05
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 100,
+          "total_energy_eh": -108.7608862395,
+          "delta_mHa": -0.002693,
+          "abs_delta_mHa": 0.002693
+        }
+      ],
+      "min_signed_delta_mHa": -0.002693,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 1000,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1000_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop1500_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop1500_m031",
+      "run_label": "Kstore=10000 Kprop=1500 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883552115,
+      "final_delta_mHa": -6e-06,
+      "final_abs_delta_mHa": 6e-06,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883552115,
+      "plotted_final_abs_delta_mHa": 6e-06,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 282,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": true,
+      "below_reference_points": [
+        {
+          "cycle": 4,
+          "cum_new_krylov": 99,
+          "total_energy_eh": -108.760883552073,
+          "delta_mHa": -6e-06,
+          "abs_delta_mHa": 6e-06
+        },
+        {
+          "cycle": 4,
+          "cum_new_krylov": 100,
+          "total_energy_eh": -108.760883552115,
+          "delta_mHa": -6e-06,
+          "abs_delta_mHa": 6e-06
+        }
+      ],
+      "min_signed_delta_mHa": -6e-06,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 1500,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop1500_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop2000_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop2000_m031",
+      "run_label": "Kstore=10000 Kprop=2000 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545887,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545887,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 282,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 2000,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2000_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop2500_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop2500_m031",
+      "run_label": "Kstore=10000 Kprop=2500 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545878,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545878,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 170,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 2500,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop2500_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop3000_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop3000_m031",
+      "run_label": "Kstore=10000 Kprop=3000 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545808,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545808,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 170,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 3000,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3000_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop3500_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop3500_m031",
+      "run_label": "Kstore=10000 Kprop=3500 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545956,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545956,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 142,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 3500,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop3500_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop4000_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop4000_m031",
+      "run_label": "Kstore=10000 Kprop=4000 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545966,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545966,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 142,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 4000,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4000_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop4500_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop4500_m031",
+      "run_label": "Kstore=10000 Kprop=4500 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545852,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545852,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 170,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 4500,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop4500_m031/ccik_stdout.log"
+    },
+    "kstore10000_kprop5000_m031": {
+      "backend": "qp",
+      "postprocess_only": true,
+      "postprocess_source": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/ccik_stdout.log",
+      "run_name": "kstore10000_kprop5000_m031",
+      "run_label": "Kstore=10000 Kprop=5000 | m=31 nroot=3 ncycles=10",
+      "reference_total_energy_eh": -108.760883546432,
+      "final_total_energy_eh": -108.760883545852,
+      "final_delta_mHa": 0.0,
+      "final_abs_delta_mHa": 0.0,
+      "first_logged_abs_delta_mHa": 451.282901,
+      "plotted_final_total_energy_eh": -108.760883545852,
+      "plotted_final_abs_delta_mHa": 0.0,
+      "plotted_iterations": 100,
+      "trace_points": 104,
+      "available_max_cumulative_iterations": 170,
+      "requested_max_cumulative_iterations": 100,
+      "reached_requested_max_cumulative_iterations": true,
+      "exactized_trace_points": 0,
+      "exactizeplus_trace_points": 0,
+      "below_fci_detected": false,
+      "below_reference_points": [],
+      "min_signed_delta_mHa": 0.0,
+      "improves_over_first_point": true,
+      "chemical_accuracy_target_mHa": 1.0,
+      "standard_reached_chemical_accuracy": true,
+      "standard_first_chemical_accuracy_iteration": 14,
+      "exactized_reached_chemical_accuracy": false,
+      "exactized_first_chemical_accuracy_iteration": null,
+      "exactizeplus_reached_chemical_accuracy": false,
+      "exactizeplus_first_chemical_accuracy_iteration": null,
+      "fixed_store_keep": 10000,
+      "fixed_propagate_keep": 5000,
+      "plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/energy_error_vs_iteration.png",
+      "plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/energy_error_vs_iteration.pdf",
+      "trace_csv": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/iteration_trace.csv",
+      "trace_json": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/iteration_trace.json",
+      "stdout_log": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/kstore10000_kprop5000_m031/ccik_stdout.log"
+    }
+  },
+  "incomplete_or_short_runs": [],
+  "comparison_plot_png": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/energy_error_vs_iteration_comparison.png",
+  "comparison_plot_pdf": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/10,10/kprop_sweep_kstore10000_t24_large/energy_error_vs_iteration_comparison.pdf"
+}

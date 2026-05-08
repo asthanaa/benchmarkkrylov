@@ -84,8 +84,29 @@ mkdocs build
 - research workflows belong in `scripts/advanced/`
 - shared advanced helpers belong in `scripts/_shared/`
 - vendored Quantum Package plugin sources belong in `ccik_qp/`
-- tracked study definitions belong in `inputs/`
+- tracked teaching study definitions belong in `sample_inputs/`
+- tracked Talon study inputs and shareable result files belong in `inputs/`
+- raw `.ezfio/work/` runtime tensors and other large regenerable blobs stay local
 - public package code belongs in `src/ccik/`
+
+## Calculation workflow rules
+
+- production and long calculations run on Talon, not on the local machine
+- calculations should be submitted as SLURM jobs using the appropriate `talon`
+  or `talon-ayush` route for that job
+- keep reproducible submit scripts and input files in the repo when they are
+  useful for repeating a calculation
+- sync shareable Talon outputs back into the Documents checkout with:
+
+  ```bash
+  bash scripts/advanced/sync_talon_inputs_to_local.sh
+  ```
+
+- keep raw runtime blobs local; do not commit `.ezfio/work/`, oversized
+  archives, or files larger than 500 MB
+- after syncing safe outputs, commit in the Documents checkout and push to
+  GitHub; fast-forward Talon from GitHub when Talon needs the updated tracked
+  state
 
 ## Adding a new example
 

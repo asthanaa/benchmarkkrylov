@@ -1,0 +1,39 @@
+{
+  "qp_root": "/home/ayush.asthana/quantum_package/qp2",
+  "omp_threads": 24,
+  "label": "N2 CAS(12,12) R=2.00 A | QP thick fixed-budget sweep | Kprop=500 | Kstore=1000/5000/10000/20000/40000/80000/160000/320000 | i=50 | t24 | CKCI-0 diagnostics",
+  "ezfio_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/ckci0/system_setup/n2.ezfio",
+  "fcidump_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/ckci0/system_setup/qp_active.FCIDUMP",
+  "ecore": -37.39676191601299,
+  "norb": 12,
+  "nelec": [
+    6,
+    6
+  ],
+  "reference_mode": "exact_fci",
+  "effective_reference_mode": "exact_fci",
+  "reference_total_energy_eh": -108.7759885933355,
+  "reference_summary": {
+    "success": true,
+    "reference_kind": "exact_fci",
+    "reference_label": "Exact FCI",
+    "total_energy_eh": -108.7759885933355,
+    "electronic_energy_eh": -71.3792266773225,
+    "ecore_eh": -37.39676191601299,
+    "norb": 12,
+    "nelec": [
+      6,
+      6
+    ]
+  },
+  "reference_choice_path": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/ckci0/system_setup/reference_choice.json",
+  "basis": "6-31g",
+  "setup_backend": "fresh_qp_setup",
+  "setup_fallback_reason": null,
+  "distance_ang": 2.0,
+  "ncas": 12,
+  "nelecas": 12,
+  "ncore": 1,
+  "nmo_total": 18,
+  "copied_from_setup_dir": "/home/ayush.asthana/code/CompressK/inputs/n2/2.0/12,12/system_setup"
+}

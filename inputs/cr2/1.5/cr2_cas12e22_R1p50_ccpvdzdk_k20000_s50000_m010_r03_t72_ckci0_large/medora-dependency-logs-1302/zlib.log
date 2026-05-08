@@ -1,0 +1,105 @@
+QP_ROOT=/home/ayush.asthana/quantum_package/qp2_medora_arm
+Already on 'master'
+Your branch is up to date with 'origin/master'.
+Already up to date.
+Architecture: aarch64
+Disabling GPU acceleration
+[0;31m
+#########################################################
+#                                                       #
+#       Automatic installation of dependencies          #
+#                                                       #
+# USE AT YOUR OWN RISK :                                #
+# No support will be provided by the quantum package    #
+# developers for the installation of external software. #
+#                                                       #
+# You may refer to the INSTALL.rst file for help.       #
+#                                                       #
+#########################################################
+[m
+Executing:
+   cd "${QP_ROOT}"/external
+   tar --gunzip --extract --file qp2-dependencies/zlib-1.2.11.tar.gz
+   cd zlib-*/
+   ./configure --prefix=/home/ayush.asthana/quantum_package/qp2_medora_arm && make && make install
+
+[0;94m++ cd /home/ayush.asthana/quantum_package/qp2_medora_arm/external
+++ tar --gunzip --extract --file qp2-dependencies/zlib-1.2.11.tar.gz
+++ cd zlib-1.2.11/
+++ ./configure --prefix=/home/ayush.asthana/quantum_package/qp2_medora_arm
+Checking for shared library support...
+Building shared library libz.so.1.2.11 with gcc.
+Checking for size_t... Yes.
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+Checking for strerror... Yes.
+Checking for unistd.h... Yes.
+Checking for stdarg.h... Yes.
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+Checking for vsnprintf() in stdio.h... Yes.
+Checking for return value of vsnprintf()... Yes.
+Checking for attribute(visibility) support... Yes.
+++ make
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -I. -c -o example.o test/example.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o adler32.o adler32.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o crc32.o crc32.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o deflate.o deflate.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o infback.o infback.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o inffast.o inffast.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o inflate.o inflate.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o inftrees.o inftrees.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o trees.o trees.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o zutil.o zutil.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o compress.o compress.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o uncompr.o uncompr.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o gzclose.o gzclose.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o gzlib.o gzlib.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o gzread.o gzread.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -c -o gzwrite.o gzwrite.c
+ar rc libz.a adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o 
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o example example.o -L. libz.a
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -I. -c -o minigzip.o test/minigzip.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o minigzip minigzip.o -L. libz.a
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/adler32.o adler32.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/crc32.o crc32.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/deflate.o deflate.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/infback.o infback.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/inffast.o inffast.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/inflate.o inflate.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/inftrees.o inftrees.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/trees.o trees.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/zutil.o zutil.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/compress.o compress.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/uncompr.o uncompr.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/gzclose.o gzclose.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/gzlib.o gzlib.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/gzread.o gzread.c
+gcc --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN  -DPIC -c -o objs/gzwrite.o gzwrite.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map --std=gnu99 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o libz.so.1.2.11 adler32.lo crc32.lo deflate.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo zutil.lo compress.lo uncompr.lo gzclose.lo gzlib.lo gzread.lo gzwrite.lo  -lc 
+rm -f libz.so libz.so.1
+ln -s libz.so.1.2.11 libz.so
+ln -s libz.so.1.2.11 libz.so.1
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o examplesh example.o -L. libz.so.1.2.11
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o minigzipsh minigzip.o -L. libz.so.1.2.11
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -I. -D_FILE_OFFSET_BITS=64 -c -o example64.o test/example.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o example64 example64.o -L. libz.a
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -I. -D_FILE_OFFSET_BITS=64 -c -o minigzip64.o test/minigzip.c
+gcc --std=gnu99 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o minigzip64 minigzip64.o -L. libz.a
+++ make install
+rm -f /home/ayush.asthana/quantum_package/qp2_medora_arm/lib/libz.a
+cp libz.a /home/ayush.asthana/quantum_package/qp2_medora_arm/lib
+chmod 644 /home/ayush.asthana/quantum_package/qp2_medora_arm/lib/libz.a
+cp libz.so.1.2.11 /home/ayush.asthana/quantum_package/qp2_medora_arm/lib
+chmod 755 /home/ayush.asthana/quantum_package/qp2_medora_arm/lib/libz.so.1.2.11
+rm -f /home/ayush.asthana/quantum_package/qp2_medora_arm/share/man/man3/zlib.3
+cp zlib.3 /home/ayush.asthana/quantum_package/qp2_medora_arm/share/man/man3
+chmod 644 /home/ayush.asthana/quantum_package/qp2_medora_arm/share/man/man3/zlib.3
+rm -f /home/ayush.asthana/quantum_package/qp2_medora_arm/lib/pkgconfig/zlib.pc
+cp zlib.pc /home/ayush.asthana/quantum_package/qp2_medora_arm/lib/pkgconfig
+chmod 644 /home/ayush.asthana/quantum_package/qp2_medora_arm/lib/pkgconfig/zlib.pc
+rm -f /home/ayush.asthana/quantum_package/qp2_medora_arm/include/zlib.h /home/ayush.asthana/quantum_package/qp2_medora_arm/include/zconf.h
+cp zlib.h zconf.h /home/ayush.asthana/quantum_package/qp2_medora_arm/include
+chmod 644 /home/ayush.asthana/quantum_package/qp2_medora_arm/include/zlib.h /home/ayush.asthana/quantum_package/qp2_medora_arm/include/zconf.h
+++ set +x
+[m
+configure: ZeroMQ (zeromq) is not installed.

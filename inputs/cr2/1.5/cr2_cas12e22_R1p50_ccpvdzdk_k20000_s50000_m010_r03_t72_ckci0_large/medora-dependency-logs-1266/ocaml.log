@@ -1,0 +1,2 @@
+configure: error: unrecognized option: `-i'
+Try `./configure --help' for more information

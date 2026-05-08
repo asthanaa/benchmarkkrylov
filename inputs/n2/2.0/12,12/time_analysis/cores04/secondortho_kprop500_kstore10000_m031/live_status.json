@@ -1,0 +1,16 @@
+{
+  "label": "secondortho | Kprop=500 Kstore=10000 | m=31 nroot=3 ncycles=3 | cores=4",
+  "cum_new_krylov": 86,
+  "cycle": 3,
+  "basis_size": 31,
+  "support_union_size": null,
+  "total_energy_eh": -108.775880206953,
+  "delta_mHa": 0.108386,
+  "abs_delta_mHa": 0.108386,
+  "exactized_total_energy_eh": null,
+  "exactized_abs_delta_mHa": null,
+  "exactized_solver_kind": null,
+  "exactizeplus_total_energy_eh": null,
+  "exactizeplus_abs_delta_mHa": null,
+  "exactizeplus_solver_kind": null
+}

@@ -1,0 +1,11 @@
+{
+  "ecore": -29.714164431005877,
+  "fcidump_path": "/Users/mushir.kolathingal/Documents/research/CompressK/inputs/n2/1.1/n2_cas12_12_R1p10_m25_c08_r3/system_setup/qp_active.FCIDUMP",
+  "nelec": [
+    6,
+    6
+  ],
+  "norb": 12,
+  "source_kind": "generated_from_qp",
+  "source_path": "inputs/n2/1.1/n2_cas12_12_R1p10_m25_c08_r3/system_setup/n2.ezfio.FCIDUMP"
+}

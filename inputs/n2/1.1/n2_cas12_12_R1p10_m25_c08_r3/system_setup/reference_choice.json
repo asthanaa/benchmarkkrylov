@@ -1,0 +1,33 @@
+{
+  "attempts": [],
+  "chosen_reference_kind": "exact_fci",
+  "chosen_reference_label": "Exact FCI",
+  "cipsi_conv_tol": 1e-10,
+  "cipsi_cutoff_ladder": [
+    0.0005,
+    0.0002,
+    0.0001,
+    5e-05,
+    2e-05
+  ],
+  "cipsi_max_file_mb": 500,
+  "cipsi_memory_gb": 64,
+  "cipsi_rungs": [
+    100000,
+    300000,
+    1000000,
+    2000000
+  ],
+  "cipsi_scratch_root": "/tmp/cka_cipsi",
+  "cipsi_total_scratch_gb": 45.0,
+  "dmrg_conv_tol": 1e-08,
+  "dmrg_max_file_mb": 500,
+  "dmrg_memory_gb": 64,
+  "dmrg_python": "/Users/mushir.kolathingal/Documents/research/CompressK/.conda/cka-dmrg-py312/bin/python",
+  "dmrg_scratch_root": "/tmp/cka_dmrg",
+  "dmrg_threads": 8,
+  "dmrg_total_scratch_gb": 45.0,
+  "effective_reference_mode": "exact_fci",
+  "reference_total_energy_eh": -108.98124142059532,
+  "requested_reference_mode": "exact_fci"
+}

@@ -1,0 +1,97 @@
+ ============================================
+  Quantum Package plugin: baseline ccik
+  Determinant-driven compressed Krylov solver
+ ============================================
+ ccik_generator_keep  =          512
+ ccik_generator_fraction =    0.0000000000000000     
+ ccik_generator_abs_coeff_cutoff =    0.0000000000000000     
+ ccik_max_parents_for_expansion =          512
+ ccik_include_current_support =  T
+ ccik_selector_keep   =        40000
+ ccik_external_keep   =        40000
+ ccik_external_candidate_factor =            4
+ ccik_pt2_rank_weight =    1.0000000000000000     
+ ccik_selector_mode   = abs_residual
+ ccik_matvec_backend = connected_sd_fullq
+ ccik_compression_policy = fixed_budget
+ ccik_fixed_store_keep =        40000
+ ccik_fixed_propagate_keep =          500
+ ccik_secondortho    =  F
+ ccik_store_abs_tol  =    0.0000000000000000     
+ ccik_propagate_abs_tol =    0.0000000000000000     
+ ccik_nkeep           =        40000
+ ccik_tmp_keep_factor =            2
+ ccik_preserve_prev_support =  T
+ ccik_preserve_prev_support_cap =          512
+ ccik_total_det_budget=            0
+ ccik_basis_size      =           31
+ ccik_conv_tol        =    1.0000000000000000E-010
+ ccik_ritz_overlap_tol=    1.0000000000000000E-008
+ ccik_ritz_max_drop   =    0.0000000000000000     
+ ccik_save_final_wf   =  T
+ ccik_do_post_pt2     =  F
+ ccik_max_cycle       =           10
+ ccik_restart_m_cycle =           31
+ ccik_restart_nroot   =            3
+ ccik_exactized_checkpoint_every =            1
+ ccik_exactized_resid_tol =    1.0000000000000000E-010
+ ccik_exactized_max_iter =          200
+ ccik_exactized_max_subspace =           24
+ ccik_exactized_restart_keep =            4
+ ccik_verbose         =  F
+ ccik_debug_trace     =  F
+ ccik_debug_trace_topn=            8
+ ccik_debug_allow_legacy_fixed_budget =  F
+
+.. >>>>> [ RES  MEM :          0.006 GB ] [ VIRT MEM :          3.045 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.02  s ] [ CPU  TIME:           0.10  s ] <<<<< ..
+
+
+Nuclear Coordinates (Angstroms)
+===============================
+
+================ ============ ============ ============ ============
+      Atom          Charge          X            Y            Z 
+================ ============ ============ ============ ============
+N                    7.000000     0.000000     0.000000    -1.000000
+N                    7.000000     0.000000     0.000000     1.000000
+================ ============ ============ ============ ============
+
+Minimal interatomic distance found:       2.0000 Angstrom
+
+.. >>>>> [ RES  MEM :          0.006 GB ] [ VIRT MEM :          3.045 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.02  s ] [ CPU  TIME:           0.10  s ] <<<<< ..
+
+* Nuclear repulsion energy                           12.96484166144465    
+* mo_num                                                        18
+.. >>>>> [ IO READ: mo_class ] <<<<< ..
+* N_int                                                          1
+ MO map initialized:                 14706
+ Reading the MO integrals
+ MO integrals provided
+ MO integrals cache: (           1 ,           18 ),                  2048 MiB
+ Providing the one-electron integrals
+
+.. >>>>> [ RES  MEM :          0.114 GB ] [ VIRT MEM :          5.090 GB ] <<<<< ..
+.. >>>>> [ WALL TIME:           0.03  s ] [ CPU  TIME:           0.36  s ] <<<<< ..
+
+ Read  mo_coef
+ * mo_label          Canonical
+* Number of determinants                                         1
+* Number of active   MOs                                        12
+ Active MOs:
+           2           3           4           5           6           7           8           9          10          11          12          13
+ccik(thick) cycle=   1 iter=   1  total=       -108.309600645432  ref=       -108.775988593335  delta_mEh=      466.387948
+ccik(thick) cycle=   1 iter=   2  total=       -108.556314116814  ref=       -108.775988593335  delta_mEh=      219.674477
+ ccik(exactized) cycle=           1  iter=           2  k=           1  support=        1693  total=  -108.63844058703071       ref=  -108.77598859333550       delta_mEh=   137.54800630478314       resid=   3.9104512806726872E-011  solver=davidson iters=          27  matvecs=          26  converged= T  t_union_s=   2.8586387634277344E-004  t_prep_s=   2.3976460099220276E-002  t_solve_s=  0.71923934854567051       t_wall_s=  0.74350873567163944       t_cpu_s=  0.74177400000000038     
+CCIK_TRACE_EXACTIZED cycle=1 iter=2 k=1 support=1693 electronic=-1.2160328224847537E+02 total=-1.0863844058703071E+02 ref=-1.0877598859333550E+02 delta_mEh=1.3754800630478314E+02 solver=davidson iters=27 matvecs=26 converged=T resid=3.9104512806726872E-11 t_union_s=2.8586387634277344E-04 t_prep_s=2.3976460099220276E-02 t_solve_s=7.1923934854567051E-01 t_wall_s=7.4350873567163944E-01 t_cpu_s=7.4177400000000038E-01
+ccik(thick) cycle=   1 iter=   3  total=       -108.592759450900  ref=       -108.775988593335  delta_mEh=      183.229142
+ ccik(exactized) cycle=           1  iter=           3  k=           2  support=       40277  total=  -108.75617287189732       ref=  -108.77598859333550       delta_mEh=   19.815721438178002       resid=   7.0208967321844474E-011  solver=davidson iters=          45  matvecs=          44  converged= T  t_union_s=   8.7432917207479477E-003  t_prep_s=   8.4755975175648928       t_solve_s=   53.631723450496793       t_wall_s=   62.116081541404128       t_cpu_s=   61.975322999999996     
+CCIK_TRACE_EXACTIZED cycle=1 iter=3 k=2 support=40277 electronic=-1.2172101453334197E+02 total=-1.0875617287189732E+02 ref=-1.0877598859333550E+02 delta_mEh=1.9815721438178002E+01 solver=davidson iters=45 matvecs=44 converged=T resid=7.0208967321844474E-11 t_union_s=8.7432917207479477E-03 t_prep_s=8.4755975175648928E+00 t_solve_s=5.3631723450496793E+01 t_wall_s=6.2116081541404128E+01 t_cpu_s=6.1975322999999996E+01
+ccik(thick) cycle=   1 iter=   4  total=       -108.628026139132  ref=       -108.775988593335  delta_mEh=      147.962454
+ ccik(exactized) cycle=           1  iter=           4  k=           3  support=       62339  total=  -108.77559228767132       ref=  -108.77598859333550       delta_mEh=  0.39630566418225044       resid=   5.8978395953944578E-011  solver=davidson iters=          55  matvecs=          53  converged= T  t_union_s=   1.9029550254344940E-002  t_prep_s=   19.895884955301881       t_solve_s=   97.495918927714229       t_wall_s=   117.41084843687713       t_cpu_s=   117.13743300000000     
+CCIK_TRACE_EXACTIZED cycle=1 iter=4 k=3 support=62339 electronic=-1.2174043394911597E+02 total=-1.0877559228767132E+02 ref=-1.0877598859333550E+02 delta_mEh=3.9630566418225044E-01 solver=davidson iters=55 matvecs=53 converged=T resid=5.8978395953944578E-11 t_union_s=1.9029550254344940E-02 t_prep_s=1.9895884955301881E+01 t_solve_s=9.7495918927714229E+01 t_wall_s=1.1741084843687713E+02 t_cpu_s=1.1713743300000000E+02
+ccik(thick) cycle=   1 iter=   5  total=       -108.669026870430  ref=       -108.775988593335  delta_mEh=      106.961723
+ ccik(exactized) cycle=           1  iter=           5  k=           4  support=       64948  total=  -108.77578713837704       ref=  -108.77598859333550       delta_mEh=  0.20145495845724781       resid=   8.3651164167772200E-011  solver=davidson iters=          48  matvecs=          46  converged= T  t_union_s=   2.9589323326945305E-002  t_prep_s=   21.604768844321370       t_solve_s=   91.972511954605579       t_wall_s=   113.60688581317663       t_cpu_s=   113.25977999999998     
+CCIK_TRACE_EXACTIZED cycle=1 iter=5 k=4 support=64948 electronic=-1.2174062879982169E+02 total=-1.0877578713837704E+02 ref=-1.0877598859333550E+02 delta_mEh=2.0145495845724781E-01 solver=davidson iters=48 matvecs=46 converged=T resid=8.3651164167772200E-11 t_union_s=2.9589323326945305E-02 t_prep_s=2.1604768844321370E+01 t_solve_s=9.1972511954605579E+01 t_wall_s=1.1360688581317663E+02 t_cpu_s=1.1325977999999998E+02
+ccik(thick) cycle=   1 iter=   6  total=       -108.678538642140  ref=       -108.775988593335  delta_mEh=       97.449951

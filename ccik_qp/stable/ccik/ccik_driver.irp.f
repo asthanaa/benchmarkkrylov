@@ -23,6 +23,7 @@ subroutine ccik_print_parameters
   print *, 'ccik_compression_policy = ', trim(adjustl(ccik_compression_policy))
   print *, 'ccik_fixed_store_keep = ', ccik_fixed_store_keep
   print *, 'ccik_fixed_propagate_keep = ', ccik_fixed_propagate_keep
+  print *, 'ccik_secondortho    = ', ccik_secondortho
   print *, 'ccik_store_abs_tol  = ', ccik_store_abs_tol
   print *, 'ccik_propagate_abs_tol = ', ccik_propagate_abs_tol
   print *, 'ccik_nkeep           = ', ccik_nkeep
@@ -39,9 +40,15 @@ subroutine ccik_print_parameters
   print *, 'ccik_max_cycle       = ', ccik_max_cycle
   print *, 'ccik_restart_m_cycle = ', ccik_restart_m_cycle
   print *, 'ccik_restart_nroot   = ', ccik_restart_nroot
+  print *, 'ccik_exactized_checkpoint_every = ', ccik_exactized_checkpoint_every
+  print *, 'ccik_exactized_resid_tol = ', ccik_exactized_resid_tol
+  print *, 'ccik_exactized_max_iter = ', ccik_exactized_max_iter
+  print *, 'ccik_exactized_max_subspace = ', ccik_exactized_max_subspace
+  print *, 'ccik_exactized_restart_keep = ', ccik_exactized_restart_keep
   print *, 'ccik_verbose         = ', ccik_verbose
   print *, 'ccik_debug_trace     = ', ccik_debug_trace
   print *, 'ccik_debug_trace_topn= ', ccik_debug_trace_topn
+  print *, 'ccik_debug_allow_legacy_fixed_budget = ', ccik_debug_allow_legacy_fixed_budget
 end
 
 
@@ -150,6 +157,223 @@ subroutine ccik_debug_compare_vectors(tag, lhs, rhs)
 end subroutine ccik_debug_compare_vectors
 
 
+logical function ccik_det_entry_is_zero(det_src, idx)
+  use bitmasks
+  implicit none
+  integer, intent(in) :: idx
+  integer(bit_kind), intent(in) :: det_src(N_int,2,*)
+  integer :: l, isp
+
+  ccik_det_entry_is_zero = .true.
+  do isp = 1, 2
+    do l = 1, N_int
+      if (det_src(l,isp,idx) /= 0_bit_kind) then
+        ccik_det_entry_is_zero = .false.
+        return
+      end if
+    end do
+  end do
+end function ccik_det_entry_is_zero
+
+
+logical function ccik_same_det_entry(det_src, ia, ib)
+  use bitmasks
+  implicit none
+  integer, intent(in) :: ia, ib
+  integer(bit_kind), intent(in) :: det_src(N_int,2,*)
+  integer :: l, isp
+
+  ccik_same_det_entry = .true.
+  do isp = 1, 2
+    do l = 1, N_int
+      if (det_src(l,isp,ia) /= det_src(l,isp,ib)) then
+        ccik_same_det_entry = .false.
+        return
+      end if
+    end do
+  end do
+end function ccik_same_det_entry
+
+
+subroutine ccik_debug_trace_detset(tag, det_src, coef_src, nvec)
+  use bitmasks
+  implicit none
+  character(len=*), intent(in) :: tag
+  integer, intent(in) :: nvec
+  integer(bit_kind), intent(in) :: det_src(N_int,2,*)
+  double precision, intent(in) :: coef_src(psi_det_size,*)
+  integer, parameter :: trace_unit = 916
+  integer :: i, nshow
+  integer(bit_kind) :: a1, a2, b1, b2
+
+  if (.not. ccik_debug_trace) return
+  if (nvec <= 0) return
+
+  nshow = min(nvec, max(0, ccik_debug_trace_topn))
+  open(unit=trace_unit, file='ccik_debug_trace.log', status='unknown', position='append', action='write')
+  write(trace_unit,'(A,1X,A,1X,I8,1X,I8)') 'CCIK_TRACE_DETSET', trim(tag), nvec, nshow
+  do i = 1, nshow
+    a1 = det_src(1,1,i)
+    b1 = det_src(1,2,i)
+    a2 = 0_bit_kind
+    b2 = 0_bit_kind
+    if (N_int >= 2) then
+      a2 = det_src(2,1,i)
+      b2 = det_src(2,2,i)
+    end if
+    write(trace_unit,'(A,1X,A,1X,I8,1X,I0,1X,I0,1X,I0,1X,I0,1X,ES24.16)') 'CCIK_TRACE_DET', trim(tag), i, &
+         a1, a2, b1, b2, coef_src(i,1)
+  end do
+  close(trace_unit)
+end subroutine ccik_debug_trace_detset
+
+
+subroutine ccik_validate_detset(tag, det_src, coef_src, nvec, max_size)
+  use bitmasks
+  implicit none
+  character(len=*), intent(in) :: tag
+  integer, intent(in) :: nvec, max_size
+  integer(bit_kind), intent(in) :: det_src(N_int,2,*)
+  double precision, intent(in) :: coef_src(psi_det_size,*)
+  integer :: i, j, l, dup_limit, nalpha, nbeta
+  logical, external :: ccik_det_entry_is_zero, ccik_same_det_entry
+
+  if (nvec < 0 .or. nvec > max_size) then
+    write(*,'(A)') 'ccik error: invalid determinant-set size before connected_sd_fullq internal pass'
+    write(*,'(A,A,A,I10,A,I10)') 'ccik error: set=', trim(tag), '  nvec=', nvec, '  max=', max_size
+    call flush(6)
+    stop 2
+  end if
+  if (nvec <= 0) return
+
+  do i = 1, nvec
+    if (ccik_det_entry_is_zero(det_src, i)) then
+      write(*,'(A)') 'ccik error: zero determinant encountered before connected_sd_fullq internal pass'
+      write(*,'(A,A,A,I10)') 'ccik error: set=', trim(tag), '  slot=', i
+      call flush(6)
+      stop 2
+    end if
+    nalpha = 0
+    nbeta = 0
+    do l = 1, N_int
+      nalpha = nalpha + popcnt(det_src(l,1,i))
+      nbeta = nbeta + popcnt(det_src(l,2,i))
+    end do
+    if (nalpha /= elec_alpha_num .or. nbeta /= elec_beta_num) then
+      write(*,'(A)') 'ccik error: invalid determinant electron count before connected_sd_fullq internal pass'
+      write(*,'(A,A,A,I10,A,I10,A,I10,A,I10,A,I10)') 'ccik error: set=', trim(tag), '  slot=', i, &
+           '  alpha=', nalpha, '  beta=', nbeta, '  expected_alpha=', elec_alpha_num, '  expected_beta=', elec_beta_num
+      call flush(6)
+      stop 2
+    end if
+    if (coef_src(i,1) /= coef_src(i,1)) then
+      write(*,'(A)') 'ccik error: NaN coefficient encountered before connected_sd_fullq internal pass'
+      write(*,'(A,A,A,I10)') 'ccik error: set=', trim(tag), '  slot=', i
+      call flush(6)
+      stop 2
+    end if
+  end do
+
+  if (.not. ccik_debug_trace) return
+  call ccik_debug_trace_detset(tag, det_src, coef_src, nvec)
+
+  dup_limit = min(nvec, 4096)
+  do i = 1, dup_limit
+    do j = i + 1, dup_limit
+      if (ccik_same_det_entry(det_src, i, j)) then
+        write(*,'(A)') 'ccik error: duplicate determinant encountered before connected_sd_fullq internal pass'
+        write(*,'(A,A,A,I10,A,I10)') 'ccik error: set=', trim(tag), '  first=', i, '  second=', j
+        call flush(6)
+        stop 2
+      end if
+    end do
+  end do
+end subroutine ccik_validate_detset
+
+
+subroutine ccik_validate_order_array(tag, order_src, nvec)
+  implicit none
+  character(len=*), intent(in) :: tag
+  integer, intent(in) :: nvec
+  integer, intent(in) :: order_src(*)
+  logical, allocatable :: seen(:)
+  integer :: i, idx
+
+  if (nvec <= 0) return
+  allocate(seen(nvec))
+  seen = .false.
+  do i = 1, nvec
+    idx = order_src(i)
+    if (idx < 1 .or. idx > nvec) then
+      write(*,'(A)') 'ccik error: invalid order-array entry before connected_sd_fullq internal pass'
+      write(*,'(A,A,A,I10,A,I10)') 'ccik error: order=', trim(tag), '  slot=', i, '  idx=', idx
+      call flush(6)
+      stop 2
+    end if
+    if (seen(idx)) then
+      write(*,'(A)') 'ccik error: duplicate order-array entry before connected_sd_fullq internal pass'
+      write(*,'(A,A,A,I10,A,I10)') 'ccik error: order=', trim(tag), '  slot=', i, '  idx=', idx
+      call flush(6)
+      stop 2
+    end if
+    seen(idx) = .true.
+  end do
+  deallocate(seen)
+end subroutine ccik_validate_order_array
+
+
+subroutine ccik_check_connected_sd_fullq_provider_state(projected_call_count, fixed_budget_mode)
+  use bitmasks
+  implicit none
+  integer, intent(in) :: projected_call_count
+  logical, intent(in) :: fixed_budget_mode
+  character(len=512) :: trace_line
+
+  if (N_det <= 0 .or. N_det > psi_det_size) then
+    write(*,'(A)') 'ccik error: invalid working-wavefunction size before connected_sd_fullq internal pass'
+    write(*,'(A,I10,A,I10)') 'ccik error: N_det=', N_det, '  psi_det_size=', psi_det_size
+    call flush(6)
+    stop 2
+  end if
+
+  if (fixed_budget_mode) then
+    if (N_det_propagators <= 0 .or. N_det_propagators > psi_det_size) then
+      write(*,'(A)') 'ccik error: invalid propagator count before connected_sd_fullq internal pass'
+      write(*,'(A,I10,A,I10)') 'ccik error: N_det_propagators=', N_det_propagators, '  psi_det_size=', psi_det_size
+      call flush(6)
+      stop 2
+    end if
+    if (N_det_generators <= 0 .or. N_det_generators > psi_det_size) then
+      write(*,'(A)') 'ccik error: invalid generator count before connected_sd_fullq internal pass'
+      write(*,'(A,I10,A,I10)') 'ccik error: N_det_generators=', N_det_generators, '  psi_det_size=', psi_det_size
+      call flush(6)
+      stop 2
+    end if
+    if (N_det_selectors <= 0 .or. N_det_selectors > psi_selectors_size) then
+      write(*,'(A)') 'ccik error: invalid selector count before connected_sd_fullq internal pass'
+      write(*,'(A,I10,A,I10)') 'ccik error: N_det_selectors=', N_det_selectors, '  psi_selectors_size=', psi_selectors_size
+      call flush(6)
+      stop 2
+    end if
+  end if
+
+  if (ccik_debug_trace) then
+    write(trace_line,'(A,1X,I8,1X,6I10)') 'CCIK_TRACE_PROVIDER_COUNTS', projected_call_count, &
+         N_det, N_det_propagators, N_det_generators, N_det_selectors, psi_det_size, N_int
+    call ccik_debug_trace_line(trace_line)
+  end if
+
+  call ccik_validate_detset('working', psi_det, psi_coef, N_det, psi_det_size)
+  if (.not. fixed_budget_mode) return
+
+  call ccik_validate_order_array('working_sorted_order', psi_det_working_sorted_order, N_det)
+  call ccik_validate_detset('propagators', psi_det_propagators, psi_coef_propagators, N_det_propagators, psi_det_size)
+  call ccik_validate_order_array('propagators_sorted_order', psi_det_propagators_sorted_order, N_det_propagators)
+  call ccik_validate_detset('generators', psi_det_generators, psi_coef_generators, N_det_generators, psi_det_size)
+  call ccik_validate_detset('selectors', psi_selectors, psi_selectors_coef, N_det_selectors, psi_selectors_size)
+end subroutine ccik_check_connected_sd_fullq_provider_state
+
+
 subroutine ccik_report_iteration_error(mode_label, cycle, iter_idx, electronic_energy)
   implicit none
   character(len=*), intent(in) :: mode_label
@@ -178,18 +402,701 @@ subroutine ccik_report_iteration_error(mode_label, cycle, iter_idx, electronic_e
 end subroutine ccik_report_iteration_error
 
 
+integer function ccik_cumulative_new_krylov(cycle, iter_idx)
+  implicit none
+  integer, intent(in) :: cycle, iter_idx
+  integer :: generated_in_cycle1, generated_in_later
+
+  if (cycle <= 1) then
+    ccik_cumulative_new_krylov = max(0, iter_idx - 1)
+    return
+  end if
+
+  generated_in_cycle1 = max(0, ccik_restart_m_cycle - 1)
+  generated_in_later = max(0, ccik_restart_m_cycle - max(1, ccik_restart_nroot))
+  ccik_cumulative_new_krylov = generated_in_cycle1 + (cycle - 2) * generated_in_later + &
+       max(0, iter_idx - max(1, ccik_restart_nroot))
+end function ccik_cumulative_new_krylov
+
+
+subroutine ccik_report_exactized_checkpoint(cycle, iter_idx, cum_new_krylov, support_size, electronic_energy, residual_norm, &
+    solver_iters, matvec_count, converged, support_build_s, prep_s, solve_s, checkpoint_wall_s, checkpoint_cpu_s)
+  implicit none
+  integer, intent(in) :: cycle, iter_idx, cum_new_krylov, support_size, solver_iters, matvec_count
+  logical, intent(in) :: converged
+  double precision, intent(in) :: electronic_energy, residual_norm
+  double precision, intent(in) :: support_build_s, prep_s, solve_s, checkpoint_wall_s, checkpoint_cpu_s
+  double precision :: total_energy, delta_meh
+  character(len=2048) :: trace_line
+  character(len=1) :: conv_char
+  character(len=32) :: s_cycle, s_iter, s_k, s_support, s_iters, s_matvecs
+  character(len=32) :: s_converged
+  character(len=40) :: s_electronic, s_total, s_ref, s_delta, s_resid
+  character(len=40) :: s_union, s_prep, s_solve, s_wall, s_cpu
+
+  if (.not. ccik_print_iteration_error) return
+
+  total_energy = electronic_energy + nuclear_repulsion
+  delta_meh = (total_energy - ccik_reference_total_energy) * 1000.d0
+  conv_char = 'F'
+  if (converged) conv_char = 'T'
+
+  write(*,*) 'ccik(exactized) cycle=', cycle, ' iter=', iter_idx, ' k=', cum_new_krylov, ' support=', support_size, &
+       ' total=', total_energy, ' ref=', ccik_reference_total_energy, ' delta_mEh=', delta_meh, &
+       ' resid=', residual_norm, ' solver=davidson', ' iters=', solver_iters, ' matvecs=', matvec_count, &
+       ' converged=', converged, ' t_union_s=', support_build_s, ' t_prep_s=', prep_s, ' t_solve_s=', solve_s, &
+       ' t_wall_s=', checkpoint_wall_s, ' t_cpu_s=', checkpoint_cpu_s
+  call flush(6)
+
+  write(s_cycle,'(I0)') cycle
+  write(s_iter,'(I0)') iter_idx
+  write(s_k,'(I0)') cum_new_krylov
+  write(s_support,'(I0)') support_size
+  write(s_iters,'(I0)') solver_iters
+  write(s_matvecs,'(I0)') matvec_count
+  write(s_electronic,'(ES24.16)') electronic_energy
+  write(s_total,'(ES24.16)') total_energy
+  write(s_ref,'(ES24.16)') ccik_reference_total_energy
+  write(s_delta,'(ES24.16)') delta_meh
+  write(s_resid,'(ES24.16)') residual_norm
+  write(s_union,'(ES24.16)') support_build_s
+  write(s_prep,'(ES24.16)') prep_s
+  write(s_solve,'(ES24.16)') solve_s
+  write(s_wall,'(ES24.16)') checkpoint_wall_s
+  write(s_cpu,'(ES24.16)') checkpoint_cpu_s
+  s_converged = conv_char
+  trace_line = 'CCIK_TRACE_EXACTIZED cycle=' // trim(adjustl(s_cycle)) // &
+       ' iter=' // trim(adjustl(s_iter)) // &
+       ' k=' // trim(adjustl(s_k)) // &
+       ' support=' // trim(adjustl(s_support)) // &
+       ' electronic=' // trim(adjustl(s_electronic)) // &
+       ' total=' // trim(adjustl(s_total)) // &
+       ' ref=' // trim(adjustl(s_ref)) // &
+       ' delta_mEh=' // trim(adjustl(s_delta)) // &
+       ' solver=davidson' // &
+       ' iters=' // trim(adjustl(s_iters)) // &
+       ' matvecs=' // trim(adjustl(s_matvecs)) // &
+       ' converged=' // trim(adjustl(s_converged)) // &
+       ' resid=' // trim(adjustl(s_resid)) // &
+       ' t_union_s=' // trim(adjustl(s_union)) // &
+       ' t_prep_s=' // trim(adjustl(s_prep)) // &
+       ' t_solve_s=' // trim(adjustl(s_solve)) // &
+       ' t_wall_s=' // trim(adjustl(s_wall)) // &
+       ' t_cpu_s=' // trim(adjustl(s_cpu))
+  write(*,'(A)') trim(trace_line)
+  call flush(6)
+  call ccik_debug_trace_line(trace_line)
+end subroutine ccik_report_exactized_checkpoint
+
+
+subroutine ccik_build_support_union(qbasis, n_basis, support_vec)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: qbasis(*)
+  integer, intent(in) :: n_basis
+  type(ccik_vector), intent(inout) :: support_vec
+  integer(bit_kind), allocatable :: det_tmp(:,:,:)
+  double precision, allocatable :: coef_tmp(:)
+  integer :: total_n, i, offset
+
+  call ccik_vec_free(support_vec)
+  total_n = 0
+  do i = 1, n_basis
+    total_n = total_n + max(0, qbasis(i)%n)
+  end do
+  if (total_n <= 0) return
+
+  allocate(det_tmp(N_int,2,total_n), coef_tmp(total_n))
+  offset = 0
+  do i = 1, n_basis
+    if (qbasis(i)%n <= 0) cycle
+    det_tmp(:,:,offset+1:offset+qbasis(i)%n) = qbasis(i)%det(:,:,1:qbasis(i)%n)
+    coef_tmp(offset+1:offset+qbasis(i)%n) = 1.d0
+    offset = offset + qbasis(i)%n
+  end do
+  call ccik_vec_assign(support_vec, det_tmp, coef_tmp, total_n, N_int)
+  deallocate(det_tmp, coef_tmp)
+end subroutine ccik_build_support_union
+
+
+subroutine ccik_write_support_union_snapshot(support_vec)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec
+  integer :: iunit, i, l
+  character(len=512) :: snapshot_path
+
+  snapshot_path = trim(ezfio_filename)//'/work/ccik_final_support_union.txt'
+  open(newunit=iunit, file=trim(snapshot_path), status='replace', action='write', form='formatted')
+  write(iunit,'(I0,1X,I0)') N_int, support_vec%n
+  do i = 1, support_vec%n
+    do l = 1, N_int
+      write(iunit,'(I0,1X)',advance='no') support_vec%det(l,1,i)
+    end do
+    do l = 1, N_int
+      write(iunit,'(I0,1X)',advance='no') support_vec%det(l,2,i)
+    end do
+    write(iunit,*)
+  end do
+  close(iunit)
+  write(*,'(A)') 'CCIK_FINAL_SUPPORT_PATH = '//trim(snapshot_path)
+  write(*,'(A,I0)') 'CCIK_FINAL_SUPPORT_SIZE = ', support_vec%n
+end subroutine ccik_write_support_union_snapshot
+
+
+subroutine ccik_vec_to_dense_on_support(support_vec, src_vec, support_dim, coeffs)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec, src_vec
+  integer, intent(in) :: support_dim
+  double precision, intent(out) :: coeffs(support_dim)
+  integer :: isup, isrc, isp, l
+  logical :: same
+
+  coeffs = 0.d0
+  if (support_dim <= 0 .or. src_vec%n <= 0) return
+
+  do isrc = 1, src_vec%n
+    do isup = 1, support_dim
+      same = .true.
+      do isp = 1, 2
+        do l = 1, N_int
+          if (support_vec%det(l,isp,isup) /= src_vec%det(l,isp,isrc)) then
+            same = .false.
+            exit
+          end if
+        end do
+        if (.not. same) exit
+      end do
+      if (same) then
+        coeffs(isup) = src_vec%coef(isrc)
+        exit
+      end if
+    end do
+  end do
+end subroutine ccik_vec_to_dense_on_support
+
+
+subroutine ccik_build_lowest_ritz_vector_raw(qbasis, hq_basis, n_basis, vec)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: qbasis(*), hq_basis(*)
+  integer, intent(in) :: n_basis
+  type(ccik_vector), intent(inout) :: vec
+  double precision, allocatable :: eig(:), eigvec(:,:)
+  integer :: j
+  logical :: ok
+
+  call ccik_vec_free(vec)
+  allocate(eig(n_basis), eigvec(n_basis,n_basis))
+  call ccik_solve_ritz_problem(qbasis, hq_basis, n_basis, eig, eigvec)
+  do j = 1, n_basis
+    call ccik_vec_axpy(vec, eigvec(j,1), qbasis(j))
+  end do
+  call ccik_normalize_vector(vec, ok)
+  if (.not. ok) then
+    call ccik_vec_free(vec)
+    call ccik_vec_copy(vec, qbasis(1))
+  end if
+  deallocate(eig, eigvec)
+end subroutine ccik_build_lowest_ritz_vector_raw
+
+
+subroutine ccik_count_exactized_cache(support_vec, support_dim, row_count, diag, total_mini)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec
+  integer, intent(in) :: support_dim
+  integer, intent(out) :: row_count(support_dim), total_mini
+  double precision, intent(out) :: diag(support_dim)
+  integer(bit_kind), allocatable :: mini_det_tmp(:,:,:)
+  integer, allocatable :: idx_tmp(:)
+  integer :: i, n_minilist
+  double precision, external :: diag_H_mat_elem
+
+  if (support_dim <= 0) return
+
+  allocate(mini_det_tmp(N_int,2,support_dim), idx_tmp(support_dim))
+
+  total_mini = 0
+  do i = 1, support_dim
+    call create_minilist(support_vec%det(1,1,i), support_vec%det, mini_det_tmp, idx_tmp, support_dim, n_minilist, N_int)
+    row_count(i) = n_minilist
+    total_mini = total_mini + n_minilist
+    diag(i) = diag_H_mat_elem(support_vec%det(1,1,i), N_int)
+  end do
+
+  deallocate(mini_det_tmp, idx_tmp)
+end subroutine ccik_count_exactized_cache
+
+
+subroutine ccik_fill_exactized_cache(support_vec, support_dim, row_count, total_mini, row_offset, mini_det_flat, mini_idx_flat)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec
+  integer, intent(in) :: support_dim, row_count(support_dim), total_mini
+  integer, intent(out) :: row_offset(support_dim), mini_idx_flat(max(1,total_mini))
+  integer(bit_kind), intent(out) :: mini_det_flat(N_int,2,max(1,total_mini))
+  integer(bit_kind), allocatable :: mini_det_tmp(:,:,:)
+  integer, allocatable :: idx_tmp(:)
+  integer :: i, n_minilist, offset
+
+  if (support_dim <= 0) return
+
+  allocate(mini_det_tmp(N_int,2,support_dim), idx_tmp(support_dim))
+  offset = 0
+  do i = 1, support_dim
+    row_offset(i) = offset + 1
+    call create_minilist(support_vec%det(1,1,i), support_vec%det, mini_det_tmp, idx_tmp, support_dim, n_minilist, N_int)
+    if (n_minilist > 0) then
+      mini_det_flat(:,:,offset+1:offset+n_minilist) = mini_det_tmp(:,:,1:n_minilist)
+      mini_idx_flat(offset+1:offset+n_minilist) = idx_tmp(1:n_minilist)
+      offset = offset + n_minilist
+    end if
+  end do
+
+  deallocate(mini_det_tmp, idx_tmp)
+end subroutine ccik_fill_exactized_cache
+
+
+subroutine ccik_apply_exactized_matvec_cached(support_vec, support_dim, row_offset, row_count, total_mini, mini_det_flat, mini_idx_flat, u, v)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec
+  integer, intent(in) :: support_dim, total_mini
+  integer, intent(in) :: row_offset(support_dim), row_count(support_dim), mini_idx_flat(max(1,total_mini))
+  integer(bit_kind), intent(in) :: mini_det_flat(N_int,2,max(1,total_mini))
+  double precision, intent(in) :: u(support_dim)
+  double precision, intent(out) :: v(support_dim)
+  double precision, allocatable :: coef_mat(:,:)
+  double precision :: hpsi(1)
+  integer(bit_kind), allocatable :: mini_det_row(:,:,:)
+  integer, allocatable :: mini_idx_row(:)
+  integer :: i, offset_i, count_i, max_row_count
+
+  allocate(coef_mat(support_dim,1))
+  coef_mat(:,1) = u(:)
+  max_row_count = max(1, maxval(row_count))
+  allocate(mini_det_row(N_int,2,max_row_count), mini_idx_row(max_row_count))
+  v = 0.d0
+  do i = 1, support_dim
+    count_i = row_count(i)
+    if (count_i <= 0) cycle
+    offset_i = row_offset(i)
+    mini_det_row(:,:,1:count_i) = mini_det_flat(:,:,offset_i:offset_i+count_i-1)
+    mini_idx_row(1:count_i) = mini_idx_flat(offset_i:offset_i+count_i-1)
+    call i_H_psi_minilist( &
+         support_vec%det(1,1,i), &
+         mini_det_row, &
+         mini_idx_row, &
+         count_i, &
+         coef_mat, &
+         N_int, &
+         support_dim, &
+         support_dim, &
+         1, &
+         hpsi &
+    )
+    v(i) = hpsi(1)
+  end do
+  deallocate(coef_mat, mini_det_row, mini_idx_row)
+end subroutine ccik_apply_exactized_matvec_cached
+
+
+subroutine ccik_exactized_lowest_root_davidson(support_vec, guess_vec, support_dim, row_offset, row_count, total_mini, mini_det_flat, mini_idx_flat, diag, &
+    energy, residual_norm, davidson_iters, matvec_count, converged)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec, guess_vec
+  integer, intent(in) :: support_dim, total_mini
+  integer, intent(in) :: row_offset(support_dim), row_count(support_dim), mini_idx_flat(max(1,total_mini))
+  integer(bit_kind), intent(in) :: mini_det_flat(N_int,2,max(1,total_mini))
+  double precision, intent(in) :: diag(support_dim)
+  double precision, intent(out) :: energy, residual_norm
+  integer, intent(out) :: davidson_iters, matvec_count
+  logical, intent(out) :: converged
+  integer :: max_subspace, max_iter, restart_keep
+  double precision :: tol, prev_energy, delta_energy, denom, vec_norm, alpha, energy_gap_tol
+  double precision, allocatable :: dav_basis(:,:), dav_h_basis(:,:), dav_basis_new(:,:), dav_h_basis_new(:,:)
+  double precision, allocatable :: hsmall(:,:), eigvals(:), work(:), trial(:), ritz(:), hritz(:), corr(:), coeff(:)
+  integer :: m, iter, i, j, kkeep, info, lwork
+
+  energy = 0.d0
+  residual_norm = huge(1.d0)
+  davidson_iters = 0
+  matvec_count = 0
+  converged = .false.
+  if (support_dim <= 0) return
+
+  max_subspace = max(2, ccik_exactized_max_subspace)
+  max_iter = max(1, ccik_exactized_max_iter)
+  restart_keep = max(1, min(ccik_exactized_restart_keep, max_subspace))
+  tol = max(1.d-14, ccik_exactized_resid_tol)
+  energy_gap_tol = max(1.d-12, 0.1d0 * tol)
+
+  allocate(dav_basis(support_dim,max_subspace), dav_h_basis(support_dim,max_subspace))
+  allocate(dav_basis_new(support_dim,restart_keep), dav_h_basis_new(support_dim,restart_keep))
+  allocate(hsmall(max_subspace,max_subspace), eigvals(max_subspace), work(max(1, 3*max_subspace*max_subspace)))
+  allocate(trial(support_dim), ritz(support_dim), hritz(support_dim), corr(support_dim), coeff(max_subspace))
+
+  call ccik_vec_to_dense_on_support(support_vec, guess_vec, support_dim, trial)
+  vec_norm = dsqrt(dot_product(trial, trial))
+  if (vec_norm <= 0.d0) then
+    trial = 0.d0
+    trial(1) = 1.d0
+    vec_norm = 1.d0
+  end if
+  dav_basis(:,1) = trial / vec_norm
+  call ccik_apply_exactized_matvec_cached(support_vec, support_dim, row_offset, row_count, total_mini, mini_det_flat, mini_idx_flat, &
+       dav_basis(:,1), dav_h_basis(:,1))
+  matvec_count = 1
+  m = 1
+  prev_energy = huge(1.d0)
+
+  do iter = 1, max_iter
+    hsmall(1:m,1:m) = matmul(transpose(dav_basis(:,1:m)), dav_h_basis(:,1:m))
+    do i = 1, m
+      do j = i+1, m
+        hsmall(i,j) = 0.5d0 * (hsmall(i,j) + hsmall(j,i))
+        hsmall(j,i) = hsmall(i,j)
+      end do
+    end do
+
+    lwork = max(1, 3*m*m)
+    call dsyev('V', 'U', m, hsmall, max_subspace, eigvals, work, lwork, info)
+    if (info /= 0) exit
+
+    coeff(1:m) = hsmall(1:m,1)
+    ritz = matmul(dav_basis(:,1:m), coeff(1:m))
+    hritz = matmul(dav_h_basis(:,1:m), coeff(1:m))
+    energy = eigvals(1)
+    corr = hritz - energy * ritz
+    residual_norm = dsqrt(max(0.d0, dot_product(corr, corr)))
+    delta_energy = dabs(energy - prev_energy)
+    davidson_iters = iter
+    if (residual_norm <= tol .and. (iter == 1 .or. delta_energy <= energy_gap_tol)) then
+      converged = .true.
+      exit
+    end if
+    prev_energy = energy
+
+    do i = 1, support_dim
+      denom = diag(i) - energy
+      if (dabs(denom) < 1.d-8) denom = sign(1.d-8, denom)
+      corr(i) = corr(i) / denom
+    end do
+    do j = 1, m
+      alpha = dot_product(dav_basis(:,j), corr)
+      corr = corr - alpha * dav_basis(:,j)
+    end do
+    vec_norm = dsqrt(max(0.d0, dot_product(corr, corr)))
+    if (vec_norm <= 1.d-12) exit
+    corr = corr / vec_norm
+
+    if (m < max_subspace) then
+      m = m + 1
+      dav_basis(:,m) = corr
+      call ccik_apply_exactized_matvec_cached(support_vec, support_dim, row_offset, row_count, total_mini, mini_det_flat, mini_idx_flat, &
+           dav_basis(:,m), dav_h_basis(:,m))
+      matvec_count = matvec_count + 1
+    else
+      kkeep = min(restart_keep, m)
+      dav_basis_new(:,1:kkeep) = matmul(dav_basis(:,1:m), hsmall(1:m,1:kkeep))
+      dav_h_basis_new(:,1:kkeep) = matmul(dav_h_basis(:,1:m), hsmall(1:m,1:kkeep))
+      dav_basis(:,1:kkeep) = dav_basis_new(:,1:kkeep)
+      dav_h_basis(:,1:kkeep) = dav_h_basis_new(:,1:kkeep)
+      m = kkeep
+    end if
+  end do
+
+  deallocate(dav_basis, dav_h_basis, dav_basis_new, dav_h_basis_new, hsmall, eigvals, work, trial, ritz, hritz, corr, coeff)
+end subroutine ccik_exactized_lowest_root_davidson
+
+
+subroutine ccik_make_single_det_guess(support_vec, guess_vec)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: support_vec
+  type(ccik_vector), intent(inout) :: guess_vec
+  integer(bit_kind) :: det_one(N_int,2,1)
+  double precision :: coef_one(1)
+
+  call ccik_vec_free(guess_vec)
+  if (support_vec%n <= 0) return
+  det_one(:,:,1) = support_vec%det(:,:,1)
+  coef_one(1) = 1.d0
+  call ccik_vec_assign(guess_vec, det_one, coef_one, 1, N_int)
+end subroutine ccik_make_single_det_guess
+
+
+subroutine ccik_maybe_run_exactized_checkpoint(qbasis, hq_basis, n_basis, cycle, iter_idx)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(in) :: qbasis(*), hq_basis(*)
+  integer, intent(in) :: n_basis, cycle, iter_idx
+  type(ccik_vector) :: support_vec, ritz_vec, guess_vec
+  integer, allocatable :: row_offset(:), row_count(:), mini_idx_flat(:)
+  integer(bit_kind), allocatable :: mini_det_flat(:,:,:)
+  double precision, allocatable :: diag(:)
+  integer :: checkpoint_period, cum_new_krylov, total_mini
+  integer :: support_size, davidson_iters, matvec_count
+  integer :: ccik_cumulative_new_krylov
+  double precision :: exactized_energy, residual_norm
+  double precision :: wall_total_0, wall_total_1, cpu_total_0, cpu_total_1
+  double precision :: wall_union_0, wall_union_1, wall_prep_0, wall_prep_1, wall_solve_0, wall_solve_1
+  logical :: converged, ok
+
+  checkpoint_period = max(0, ccik_exactized_checkpoint_every)
+  if (checkpoint_period <= 0) return
+  cum_new_krylov = ccik_cumulative_new_krylov(cycle, iter_idx)
+  if (cum_new_krylov <= 0) return
+  if (mod(cum_new_krylov, checkpoint_period) /= 0) return
+
+  call wall_time(wall_total_0)
+  call cpu_time(cpu_total_0)
+
+  call wall_time(wall_union_0)
+  call ccik_build_support_union(qbasis, n_basis, support_vec)
+  call wall_time(wall_union_1)
+  support_size = support_vec%n
+  if (support_size <= 0) then
+    call ccik_vec_free(support_vec)
+    return
+  end if
+
+  call wall_time(wall_prep_0)
+  call ccik_build_lowest_ritz_vector_raw(qbasis, hq_basis, n_basis, ritz_vec)
+  call ccik_vec_project_support(guess_vec, ritz_vec, support_vec)
+  call ccik_normalize_vector(guess_vec, ok)
+  if (.not. ok) then
+    call ccik_make_single_det_guess(support_vec, guess_vec)
+  end if
+  allocate(row_offset(support_size), row_count(support_size), diag(support_size))
+  call ccik_count_exactized_cache(support_vec, support_size, row_count, diag, total_mini)
+  allocate(mini_det_flat(N_int,2,max(1,total_mini)), mini_idx_flat(max(1,total_mini)))
+  call ccik_fill_exactized_cache(support_vec, support_size, row_count, total_mini, row_offset, mini_det_flat, mini_idx_flat)
+  call wall_time(wall_prep_1)
+
+  call wall_time(wall_solve_0)
+  call ccik_exactized_lowest_root_davidson( &
+       support_vec, &
+       guess_vec, &
+       support_size, &
+       row_offset, &
+       row_count, &
+       total_mini, &
+       mini_det_flat, &
+       mini_idx_flat, &
+       diag, &
+       exactized_energy, &
+       residual_norm, &
+       davidson_iters, &
+       matvec_count, &
+       converged &
+  )
+  call wall_time(wall_solve_1)
+
+  call cpu_time(cpu_total_1)
+  call wall_time(wall_total_1)
+  call ccik_report_exactized_checkpoint( &
+       cycle, &
+       iter_idx, &
+       cum_new_krylov, &
+       support_size, &
+       exactized_energy, &
+       residual_norm, &
+       davidson_iters, &
+       matvec_count, &
+       converged, &
+       wall_union_1 - wall_union_0, &
+       wall_prep_1 - wall_prep_0, &
+       wall_solve_1 - wall_solve_0, &
+       wall_total_1 - wall_total_0, &
+       cpu_total_1 - cpu_total_0 &
+  )
+
+  if (allocated(row_offset)) deallocate(row_offset)
+  if (allocated(row_count)) deallocate(row_count)
+  if (allocated(mini_idx_flat)) deallocate(mini_idx_flat)
+  if (allocated(mini_det_flat)) deallocate(mini_det_flat)
+  if (allocated(diag)) deallocate(diag)
+  call ccik_vec_free(support_vec)
+  call ccik_vec_free(ritz_vec)
+  call ccik_vec_free(guess_vec)
+end subroutine ccik_maybe_run_exactized_checkpoint
+
+
+subroutine ccik_timing_reset()
+  implicit none
+  double precision :: t_setup, t_load_wf, t_hq, t_ritz, t_checkpoint, t_next
+  double precision :: t_restart, t_final
+  double precision :: t_next_first_orth, t_next_store, t_next_second_orth
+  double precision :: t_next_normalize, t_next_overlap
+  double precision :: t_restart_solve_ritz, t_restart_build, t_restart_store
+  double precision :: t_restart_orth, t_restart_normalize
+  integer :: c_hq, c_next, c_next_second_orth, c_restart
+  common /ccik_timing_common/ t_setup, t_load_wf, t_hq, t_ritz, t_checkpoint, t_next, &
+       t_restart, t_final, t_next_first_orth, t_next_store, t_next_second_orth, &
+       t_next_normalize, t_next_overlap, t_restart_solve_ritz, t_restart_build, &
+       t_restart_store, t_restart_orth, t_restart_normalize, c_hq, c_next, &
+       c_next_second_orth, c_restart
+
+  t_setup = 0.d0
+  t_load_wf = 0.d0
+  t_hq = 0.d0
+  t_ritz = 0.d0
+  t_checkpoint = 0.d0
+  t_next = 0.d0
+  t_restart = 0.d0
+  t_final = 0.d0
+  t_next_first_orth = 0.d0
+  t_next_store = 0.d0
+  t_next_second_orth = 0.d0
+  t_next_normalize = 0.d0
+  t_next_overlap = 0.d0
+  t_restart_solve_ritz = 0.d0
+  t_restart_build = 0.d0
+  t_restart_store = 0.d0
+  t_restart_orth = 0.d0
+  t_restart_normalize = 0.d0
+  c_hq = 0
+  c_next = 0
+  c_next_second_orth = 0
+  c_restart = 0
+end subroutine ccik_timing_reset
+
+
+subroutine ccik_timing_add(name, elapsed_s)
+  implicit none
+  character(len=*), intent(in) :: name
+  double precision, intent(in) :: elapsed_s
+  double precision :: t_setup, t_load_wf, t_hq, t_ritz, t_checkpoint, t_next
+  double precision :: t_restart, t_final
+  double precision :: t_next_first_orth, t_next_store, t_next_second_orth
+  double precision :: t_next_normalize, t_next_overlap
+  double precision :: t_restart_solve_ritz, t_restart_build, t_restart_store
+  double precision :: t_restart_orth, t_restart_normalize
+  integer :: c_hq, c_next, c_next_second_orth, c_restart
+  common /ccik_timing_common/ t_setup, t_load_wf, t_hq, t_ritz, t_checkpoint, t_next, &
+       t_restart, t_final, t_next_first_orth, t_next_store, t_next_second_orth, &
+       t_next_normalize, t_next_overlap, t_restart_solve_ritz, t_restart_build, &
+       t_restart_store, t_restart_orth, t_restart_normalize, c_hq, c_next, &
+       c_next_second_orth, c_restart
+
+  select case (trim(name))
+  case ('setup')
+    t_setup = t_setup + elapsed_s
+  case ('load_wf')
+    t_load_wf = t_load_wf + elapsed_s
+  case ('hq')
+    t_hq = t_hq + elapsed_s
+    c_hq = c_hq + 1
+  case ('ritz')
+    t_ritz = t_ritz + elapsed_s
+  case ('checkpoint')
+    t_checkpoint = t_checkpoint + elapsed_s
+  case ('next_total')
+    t_next = t_next + elapsed_s
+    c_next = c_next + 1
+  case ('next_first_orth')
+    t_next_first_orth = t_next_first_orth + elapsed_s
+  case ('next_store')
+    t_next_store = t_next_store + elapsed_s
+  case ('next_second_orth')
+    t_next_second_orth = t_next_second_orth + elapsed_s
+    c_next_second_orth = c_next_second_orth + 1
+  case ('next_normalize')
+    t_next_normalize = t_next_normalize + elapsed_s
+  case ('next_overlap')
+    t_next_overlap = t_next_overlap + elapsed_s
+  case ('restart_total')
+    t_restart = t_restart + elapsed_s
+    c_restart = c_restart + 1
+  case ('restart_solve_ritz')
+    t_restart_solve_ritz = t_restart_solve_ritz + elapsed_s
+  case ('restart_build')
+    t_restart_build = t_restart_build + elapsed_s
+  case ('restart_store')
+    t_restart_store = t_restart_store + elapsed_s
+  case ('restart_orth')
+    t_restart_orth = t_restart_orth + elapsed_s
+  case ('restart_normalize')
+    t_restart_normalize = t_restart_normalize + elapsed_s
+  case ('final')
+    t_final = t_final + elapsed_s
+  end select
+end subroutine ccik_timing_add
+
+
+subroutine ccik_timing_report(total_wall_s)
+  implicit none
+  double precision, intent(in) :: total_wall_s
+  double precision :: t_setup, t_load_wf, t_hq, t_ritz, t_checkpoint, t_next
+  double precision :: t_restart, t_final
+  double precision :: t_next_first_orth, t_next_store, t_next_second_orth
+  double precision :: t_next_normalize, t_next_overlap
+  double precision :: t_restart_solve_ritz, t_restart_build, t_restart_store
+  double precision :: t_restart_orth, t_restart_normalize
+  double precision :: next_accounted, next_misc, restart_accounted, restart_misc
+  double precision :: accounted, other
+  integer :: c_hq, c_next, c_next_second_orth, c_restart
+  common /ccik_timing_common/ t_setup, t_load_wf, t_hq, t_ritz, t_checkpoint, t_next, &
+       t_restart, t_final, t_next_first_orth, t_next_store, t_next_second_orth, &
+       t_next_normalize, t_next_overlap, t_restart_solve_ritz, t_restart_build, &
+       t_restart_store, t_restart_orth, t_restart_normalize, c_hq, c_next, &
+       c_next_second_orth, c_restart
+
+  next_accounted = t_next_first_orth + t_next_store + t_next_second_orth + t_next_normalize + t_next_overlap
+  next_misc = t_next - next_accounted
+  restart_accounted = t_restart_solve_ritz + t_restart_build + t_restart_store + t_restart_orth + t_restart_normalize
+  restart_misc = t_restart - restart_accounted
+  accounted = t_setup + t_load_wf + t_hq + t_ritz + t_checkpoint + t_next + t_restart + t_final
+  other = total_wall_s - accounted
+
+  write(*,'(A)') 'CCIK_TIMING_SUMMARY_BEGIN'
+  write(*,'(A,F18.6)') 'CCIK_TIMING total_wall_s=', total_wall_s
+  write(*,'(A,8(A,F18.6))') 'CCIK_TIMING_TOP', &
+       ' setup_wall_s=', t_setup, ' load_wf_wall_s=', t_load_wf, &
+       ' hq_wall_s=', t_hq, ' ritz_wall_s=', t_ritz, &
+       ' checkpoint_wall_s=', t_checkpoint, ' next_wall_s=', t_next, &
+       ' restart_wall_s=', t_restart, ' final_wall_s=', t_final
+  write(*,'(A,2(A,F18.6))') 'CCIK_TIMING_RECONCILE', &
+       ' accounted_wall_s=', accounted, ' other_wall_s=', other
+  write(*,'(A,I8,6(A,F18.6))') 'CCIK_TIMING_NEXT calls=', c_next, &
+       ' total_wall_s=', t_next, ' first_orth_wall_s=', t_next_first_orth, &
+       ' store_wall_s=', t_next_store, ' second_orth_wall_s=', t_next_second_orth, &
+       ' normalize_wall_s=', t_next_normalize, ' overlap_wall_s=', t_next_overlap
+  write(*,'(A,F18.6,A,I8)') 'CCIK_TIMING_NEXT misc_wall_s=', next_misc, &
+       ' second_orth_calls=', c_next_second_orth
+  write(*,'(A,I8,6(A,F18.6))') 'CCIK_TIMING_RESTART calls=', c_restart, &
+       ' total_wall_s=', t_restart, ' solve_ritz_wall_s=', t_restart_solve_ritz, &
+       ' build_wall_s=', t_restart_build, ' store_wall_s=', t_restart_store, &
+       ' orth_wall_s=', t_restart_orth, ' normalize_wall_s=', t_restart_normalize
+  write(*,'(A,F18.6,A,I8)') 'CCIK_TIMING_RESTART misc_wall_s=', restart_misc, &
+       ' hq_calls=', c_hq
+  write(*,'(A)') 'CCIK_TIMING_SUMMARY_END'
+  call flush(6)
+end subroutine ccik_timing_report
+
+
 subroutine ccik_thick_restart_driver
   use ccik_sparse
   implicit none
   integer :: ccik_thick_effective_nkeep
   type(ccik_vector), allocatable :: qbasis(:), hq_basis(:), restart_basis(:)
-  type(ccik_vector) :: q0, final_vec
+  type(ccik_vector) :: q0, final_vec, final_support
   integer :: cycle, i, n_basis, n_keep, m_cycle, nkeep_eff, target_size
   integer :: queue_len, queue_pos, parent_idx
   double precision :: energy, prev_cycle_energy, total_energy, rayleigh, pt2_corr, rpt2_corr
   double precision :: t_build_start, t_build_stop
+  double precision :: t_total_start, t_total_stop, t_phase_start, t_phase_stop
+  double precision :: t_wall_start, t_wall_stop
   logical :: converged, ok
   integer, allocatable :: expand_queue(:)
+
+  call ccik_timing_reset()
+  call wall_time(t_total_start)
+  call wall_time(t_phase_start)
 
   call ezfio_set_determinants_read_wf(ccik_use_existing_wf)
 
@@ -229,6 +1136,8 @@ subroutine ccik_thick_restart_driver
   prev_cycle_energy = huge(1.d0)
   n_basis = 0
   converged = .false.
+  call wall_time(t_phase_stop)
+  call ccik_timing_add('setup', t_phase_stop - t_phase_start)
 
   do cycle = 1, ccik_max_cycle
     do i = 1, m_cycle
@@ -245,15 +1154,21 @@ subroutine ccik_thick_restart_driver
     if (n_basis == 0) exit
 
     do i = 1, n_basis
+      call wall_time(t_wall_start)
       call ccik_load_vector_into_working_wf(qbasis(i))
+      call wall_time(t_wall_stop)
+      call ccik_timing_add('load_wf', t_wall_stop - t_wall_start)
       if (ccik_verbose) then
         write(*,'(A,I4,A,I4,2(A,I10))') 'ccik(thick) cycle=', cycle, &
              ' seed=', i, '  |q|=', qbasis(i)%n, '  nkeep=', nkeep_eff
         call flush(6)
       end if
+      call wall_time(t_wall_start)
       call cpu_time(t_build_start)
       call ccik_build_projected_hq(hq_basis(i), rayleigh)
       call cpu_time(t_build_stop)
+      call wall_time(t_wall_stop)
+      call ccik_timing_add('hq', t_wall_stop - t_wall_start)
       if (ccik_verbose) then
         write(*,'(A,I4,A,I4,A,I10,A,F12.4)') 'ccik(thick) cycle=', cycle, &
              ' seed_done=', i, '  |hq|=', hq_basis(i)%n, '  cpu_s=', t_build_stop - t_build_start
@@ -261,8 +1176,15 @@ subroutine ccik_thick_restart_driver
       end if
     end do
 
+    call wall_time(t_wall_start)
     call ccik_smallest_ritz_energy(qbasis, hq_basis, n_basis, energy)
+    call wall_time(t_wall_stop)
+    call ccik_timing_add('ritz', t_wall_stop - t_wall_start)
     call ccik_report_iteration_error('thick', cycle, n_basis, energy)
+    call wall_time(t_wall_start)
+    call ccik_maybe_run_exactized_checkpoint(qbasis, hq_basis, n_basis, cycle, n_basis)
+    call wall_time(t_wall_stop)
+    call ccik_timing_add('checkpoint', t_wall_stop - t_wall_start)
     if (ccik_verbose) then
       write(*,'(A,I4,A,I4,A,F24.12)') 'ccik(thick) cycle=', cycle, &
            ' restart_basis=', n_basis, '  ritz=', energy
@@ -283,18 +1205,31 @@ subroutine ccik_thick_restart_driver
       queue_len = queue_len + 1
       expand_queue(queue_len) = n_basis
 
+      call wall_time(t_wall_start)
       call ccik_load_vector_into_working_wf(qbasis(n_basis))
+      call wall_time(t_wall_stop)
+      call ccik_timing_add('load_wf', t_wall_stop - t_wall_start)
       if (ccik_verbose) then
         write(*,'(A,I4,A,I4,A,I4,2(A,I10))') 'ccik(thick) cycle=', cycle, &
              ' build_hq_for_iter=', n_basis, '  parent=', parent_idx, &
              '  |q|=', qbasis(n_basis)%n, '  nkeep=', nkeep_eff
         call flush(6)
       end if
+      call wall_time(t_wall_start)
       call cpu_time(t_build_start)
       call ccik_build_projected_hq(hq_basis(n_basis), rayleigh)
       call cpu_time(t_build_stop)
+      call wall_time(t_wall_stop)
+      call ccik_timing_add('hq', t_wall_stop - t_wall_start)
+      call wall_time(t_wall_start)
       call ccik_smallest_ritz_energy(qbasis, hq_basis, n_basis, energy)
+      call wall_time(t_wall_stop)
+      call ccik_timing_add('ritz', t_wall_stop - t_wall_start)
       call ccik_report_iteration_error('thick', cycle, n_basis, energy)
+      call wall_time(t_wall_start)
+      call ccik_maybe_run_exactized_checkpoint(qbasis, hq_basis, n_basis, cycle, n_basis)
+      call wall_time(t_wall_stop)
+      call ccik_timing_add('checkpoint', t_wall_stop - t_wall_start)
 
       if (ccik_verbose) then
         write(*,'(A,I4,A,I4,2(A,F24.12),2(A,I10))') 'ccik(thick) cycle=', cycle, &
@@ -319,7 +1254,11 @@ subroutine ccik_thick_restart_driver
   end do
 
   total_energy = energy + nuclear_repulsion
+  call wall_time(t_phase_start)
   if (ccik_save_final_wf) then
+    call ccik_build_support_union(qbasis, n_basis, final_support)
+    call ccik_write_support_union_snapshot(final_support)
+    call ccik_vec_free(final_support)
     call ccik_build_lowest_ritz_vector(qbasis, hq_basis, n_basis, final_vec)
     call ccik_save_vector_to_ezfio(final_vec)
     if (ccik_do_post_pt2) then
@@ -333,6 +1272,8 @@ subroutine ccik_thick_restart_driver
   write(*,'(A,F24.12)') 'CCIK_FINAL_ELECTRONIC_ENERGY = ', energy
   write(*,'(A,F24.12)') 'CCIK_FINAL_TOTAL_ENERGY = ', total_energy
   write(*,'(A,I8)') 'CCIK_FINAL_BASIS = ', n_basis
+  call wall_time(t_phase_stop)
+  call ccik_timing_add('final', t_phase_stop - t_phase_start)
 
   do i = 1, m_cycle
     call ccik_vec_free(qbasis(i))
@@ -342,6 +1283,8 @@ subroutine ccik_thick_restart_driver
     call ccik_vec_free(restart_basis(i))
   end do
   deallocate(qbasis, hq_basis, restart_basis, expand_queue)
+  call wall_time(t_total_stop)
+  call ccik_timing_report(t_total_stop - t_total_start)
 end
 
 
@@ -349,7 +1292,7 @@ subroutine ccik_baseline_driver
   use ccik_sparse
   implicit none
   type(ccik_vector), allocatable :: qbasis(:), hq_basis(:)
-  type(ccik_vector) :: q0, qnext, final_vec
+  type(ccik_vector) :: q0, qnext, final_vec, final_support
   integer :: i, n_basis, target_size
   double precision :: energy, prev_energy, total_energy, rayleigh, pt2_corr, rpt2_corr
   logical :: converged, ok
@@ -416,6 +1359,9 @@ subroutine ccik_baseline_driver
 
   total_energy = energy + nuclear_repulsion
   if (ccik_save_final_wf) then
+    call ccik_build_support_union(qbasis, n_basis, final_support)
+    call ccik_write_support_union_snapshot(final_support)
+    call ccik_vec_free(final_support)
     call ccik_build_lowest_ritz_vector(qbasis, hq_basis, n_basis, final_vec)
     call ccik_save_vector_to_ezfio(final_vec)
     if (ccik_do_post_pt2) then
@@ -574,12 +1520,18 @@ subroutine ccik_build_projected_hq(vec, rayleigh)
   type(ccik_vector), intent(inout) :: vec
   double precision, intent(out) :: rayleigh
   integer, save :: projected_call_count = 0
-  character(len=32) :: matvec_backend
+  character(len=32) :: matvec_backend, compression_policy
 
   projected_call_count = projected_call_count + 1
   matvec_backend = trim(adjustl(ccik_matvec_backend))
   if (len_trim(matvec_backend) == 0) matvec_backend = 'connected_sd_fullq'
-  if (trim(adjustl(ccik_compression_policy)) == 'threshold' .or. trim(adjustl(ccik_compression_policy)) == 'fixed_budget') matvec_backend = 'connected_sd_fullq'
+  compression_policy = trim(adjustl(ccik_compression_policy))
+  if (len_trim(compression_policy) == 0) compression_policy = 'topk'
+  if (compression_policy == 'threshold') then
+    matvec_backend = 'connected_sd_fullq'
+  else if (compression_policy == 'fixed_budget') then
+    if (.not. ccik_debug_allow_legacy_fixed_budget) matvec_backend = 'connected_sd_fullq'
+  end if
 
   select case (trim(matvec_backend))
   case ('connected_sd_fullq')
@@ -1593,6 +2545,8 @@ subroutine ccik_build_projected_hq_connected_sd_fullq(vec, rayleigh, projected_c
     call flush(6)
   end if
 
+  call ccik_check_connected_sd_fullq_provider_state(projected_call_count, fixed_budget_mode)
+
   allocate(hpsi_internal(max(1, n_internal)))
   call cpu_time(t0)
 !$OMP PARALLEL DO DEFAULT(shared) PRIVATE(i, hpsi_local) REDUCTION(+:rayleigh) SCHEDULE(dynamic)
@@ -1923,6 +2877,112 @@ subroutine ccik_orthogonalize_against_basis(vec, qbasis, n_basis)
 end subroutine ccik_orthogonalize_against_basis
 
 
+subroutine ccik_secondortho_on_support(vec, qbasis, n_basis, ok)
+  use ccik_sparse
+  implicit none
+  type(ccik_vector), intent(inout) :: vec
+  type(ccik_vector), intent(in) :: qbasis(*)
+  integer, intent(in) :: n_basis
+  logical, intent(out) :: ok
+  type(ccik_vector), allocatable :: projected_basis(:)
+  type(ccik_vector) :: support_vec, projected, restricted
+  double precision, allocatable :: gram(:,:), rhs(:), evals(:), coeff(:), work(:)
+  double precision :: before_norm, after_norm, max_eval, cutoff, scale, denom
+  integer :: i, j, k, n_projected, lwork, info
+  character(len=512) :: trace_line
+  external :: dsyev
+
+  ok = .true.
+  if (vec%n <= 0 .or. n_basis <= 0) return
+
+  before_norm = dsqrt(max(0.d0, ccik_vec_norm2(vec)))
+  call ccik_vec_copy(support_vec, vec)
+  allocate(projected_basis(n_basis))
+  n_projected = 0
+
+  do i = 1, n_basis
+    call ccik_vec_project_support(projected, qbasis(i), support_vec)
+    if (ccik_vec_norm2(projected) > 1.d-24) then
+      n_projected = n_projected + 1
+      call ccik_vec_copy(projected_basis(n_projected), projected)
+    end if
+    call ccik_vec_free(projected)
+  end do
+
+  if (n_projected <= 0) then
+    call ccik_vec_free(support_vec)
+    deallocate(projected_basis)
+    return
+  end if
+
+  allocate(gram(n_projected,n_projected), rhs(n_projected), evals(n_projected), coeff(n_projected))
+  gram = 0.d0
+  rhs = 0.d0
+  coeff = 0.d0
+  do i = 1, n_projected
+    rhs(i) = ccik_vec_inner(projected_basis(i), vec)
+    do j = i, n_projected
+      gram(i,j) = ccik_vec_inner(projected_basis(i), projected_basis(j))
+      gram(j,i) = gram(i,j)
+    end do
+  end do
+
+  lwork = max(1, 3*n_projected - 1)
+  allocate(work(lwork))
+  call dsyev('V', 'U', n_projected, gram, n_projected, evals, work, lwork, info)
+
+  if (info == 0) then
+    max_eval = 0.d0
+    do k = 1, n_projected
+      if (evals(k) > max_eval) max_eval = evals(k)
+    end do
+    cutoff = max(1.d-14, ccik_ritz_overlap_tol * max(1.d0, dabs(max_eval)))
+    do k = 1, n_projected
+      if (evals(k) <= cutoff) cycle
+      scale = 0.d0
+      do i = 1, n_projected
+        scale = scale + gram(i,k) * rhs(i)
+      end do
+      scale = scale / evals(k)
+      do i = 1, n_projected
+        coeff(i) = coeff(i) + gram(i,k) * scale
+      end do
+    end do
+    do i = 1, n_projected
+      if (dabs(coeff(i)) > 0.d0) call ccik_vec_axpy(vec, -coeff(i), projected_basis(i))
+    end do
+  else
+    do k = 1, 2
+      do i = 1, n_projected
+        denom = ccik_vec_norm2(projected_basis(i))
+        if (denom <= 1.d-24) cycle
+        scale = ccik_vec_inner(projected_basis(i), vec) / denom
+        if (dabs(scale) > 0.d0) call ccik_vec_axpy(vec, -scale, projected_basis(i))
+      end do
+    end do
+  end if
+
+  call ccik_vec_project_support(restricted, vec, support_vec)
+  call ccik_vec_copy(vec, restricted)
+  after_norm = dsqrt(max(0.d0, ccik_vec_norm2(vec)))
+  ok = (after_norm > 1.d-18)
+
+  if (ccik_debug_trace) then
+    write(trace_line,'(A,1X,I8,1X,I8,1X,ES24.16,1X,ES24.16,1X,L1)') &
+         'CCIK_TRACE_SECONDORTHO', n_projected, support_vec%n, before_norm, after_norm, ok
+    call ccik_debug_trace_line(trace_line)
+  end if
+
+  do i = 1, n_projected
+    call ccik_vec_free(projected_basis(i))
+  end do
+  deallocate(projected_basis, gram, rhs, evals, coeff, work)
+  call ccik_vec_free(support_vec)
+  call ccik_vec_free(projected)
+  call ccik_vec_free(restricted)
+end subroutine ccik_secondortho_on_support
+
+
 subroutine ccik_normalize_vector(vec, ok)
   use ccik_sparse
   implicit none
@@ -1993,6 +3053,7 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
   integer :: ccik_tmp_keep_value, ccik_preserve_cap_value
   double precision :: q_norm, v_proj_norm, v_temp_norm, discarded_weight, store_dropped_norm, selector_energy
   double precision :: orth_norm, keep_norm, overlap, max_overlap
+  double precision :: t_next_start, t_next_stop, t_step_start, t_step_stop
   character(len=32) :: selector_mode, compression_policy
   character(len=512) :: trace_line
   logical :: threshold_mode, fixed_budget_mode, store_used_fallback
@@ -2021,6 +3082,8 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
   preserve_cap = 0
   generated_before_dedup = 0
   generated_unique = 0
+  ok = .true.
+  call wall_time(t_next_start)
 
   if (selector_mode == 'pt2_residual' .and. .not. fixed_budget_mode) then
     print *, "ccik error: selector_mode='pt2_residual' requires compression_policy='fixed_budget'"
@@ -2031,7 +3094,10 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
     call ccik_vec_copy(v_temp, qnext)
     v_temp_norm = dsqrt(max(0.d0, ccik_vec_norm2(v_temp)))
     discarded_weight = 0.d0
+    call wall_time(t_step_start)
     call ccik_orthogonalize_against_basis(qnext, qbasis, n_basis)
+    call wall_time(t_step_stop)
+    call ccik_timing_add('next_first_orth', t_step_stop - t_step_start)
     orth_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
     if (orth_norm <= 1.d-18) then
       ok = .false.
@@ -2051,17 +3117,23 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
     else
       call ccik_vec_copy(score_vec, v_temp)
     end if
+    call wall_time(t_step_start)
     call ccik_normalize_vector(qnext, ok)
+    call wall_time(t_step_stop)
+    call ccik_timing_add('next_normalize', t_step_stop - t_step_start)
     if (.not. ok) then
       call ccik_vec_free(score_vec)
       call ccik_vec_free(v_temp)
       call ccik_vec_free(qnext)
       return
     end if
+    call wall_time(t_step_start)
     call ccik_vec_threshold(qnext, ccik_store_abs_tol, store_dropped_norm, store_used_fallback)
     if (qnext%n > 1000000) then
       call ccik_vec_compress(qnext, 1000000)
     end if
+    call wall_time(t_step_stop)
+    call ccik_timing_add('next_store', t_step_stop - t_step_start)
     keep_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
   else if (fixed_budget_mode) then
     if (selector_mode == 'pt2_residual') then
@@ -2069,7 +3141,10 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
       call ccik_vec_copy(v_temp, qnext)
       v_temp_norm = dsqrt(max(0.d0, ccik_vec_norm2(v_temp)))
       discarded_weight = 0.d0
+      call wall_time(t_step_start)
       call ccik_orthogonalize_against_basis(qnext, qbasis, n_basis)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_first_orth', t_step_stop - t_step_start)
       orth_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
       if (orth_norm <= 1.d-18) then
         ok = .false.
@@ -2088,17 +3163,34 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
         call ccik_debug_trace_vector('orth_residual', orth_trace)
         call ccik_vec_free(orth_trace)
       end if
+      call wall_time(t_step_start)
       call ccik_select_top_pt2_residual(qnext, selector_energy, max(1, ccik_fixed_store_keep), store_support)
       call ccik_vec_project_support(v_temp, qnext, store_support)
       store_dropped_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext) - ccik_vec_norm2(v_temp)))
       call ccik_vec_copy(qnext, v_temp)
-      call ccik_select_top_pt2_residual(qnext, selector_energy, max(1, ccik_fixed_propagate_keep), prop_vec)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_store', t_step_stop - t_step_start)
+      if (ccik_secondortho) then
+        call wall_time(t_step_start)
+        call ccik_secondortho_on_support(qnext, qbasis, n_basis, ok)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('next_second_orth', t_step_stop - t_step_start)
+      end if
+      if (ok) then
+        call wall_time(t_step_start)
+        call ccik_select_top_pt2_residual(qnext, selector_energy, max(1, ccik_fixed_propagate_keep), prop_vec)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('next_store', t_step_stop - t_step_start)
+      end if
       keep_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
     else
       call ccik_vec_copy(v_temp, qnext)
       v_temp_norm = dsqrt(max(0.d0, ccik_vec_norm2(v_temp)))
       discarded_weight = 0.d0
+      call wall_time(t_step_start)
       call ccik_orthogonalize_against_basis(qnext, qbasis, n_basis)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_first_orth', t_step_stop - t_step_start)
       orth_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
       if (orth_norm <= 1.d-18) then
         ok = .false.
@@ -2122,7 +3214,16 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
       else
         call ccik_vec_copy(score_vec, v_temp)
       end if
+      call wall_time(t_step_start)
       call ccik_vec_compress(qnext, max(1, ccik_fixed_store_keep))
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_store', t_step_stop - t_step_start)
+      if (ccik_secondortho) then
+        call wall_time(t_step_start)
+        call ccik_secondortho_on_support(qnext, qbasis, n_basis, ok)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('next_second_orth', t_step_stop - t_step_start)
+      end if
       keep_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
     end if
   else
@@ -2130,7 +3231,10 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
 
     if (selector_mode == 'abs_residual' .or. selector_mode == 'sq_residual') then
       call ccik_vec_copy(score_vec, qnext)
+      call wall_time(t_step_start)
       call ccik_orthogonalize_against_basis(score_vec, qbasis, n_basis)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_first_orth', t_step_stop - t_step_start)
       if (score_vec%n <= 0) then
         ok = .false.
         call ccik_vec_free(score_vec)
@@ -2138,18 +3242,27 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
         call ccik_vec_free(qnext)
         return
       end if
+      call wall_time(t_step_start)
       call ccik_vec_compress(score_vec, tmp_keep)
       call ccik_vec_project_support(v_temp, qnext, score_vec)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_store', t_step_stop - t_step_start)
     else
       call ccik_vec_copy(v_temp, qnext)
+      call wall_time(t_step_start)
       call ccik_vec_compress(v_temp, tmp_keep)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_store', t_step_stop - t_step_start)
     end if
 
     v_temp_norm = dsqrt(max(0.d0, ccik_vec_norm2(v_temp)))
     discarded_weight = dsqrt(max(v_proj_norm*v_proj_norm - v_temp_norm*v_temp_norm, 0.d0))
 
     call ccik_vec_copy(qnext, v_temp)
+    call wall_time(t_step_start)
     call ccik_orthogonalize_against_basis(qnext, qbasis, n_basis)
+    call wall_time(t_step_stop)
+    call ccik_timing_add('next_first_orth', t_step_stop - t_step_start)
     orth_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
     if (orth_norm <= 1.d-18) then
       ok = .false.
@@ -2169,22 +3282,34 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
       preserve_cap = ccik_preserve_cap_value(nkeep_eff)
     end if
     if (preserve_cap > 0) then
+      call wall_time(t_step_start)
       call ccik_vec_compress_preserve(qnext, nkeep_eff, qbasis(source_idx), preserve_cap)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_store', t_step_stop - t_step_start)
     else
+      call wall_time(t_step_start)
       call ccik_vec_compress(qnext, nkeep_eff)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('next_store', t_step_stop - t_step_start)
     end if
     keep_norm = dsqrt(max(0.d0, ccik_vec_norm2(qnext)))
   end if
+  call wall_time(t_step_start)
   call ccik_normalize_vector(qnext, ok)
+  call wall_time(t_step_stop)
+  call ccik_timing_add('next_normalize', t_step_stop - t_step_start)
   if (ok .and. fixed_budget_mode .and. selector_mode == 'pt2_residual') then
     call ccik_vec_set_propagation_support(qnext, prop_vec)
   end if
   max_overlap = 0.d0
   if (ok) then
+    call wall_time(t_step_start)
     do i = 1, n_basis
       overlap = dabs(ccik_vec_inner(qbasis(i), qnext))
       if (overlap > max_overlap) max_overlap = overlap
     end do
+    call wall_time(t_step_stop)
+    call ccik_timing_add('next_overlap', t_step_stop - t_step_start)
   end if
 
   if (ccik_verbose) then
@@ -2214,6 +3339,8 @@ subroutine ccik_generate_next_vector(qbasis, hq_basis, source_idx, n_basis, nkee
   call ccik_vec_free(rebuild_hq)
   call ccik_vec_free(store_support)
   call ccik_vec_free(orth_trace)
+  call wall_time(t_next_stop)
+  call ccik_timing_add('next_total', t_next_stop - t_next_start)
 end subroutine ccik_generate_next_vector
 
 
@@ -2230,13 +3357,18 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
   integer :: ccik_tmp_keep_value
   logical :: ok, store_used_fallback
   double precision :: store_dropped_norm
+  double precision :: t_restart_start, t_restart_stop, t_step_start, t_step_stop
   character(len=32) :: compression_policy
   character(len=256) :: trace_line
   character(len=64) :: restart_tag
 
+  call wall_time(t_restart_start)
   allocate(eig(n_basis), eigvec(n_basis,n_basis))
   allocate(restart_raw(max(1, n_keep)))
+  call wall_time(t_step_start)
   call ccik_solve_ritz_problem(qbasis, hq_basis, n_basis, eig, eigvec)
+  call wall_time(t_step_stop)
+  call ccik_timing_add('restart_solve_ritz', t_step_stop - t_step_start)
   compression_policy = trim(adjustl(ccik_compression_policy))
   if (len_trim(compression_policy) == 0) compression_policy = 'topk'
 
@@ -2250,13 +3382,22 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
     ! a separate Gram-Schmidt pass over the restart set.
     do i = 1, n_keep
       call ccik_vec_free(trial)
+      call wall_time(t_step_start)
       do j = 1, n_basis
         call ccik_vec_axpy(trial, eigvec(j,i), qbasis(j))
       end do
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_build', t_step_stop - t_step_start)
       nkeep_stage1 = min(trial%n, ccik_tmp_keep_value(nkeep_eff))
+      call wall_time(t_step_start)
       call ccik_vec_compress(trial, nkeep_stage1)
       call ccik_vec_compress(trial, nkeep_eff)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_store', t_step_stop - t_step_start)
+      call wall_time(t_step_start)
       call ccik_normalize_vector(trial, ok)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_normalize', t_step_stop - t_step_start)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'raw_topk', i, trial%n, ok
         call ccik_debug_trace_line(trace_line)
@@ -2279,9 +3420,15 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
       call ccik_vec_free(trial)
       call ccik_vec_copy(trial, restart_raw(i))
       if (n_restart_built > 0) then
+        call wall_time(t_step_start)
         call ccik_orthogonalize_against_basis(trial, restart_basis, n_restart_built)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_orth', t_step_stop - t_step_start)
       end if
+      call wall_time(t_step_start)
       call ccik_normalize_vector(trial, ok)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_normalize', t_step_stop - t_step_start)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'gs_topk', i, trial%n, ok
         call ccik_debug_trace_line(trace_line)
@@ -2301,23 +3448,32 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
     ! a separate Gram-Schmidt pass over the restart set.
     do i = 1, n_keep
       call ccik_vec_free(trial)
+      call wall_time(t_step_start)
       do j = 1, n_basis
         call ccik_vec_axpy(trial, eigvec(j,i), qbasis(j))
       end do
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_build', t_step_stop - t_step_start)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,ES24.16,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'raw', cycle_idx, i, eig(i), trial%n, trial%n > 0
         call ccik_debug_trace_line(trace_line)
         write(restart_tag,'(A,I0,A,I0)') 'restart_fb_raw_c', cycle_idx, '_r', i
         call ccik_debug_trace_vector(trim(restart_tag), trial)
       end if
+      call wall_time(t_step_start)
       call ccik_vec_compress(trial, max(1, ccik_fixed_store_keep))
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_store', t_step_stop - t_step_start)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,ES24.16,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'compressed', cycle_idx, i, eig(i), trial%n, trial%n > 0
         call ccik_debug_trace_line(trace_line)
         write(restart_tag,'(A,I0,A,I0)') 'restart_fb_compressed_c', cycle_idx, '_r', i
         call ccik_debug_trace_vector(trim(restart_tag), trial)
       end if
+      call wall_time(t_step_start)
       call ccik_normalize_vector(trial, ok)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_normalize', t_step_stop - t_step_start)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,ES24.16,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'normalized', cycle_idx, i, eig(i), trial%n, ok
         call ccik_debug_trace_line(trace_line)
@@ -2341,7 +3497,10 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
       call ccik_vec_free(trial)
       call ccik_vec_copy(trial, restart_raw(i))
       if (n_restart_built > 0) then
+        call wall_time(t_step_start)
         call ccik_orthogonalize_against_basis(trial, restart_basis, n_restart_built)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_orth', t_step_stop - t_step_start)
       end if
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,ES24.16,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'postorth', cycle_idx, i, eig(i), trial%n, trial%n > 0
@@ -2349,7 +3508,19 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
         write(restart_tag,'(A,I0,A,I0)') 'restart_fb_postorth_c', cycle_idx, '_r', i
         call ccik_debug_trace_vector(trim(restart_tag), trial)
       end if
+      ! The fixed-budget restart vectors must still satisfy the stored-vector
+      ! cap after the second Gram-Schmidt pass. Post-orthogonalization can
+      ! reintroduce determinants outside the initial top-K support, so compress
+      ! once more before normalizing/saving the restart vector for the next
+      ! cycle.
+      call wall_time(t_step_start)
+      call ccik_vec_compress(trial, max(1, ccik_fixed_store_keep))
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_store', t_step_stop - t_step_start)
+      call wall_time(t_step_start)
       call ccik_normalize_vector(trial, ok)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_normalize', t_step_stop - t_step_start)
       if (ccik_debug_trace) then
         write(trace_line,'(A,1X,A,1X,I8,1X,I8,1X,ES24.16,1X,I8,1X,L1)') 'CCIK_TRACE_RESTART', 'final', cycle_idx, i, eig(i), trial%n, ok
         call ccik_debug_trace_line(trace_line)
@@ -2371,28 +3542,52 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
   else
     do i = 1, n_keep
       call ccik_vec_free(trial)
+      call wall_time(t_step_start)
       do j = 1, n_basis
         call ccik_vec_axpy(trial, eigvec(j,i), qbasis(j))
       end do
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_build', t_step_stop - t_step_start)
       if (i > 1) then
+        call wall_time(t_step_start)
         call ccik_orthogonalize_against_basis(trial, restart_basis, i-1)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_orth', t_step_stop - t_step_start)
       end if
       if (compression_policy == 'threshold') then
+        call wall_time(t_step_start)
         call ccik_normalize_vector(trial, ok)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_normalize', t_step_stop - t_step_start)
         if (.not. ok) cycle
+        call wall_time(t_step_start)
         call ccik_vec_threshold(trial, ccik_store_abs_tol, store_dropped_norm, store_used_fallback)
         if (trial%n > 1000000) then
           call ccik_vec_compress(trial, 1000000)
         end if
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_store', t_step_stop - t_step_start)
       else
         nkeep_stage1 = min(trial%n, ccik_tmp_keep_value(nkeep_eff))
+        call wall_time(t_step_start)
         call ccik_vec_compress(trial, nkeep_stage1)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_store', t_step_stop - t_step_start)
         if (i > 1) then
+          call wall_time(t_step_start)
           call ccik_orthogonalize_against_basis(trial, restart_basis, i-1)
+          call wall_time(t_step_stop)
+          call ccik_timing_add('restart_orth', t_step_stop - t_step_start)
         end if
+        call wall_time(t_step_start)
         call ccik_vec_compress(trial, nkeep_eff)
+        call wall_time(t_step_stop)
+        call ccik_timing_add('restart_store', t_step_stop - t_step_start)
       end if
+      call wall_time(t_step_start)
       call ccik_normalize_vector(trial, ok)
+      call wall_time(t_step_stop)
+      call ccik_timing_add('restart_normalize', t_step_stop - t_step_start)
       call ccik_vec_free(restart_basis(i))
       if (ok) then
         call ccik_vec_copy(restart_basis(i), trial)
@@ -2411,6 +3606,8 @@ subroutine ccik_restart_from_ritz(qbasis, hq_basis, n_basis, nkeep_eff, restart_
 
   deallocate(eig, eigvec)
   deallocate(restart_raw)
+  call wall_time(t_restart_stop)
+  call ccik_timing_add('restart_total', t_restart_stop - t_restart_start)
 end subroutine ccik_restart_from_ritz
 
 
