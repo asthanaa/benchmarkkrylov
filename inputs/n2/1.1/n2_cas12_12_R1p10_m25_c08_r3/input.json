@@ -1,0 +1,45 @@
+{
+  "name": "n2_cas12_12_R1p10_m25_c08_r3",
+  "label": "N2 CAS(12e,12o) R=1.10 A",
+  "molecule": {
+    "distance_ang": 1.1,
+    "basis": "6-31g",
+    "unit": "Angstrom",
+    "charge": 0,
+    "spin": 0,
+    "verbose": 0
+  },
+  "cas": {
+    "ncas": 12,
+    "nelecas": 12,
+    "ncore": 1
+  },
+  "study": {
+    "qp_root": "/Users/mushir.kolathingal/qp2",
+    "reference_mode": "exact_fci",
+    "max_cumulative_iterations": 178,
+    "stop_abs_delta_mHa": 1e-05,
+    "error_unit": "mHa",
+    "plot_yscale": "log",
+    "omp_threads": 8
+  },
+  "runs": [
+    {
+      "name": "k0512_s065536",
+      "label": "Kprop=512 Kstore=65536",
+      "solver": {
+        "kind": "ccik_thick",
+        "backend": "qp",
+        "params": {
+          "m_cycle": 25,
+          "ncycles": 8,
+          "nroot": 3,
+          "compression_policy": "fixed_budget",
+          "fixed_store_keep": 65536,
+          "fixed_propagate_keep": 512,
+          "selector_mode": "abs_residual"
+        }
+      }
+    }
+  ]
+}

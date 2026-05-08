@@ -159,7 +159,7 @@ def discover_qp_paths_from_root(root: Path) -> QPPaths:
             else (str(qp_create_ezfio_native_path) if qp_create_ezfio_native_path.exists() else "qp_create_ezfio")
         ),
         scf_binary=root / "src" / "hartree_fock" / "scf",
-        ccik_binary=root / "plugins" / "ccik_qp" / "stable" / "ccik" / "ccik",
+        ccik_binary=resolve_installed_ccik_binary(root),
         pt2_binary=root / "src" / "fci" / "pt2",
         orb_opt_binary=root / "src" / "mo_optimization" / "orb_opt",
     )
@@ -174,7 +174,9 @@ def discover_qp_paths() -> QPPaths:
 
 def validate_rebuildable_qp_root(root: Path) -> dict[str, object]:
     candidate = Path(root).resolve()
-    plugin_dir = candidate / "plugins" / "ccik_qp" / "stable" / "ccik"
+    plugin_candidates = _installed_ccik_plugin_dir_candidates(candidate)
+    resolved_candidates = tuple(path.resolve() for path in plugin_candidates)
+    plugin_dir = next((path for path in resolved_candidates if path.exists()), resolved_candidates[0])
     payload = {
         "qp_root": str(candidate),
         "root_exists": candidate.exists(),
@@ -183,6 +185,7 @@ def validate_rebuildable_qp_root(root: Path) -> dict[str, object]:
         "build_ninja": str(candidate / "config" / "build.ninja"),
         "build_ninja_exists": (candidate / "config" / "build.ninja").exists(),
         "plugin_dir": str(plugin_dir),
+        "plugin_dir_candidates": [str(path) for path in resolved_candidates],
         "plugin_dir_exists": plugin_dir.exists(),
         "is_rebuildable": False,
     }
@@ -590,14 +593,47 @@ def resolve_workspace_ccik_plugin_dir(path: Path | None = None) -> Path:
     return plugin_dir
 
 
+def _installed_ccik_src_dir(qp_root: Path) -> Path:
+    return (Path(qp_root).resolve() / "src" / "ccik").resolve(strict=False)
+
+
+def _installed_ccik_plugin_dir_candidates(qp_root: Path) -> tuple[Path, ...]:
+    root = Path(qp_root).resolve()
+    return (
+        root / "plugins" / "ccik_qp" / "stable" / "ccik",
+        root / "plugins" / "local" / "ccik",
+    )
+
+
+def resolve_installed_ccik_binary(qp: QPPaths | Path) -> Path:
+    qp_root = qp.qp_root if isinstance(qp, QPPaths) else Path(qp)
+    src_binary = _installed_ccik_src_dir(Path(qp_root)) / "ccik"
+    candidates = (src_binary,) + tuple(plugin_dir / "ccik" for plugin_dir in _installed_ccik_plugin_dir_candidates(Path(qp_root)))
+    for binary in candidates:
+        if binary.exists():
+            return binary.resolve()
+    return candidates[0].resolve()
+
+
 def resolve_installed_ccik_plugin_dir(qp: QPPaths | Path, *, create: bool = False) -> Path:
     qp_root = qp.qp_root if isinstance(qp, QPPaths) else Path(qp)
-    plugin_dir = (Path(qp_root) / "plugins" / "ccik_qp" / "stable" / "ccik").resolve()
+    src_dir = _installed_ccik_src_dir(Path(qp_root))
+    if src_dir.exists():
+        return src_dir.resolve()
+    candidates = _installed_ccik_plugin_dir_candidates(Path(qp_root))
+    for plugin_dir in candidates:
+        resolved = plugin_dir.resolve()
+        if resolved.exists():
+            return resolved
     if create:
+        plugin_dir = candidates[1] if (Path(qp_root) / "plugins" / "local").exists() else candidates[0]
+        plugin_dir = plugin_dir.resolve()
         plugin_dir.mkdir(parents=True, exist_ok=True)
-    if not plugin_dir.exists():
-        raise RuntimeError(f"Installed QP CCIK plugin directory not found: {plugin_dir}")
-    return plugin_dir
+        return plugin_dir
+    raise RuntimeError(
+        "Installed QP CCIK plugin directory not found. Tried: "
+        + ", ".join(str(candidate.resolve()) for candidate in candidates)
+    )
 
 
 def resolve_qp_build_ninja(qp: QPPaths | Path) -> Path:

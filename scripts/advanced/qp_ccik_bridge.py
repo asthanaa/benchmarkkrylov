@@ -29,7 +29,12 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 DEFAULT_PLUGIN_REPO = ROOT / "ccik_qp"
 
-from qp_ccik_common import rebuild_ccik_plugin, resolve_installed_ccik_plugin_dir, sync_workspace_ccik_plugin
+from qp_ccik_common import (
+    rebuild_ccik_plugin,
+    resolve_installed_ccik_binary,
+    resolve_installed_ccik_plugin_dir,
+    sync_workspace_ccik_plugin,
+)
 
 
 @dataclass(frozen=True)
@@ -79,8 +84,7 @@ def build_set_param_commands(toolchain: QPToolchain, ezfio: str, params: dict[st
 def resolve_ccik_binary(toolchain: QPToolchain) -> str:
     if not toolchain.qp_root:
         raise RuntimeError("QP_ROOT is not set. Source quantum_package.rc first.")
-    binary = Path(toolchain.qp_root) / "plugins" / "ccik_qp" / "stable" / "ccik" / "ccik"
-    return str(binary)
+    return str(resolve_installed_ccik_binary(Path(toolchain.qp_root)))
 
 
 def build_run_commands(toolchain: QPToolchain, ezfio: str, *, mode: str = "direct") -> list[list[str]]:

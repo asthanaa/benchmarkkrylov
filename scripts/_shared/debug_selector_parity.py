@@ -712,6 +712,7 @@ def _prepare_qp_workdir(
 def _generate_qp_fcidump(qp: QPPaths, ezfio: Path, outdir: Path, *, case_spec: DonorCaseSpec | None = None) -> Path:
     from pyscf.tools import fcidump as pyscf_fcidump
 
+    outdir = Path(outdir).resolve()
     copied = outdir / "qp_active.FCIDUMP"
     cached = None if case_spec is None else case_spec.cached_qp_fcidump
     if cached is not None and cached.exists():
@@ -723,7 +724,7 @@ def _generate_qp_fcidump(qp: QPPaths, ezfio: Path, outdir: Path, *, case_spec: D
         quoted_rc = shlex.quote(str(qp.quantum_package_rc))
         quoted_binary = shlex.quote(str(fcidump_binary))
         short_ezfio = shlex.quote(ezfio.name)
-        tmpdir = outdir / "fcidump_tmp"
+        tmpdir = (outdir / "fcidump_tmp").resolve()
         if tmpdir.exists():
             shutil.rmtree(tmpdir)
         tmpdir.mkdir(parents=True, exist_ok=True)
@@ -733,7 +734,13 @@ def _generate_qp_fcidump(qp: QPPaths, ezfio: Path, outdir: Path, *, case_spec: D
             text=True,
             cwd=ezfio.parent,
             capture_output=True,
-            env={**os.environ, "QP_ROOT": str(qp.qp_root), "TMPDIR": str(tmpdir)},
+            env={
+                **os.environ,
+                "QP_ROOT": str(qp.qp_root),
+                "TMPDIR": str(tmpdir),
+                "TMP": str(tmpdir),
+                "TEMP": str(tmpdir),
+            },
         )
         (outdir / "fcidump_stdout.log").write_text(run.stdout, encoding="utf-8")
         (outdir / "fcidump_stderr.log").write_text(run.stderr, encoding="utf-8")

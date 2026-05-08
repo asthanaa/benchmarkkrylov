@@ -19,6 +19,8 @@ What does **not** belong in git:
 
 Two bond-length groups are tracked here:
 
+- `inputs/n2/1.1/`
+  - `R = 1.10 Å`
 - `inputs/n2/1.5/`
   - `R = 1.50 Å`
 - `inputs/n2/2.0/`

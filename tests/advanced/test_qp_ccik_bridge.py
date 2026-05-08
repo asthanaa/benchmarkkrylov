@@ -60,7 +60,16 @@ def test_build_set_param_commands() -> None:
 
 def test_resolve_ccik_binary() -> None:
     toolchain = QPToolchain(qp="/usr/bin/qp", qp_plugins="/usr/bin/qp_plugins", qp_root="/tmp/qp2")
-    assert resolve_ccik_binary(toolchain) == "/tmp/qp2/plugins/ccik_qp/stable/ccik/ccik"
+    assert resolve_ccik_binary(toolchain) == str((Path("/tmp/qp2") / "src" / "ccik" / "ccik").resolve())
+
+
+def test_resolve_ccik_binary_falls_back_to_local_layout(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    binary = qp_root / "plugins" / "local" / "ccik" / "ccik"
+    binary.parent.mkdir(parents=True)
+    binary.write_text("", encoding="ascii")
+    toolchain = QPToolchain(qp="/usr/bin/qp", qp_plugins="/usr/bin/qp_plugins", qp_root=str(qp_root))
+    assert resolve_ccik_binary(toolchain) == str(binary.resolve())
 
 
 def test_build_run_commands_direct() -> None:
@@ -68,7 +77,7 @@ def test_build_run_commands_direct() -> None:
     cmds = build_run_commands(toolchain, "mol.ezfio", mode="direct")
     assert cmds == [
         ["/usr/bin/qp", "set_file", "mol.ezfio"],
-        ["/tmp/qp2/plugins/ccik_qp/stable/ccik/ccik", "mol.ezfio"],
+        [str((Path("/tmp/qp2") / "src" / "ccik" / "ccik").resolve()), "mol.ezfio"],
     ]
 
 

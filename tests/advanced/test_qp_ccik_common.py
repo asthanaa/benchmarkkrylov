@@ -29,6 +29,7 @@ qp_parallel_env = MODULE.qp_parallel_env
 repair_qp_runtime_install_names = MODULE.repair_qp_runtime_install_names
 resolve_omp_threads = MODULE.resolve_omp_threads
 resolve_rebuildable_qp_root = MODULE.resolve_rebuildable_qp_root
+resolve_installed_ccik_binary = MODULE.resolve_installed_ccik_binary
 resolve_installed_ccik_plugin_dir = MODULE.resolve_installed_ccik_plugin_dir
 resolve_plugin_build_ninja = MODULE.resolve_plugin_build_ninja
 resolve_qp_build_ninja = MODULE.resolve_qp_build_ninja
@@ -160,12 +161,65 @@ def test_resolve_installed_ccik_plugin_dir(tmp_path: Path) -> None:
     assert resolve_installed_ccik_plugin_dir(qp_root) == plugin_dir.resolve()
 
 
+def test_resolve_installed_ccik_plugin_dir_prefers_src_symlink_target(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    plugin_dir = qp_root / "plugins" / "local" / "ccik"
+    plugin_dir.mkdir(parents=True)
+    src_link = qp_root / "src" / "ccik"
+    src_link.parent.mkdir(parents=True)
+    src_link.symlink_to(plugin_dir, target_is_directory=True)
+    assert resolve_installed_ccik_plugin_dir(qp_root) == plugin_dir.resolve()
+
+
+def test_resolve_installed_ccik_plugin_dir_falls_back_to_local_layout(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    plugin_dir = qp_root / "plugins" / "local" / "ccik"
+    plugin_dir.mkdir(parents=True)
+    assert resolve_installed_ccik_plugin_dir(qp_root) == plugin_dir.resolve()
+
+
+def test_resolve_installed_ccik_binary_falls_back_to_local_layout(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    binary = qp_root / "plugins" / "local" / "ccik" / "ccik"
+    binary.parent.mkdir(parents=True)
+    binary.write_text("", encoding="ascii")
+    assert resolve_installed_ccik_binary(qp_root) == binary.resolve()
+
+
+def test_resolve_installed_ccik_binary_prefers_src_symlink_target(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    plugin_dir = qp_root / "plugins" / "local" / "ccik"
+    plugin_dir.mkdir(parents=True)
+    binary = plugin_dir / "ccik"
+    binary.write_text("", encoding="ascii")
+    src_link = qp_root / "src" / "ccik"
+    src_link.parent.mkdir(parents=True)
+    src_link.symlink_to(plugin_dir, target_is_directory=True)
+    assert resolve_installed_ccik_binary(qp_root) == binary.resolve()
+
+
 def test_resolve_qp_build_ninja(tmp_path: Path) -> None:
     qp_root = tmp_path / "qp2"
     build_ninja = qp_root / "config" / "build.ninja"
     build_ninja.parent.mkdir(parents=True)
     build_ninja.write_text("build all: phony\n", encoding="ascii")
     assert resolve_qp_build_ninja(qp_root) == build_ninja.resolve()
+
+
+def test_validate_rebuildable_qp_root_accepts_local_plugin_layout(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    (qp_root / "quantum_package.rc").parent.mkdir(parents=True, exist_ok=True)
+    (qp_root / "quantum_package.rc").write_text("export QP_ROOT=/tmp/qp2\n", encoding="ascii")
+    (qp_root / "config" / "build.ninja").parent.mkdir(parents=True, exist_ok=True)
+    (qp_root / "config" / "build.ninja").write_text("build all: phony\n", encoding="ascii")
+    plugin_dir = qp_root / "plugins" / "local" / "ccik"
+    plugin_dir.mkdir(parents=True)
+
+    payload = validate_rebuildable_qp_root(qp_root)
+
+    assert payload["plugin_dir"] == str(plugin_dir.resolve())
+    assert payload["plugin_dir_exists"] is True
+    assert payload["is_rebuildable"] is True
 
 
 def test_resolve_plugin_build_ninja(tmp_path: Path) -> None:
@@ -216,6 +270,21 @@ def test_sync_workspace_ccik_plugin_creates_installed_dir_when_missing(tmp_path:
     summary = sync_workspace_ccik_plugin(qp_root, workspace_plugin_dir=workspace)
 
     installed = qp_root / "plugins" / "ccik_qp" / "stable" / "ccik"
+    assert installed.is_dir()
+    assert summary["installed_plugin_dir"] == str(installed.resolve())
+    assert (installed / "ccik_driver.irp.f").read_text(encoding="ascii") == "new driver\n"
+
+
+def test_sync_workspace_ccik_plugin_creates_local_layout_when_qp_root_uses_plugins_local(tmp_path: Path) -> None:
+    qp_root = tmp_path / "qp2"
+    (qp_root / "plugins" / "local").mkdir(parents=True)
+    workspace = tmp_path / "workspace" / "ccik"
+    workspace.mkdir(parents=True)
+    (workspace / "ccik_driver.irp.f").write_text("new driver\n", encoding="ascii")
+
+    summary = sync_workspace_ccik_plugin(qp_root, workspace_plugin_dir=workspace)
+
+    installed = qp_root / "plugins" / "local" / "ccik"
     assert installed.is_dir()
     assert summary["installed_plugin_dir"] == str(installed.resolve())
     assert (installed / "ccik_driver.irp.f").read_text(encoding="ascii") == "new driver\n"
