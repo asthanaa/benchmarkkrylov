@@ -1,0 +1,18 @@
+{
+  "case_id": "BeH2_equi_cc_pVTZ_2",
+  "casscf_energy_hartree": -15.577504296993196,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -15.575904296993196,
+  "elapsed_seconds": 15.303370706737041,
+  "final_min_history_energy_hartree": -15.766293114740067,
+  "final_projected_ground_energy_hartree": -15.766293114740067,
+  "h0.25": 1.7637455967891338,
+  "hit_chemical_accuracy": true,
+  "hit_iteration": 1,
+  "method": "qkud",
+  "n_steps": 1,
+  "n_steps_completed": 1,
+  "n_steps_requested": 200,
+  "status": "completed",
+  "stopped_early": true
+}

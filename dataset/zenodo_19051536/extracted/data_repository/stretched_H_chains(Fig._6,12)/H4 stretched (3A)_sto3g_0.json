@@ -1,0 +1,295 @@
+{
+  "name": "H4 stretched (3A)_sto3g_0",
+  "library_version": null,
+  "meta": {
+    "molecule": {
+      "basis": "sto-3g",
+      "charge": 0,
+      "spin": 0,
+      "symmetry": false,
+      "atoms": [
+        {
+          "element": "H",
+          "xyz": [
+            -8.503767560542778,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            -2.8345891868475928,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            2.8345891868475928,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            8.503767560542778,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "mapping": "JordanWignerMapping",
+    "scf": {
+      "energy": -1.3133117862215051,
+      "method": "RHF"
+    },
+    "casscf": {
+      "ncas": 4,
+      "nelec": 4,
+      "energy": -1.8672913724013778,
+      "natorb": true
+    },
+    "hamiltonian": {
+      "n_pauli": 185,
+      "n_qwc": 68,
+      "n_gc": 9
+    },
+    "ansatz": {
+      "type": "TETRIS-ADAPT-VQE",
+      "pool_size": 36
+    },
+    "target_energy": -1.8671913724013778,
+    "hyperparameters": {
+      "adapt_max_iterations": 300,
+      "adapt_grad_tol": 1e-08,
+      "vqe_accuracy": 1e-06,
+      "vqe_maxiter": 500
+    }
+  },
+  "spans": [
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 0,
+        "selected_ops": [
+          {
+            "index": 19,
+            "support": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "grad": 0.2945608838322825
+          },
+          {
+            "index": 17,
+            "support": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "grad": 0.3249045489802067
+          }
+        ],
+        "energy_after_vqe": -1.5507692878666202,
+        "num_parameters": 2,
+        "num_cnots": 18,
+        "spin_z": 0.0,
+        "spin_squared": 1.1102230246251565e-16
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 1,
+        "selected_ops": [
+          {
+            "index": 30,
+            "support": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "grad": -0.07855209339872092
+          },
+          {
+            "index": 24,
+            "support": [
+              1,
+              3,
+              5,
+              7
+            ],
+            "grad": -0.07855209339872085
+          }
+        ],
+        "energy_after_vqe": -1.8666460651373553,
+        "num_parameters": 6,
+        "num_cnots": 44,
+        "spin_z": 0.0,
+        "spin_squared": 1.988779846404259
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 2,
+        "selected_ops": [
+          {
+            "index": 10,
+            "support": [
+              0,
+              4
+            ],
+            "grad": -0.005440113502898865
+          },
+          {
+            "index": 7,
+            "support": [
+              2,
+              6
+            ],
+            "grad": -0.005429385911723034
+          },
+          {
+            "index": 4,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 0.005440119903260604
+          },
+          {
+            "index": 1,
+            "support": [
+              3,
+              7
+            ],
+            "grad": 0.0054293923264946906
+          }
+        ],
+        "energy_after_vqe": -1.8666916103242508,
+        "num_parameters": 10,
+        "num_cnots": 52,
+        "spin_z": -6.938893903907228e-18,
+        "spin_squared": 1.9885255722983821
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 3,
+        "selected_ops": [
+          {
+            "index": 20,
+            "support": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "grad": 1.0710570078136021e-05
+          },
+          {
+            "index": 14,
+            "support": [
+              2,
+              3,
+              6,
+              7
+            ],
+            "grad": 2.4237453207196535e-05
+          }
+        ],
+        "energy_after_vqe": -1.8666916692900257,
+        "num_parameters": 12,
+        "num_cnots": 70,
+        "spin_z": -2.0816681711721685e-17,
+        "spin_squared": 1.988587629488506
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 4,
+        "selected_ops": [
+          {
+            "index": 19,
+            "support": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "grad": 9.577561114276886e-06
+          },
+          {
+            "index": 17,
+            "support": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "grad": 9.561416843398088e-06
+          }
+        ],
+        "energy_after_vqe": -1.8671266537231945,
+        "num_parameters": 16,
+        "num_cnots": 96,
+        "spin_z": 2.7755575615628914e-17,
+        "spin_squared": 0.05974681265000011
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 5,
+        "selected_ops": [
+          {
+            "index": 23,
+            "support": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "grad": -5.142684769016659e-05
+          },
+          {
+            "index": 12,
+            "support": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "grad": 3.9685978903004504e-05
+          }
+        ],
+        "energy_after_vqe": -1.8672908287897005,
+        "num_parameters": 20,
+        "num_cnots": 122,
+        "spin_z": 2.0816681711721685e-17,
+        "spin_squared": 0.0008929086324155622
+      }
+    }
+  ],
+  "final": {
+    "converged": true,
+    "reason": "target",
+    "energy": -1.8672908287897005,
+    "num_parameters": 20,
+    "num_cnots": 122,
+    "spin_z": 2.0816681711721685e-17,
+    "spin_squared": 0.0008929086324155622,
+    "num_iterations": 5
+  }
+}

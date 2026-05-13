@@ -1,0 +1,17 @@
+{
+  "completed": 0,
+  "concurrency": 36,
+  "early_stop_chemical_accuracy": true,
+  "events": [],
+  "failed": 0,
+  "force": false,
+  "max_workers": 1,
+  "method": "qrte",
+  "n_pending_at_start": 6,
+  "n_selected": 29,
+  "order": "small-first",
+  "pool_id": "252530",
+  "skipped_completed_at_start": 23,
+  "started_at_epoch": 1777768327.3304257,
+  "updated_at_epoch": 1777768327.3304274
+}

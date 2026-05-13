@@ -1,0 +1,23 @@
+{
+  "active_orbital_labels": [
+    "Fe 3d"
+  ],
+  "case_id": "fenoco3_minus",
+  "casscf_energy_hartree": -1737.7023563618047,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1737.7007563618047,
+  "elapsed_seconds": 5113.920521834982,
+  "final_min_history_energy_hartree": -1729.8046601746087,
+  "final_projected_ground_energy_hartree": -1729.8046601746087,
+  "h0.25": 5.19675874877606,
+  "hamiltonian_cache_dir": "/home/ayush.asthana/code/benchmark/hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qrte",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

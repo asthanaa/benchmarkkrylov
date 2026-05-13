@@ -1,0 +1,18 @@
+{
+  "case_id": "hexatriene_equi_cc_pVTZ_0",
+  "casscf_energy_hartree": -231.97262390091163,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -231.97102390091163,
+  "elapsed_seconds": 1785.7562261018902,
+  "final_min_history_energy_hartree": -231.90232144466424,
+  "final_projected_ground_energy_hartree": -231.90232144466424,
+  "h0.25": 3.926060611953842,
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 200,
+  "n_steps_completed": 200,
+  "n_steps_requested": 200,
+  "status": "completed",
+  "stopped_early": false
+}

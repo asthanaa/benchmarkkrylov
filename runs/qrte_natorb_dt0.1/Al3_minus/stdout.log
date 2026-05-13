@@ -1,0 +1,5 @@
+converged SCF energy = -725.698301748095
+CASSCF energy = -725.792288136485
+CASCI E = -725.792288136485  E(CI) = -7.01722740471087  S^2 = 0.0000000
+DONE qrte Al3_minus hit=9
+{"completed": 1, "failed": 0, "skipped": 0}

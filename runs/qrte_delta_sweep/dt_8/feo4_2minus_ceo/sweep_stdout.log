@@ -1,0 +1,5 @@
+SCF not converged.
+SCF energy = -1561.50970797813
+converged SCF energy = -1561.51391675872
+DONE qrte feo4_2minus_ceo hit=None
+{"completed": 1, "failed": 0, "skipped": 0}

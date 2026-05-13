@@ -1,0 +1,3 @@
+converged SCF energy = -1337.11046994707
+FAIL qrte FeO: ValueError("AVAS active space mismatch for labels ['Fe 3d', 'O 2p']: got (10, 8), expected (12, 9)")
+{"completed": 0, "failed": 1, "skipped": 0}

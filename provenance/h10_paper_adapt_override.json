@@ -1,0 +1,13 @@
+{
+  "case_id": "H10_near_equi_sto3g_0",
+  "purpose": "Place the H10 ADAPT point on benchmark plots at the same y-position as Fig. 1 of the QCANT paper while the separate ADAPT-H10 calculation is stopped.",
+  "adapt_iteration_to_chemical_accuracy": 324.5,
+  "uncertainty_iterations": 2.1,
+  "source": "arXiv:2603.13073v2 Appendix C",
+  "source_url": "https://arxiv.org/html/2603.13073v2",
+  "notes": [
+    "This override affects only the ADAPT comparison point used for plotting.",
+    "QRTE and QKUD H10 points still come only from completed benchmark summary.json files.",
+    "If benchmark/runs/adapt_h10_qcant/summary.json later contains a completed chemical-accuracy hit, collect_and_plot.py will prefer that measured value over this fixed paper override."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "active_electrons": 8,
+  "active_orbitals": 9,
+  "adapt_chem_accuracy_iteration": 63,
+  "basis": "def2-TZVP",
+  "case_id": "Al3_minus",
+  "casscf_energy_hartree": -725.7921857752825,
+  "charge": -1,
+  "geometry_angstrom": [
+    [
+      0.0,
+      1.4479944799534823,
+      0.0
+    ],
+    [
+      -1.2539999999597147,
+      -0.7239972399767411,
+      0.0
+    ],
+    [
+      1.2539999999597147,
+      -0.7239972399767411,
+      0.0
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      2.7363129970820017,
+      0.0
+    ],
+    [
+      -2.3697165602045875,
+      -1.3681564985410009,
+      0.0
+    ],
+    [
+      2.3697165602045875,
+      -1.3681564985410009,
+      0.0
+    ]
+  ],
+  "h0.25": 6.428074004502384,
+  "has_adapt_chem_hit": true,
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/Al3_minus.json",
+  "source_name": "Al3_minus.json",
+  "spin": 0,
+  "symbols": [
+    "Al",
+    "Al",
+    "Al"
+  ]
+}

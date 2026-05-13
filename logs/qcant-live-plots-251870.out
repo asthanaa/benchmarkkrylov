@@ -1,0 +1,21 @@
+[2026-05-02T16:45:22+00:00] refresh reason=initial rc=0
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.csv
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.png
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.pdf
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.csv
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.png
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.pdf
+[2026-05-02T16:54:24+00:00] refresh reason=summary_changed rc=0
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.csv
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.png
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.pdf
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.csv
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.png
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.pdf
+[2026-05-02T16:57:26+00:00] refresh reason=summary_changed rc=0
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.csv
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.png
+Wrote plots/adapt_vs_qrte_iterations_vs_entropy.pdf
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.csv
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.png
+Wrote plots/adapt_vs_qkud_iterations_vs_entropy.pdf

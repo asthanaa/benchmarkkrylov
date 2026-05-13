@@ -1,0 +1,2 @@
+origin	https://github.com/asthanalab/QCANT.git (fetch)
+origin	https://github.com/asthanalab/QCANT.git (push)

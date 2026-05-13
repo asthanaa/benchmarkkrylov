@@ -1,0 +1,5 @@
+converged SCF energy = -1729.83332503932
+CASSCF energy = -1730.06790828671
+CASCI E = -1730.06790828671  E(CI) = -19.7140388367879  S^2 = 0.0000000
+DONE qrte fenoco3_minus hit=None
+{"completed": 1, "failed": 0, "skipped": 0}

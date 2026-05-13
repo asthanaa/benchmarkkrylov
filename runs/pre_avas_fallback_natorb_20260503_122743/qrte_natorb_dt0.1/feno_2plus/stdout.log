@@ -1,0 +1,5 @@
+SCF not converged.
+SCF energy = -1390.72626463258
+converged SCF energy = -1390.72621818757
+FAIL qrte feno_2plus: ValueError("AVAS active space mismatch for labels ['Fe 3d', 'N 2p', 'O 2p']: got (11, 10), expected (11, 9)")
+{"completed": 0, "failed": 1, "skipped": 0}

@@ -1,0 +1,18 @@
+{
+  "active_orbital_labels": [
+    "C 2pz"
+  ],
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.1,
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -229.51256071300352,
+  "epsilon": 7.0,
+  "evolution_mode": "trotter",
+  "hamiltonian_cache_dir": "/home/ayush.asthana/code/benchmark/hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "max_workers": 36,
+  "method": "qkud",
+  "n_steps": 50,
+  "qcant_root": "/home/ayush.asthana/code/benchmark/vendor/QCANT",
+  "trotter_steps": 1
+}

@@ -1,0 +1,13 @@
+Corrected sweep grid after user clarified intended values.
+Old mistaken grid: 0.1,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,10.0
+Correct canonical unique grid: 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0
+Note: 1.0 appears in both requested intervals, so duplicate 1.0 is run once.
+Old-grid result directories are preserved but collect_and_plot.py now filters sweep plot-source rows to canonical values only.
+
+Restart action:
+- Canceled old-grid sweep/watch jobs: 252562_2, 252562_3, 252555_2, 252555_3, 252560.
+- Submitted corrected QRTE array: 252648, using QCANT_SWEEP_SHARDS=8 and array indexes 0-7.
+- Submitted corrected QKUD array: 252649, using QCANT_SWEEP_SHARDS=8 and array indexes 0-7.
+- Rebalanced after submission because QRTE filled available account slots first: kept QRTE 252648_0, 252648_1, and 252648_2 running; canceled just-started QRTE 252648_3 and 252648_4 so QKUD could start immediately.
+- Replaced held QRTE shards with a clean dependent remainder array: 252660, using QCANT_SWEEP_SHARDS=8 and array indexes 3-7, dependent on afterany:252649.
+- Current live mix after rebalance: QRTE 252648_0-2 and QKUD 252649_0-1 running; QKUD 252649_2-7 pending on AssocMaxJobsLimit; QRTE remainder 252660_3-7 pending on the QKUD-array dependency.

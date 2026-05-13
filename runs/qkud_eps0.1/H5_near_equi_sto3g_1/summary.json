@@ -1,0 +1,18 @@
+{
+  "case_id": "H5_near_equi_sto3g_1",
+  "casscf_energy_hartree": -2.6545169682127527,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -2.652916968212753,
+  "elapsed_seconds": 14.639106325805187,
+  "final_min_history_energy_hartree": -2.6536996435394786,
+  "final_projected_ground_energy_hartree": -2.6536996435394786,
+  "h0.25": 2.7427255836126165,
+  "hit_chemical_accuracy": true,
+  "hit_iteration": 3,
+  "method": "qkud",
+  "n_steps": 3,
+  "n_steps_completed": 3,
+  "n_steps_requested": 200,
+  "status": "completed",
+  "stopped_early": true
+}

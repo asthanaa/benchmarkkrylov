@@ -1,0 +1,18 @@
+{
+  "case_id": "FeO",
+  "casscf_energy_hartree": -1337.2890177002632,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1337.2874177002632,
+  "elapsed_seconds": 17859.158266905695,
+  "final_min_history_energy_hartree": -1337.0861101995588,
+  "final_projected_ground_energy_hartree": -1337.0861101995588,
+  "h0.25": 3.8687871848397837,
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

@@ -1,0 +1,5 @@
+converged SCF energy = -15.7708121668968
+CASSCF energy = -15.8032441811471
+CASCI E = -15.8032441811471  E(CI) = -4.02448758888322  S^2 = 0.0000000
+DONE qrte BeH2_equi_cc_pVTZ_0 hit=2
+{"completed": 1, "failed": 0, "skipped": 0}

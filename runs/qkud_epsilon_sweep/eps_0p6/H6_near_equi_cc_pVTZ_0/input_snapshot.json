@@ -1,0 +1,86 @@
+{
+  "active_electrons": 6,
+  "active_orbitals": 6,
+  "adapt_chem_accuracy_iteration": 12,
+  "basis": "cc-pVTZ",
+  "case_id": "H6_near_equi_cc_pVTZ_0",
+  "casscf_energy_hartree": -3.323389711558537,
+  "charge": 0,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.9999999999678745
+    ],
+    [
+      0.0,
+      0.0,
+      1.999999999935749
+    ],
+    [
+      0.0,
+      0.0,
+      2.9999999999036233
+    ],
+    [
+      0.0,
+      0.0,
+      3.999999999871498
+    ],
+    [
+      0.0,
+      0.0,
+      4.999999999839373
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.8897261245650618
+    ],
+    [
+      0.0,
+      0.0,
+      3.7794522491301237
+    ],
+    [
+      0.0,
+      0.0,
+      5.6691783736951855
+    ],
+    [
+      0.0,
+      0.0,
+      7.558904498260247
+    ],
+    [
+      0.0,
+      0.0,
+      9.44863062282531
+    ]
+  ],
+  "h0.25": 3.6163748590503406,
+  "has_adapt_chem_hit": true,
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/H6 near equi._cc-pVTZ_0.json",
+  "source_name": "H6 near equi._cc-pVTZ_0.json",
+  "spin": 0,
+  "symbols": [
+    "H",
+    "H",
+    "H",
+    "H",
+    "H",
+    "H"
+  ]
+}

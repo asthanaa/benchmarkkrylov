@@ -1,0 +1,7 @@
+POOL qrte selected=29 pending=6 skipped=23 concurrency=36 max_workers=1
+START qrte row=25 case=Al3_minus pid=626485
+START qrte row=24 case=FeO pid=626487
+START qrte row=26 case=feno_2plus pid=626489
+START qrte row=28 case=H10_near_equi_sto3g_0 pid=626491
+START qrte row=21 case=feo4_2minus_ceo pid=626493
+START qrte row=23 case=fenoco3_minus pid=626495

@@ -1,0 +1,23 @@
+POOL qkud selected=29 pending=27 skipped=2 concurrency=18 max_workers=2
+START qkud row=3 case=H5_near_equi_sto3g_1 pid=523239
+START qkud row=14 case=H6_near_equi_sto3g_0 pid=523240
+START qkud row=7 case=CO_equi_cc_pVTZ_0 pid=523241
+START qkud row=5 case=CO_equi_cc_pVTZ_2 pid=523242
+START qkud row=6 case=N2_equi_cc_pVTZ_0 pid=523243
+START qkud row=4 case=N2_equi_cc_pVTZ_2 pid=523244
+START qkud row=9 case=BeH2_equi_cc_pVTZ_0 pid=523245
+START qkud row=8 case=BeH2_equi_cc_pVTZ_2 pid=523246
+START qkud row=19 case=H7_near_equi_sto3g_1 pid=523247
+START qkud row=11 case=CH2O_equi_cc_pVTZ_0 pid=523248
+START qkud row=10 case=CH2O_equi_cc_pVTZ_2 pid=523249
+START qkud row=22 case=H8_near_equi_sto3g_0 pid=523250
+START qkud row=13 case=H6_near_equi_cc_pVTZ_0 pid=523251
+START qkud row=12 case=H6_near_equi_cc_pVTZ_2 pid=523252
+START qkud row=27 case=H9_near_equi_sto3g_1 pid=523253
+START qkud row=25 case=Al3_minus pid=523254
+START qkud row=24 case=FeO pid=523255
+START qkud row=26 case=feno_2plus pid=523256
+END qkud row=3 case=H5_near_equi_sto3g_1 outcome=completed rc=0 elapsed=7395.3s
+START qkud row=28 case=H10_near_equi_sto3g_0 pid=544135
+END qkud row=4 case=N2_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=13710.5s
+START qkud row=21 case=feo4_2minus_ceo pid=557692

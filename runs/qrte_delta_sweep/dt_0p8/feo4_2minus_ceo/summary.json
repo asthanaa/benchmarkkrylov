@@ -1,0 +1,18 @@
+{
+  "case_id": "feo4_2minus_ceo",
+  "casscf_energy_hartree": -1561.7175121505988,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1561.7159121505988,
+  "elapsed_seconds": 4596.796143345535,
+  "final_min_history_energy_hartree": -1561.519094970053,
+  "final_projected_ground_energy_hartree": -1561.519094970053,
+  "h0.25": 5.784618622839976,
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qrte",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

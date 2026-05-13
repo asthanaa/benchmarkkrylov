@@ -1,0 +1,30 @@
+case_id,source_name,h0.25,adapt_chem_accuracy_iteration,has_adapt_chem_hit,method,method_chem_accuracy_iteration,method_hit_chemical_accuracy,method_status,casscf_energy_hartree
+H4_near_equi_sto3g_0,H4 near equi._sto3g_0.json,1.807519407015623,3,true,qkud,,,missing,-2.1663874486347625
+cyclobutadiene_ceo,cyclobutadiene_ceo.json,1.934845493351637,4,true,qkud,,,missing,-153.72228958240802
+magnesium_porphyrin_ceo,magnesium_porphyrin_ceo.json,1.8512057888622708,3,true,qkud,,,missing,-1182.2389641302318
+H5_near_equi_sto3g_1,H5 near equi._sto3g_1.json,2.7427255836126165,10,true,qkud,,,missing,-2.6545169682127527
+N2_equi_cc_pVTZ_2,N2 equi._cc-pVTZ_2.json,2.4058499185074655,8,true,qkud,,,missing,-108.87152580010415
+CO_equi_cc_pVTZ_2,CO equi._cc-pVTZ_2.json,2.568678127993894,10,true,qkud,,,missing,-112.60166830789687
+N2_equi_cc_pVTZ_0,N2 equi._cc-pVTZ_0.json,3.44406881760021,10,true,qkud,,,missing,-109.1001311657515
+CO_equi_cc_pVTZ_0,CO equi._cc-pVTZ_0.json,3.6487535793870127,12,true,qkud,,,missing,-112.89409377342591
+BeH2_equi_cc_pVTZ_2,BeH2 equi._cc-pVTZ_2.json,1.7637455967891338,5,true,qkud,,,missing,-15.577504296993196
+BeH2_equi_cc_pVTZ_0,BeH2 equi._cc-pVTZ_0.json,1.9953821822599993,4,true,qkud,,,missing,-15.803244181133712
+CH2O_equi_cc_pVTZ_2,CH2O equi._cc-pVTZ_2.json,1.994618284788223,7,true,qkud,,,missing,-113.8291472051797
+CH2O_equi_cc_pVTZ_0,CH2O equi._cc-pVTZ_0.json,2.8150632006176095,6,true,qkud,,,missing,-114.02162279867512
+H6_near_equi_cc_pVTZ_2,H6 near equi._cc-pVTZ_2.json,3.3042107888407966,12,true,qkud,,,missing,-3.1849788446911473
+H6_near_equi_cc_pVTZ_0,H6 near equi._cc-pVTZ_0.json,3.6163748590503406,12,true,qkud,,,missing,-3.323389711558537
+H6_near_equi_sto3g_0,H6 near equi._sto3g_0.json,3.645659903694176,11,true,qkud,,,missing,-3.2360662798923414
+m_Benzyne_equi_cc_pVTZ_2,m-Benzyne equi._cc-pVTZ_2.json,3.4498820851981904,11,true,qkud,,,missing,-229.3696950180437
+m_Benzyne_equi_cc_pVTZ_0,m-Benzyne equi._cc-pVTZ_0.json,3.743555647974066,14,true,qkud,,,missing,-229.51416071300352
+hexatriene_equi_cc_pVTZ_2,hexatriene equi._cc-pVTZ_2.json,3.6327331004268526,17,true,qkud,,,missing,-231.86563211268302
+hexatriene_equi_cc_pVTZ_0,hexatriene equi._cc-pVTZ_0.json,3.926060611953842,13,true,qkud,,,missing,-231.97262390091163
+H7_near_equi_sto3g_1,H7 near equi._sto3g_1.json,4.681725426391032,29,true,qkud,,,missing,-3.735487532197057
+Ferrocene_ceo,Ferrocene_ceo.json,2.998624301634845,8,true,qkud,,,missing,-1655.9904378745648
+feo4_2minus_ceo,feo4_2minus_ceo.json,5.784618622839976,54,true,qkud,,,missing,-1561.7175121505988
+H8_near_equi_sto3g_0,H8 near equi._sto3g_0.json,5.703579641582878,55,true,qkud,,,missing,-4.307571601993609
+fenoco3_minus,fenoco3_minus.json,5.19675874877606,32,true,qkud,,,missing,-1737.7023563618047
+FeO,FeO.json,3.8687871848397837,11,true,qkud,,,missing,-1337.2890177002632
+Al3_minus,Al3_minus.json,6.428074004502384,63,true,qkud,,,missing,-725.7921857752825
+feno_2plus,feno_2plus.json,5.49249098761899,29,true,qkud,,,missing,-1398.4787643264515
+H9_near_equi_sto3g_1,H9 near equi._sto3g_1.json,6.743826020542393,142,true,qkud,,,missing,-4.814010787321555
+H10_near_equi_sto3g_0,H10 near equi._sto3g_0.json,7.818083252632531,,false,qkud,,,missing,-5.379954745997448

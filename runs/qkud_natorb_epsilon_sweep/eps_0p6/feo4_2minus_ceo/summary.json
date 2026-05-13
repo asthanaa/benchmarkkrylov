@@ -1,0 +1,23 @@
+{
+  "active_orbital_labels": [
+    "Fe 3d"
+  ],
+  "case_id": "feo4_2minus_ceo",
+  "casscf_energy_hartree": -1561.7175121505988,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1561.7159121505988,
+  "elapsed_seconds": 4257.688284783973,
+  "final_min_history_energy_hartree": -1561.593652881936,
+  "final_projected_ground_energy_hartree": -1561.593652881936,
+  "h0.25": 5.784618622839976,
+  "hamiltonian_cache_dir": "/home/ayush.asthana/code/benchmark/hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

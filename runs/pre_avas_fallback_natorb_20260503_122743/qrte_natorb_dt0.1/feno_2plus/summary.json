@@ -1,0 +1,22 @@
+{
+  "active_orbital_labels": [
+    "Fe 3d",
+    "N 2p",
+    "O 2p"
+  ],
+  "case_id": "feno_2plus",
+  "casscf_energy_hartree": -1398.4787643264515,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -1398.4771643264514,
+  "elapsed_seconds": 85.08591383881867,
+  "error": "ValueError(\"AVAS active space mismatch for labels ['Fe 3d', 'N 2p', 'O 2p']: got (11, 10), expected (11, 9)\")",
+  "h0.25": 5.49249098761899,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "method": "qrte",
+  "n_steps": 50,
+  "n_steps_requested": 50,
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/ayush.asthana/code/benchmark/scripts/run_krylov_benchmark.py\", line 222, in _run_case_body\n    energies, _basis_states, _times, min_history = QCANT.qrte_qulacs(\n                                                   ^^^^^^^^^^^^^^^^^^\n  File \"/home/ayush.asthana/code/benchmark/vendor/QCANT/QCANT/qulacs_accel.py\", line 1798, in qrte_qulacs\n    payload = _build_hamiltonian_payload(\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ayush.asthana/code/benchmark/vendor/QCANT/QCANT/qulacs_accel.py\", line 792, in _build_hamiltonian_payload\n    integral_payload = _with_hamiltonian_cache(cache_root, cache_key, _compute_active_integrals, np)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ayush.asthana/code/benchmark/vendor/QCANT/QCANT/qulacs_accel.py\", line 653, in _with_hamiltonian_cache\n    payload = compute()\n              ^^^^^^^^^\n  File \"/home/ayush.asthana/code/benchmark/vendor/QCANT/QCANT/qulacs_accel.py\", line 733, in _compute_active_integrals\n    raise ValueError(\nValueError: AVAS active space mismatch for labels ['Fe 3d', 'N 2p', 'O 2p']: got (11, 10), expected (11, 9)\n"
+}

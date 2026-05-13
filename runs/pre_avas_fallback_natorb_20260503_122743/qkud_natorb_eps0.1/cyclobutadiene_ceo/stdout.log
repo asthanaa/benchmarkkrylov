@@ -1,0 +1,3 @@
+converged SCF energy = -153.651405844179
+FAIL qkud cyclobutadiene_ceo: ValueError("AVAS active space mismatch for labels ['C 2pz']: got (2, 3), expected (4, 4)")
+{"completed": 0, "failed": 1, "skipped": 0}

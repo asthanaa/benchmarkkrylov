@@ -1,0 +1,6 @@
+Relaunch at 2026-05-07T20:17:55-05:00
+Reason: use all 36 cores per QRTE/QKUD parameter-probe calculation rather than 6 concurrent x 6 workers.
+Cancelled job: 253568
+Completed results preserved and skipped on restart: see sweep summary dirs.
+Large-mem 72-core test-only forecast: 2026-05-10T17:40:42, not used.
+New settings: QCANT_PARAM_POOL_CONCURRENCY=1, QCANT_PARAM_POOL_MAX_WORKERS=36
