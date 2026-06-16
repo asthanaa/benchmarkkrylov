@@ -1,0 +1,21 @@
+{
+  "next_check_seconds": 1.0,
+  "running_watched_job_ids": [],
+  "status": "finished_once",
+  "summary_counts": {
+    "qkud": {
+      "completed": 0,
+      "failed": 0,
+      "hit_chemical_accuracy": 0,
+      "other": 0
+    },
+    "qrte": {
+      "completed": 0,
+      "failed": 0,
+      "hit_chemical_accuracy": 0,
+      "other": 0
+    }
+  },
+  "updated_at_utc": "2026-06-16T20:21:04+00:00",
+  "watched_job_ids": []
+}

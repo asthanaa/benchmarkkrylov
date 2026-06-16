@@ -1,0 +1,1 @@
+case_id,source_name,h0.25,method,parameter_name,parameter_value,hit_iteration,hit_chemical_accuracy,status,n_steps_requested,n_steps_completed,stopped_early,final_min_history_energy_hartree,casscf_energy_hartree,summary_path
