@@ -172,3 +172,55 @@ END index=95 qkud feno_2plus epsilon=0.7 outcome=completed hit=None elapsed=1725
 START index=96 qkud feno_2plus epsilon=0.8 pid=1414126
 END index=96 qkud feno_2plus epsilon=0.8 outcome=completed hit=None elapsed=17270.5s
 START index=97 qkud feno_2plus epsilon=0.9 pid=1445589
+END index=97 qkud feno_2plus epsilon=0.9 outcome=completed hit=None elapsed=17345.5s
+START index=99 qkud feno_2plus epsilon=2 pid=1477207
+END index=99 qkud feno_2plus epsilon=2 outcome=completed hit=None elapsed=17345.5s
+START index=100 qkud feno_2plus epsilon=3 pid=1509460
+END index=100 qkud feno_2plus epsilon=3 outcome=completed hit=None elapsed=17350.5s
+START index=101 qkud feno_2plus epsilon=4 pid=1541297
+END index=101 qkud feno_2plus epsilon=4 outcome=completed hit=None elapsed=17360.5s
+START index=102 qkud feno_2plus epsilon=5 pid=1573851
+END index=102 qkud feno_2plus epsilon=5 outcome=completed hit=None elapsed=17335.5s
+START index=103 qkud feno_2plus epsilon=6 pid=1605916
+END index=103 qkud feno_2plus epsilon=6 outcome=completed hit=None elapsed=17345.5s
+START index=104 qkud feno_2plus epsilon=7 pid=1638050
+END index=104 qkud feno_2plus epsilon=7 outcome=completed hit=None elapsed=17335.5s
+START index=105 qkud feno_2plus epsilon=8 pid=1670018
+END index=105 qkud feno_2plus epsilon=8 outcome=completed hit=None elapsed=17325.5s
+START index=106 qkud feno_2plus epsilon=9 pid=1702392
+END index=106 qkud feno_2plus epsilon=9 outcome=completed hit=None elapsed=17330.5s
+START index=107 qkud feno_2plus epsilon=10 pid=1734680
+END index=107 qkud feno_2plus epsilon=10 outcome=completed hit=None elapsed=17345.5s
+START index=108 qkud FeO epsilon=0.2 pid=1767004
+END index=108 qkud FeO epsilon=0.2 outcome=completed hit=None elapsed=13365.4s
+START index=109 qkud FeO epsilon=0.3 pid=1792104
+END index=109 qkud FeO epsilon=0.3 outcome=completed hit=None elapsed=13365.4s
+START index=110 qkud FeO epsilon=0.4 pid=1817167
+END index=110 qkud FeO epsilon=0.4 outcome=completed hit=None elapsed=13370.4s
+START index=112 qkud FeO epsilon=0.6 pid=1842111
+END index=112 qkud FeO epsilon=0.6 outcome=completed hit=None elapsed=13365.4s
+START index=113 qkud FeO epsilon=0.7 pid=1867351
+END index=113 qkud FeO epsilon=0.7 outcome=completed hit=None elapsed=13360.4s
+START index=114 qkud FeO epsilon=0.8 pid=1892376
+END index=114 qkud FeO epsilon=0.8 outcome=completed hit=None elapsed=13360.4s
+START index=115 qkud FeO epsilon=0.9 pid=1917329
+END index=115 qkud FeO epsilon=0.9 outcome=completed hit=None elapsed=13355.4s
+START index=117 qkud FeO epsilon=2 pid=1942120
+END index=117 qkud FeO epsilon=2 outcome=completed hit=None elapsed=13360.4s
+START index=118 qkud FeO epsilon=3 pid=1966758
+END index=118 qkud FeO epsilon=3 outcome=completed hit=None elapsed=13370.4s
+START index=119 qkud FeO epsilon=4 pid=1991886
+END index=119 qkud FeO epsilon=4 outcome=completed hit=None elapsed=13365.4s
+START index=120 qkud FeO epsilon=5 pid=2016752
+END index=120 qkud FeO epsilon=5 outcome=completed hit=None elapsed=13375.4s
+START index=121 qkud FeO epsilon=6 pid=2042730
+END index=121 qkud FeO epsilon=6 outcome=completed hit=None elapsed=13360.4s
+START index=122 qkud FeO epsilon=7 pid=2067735
+END index=122 qkud FeO epsilon=7 outcome=completed hit=None elapsed=13355.4s
+START index=123 qkud FeO epsilon=8 pid=2092525
+END index=123 qkud FeO epsilon=8 outcome=completed hit=None elapsed=13350.4s
+START index=124 qkud FeO epsilon=9 pid=2117371
+END index=124 qkud FeO epsilon=9 outcome=completed hit=None elapsed=13360.4s
+START index=125 qkud FeO epsilon=10 pid=2142275
+END index=125 qkud FeO epsilon=10 outcome=completed hit=None elapsed=13365.4s
+{"completed": 112, "failed": 0, "skipped_completed_at_start": 14}
