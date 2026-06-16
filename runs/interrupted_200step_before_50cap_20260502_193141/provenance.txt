@@ -1,0 +1,16 @@
+timestamp=20260502_193141
+old_jobs=251876,251877
+new_n_steps=50
+backup_dir=benchmark/runs/interrupted_200step_before_50cap_20260502_193141
+incomplete_cases:
+  qrte_dt0.1 feo4_2minus_ceo
+  qrte_dt0.1 fenoco3_minus
+  qrte_dt0.1 FeO
+  qrte_dt0.1 Al3_minus
+  qrte_dt0.1 feno_2plus
+  qrte_dt0.1 H10_near_equi_sto3g_0
+  qkud_eps0.1 feo4_2minus_ceo
+  qkud_eps0.1 fenoco3_minus
+  qkud_eps0.1 FeO
+  qkud_eps0.1 Al3_minus
+  qkud_eps0.1 feno_2plus

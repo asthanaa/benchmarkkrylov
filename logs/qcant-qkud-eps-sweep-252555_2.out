@@ -1,0 +1,72 @@
+SWEEP qkud shard=2/4 tasks=37 pending=37 skipped=0 concurrency=36
+START qkud case=N2_equi_cc_pVTZ_0 epsilon=0.1 pid=4045946
+START qkud case=H6_near_equi_cc_pVTZ_0 epsilon=0.1 pid=4045947
+START qkud case=feo4_2minus_ceo epsilon=0.1 pid=4045948
+START qkud case=feno_2plus epsilon=0.1 pid=4045949
+START qkud case=CO_equi_cc_pVTZ_0 epsilon=1.2 pid=4045950
+START qkud case=m_Benzyne_equi_cc_pVTZ_0 epsilon=1.2 pid=4045951
+START qkud case=fenoco3_minus epsilon=1.2 pid=4045952
+START qkud case=cyclobutadiene_ceo epsilon=2.3 pid=4045953
+START qkud case=BeH2_equi_cc_pVTZ_0 epsilon=2.3 pid=4045954
+START qkud case=hexatriene_equi_cc_pVTZ_0 epsilon=2.3 pid=4045955
+START qkud case=FeO epsilon=2.3 pid=4045956
+START qkud case=magnesium_porphyrin_ceo epsilon=3.4 pid=4045957
+START qkud case=CH2O_equi_cc_pVTZ_0 epsilon=3.4 pid=4045958
+START qkud case=Ferrocene_ceo epsilon=3.4 pid=4045959
+START qkud case=Al3_minus epsilon=3.4 pid=4045960
+START qkud case=N2_equi_cc_pVTZ_0 epsilon=4.5 pid=4045961
+START qkud case=H6_near_equi_cc_pVTZ_0 epsilon=4.5 pid=4045962
+START qkud case=feo4_2minus_ceo epsilon=4.5 pid=4045965
+START qkud case=feno_2plus epsilon=4.5 pid=4045966
+START qkud case=CO_equi_cc_pVTZ_0 epsilon=5.6 pid=4045967
+START qkud case=m_Benzyne_equi_cc_pVTZ_0 epsilon=5.6 pid=4045968
+START qkud case=fenoco3_minus epsilon=5.6 pid=4045969
+START qkud case=cyclobutadiene_ceo epsilon=6.7 pid=4045970
+START qkud case=BeH2_equi_cc_pVTZ_0 epsilon=6.7 pid=4045971
+START qkud case=hexatriene_equi_cc_pVTZ_0 epsilon=6.7 pid=4045972
+START qkud case=FeO epsilon=6.7 pid=4045973
+START qkud case=magnesium_porphyrin_ceo epsilon=7.8 pid=4045974
+START qkud case=CH2O_equi_cc_pVTZ_0 epsilon=7.8 pid=4045975
+START qkud case=Ferrocene_ceo epsilon=7.8 pid=4045976
+START qkud case=Al3_minus epsilon=7.8 pid=4045977
+START qkud case=N2_equi_cc_pVTZ_0 epsilon=8.9 pid=4045978
+START qkud case=H6_near_equi_cc_pVTZ_0 epsilon=8.9 pid=4045979
+START qkud case=feo4_2minus_ceo epsilon=8.9 pid=4045980
+START qkud case=feno_2plus epsilon=8.9 pid=4045981
+START qkud case=CO_equi_cc_pVTZ_0 epsilon=10 pid=4045982
+START qkud case=m_Benzyne_equi_cc_pVTZ_0 epsilon=10 pid=4045983
+END case=cyclobutadiene_ceo epsilon=2.3 outcome=completed hit=None elapsed=10.1s
+END case=cyclobutadiene_ceo epsilon=6.7 outcome=completed hit=None elapsed=10.0s
+START qkud case=fenoco3_minus epsilon=10 pid=4046058
+END case=N2_equi_cc_pVTZ_0 epsilon=0.1 outcome=completed hit=None elapsed=35.1s
+END case=BeH2_equi_cc_pVTZ_0 epsilon=2.3 outcome=completed hit=None elapsed=35.1s
+END case=BeH2_equi_cc_pVTZ_0 epsilon=6.7 outcome=completed hit=None elapsed=35.0s
+END case=N2_equi_cc_pVTZ_0 epsilon=4.5 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 epsilon=8.9 outcome=completed hit=None elapsed=40.0s
+END case=CH2O_equi_cc_pVTZ_0 epsilon=3.4 outcome=completed hit=None elapsed=45.1s
+END case=CH2O_equi_cc_pVTZ_0 epsilon=7.8 outcome=completed hit=None elapsed=45.0s
+END case=CO_equi_cc_pVTZ_0 epsilon=1.2 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 epsilon=5.6 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 epsilon=10 outcome=completed hit=None elapsed=70.0s
+END case=H6_near_equi_cc_pVTZ_0 epsilon=0.1 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 epsilon=4.5 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 epsilon=8.9 outcome=completed hit=None elapsed=80.0s
+END case=m_Benzyne_equi_cc_pVTZ_0 epsilon=1.2 outcome=completed hit=None elapsed=165.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 epsilon=5.6 outcome=completed hit=None elapsed=165.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 epsilon=10 outcome=completed hit=None elapsed=165.0s
+END case=hexatriene_equi_cc_pVTZ_0 epsilon=2.3 outcome=completed hit=None elapsed=565.1s
+END case=hexatriene_equi_cc_pVTZ_0 epsilon=6.7 outcome=completed hit=None elapsed=565.1s
+END case=feo4_2minus_ceo epsilon=4.5 outcome=completed hit=None elapsed=4690.2s
+END case=feo4_2minus_ceo epsilon=8.9 outcome=completed hit=None elapsed=4700.2s
+END case=feo4_2minus_ceo epsilon=0.1 outcome=completed hit=None elapsed=4705.3s
+END case=fenoco3_minus epsilon=1.2 outcome=completed hit=None elapsed=5215.3s
+END case=fenoco3_minus epsilon=10 outcome=completed hit=None elapsed=5210.2s
+END case=fenoco3_minus epsilon=5.6 outcome=completed hit=None elapsed=5350.3s
+END case=Ferrocene_ceo epsilon=3.4 outcome=completed hit=None elapsed=7465.4s
+END case=Ferrocene_ceo epsilon=7.8 outcome=completed hit=None elapsed=7470.3s
+END case=Al3_minus epsilon=7.8 outcome=completed hit=None elapsed=17515.7s
+END case=Al3_minus epsilon=3.4 outcome=completed hit=None elapsed=17765.7s
+END case=FeO epsilon=6.7 outcome=completed hit=None elapsed=18115.7s
+END case=FeO epsilon=2.3 outcome=completed hit=None elapsed=18570.7s
+END case=magnesium_porphyrin_ceo epsilon=3.4 outcome=completed hit=None elapsed=18665.7s
+END case=magnesium_porphyrin_ceo epsilon=7.8 outcome=completed hit=None elapsed=18985.7s

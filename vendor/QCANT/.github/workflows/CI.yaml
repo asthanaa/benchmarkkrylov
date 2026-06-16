@@ -1,0 +1,70 @@
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  # GitHub has started calling new repo's first branch "main" https://github.com/github/renaming
+  # The cookiecutter uses the "--initial-branch" flag when it runs git-init
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+  schedule:
+    # Weekly tests run on main by default:
+    #   Scheduled workflows run on the latest commit on the default or base branch.
+    #   (from https://help.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
+    - cron: "0 0 * * 0"
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}, Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest]
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Additional info about the build
+        shell: bash
+        run: |
+          uname -a
+          df -h
+          ulimit -a
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
+          channels: conda-forge,defaults
+          channel-priority: strict
+          activate-environment: qcant
+
+      - name: Install package
+        shell: bash -l {0}
+        run: |
+          conda create -n qcant -y python=${{ matrix.python-version }}
+          conda env update -n qcant -f devtools/conda-envs/qcant.yaml
+          conda activate qcant
+          python -m pip install . --no-deps
+          conda list
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: |
+          conda activate qcant
+          pytest -v --cov=QCANT --cov-report=xml --color=yes QCANT/tests/
+
+      - name: CodeCov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}

@@ -1,0 +1,5 @@
+converged SCF energy = -231.892291839821
+CASSCF energy = -231.972623900922
+CASCI E = -231.972623900922  E(CI) = -5.84100458363491  S^2 = 0.0000000
+DONE qkud hexatriene_equi_cc_pVTZ_0 hit=3
+{"completed": 1, "failed": 0, "skipped": 0}

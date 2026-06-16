@@ -1,0 +1,18 @@
+{
+  "case_id": "Ferrocene_ceo",
+  "casscf_energy_hartree": -1655.9904378745648,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1655.9888378745648,
+  "elapsed_seconds": 7506.001564263366,
+  "final_min_history_energy_hartree": -1642.7321048730955,
+  "final_projected_ground_energy_hartree": -1642.7321048730955,
+  "h0.25": 2.998624301634845,
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

@@ -1,0 +1,23 @@
+{
+  "active_orbital_labels": [
+    "C 2pz"
+  ],
+  "case_id": "m_Benzyne_equi_cc_pVTZ_2",
+  "casscf_energy_hartree": -229.3696950180437,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -229.3680950180437,
+  "elapsed_seconds": 108.74272693198873,
+  "final_min_history_energy_hartree": -229.36459234887388,
+  "final_projected_ground_energy_hartree": -229.36459234887388,
+  "h0.25": 3.4498820851981904,
+  "hamiltonian_cache_dir": "/home/ayush.asthana/code/benchmark/hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

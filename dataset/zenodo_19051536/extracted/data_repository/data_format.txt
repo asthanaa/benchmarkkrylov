@@ -1,0 +1,205 @@
+================================================================================
+Funding
+================================================================================
+
+This work was supported by the German Federal Ministry of Research, Technology and Space through the project H2Giga-DegradEL3 (grant no. 03HY110D).
+
+================================================================================
+DATA FORMAT DOCUMENTATION
+================================================================================
+
+Each JSON file corresponds to one ADAPT-VQE (or TETRIS-ADAPT-VQE) run
+for a specific molecule.
+
+--------------------------------------------------------------------------------
+TOP-LEVEL STRUCTURE
+--------------------------------------------------------------------------------
+
+{
+  "name":            string   -- file name without extension
+  "library_version": string | null
+  "meta":            object   -- static run metadata (see below)
+  "spans":           array    -- per-iteration records (see below)
+  "final":           object   -- summary of the converged result (see below)
+}
+
+--------------------------------------------------------------------------------
+meta
+--------------------------------------------------------------------------------
+
+"meta": {
+  "molecule": {
+    "basis":    string          -- basis set (e.g. "STO-3G", "cc-pVTZ")
+    "charge":   int
+    "spin":     int
+    "symmetry": bool
+    "atoms": [
+      { "element": string, "xyz": [float, float, float] },  -- coords in Bohr
+      ...
+    ]
+  },
+  "mapping":   string           -- qubit mapping (e.g. "JordanWignerMapping")
+  "scf": {
+    "converged": bool
+    "energy":    float          -- Hartree-Fock / ROHF reference energy (Hartree)
+    "method":    string         -- e.g. "RHF", "ROHF"
+  },
+  "casscf": {
+    "converged": bool
+    "ncas":      int            -- number of active orbitals
+    "nelec":     int            -- number of active electrons
+    "energy":    float          -- CASSCF energy (Hartree)
+    "natorb":    bool           -- whether natural orbitals were used
+    "ci_vector": [float, ...]   -- CASSCF CI vector (not present for all datasets)
+    "renyi_entropy_0.25": float -- Rényi entropy (alpha=0.25) of the CASSCF CI vector (not present for all datasets)
+  },
+  "hamiltonian": {
+    "n_pauli": int   -- number of Pauli terms
+    "n_qwc":   int   -- number of qubit-wise commuting groups
+    "n_gc":    int   -- number of general commuting groups
+  },
+  "ansatz": {
+    "type":      string  -- "ADAPT-VQE" or "TETRIS-ADAPT-VQE"
+    "pool_size": int     -- operator pool size
+  },
+  "target_energy":    float   -- convergence target (Hartree)
+  "hyperparameters": {
+    "adapt_max_iterations": int
+    "adapt_grad_tol":       float
+    "vqe_accuracy":         float
+    "vqe_maxiter":          int
+  }
+}
+
+--------------------------------------------------------------------------------
+spans (one entry per ADAPT iteration)
+--------------------------------------------------------------------------------
+
+Each element of "spans":
+{
+  "type": "adapt_iter"
+  "attrs": {
+    "iter":           int     -- 0-based iteration index
+    "selected_ops":   array   -- operator(s) appended in this iteration
+    [
+      {
+        "index":   int        -- index in the operator pool
+        "support": [int, ...] -- qubit indices the operator acts on
+        "grad":    float      -- ADAPT gradient magnitude for this operator
+      },
+      ...                     -- TETRIS-ADAPT may select >1 operator per iter
+    ],
+    "energy_after_vqe": float -- energy (Hartree) after VQE optimisation
+    "num_parameters":   int   -- total ansatz parameters after this iteration
+    "num_cnots":        int   -- total CNOT count after this iteration
+    "spin_z":           float
+    "spin_squared":     float
+  }
+}
+
+--------------------------------------------------------------------------------
+final
+--------------------------------------------------------------------------------
+
+{
+  "converged":      bool    -- whether the run met its stopping criterion
+  "reason":         string  -- e.g. "target", "grad_tol", "max_iter"
+  "energy":         float   -- final energy (Hartree)
+  "num_parameters": int     -- total ansatz parameters at convergence
+  "num_cnots":      int     -- total CNOT count at convergence
+  "spin_z":         float
+  "spin_squared":   float
+  "num_iterations": int     -- number of ADAPT iterations performed
+}
+
+================================================================================
+UTILITY FUNCTIONS
+================================================================================
+
+The functions below assume a loaded JSON dict d = json.load(open(...)).
+
+--------------------------------------------------------------------------------
+
+def get_energy_curve(d):
+    """
+    Return the energy (Hartree) after each ADAPT iteration.
+
+    Returns
+    -------
+    iters    : list[int]    -- iteration indices (0-based)
+    energies : list[float]  -- energy_after_vqe per iteration
+    """
+    iters, energies = [], []
+    for span in d.get("spans", []):
+        if span.get("type") != "adapt_iter":
+            continue
+        a = span["attrs"]
+        iters.append(a["iter"])
+        energies.append(a["energy_after_vqe"])
+    return iters, energies
+
+
+def get_params_curve(d):
+    """
+    Return the cumulative number of variational parameters after each
+    ADAPT iteration.
+
+    Returns
+    -------
+    iters  : list[int]
+    params : list[int]
+    """
+    iters, params = [], []
+    for span in d.get("spans", []):
+        if span.get("type") != "adapt_iter":
+            continue
+        a = span["attrs"]
+        iters.append(a["iter"])
+        params.append(a["num_parameters"])
+    return iters, params
+
+
+def get_cnots_curve(d):
+    """
+    Return the cumulative CNOT count after each ADAPT iteration.
+
+    Returns
+    -------
+    iters : list[int]
+    cnots : list[int]
+    """
+    iters, cnots = [], []
+    for span in d.get("spans", []):
+        if span.get("type") != "adapt_iter":
+            continue
+        a = span["attrs"]
+        iters.append(a["iter"])
+        cnots.append(a["num_cnots"])
+    return iters, cnots
+
+
+--------------------------------------------------------------------------------
+USAGE EXAMPLE
+--------------------------------------------------------------------------------
+
+import json
+from pathlib import Path
+
+path = Path("file.json")
+d = json.loads(path.read_text(encoding="utf-8"))
+
+iters, energies = get_energy_curve(d)
+_    , params   = get_params_curve(d)
+_    , cnots    = get_cnots_curve(d)
+
+# Final converged values are also available directly:
+print(d["final"]["energy"])         # final energy
+print(d["final"]["num_parameters"]) # final parameter count
+print(d["final"]["num_cnots"])      # final CNOT count
+print(d["final"]["num_iterations"]) # number of ADAPT iterations
+
+# CASSCF reference energy
+print(d["meta"]["casscf"]["energy"])
+
+# Rényi entropy (not present for all datasets)
+print(d["meta"]["casscf"].get("renyi_entropy_0.25"))

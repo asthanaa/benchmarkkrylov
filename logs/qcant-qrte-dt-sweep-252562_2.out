@@ -1,0 +1,71 @@
+SWEEP qrte shard=2/4 tasks=40 pending=40 skipped=0 concurrency=36
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=0.1 pid=1419151
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=0.1 pid=1419152
+START qrte case=feo4_2minus_ceo delta_t=0.1 pid=1419153
+START qrte case=feno_2plus delta_t=0.1 pid=1419154
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=1.2 pid=1419155
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=1.2 pid=1419156
+START qrte case=feo4_2minus_ceo delta_t=1.2 pid=1419157
+START qrte case=feno_2plus delta_t=1.2 pid=1419158
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=2.3 pid=1419159
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=2.3 pid=1419160
+START qrte case=feo4_2minus_ceo delta_t=2.3 pid=1419161
+START qrte case=feno_2plus delta_t=2.3 pid=1419162
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=3.4 pid=1419163
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=3.4 pid=1419164
+START qrte case=feo4_2minus_ceo delta_t=3.4 pid=1419165
+START qrte case=feno_2plus delta_t=3.4 pid=1419166
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=4.5 pid=1419167
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=4.5 pid=1419168
+START qrte case=feo4_2minus_ceo delta_t=4.5 pid=1419169
+START qrte case=feno_2plus delta_t=4.5 pid=1419170
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=5.6 pid=1419171
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=5.6 pid=1419172
+START qrte case=feo4_2minus_ceo delta_t=5.6 pid=1419173
+START qrte case=feno_2plus delta_t=5.6 pid=1419174
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=6.7 pid=1419175
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=6.7 pid=1419176
+START qrte case=feo4_2minus_ceo delta_t=6.7 pid=1419177
+START qrte case=feno_2plus delta_t=6.7 pid=1419178
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=7.8 pid=1419179
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=7.8 pid=1419180
+START qrte case=feo4_2minus_ceo delta_t=7.8 pid=1419181
+START qrte case=feno_2plus delta_t=7.8 pid=1419182
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=8.9 pid=1419183
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=8.9 pid=1419184
+START qrte case=feo4_2minus_ceo delta_t=8.9 pid=1419185
+START qrte case=feno_2plus delta_t=8.9 pid=1419186
+END case=N2_equi_cc_pVTZ_0 delta_t=0.1 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=1.2 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=2.3 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=3.4 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=4.5 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=5.6 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=6.7 outcome=completed hit=None elapsed=40.1s
+END case=N2_equi_cc_pVTZ_0 delta_t=7.8 outcome=completed hit=None elapsed=40.0s
+END case=N2_equi_cc_pVTZ_0 delta_t=8.9 outcome=completed hit=None elapsed=40.0s
+START qrte case=N2_equi_cc_pVTZ_0 delta_t=10 pid=1419302
+START qrte case=H6_near_equi_cc_pVTZ_0 delta_t=10 pid=1419303
+START qrte case=feo4_2minus_ceo delta_t=10 pid=1419304
+START qrte case=feno_2plus delta_t=10 pid=1419305
+END case=H6_near_equi_cc_pVTZ_0 delta_t=0.1 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=1.2 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=2.3 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=3.4 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=4.5 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=5.6 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=6.7 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=7.8 outcome=completed hit=None elapsed=80.1s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=8.9 outcome=completed hit=None elapsed=80.0s
+END case=N2_equi_cc_pVTZ_0 delta_t=10 outcome=completed hit=None elapsed=35.0s
+END case=H6_near_equi_cc_pVTZ_0 delta_t=10 outcome=completed hit=None elapsed=75.0s
+END case=feo4_2minus_ceo delta_t=1.2 outcome=completed hit=None elapsed=4715.4s
+END case=feo4_2minus_ceo delta_t=6.7 outcome=completed hit=None elapsed=4720.3s
+END case=feo4_2minus_ceo delta_t=4.5 outcome=completed hit=None elapsed=4725.3s
+END case=feo4_2minus_ceo delta_t=5.6 outcome=completed hit=None elapsed=4725.3s
+END case=feo4_2minus_ceo delta_t=2.3 outcome=completed hit=None elapsed=4740.4s
+END case=feo4_2minus_ceo delta_t=0.1 outcome=completed hit=None elapsed=4745.4s
+END case=feo4_2minus_ceo delta_t=3.4 outcome=completed hit=None elapsed=4745.4s
+END case=feo4_2minus_ceo delta_t=8.9 outcome=completed hit=None elapsed=4745.3s
+END case=feo4_2minus_ceo delta_t=7.8 outcome=completed hit=None elapsed=4750.3s
+END case=feo4_2minus_ceo delta_t=10 outcome=completed hit=None elapsed=4725.3s

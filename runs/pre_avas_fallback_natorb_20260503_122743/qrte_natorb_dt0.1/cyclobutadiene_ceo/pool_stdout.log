@@ -1,0 +1,2 @@
+FAIL qrte cyclobutadiene_ceo; see runs/qrte_natorb_dt0.1/cyclobutadiene_ceo/summary.json
+{"completed": 0, "failed": 1, "skipped": 0}

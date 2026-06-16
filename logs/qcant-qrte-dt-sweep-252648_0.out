@@ -1,0 +1,70 @@
+SWEEP qrte shard=0/8 tasks=38 pending=34 skipped=4 concurrency=36
+START qrte case=cyclobutadiene_ceo delta_t=0.2 pid=3962278
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.2 pid=3962279
+START qrte case=cyclobutadiene_ceo delta_t=0.3 pid=3962280
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.3 pid=3962281
+START qrte case=cyclobutadiene_ceo delta_t=0.4 pid=3962282
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.4 pid=3962283
+START qrte case=cyclobutadiene_ceo delta_t=0.5 pid=3962284
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.5 pid=3962285
+START qrte case=cyclobutadiene_ceo delta_t=0.6 pid=3962286
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.6 pid=3962287
+START qrte case=cyclobutadiene_ceo delta_t=0.7 pid=3962288
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.7 pid=3962289
+START qrte case=cyclobutadiene_ceo delta_t=0.8 pid=3962290
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.8 pid=3962291
+START qrte case=cyclobutadiene_ceo delta_t=0.9 pid=3962292
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=0.9 pid=3962293
+START qrte case=cyclobutadiene_ceo delta_t=1 pid=3962294
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=1 pid=3962295
+START qrte case=cyclobutadiene_ceo delta_t=2 pid=3962296
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=2 pid=3962297
+START qrte case=cyclobutadiene_ceo delta_t=3 pid=3962298
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=3 pid=3962299
+START qrte case=cyclobutadiene_ceo delta_t=4 pid=3962300
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=4 pid=3962301
+START qrte case=cyclobutadiene_ceo delta_t=5 pid=3962302
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=5 pid=3962303
+START qrte case=cyclobutadiene_ceo delta_t=6 pid=3962304
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=6 pid=3962305
+START qrte case=cyclobutadiene_ceo delta_t=7 pid=3962306
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=7 pid=3962307
+START qrte case=cyclobutadiene_ceo delta_t=8 pid=3962308
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=8 pid=3962309
+START qrte case=cyclobutadiene_ceo delta_t=9 pid=3962310
+START qrte case=hexatriene_equi_cc_pVTZ_0 delta_t=9 pid=3962311
+END case=cyclobutadiene_ceo delta_t=0.2 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.3 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.4 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.5 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.6 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.7 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.8 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=0.9 outcome=completed hit=None elapsed=65.1s
+END case=cyclobutadiene_ceo delta_t=1 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=2 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=3 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=4 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=5 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=6 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=7 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=8 outcome=completed hit=None elapsed=65.0s
+END case=cyclobutadiene_ceo delta_t=9 outcome=completed hit=None elapsed=65.0s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.3 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.6 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.7 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=1 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=4 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=5 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=6 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=7 outcome=completed hit=None elapsed=570.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.2 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.4 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.5 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.8 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=2 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=3 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=8 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=9 outcome=completed hit=None elapsed=600.1s
+END case=hexatriene_equi_cc_pVTZ_0 delta_t=0.9 outcome=completed hit=None elapsed=605.1s
+{"completed": 34, "failed": 0, "skipped_completed_at_start": 4}

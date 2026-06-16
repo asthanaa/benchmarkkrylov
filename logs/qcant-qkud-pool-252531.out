@@ -1,0 +1,6 @@
+POOL qkud selected=29 pending=5 skipped=24 concurrency=36 max_workers=1
+START qkud row=25 case=Al3_minus pid=626486
+START qkud row=24 case=FeO pid=626488
+START qkud row=26 case=feno_2plus pid=626490
+START qkud row=21 case=feo4_2minus_ceo pid=626492
+START qkud row=23 case=fenoco3_minus pid=626494

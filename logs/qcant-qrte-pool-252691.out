@@ -1,0 +1,56 @@
+POOL qrte selected=29 pending=29 skipped=0 concurrency=18 max_workers=2
+START qrte row=0 case=H4_near_equi_sto3g_0 pid=3983392
+START qrte row=3 case=H5_near_equi_sto3g_1 pid=3983393
+START qrte row=14 case=H6_near_equi_sto3g_0 pid=3983394
+START qrte row=7 case=CO_equi_cc_pVTZ_0 pid=3983395
+START qrte row=5 case=CO_equi_cc_pVTZ_2 pid=3983396
+START qrte row=6 case=N2_equi_cc_pVTZ_0 pid=3983397
+START qrte row=4 case=N2_equi_cc_pVTZ_2 pid=3983398
+START qrte row=9 case=BeH2_equi_cc_pVTZ_0 pid=3983399
+START qrte row=8 case=BeH2_equi_cc_pVTZ_2 pid=3983400
+START qrte row=1 case=cyclobutadiene_ceo pid=3983401
+START qrte row=19 case=H7_near_equi_sto3g_1 pid=3983402
+START qrte row=11 case=CH2O_equi_cc_pVTZ_0 pid=3983403
+START qrte row=10 case=CH2O_equi_cc_pVTZ_2 pid=3983404
+START qrte row=22 case=H8_near_equi_sto3g_0 pid=3983405
+START qrte row=13 case=H6_near_equi_cc_pVTZ_0 pid=3983406
+START qrte row=12 case=H6_near_equi_cc_pVTZ_2 pid=3983407
+START qrte row=27 case=H9_near_equi_sto3g_1 pid=3983408
+START qrte row=25 case=Al3_minus pid=3983409
+END qrte row=0 case=H4_near_equi_sto3g_0 outcome=completed rc=0 elapsed=5.0s
+END qrte row=3 case=H5_near_equi_sto3g_1 outcome=completed rc=0 elapsed=5.0s
+END qrte row=6 case=N2_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=5.0s
+END qrte row=9 case=BeH2_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=5.0s
+END qrte row=8 case=BeH2_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=5.0s
+START qrte row=24 case=FeO pid=3983652
+START qrte row=26 case=feno_2plus pid=3983653
+START qrte row=28 case=H10_near_equi_sto3g_0 pid=3983654
+START qrte row=21 case=feo4_2minus_ceo pid=3983655
+START qrte row=16 case=m_Benzyne_equi_cc_pVTZ_0 pid=3983656
+END qrte row=14 case=H6_near_equi_sto3g_0 outcome=completed rc=0 elapsed=10.0s
+END qrte row=5 case=CO_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=10.0s
+END qrte row=4 case=N2_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=10.0s
+END qrte row=10 case=CH2O_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=10.0s
+END qrte row=13 case=H6_near_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=10.0s
+END qrte row=12 case=H6_near_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=10.0s
+START qrte row=15 case=m_Benzyne_equi_cc_pVTZ_2 pid=3983803
+START qrte row=18 case=hexatriene_equi_cc_pVTZ_0 pid=3983804
+START qrte row=17 case=hexatriene_equi_cc_pVTZ_2 pid=3983805
+START qrte row=23 case=fenoco3_minus pid=3983806
+START qrte row=20 case=Ferrocene_ceo pid=3983807
+START qrte row=2 case=magnesium_porphyrin_ceo pid=3983808
+END qrte row=1 case=cyclobutadiene_ceo outcome=completed rc=0 elapsed=15.0s
+END qrte row=19 case=H7_near_equi_sto3g_1 outcome=completed rc=0 elapsed=15.0s
+END qrte row=11 case=CH2O_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=35.0s
+END qrte row=7 case=CO_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=60.1s
+END qrte row=22 case=H8_near_equi_sto3g_0 outcome=completed rc=0 elapsed=235.0s
+END qrte row=25 case=Al3_minus outcome=completed rc=0 elapsed=915.1s
+END qrte row=27 case=H9_near_equi_sto3g_1 outcome=completed rc=0 elapsed=1480.1s
+END qrte row=16 case=m_Benzyne_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=2610.1s
+END qrte row=24 case=FeO outcome=completed rc=0 elapsed=13650.5s
+END qrte row=26 case=feno_2plus outcome=completed rc=0 elapsed=17620.6s
+END qrte row=28 case=H10_near_equi_sto3g_0 outcome=completed rc=0 elapsed=30106.1s
+END qrte row=17 case=hexatriene_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=87968.2s
+END qrte row=18 case=hexatriene_equi_cc_pVTZ_0 outcome=completed rc=0 elapsed=88063.2s
+END qrte row=15 case=m_Benzyne_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=90388.3s
+END qrte row=21 case=feo4_2minus_ceo outcome=completed rc=0 elapsed=91678.3s

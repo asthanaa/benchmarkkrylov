@@ -1,0 +1,64 @@
+Restarted QRTE/QKUD benchmark to use CASSCF natural-orbital Hamiltonians.
+Canceled wrong-basis jobs: 252648, 252649, 252660.
+Old wrong-basis directories preserved: runs/qrte_dt0.1, runs/qkud_eps0.1, runs/qrte_delta_sweep, runs/qkud_epsilon_sweep.
+New natural-orbital directories: runs/qrte_natorb_dt0.1, runs/qkud_natorb_eps0.1, runs/qrte_natorb_delta_sweep, runs/qkud_natorb_epsilon_sweep.
+Hamiltonian cache: hamiltonian_cache/casscf_natorb.
+Paper reference: arXiv:2603.13073v2 Methods II.3 says the active-space Hamiltonian is extracted from converged CASSCF and mapped with Jordan-Wigner.
+
+Submitted natural-orbital restart jobs:
+- QRTE baseline: 252672 -> runs/qrte_natorb_dt0.1
+- QKUD baseline: 252673 -> runs/qkud_natorb_eps0.1
+- QRTE parameter sweep: 252674, dependent afterok:252672 -> runs/qrte_natorb_delta_sweep
+- QKUD parameter sweep: 252675, dependent afterok:252673 -> runs/qkud_natorb_epsilon_sweep
+- Final plot job: 252676, dependent afterany on baseline and sweep jobs
+- Live plot watcher: 252677
+
+Run settings:
+- hamiltonian_source=casscf_natorb
+- QRTE delta_t baseline=0.1
+- QKUD epsilon baseline=0.1
+- sweep grid=0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0
+- n_steps=50 for the restarted baseline and sweep jobs
+- evolution_mode=trotter, trotter_steps=1
+- baseline pools use concurrency=18 and max_workers=2 per molecule on one exclusive 36-core node
+- sweep arrays use concurrency=36 and max_workers=1 per molecule on exclusive 36-core nodes
+
+Spin-reference correction:
+- Canceled first natural-orbital attempt jobs 252672, 252673, 252674, 252675, 252676, 252677 before completion.
+- Reason: open-shell active spaces still used qml.qchem.hf_state(total_active_electrons, qubits), which fills spin orbitals as if only the total electron count mattered. The corrected code now builds the reference determinant from PySCF CASSCF nelecas=(n_alpha,n_beta), occupying alpha wires 0,2,4,... and beta wires 1,3,5,... in PennyLane's interleaved spin-orbital ordering.
+- Backed up partial first-attempt outputs to runs/pre_spin_ref_fix_natorb_20260503_121230.
+
+Submitted clean spin-resolved natural-orbital restart jobs:
+- QRTE baseline: 252678 -> runs/qrte_natorb_dt0.1
+- QKUD baseline: 252679 -> runs/qkud_natorb_eps0.1
+- QRTE parameter sweep: 252680, dependent afterok:252678 -> runs/qrte_natorb_delta_sweep
+- QKUD parameter sweep: 252681, dependent afterok:252679 -> runs/qkud_natorb_epsilon_sweep
+- Final plot job: 252682
+- Live plot watcher: 252683
+
+AVAS correction:
+- Canceled second natural-orbital attempt jobs 252678, 252679, 252680, 252681, 252682, 252683 before completion.
+- Reason: Table 1 uses AVAS-selected active orbitals for several molecules; default frontier CASSCF active orbitals still disagreed with stored targets for cases such as CO.
+- Backed up partial second-attempt outputs to runs/pre_avas_fix_natorb_20260503_121816.
+- Added benchmark-side AVAS labels from arXiv:2603.13073v2 Table 1 for CO, pi systems, Fe/Al active spaces, plus spin-resolved reference determinants.
+
+Submitted clean AVAS + spin-resolved natural-orbital restart jobs:
+- QRTE baseline: 252685 -> runs/qrte_natorb_dt0.1
+- QKUD baseline: 252686 -> runs/qkud_natorb_eps0.1
+- QRTE parameter sweep: 252687, dependent afterok:252685 -> runs/qrte_natorb_delta_sweep
+- QKUD parameter sweep: 252688, dependent afterok:252686 -> runs/qkud_natorb_epsilon_sweep
+- Final plot job: 252689
+- Live plot watcher: 252690
+
+AVAS fallback correction:
+- Canceled third attempt jobs 252685, 252686, 252687, 252688, 252689, 252690.
+- Reason: PySCF AVAS default thresholds do not always reproduce the exact stored active-space size from Table 1. Code now tries AVAS labels, but if the returned active-space size disagrees with the manifest (electrons, orbitals), it falls back to the requested CASSCF active size instead of failing.
+- Backed up partial third-attempt outputs to runs/pre_avas_fallback_natorb_20260503_122743.
+
+Submitted clean natural-orbital restart with AVAS fallback:
+- QRTE baseline: 252691 -> runs/qrte_natorb_dt0.1
+- QKUD baseline: 252692 -> runs/qkud_natorb_eps0.1
+- QRTE parameter sweep: 252693, dependent afterok:252691 -> runs/qrte_natorb_delta_sweep
+- QKUD parameter sweep: 252694, dependent afterok:252692 -> runs/qkud_natorb_epsilon_sweep
+- Final plot job: 252695
+- Live plot watcher: 252696

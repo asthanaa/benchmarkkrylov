@@ -1,0 +1,202 @@
+{
+  "completed": 23,
+  "concurrency": 36,
+  "early_stop_chemical_accuracy": true,
+  "events": [
+    {
+      "case_id": "H4_near_equi_sto3g_0",
+      "elapsed_seconds": 15.104389792308211,
+      "manifest_index": 0,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "N2_equi_cc_pVTZ_2",
+      "elapsed_seconds": 15.093010507524014,
+      "manifest_index": 4,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H5_near_equi_sto3g_1",
+      "elapsed_seconds": 20.106800884008408,
+      "manifest_index": 3,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H6_near_equi_sto3g_0",
+      "elapsed_seconds": 20.10768906213343,
+      "manifest_index": 14,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CO_equi_cc_pVTZ_2",
+      "elapsed_seconds": 20.10344199091196,
+      "manifest_index": 5,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "BeH2_equi_cc_pVTZ_2",
+      "elapsed_seconds": 20.094016175717115,
+      "manifest_index": 8,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CH2O_equi_cc_pVTZ_2",
+      "elapsed_seconds": 20.081434899941087,
+      "manifest_index": 10,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H6_near_equi_cc_pVTZ_2",
+      "elapsed_seconds": 20.069524608552456,
+      "manifest_index": 12,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "cyclobutadiene_ceo",
+      "elapsed_seconds": 25.093475641682744,
+      "manifest_index": 1,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H7_near_equi_sto3g_1",
+      "elapsed_seconds": 40.09627255611122,
+      "manifest_index": 19,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "m_Benzyne_equi_cc_pVTZ_2",
+      "elapsed_seconds": 115.05015460029244,
+      "manifest_index": 15,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H8_near_equi_sto3g_0",
+      "elapsed_seconds": 250.10409891791642,
+      "manifest_index": 22,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "BeH2_equi_cc_pVTZ_0",
+      "elapsed_seconds": 305.12973996065557,
+      "manifest_index": 9,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "N2_equi_cc_pVTZ_0",
+      "elapsed_seconds": 365.1414828170091,
+      "manifest_index": 6,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CH2O_equi_cc_pVTZ_0",
+      "elapsed_seconds": 450.1293822731823,
+      "manifest_index": 11,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "hexatriene_equi_cc_pVTZ_2",
+      "elapsed_seconds": 650.081689408049,
+      "manifest_index": 17,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CO_equi_cc_pVTZ_0",
+      "elapsed_seconds": 735.1703718453646,
+      "manifest_index": 7,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H6_near_equi_cc_pVTZ_0",
+      "elapsed_seconds": 890.1478484272957,
+      "manifest_index": 13,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "m_Benzyne_equi_cc_pVTZ_0",
+      "elapsed_seconds": 1375.1356228590012,
+      "manifest_index": 16,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "hexatriene_equi_cc_pVTZ_0",
+      "elapsed_seconds": 1795.149027325213,
+      "manifest_index": 18,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H9_near_equi_sto3g_1",
+      "elapsed_seconds": 4100.279923442751,
+      "manifest_index": 27,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "Ferrocene_ceo",
+      "elapsed_seconds": 9490.446048142388,
+      "manifest_index": 20,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "magnesium_porphyrin_ceo",
+      "elapsed_seconds": 18475.79008982703,
+      "manifest_index": 2,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    }
+  ],
+  "failed": 0,
+  "force": false,
+  "max_workers": 1,
+  "method": "qrte",
+  "n_pending_at_start": 29,
+  "n_selected": 29,
+  "order": "small-first",
+  "pool_id": "251876",
+  "skipped_completed_at_start": 0,
+  "started_at_epoch": 1777741425.2454264,
+  "updated_at_epoch": 1777759901.1475935
+}

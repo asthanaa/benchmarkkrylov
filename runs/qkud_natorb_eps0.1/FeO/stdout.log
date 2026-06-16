@@ -1,0 +1,5 @@
+converged SCF energy = -1337.11046994707
+CASSCF energy = -1337.28503705671
+CASCI E = -1337.28503705671  E(CI) = -38.8269448367321  S^2 = 11.9999997
+DONE qkud FeO hit=None
+{"completed": 1, "failed": 0, "skipped": 0}

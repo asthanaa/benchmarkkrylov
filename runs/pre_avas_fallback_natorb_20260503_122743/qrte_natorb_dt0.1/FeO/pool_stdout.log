@@ -1,0 +1,2 @@
+FAIL qrte FeO; see runs/qrte_natorb_dt0.1/FeO/summary.json
+{"completed": 0, "failed": 1, "skipped": 0}

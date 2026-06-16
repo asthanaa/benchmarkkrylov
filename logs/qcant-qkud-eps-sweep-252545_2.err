@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/ayush.asthana/code/benchmark/scripts/run_krylov_parameter_sweep.py", line 421, in <module>
+    main()
+  File "/home/ayush.asthana/code/benchmark/scripts/run_krylov_parameter_sweep.py", line 348, in main
+    _write_task_manifest(task_manifest_path, tasks)
+  File "/home/ayush.asthana/code/benchmark/scripts/run_krylov_parameter_sweep.py", line 176, in _write_task_manifest
+    "case_dir": str(task.case_dir.relative_to(BENCHMARK_ROOT)),
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ayush.asthana/miniconda3/lib/python3.12/pathlib.py", line 682, in relative_to
+    raise ValueError(f"{str(self)!r} is not in the subpath of {str(other)!r}")
+ValueError: 'runs/qkud_epsilon_sweep/eps_0p1/N2_equi_cc_pVTZ_0' is not in the subpath of '/home/ayush.asthana/code/benchmark'

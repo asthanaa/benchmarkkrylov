@@ -1,0 +1,226 @@
+PARAM-PROBE tasks=126 pending=112 skipped=14 concurrency=1 max_workers=36
+START index=0 qkud cyclobutadiene_ceo epsilon=0.2 pid=931312
+END index=0 qkud cyclobutadiene_ceo epsilon=0.2 outcome=completed hit=None elapsed=10.0s
+START index=1 qkud cyclobutadiene_ceo epsilon=0.3 pid=931867
+END index=1 qkud cyclobutadiene_ceo epsilon=0.3 outcome=completed hit=None elapsed=5.0s
+START index=2 qkud cyclobutadiene_ceo epsilon=0.4 pid=932381
+END index=2 qkud cyclobutadiene_ceo epsilon=0.4 outcome=completed hit=None elapsed=5.0s
+START index=4 qkud cyclobutadiene_ceo epsilon=0.6 pid=933008
+END index=4 qkud cyclobutadiene_ceo epsilon=0.6 outcome=completed hit=None elapsed=5.0s
+START index=5 qkud cyclobutadiene_ceo epsilon=0.7 pid=933542
+END index=5 qkud cyclobutadiene_ceo epsilon=0.7 outcome=completed hit=None elapsed=5.0s
+START index=6 qkud cyclobutadiene_ceo epsilon=0.8 pid=934072
+END index=6 qkud cyclobutadiene_ceo epsilon=0.8 outcome=completed hit=None elapsed=5.0s
+START index=7 qkud cyclobutadiene_ceo epsilon=0.9 pid=934583
+END index=7 qkud cyclobutadiene_ceo epsilon=0.9 outcome=completed hit=None elapsed=5.0s
+START index=9 qkud cyclobutadiene_ceo epsilon=2 pid=935152
+END index=9 qkud cyclobutadiene_ceo epsilon=2 outcome=completed hit=None elapsed=5.0s
+START index=10 qkud cyclobutadiene_ceo epsilon=3 pid=935669
+END index=10 qkud cyclobutadiene_ceo epsilon=3 outcome=completed hit=None elapsed=5.0s
+START index=11 qkud cyclobutadiene_ceo epsilon=4 pid=936183
+END index=11 qkud cyclobutadiene_ceo epsilon=4 outcome=completed hit=None elapsed=5.0s
+START index=12 qkud cyclobutadiene_ceo epsilon=5 pid=936710
+END index=12 qkud cyclobutadiene_ceo epsilon=5 outcome=completed hit=None elapsed=5.0s
+START index=13 qkud cyclobutadiene_ceo epsilon=6 pid=937231
+END index=13 qkud cyclobutadiene_ceo epsilon=6 outcome=completed hit=None elapsed=5.0s
+START index=14 qkud cyclobutadiene_ceo epsilon=7 pid=937766
+END index=14 qkud cyclobutadiene_ceo epsilon=7 outcome=completed hit=None elapsed=5.0s
+START index=15 qkud cyclobutadiene_ceo epsilon=8 pid=938303
+END index=15 qkud cyclobutadiene_ceo epsilon=8 outcome=completed hit=None elapsed=5.0s
+START index=16 qkud cyclobutadiene_ceo epsilon=9 pid=938822
+END index=16 qkud cyclobutadiene_ceo epsilon=9 outcome=completed hit=None elapsed=5.0s
+START index=17 qkud cyclobutadiene_ceo epsilon=10 pid=939436
+END index=17 qkud cyclobutadiene_ceo epsilon=10 outcome=completed hit=None elapsed=5.0s
+START index=18 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.2 pid=939957
+END index=18 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.2 outcome=completed hit=None elapsed=115.0s
+START index=19 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.3 pid=940701
+END index=19 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.3 outcome=completed hit=None elapsed=110.0s
+START index=20 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.4 pid=941357
+END index=20 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.4 outcome=completed hit=None elapsed=110.0s
+START index=22 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.6 pid=941965
+END index=22 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.6 outcome=completed hit=None elapsed=110.0s
+START index=23 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.7 pid=942497
+END index=23 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.7 outcome=completed hit=None elapsed=110.0s
+START index=24 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.8 pid=943155
+END index=24 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.8 outcome=completed hit=None elapsed=110.0s
+START index=25 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.9 pid=943878
+END index=25 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=0.9 outcome=completed hit=None elapsed=110.0s
+START index=27 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=2 pid=944524
+END index=27 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=2 outcome=completed hit=None elapsed=110.0s
+START index=28 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=3 pid=945166
+END index=28 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=3 outcome=completed hit=None elapsed=110.0s
+START index=29 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=4 pid=945771
+END index=29 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=4 outcome=completed hit=None elapsed=115.0s
+START index=30 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=5 pid=946430
+END index=30 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=5 outcome=completed hit=None elapsed=115.0s
+START index=31 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=6 pid=947145
+END index=31 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=6 outcome=completed hit=None elapsed=110.0s
+START index=32 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=7 pid=947772
+END index=32 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=7 outcome=completed hit=None elapsed=110.0s
+START index=33 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=8 pid=948447
+END index=33 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=8 outcome=completed hit=None elapsed=110.0s
+START index=34 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=9 pid=949082
+END index=34 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=9 outcome=completed hit=None elapsed=110.0s
+START index=35 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=10 pid=949736
+END index=35 qkud m_Benzyne_equi_cc_pVTZ_0 epsilon=10 outcome=completed hit=None elapsed=115.0s
+START index=36 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.2 pid=950471
+END index=36 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.2 outcome=completed hit=None elapsed=110.0s
+START index=37 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.3 pid=951120
+END index=37 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.3 outcome=completed hit=None elapsed=110.0s
+START index=38 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.4 pid=951782
+END index=38 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.4 outcome=completed hit=None elapsed=110.0s
+START index=40 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.6 pid=952404
+END index=40 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.6 outcome=completed hit=None elapsed=110.0s
+START index=41 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.7 pid=953066
+END index=41 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.7 outcome=completed hit=None elapsed=110.0s
+START index=42 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.8 pid=953689
+END index=42 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.8 outcome=completed hit=None elapsed=110.0s
+START index=43 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.9 pid=954413
+END index=43 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=0.9 outcome=completed hit=None elapsed=115.0s
+START index=45 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=2 pid=955076
+END index=45 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=2 outcome=completed hit=None elapsed=110.0s
+START index=46 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=3 pid=955695
+END index=46 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=3 outcome=completed hit=None elapsed=110.0s
+START index=47 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=4 pid=956300
+END index=47 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=4 outcome=completed hit=None elapsed=115.0s
+START index=48 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=5 pid=956971
+END index=48 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=5 outcome=completed hit=None elapsed=110.0s
+START index=49 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=6 pid=957695
+END index=49 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=6 outcome=completed hit=None elapsed=110.0s
+START index=50 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=7 pid=958353
+END index=50 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=7 outcome=completed hit=None elapsed=110.0s
+START index=51 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=8 pid=958971
+END index=51 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=8 outcome=completed hit=None elapsed=110.0s
+START index=52 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=9 pid=959602
+END index=52 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=9 outcome=completed hit=None elapsed=110.0s
+START index=53 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=10 pid=960261
+END index=53 qkud m_Benzyne_equi_cc_pVTZ_2 epsilon=10 outcome=completed hit=None elapsed=115.0s
+START index=54 qkud feo4_2minus_ceo epsilon=0.2 pid=960993
+END index=54 qkud feo4_2minus_ceo epsilon=0.2 outcome=completed hit=None elapsed=4260.1s
+START index=55 qkud feo4_2minus_ceo epsilon=0.3 pid=969221
+END index=55 qkud feo4_2minus_ceo epsilon=0.3 outcome=completed hit=None elapsed=4275.1s
+START index=56 qkud feo4_2minus_ceo epsilon=0.4 pid=977582
+END index=56 qkud feo4_2minus_ceo epsilon=0.4 outcome=completed hit=None elapsed=4275.1s
+START index=58 qkud feo4_2minus_ceo epsilon=0.6 pid=985818
+END index=58 qkud feo4_2minus_ceo epsilon=0.6 outcome=completed hit=None elapsed=4260.1s
+START index=59 qkud feo4_2minus_ceo epsilon=0.7 pid=994123
+END index=59 qkud feo4_2minus_ceo epsilon=0.7 outcome=completed hit=None elapsed=4260.1s
+START index=60 qkud feo4_2minus_ceo epsilon=0.8 pid=1002574
+END index=60 qkud feo4_2minus_ceo epsilon=0.8 outcome=completed hit=None elapsed=4260.1s
+START index=61 qkud feo4_2minus_ceo epsilon=0.9 pid=1010789
+END index=61 qkud feo4_2minus_ceo epsilon=0.9 outcome=completed hit=None elapsed=4260.1s
+START index=63 qkud feo4_2minus_ceo epsilon=2 pid=1019038
+END index=63 qkud feo4_2minus_ceo epsilon=2 outcome=completed hit=None elapsed=4260.1s
+START index=64 qkud feo4_2minus_ceo epsilon=3 pid=1027368
+END index=64 qkud feo4_2minus_ceo epsilon=3 outcome=completed hit=None elapsed=4255.1s
+START index=65 qkud feo4_2minus_ceo epsilon=4 pid=1035713
+END index=65 qkud feo4_2minus_ceo epsilon=4 outcome=completed hit=None elapsed=4255.1s
+START index=66 qkud feo4_2minus_ceo epsilon=5 pid=1043983
+END index=66 qkud feo4_2minus_ceo epsilon=5 outcome=completed hit=None elapsed=4260.1s
+START index=67 qkud feo4_2minus_ceo epsilon=6 pid=1052289
+END index=67 qkud feo4_2minus_ceo epsilon=6 outcome=completed hit=None elapsed=4260.1s
+START index=68 qkud feo4_2minus_ceo epsilon=7 pid=1060844
+END index=68 qkud feo4_2minus_ceo epsilon=7 outcome=completed hit=None elapsed=4260.1s
+START index=69 qkud feo4_2minus_ceo epsilon=8 pid=1069121
+END index=69 qkud feo4_2minus_ceo epsilon=8 outcome=completed hit=None elapsed=4255.1s
+START index=70 qkud feo4_2minus_ceo epsilon=9 pid=1077347
+END index=70 qkud feo4_2minus_ceo epsilon=9 outcome=completed hit=None elapsed=4255.1s
+START index=71 qkud feo4_2minus_ceo epsilon=10 pid=1085677
+END index=71 qkud feo4_2minus_ceo epsilon=10 outcome=completed hit=None elapsed=4280.1s
+START index=72 qkud fenoco3_minus epsilon=0.2 pid=1093951
+END index=72 qkud fenoco3_minus epsilon=0.2 outcome=completed hit=None elapsed=5195.1s
+START index=73 qkud fenoco3_minus epsilon=0.3 pid=1104017
+END index=73 qkud fenoco3_minus epsilon=0.3 outcome=completed hit=None elapsed=5200.1s
+START index=74 qkud fenoco3_minus epsilon=0.4 pid=1114019
+END index=74 qkud fenoco3_minus epsilon=0.4 outcome=completed hit=None elapsed=5200.1s
+START index=76 qkud fenoco3_minus epsilon=0.6 pid=1123901
+END index=76 qkud fenoco3_minus epsilon=0.6 outcome=completed hit=None elapsed=5200.1s
+START index=77 qkud fenoco3_minus epsilon=0.7 pid=1133882
+END index=77 qkud fenoco3_minus epsilon=0.7 outcome=completed hit=None elapsed=5200.1s
+START index=78 qkud fenoco3_minus epsilon=0.8 pid=1143812
+END index=78 qkud fenoco3_minus epsilon=0.8 outcome=completed hit=None elapsed=5205.1s
+START index=79 qkud fenoco3_minus epsilon=0.9 pid=1153874
+END index=79 qkud fenoco3_minus epsilon=0.9 outcome=completed hit=None elapsed=5205.1s
+START index=81 qkud fenoco3_minus epsilon=2 pid=1163830
+END index=81 qkud fenoco3_minus epsilon=2 outcome=completed hit=None elapsed=5200.1s
+START index=82 qkud fenoco3_minus epsilon=3 pid=1173992
+END index=82 qkud fenoco3_minus epsilon=3 outcome=completed hit=None elapsed=5225.2s
+START index=83 qkud fenoco3_minus epsilon=4 pid=1183962
+END index=83 qkud fenoco3_minus epsilon=4 outcome=completed hit=None elapsed=5200.2s
+START index=84 qkud fenoco3_minus epsilon=5 pid=1193966
+END index=84 qkud fenoco3_minus epsilon=5 outcome=completed hit=None elapsed=5225.2s
+START index=85 qkud fenoco3_minus epsilon=6 pid=1203994
+END index=85 qkud fenoco3_minus epsilon=6 outcome=completed hit=None elapsed=5205.2s
+START index=86 qkud fenoco3_minus epsilon=7 pid=1214066
+END index=86 qkud fenoco3_minus epsilon=7 outcome=completed hit=None elapsed=5205.2s
+START index=87 qkud fenoco3_minus epsilon=8 pid=1224487
+END index=87 qkud fenoco3_minus epsilon=8 outcome=completed hit=None elapsed=5205.2s
+START index=88 qkud fenoco3_minus epsilon=9 pid=1234448
+END index=88 qkud fenoco3_minus epsilon=9 outcome=completed hit=None elapsed=5205.1s
+START index=89 qkud fenoco3_minus epsilon=10 pid=1244595
+END index=89 qkud fenoco3_minus epsilon=10 outcome=completed hit=None elapsed=5205.1s
+START index=90 qkud feno_2plus epsilon=0.2 pid=1254392
+END index=90 qkud feno_2plus epsilon=0.2 outcome=completed hit=None elapsed=17270.5s
+START index=91 qkud feno_2plus epsilon=0.3 pid=1286374
+END index=91 qkud feno_2plus epsilon=0.3 outcome=completed hit=None elapsed=17250.5s
+START index=92 qkud feno_2plus epsilon=0.4 pid=1318356
+END index=92 qkud feno_2plus epsilon=0.4 outcome=completed hit=None elapsed=17265.5s
+START index=94 qkud feno_2plus epsilon=0.6 pid=1350330
+END index=94 qkud feno_2plus epsilon=0.6 outcome=completed hit=None elapsed=17260.5s
+START index=95 qkud feno_2plus epsilon=0.7 pid=1381843
+END index=95 qkud feno_2plus epsilon=0.7 outcome=completed hit=None elapsed=17255.5s
+START index=96 qkud feno_2plus epsilon=0.8 pid=1414126
+END index=96 qkud feno_2plus epsilon=0.8 outcome=completed hit=None elapsed=17270.5s
+START index=97 qkud feno_2plus epsilon=0.9 pid=1445589
+END index=97 qkud feno_2plus epsilon=0.9 outcome=completed hit=None elapsed=17345.5s
+START index=99 qkud feno_2plus epsilon=2 pid=1477207
+END index=99 qkud feno_2plus epsilon=2 outcome=completed hit=None elapsed=17345.5s
+START index=100 qkud feno_2plus epsilon=3 pid=1509460
+END index=100 qkud feno_2plus epsilon=3 outcome=completed hit=None elapsed=17350.5s
+START index=101 qkud feno_2plus epsilon=4 pid=1541297
+END index=101 qkud feno_2plus epsilon=4 outcome=completed hit=None elapsed=17360.5s
+START index=102 qkud feno_2plus epsilon=5 pid=1573851
+END index=102 qkud feno_2plus epsilon=5 outcome=completed hit=None elapsed=17335.5s
+START index=103 qkud feno_2plus epsilon=6 pid=1605916
+END index=103 qkud feno_2plus epsilon=6 outcome=completed hit=None elapsed=17345.5s
+START index=104 qkud feno_2plus epsilon=7 pid=1638050
+END index=104 qkud feno_2plus epsilon=7 outcome=completed hit=None elapsed=17335.5s
+START index=105 qkud feno_2plus epsilon=8 pid=1670018
+END index=105 qkud feno_2plus epsilon=8 outcome=completed hit=None elapsed=17325.5s
+START index=106 qkud feno_2plus epsilon=9 pid=1702392
+END index=106 qkud feno_2plus epsilon=9 outcome=completed hit=None elapsed=17330.5s
+START index=107 qkud feno_2plus epsilon=10 pid=1734680
+END index=107 qkud feno_2plus epsilon=10 outcome=completed hit=None elapsed=17345.5s
+START index=108 qkud FeO epsilon=0.2 pid=1767004
+END index=108 qkud FeO epsilon=0.2 outcome=completed hit=None elapsed=13365.4s
+START index=109 qkud FeO epsilon=0.3 pid=1792104
+END index=109 qkud FeO epsilon=0.3 outcome=completed hit=None elapsed=13365.4s
+START index=110 qkud FeO epsilon=0.4 pid=1817167
+END index=110 qkud FeO epsilon=0.4 outcome=completed hit=None elapsed=13370.4s
+START index=112 qkud FeO epsilon=0.6 pid=1842111
+END index=112 qkud FeO epsilon=0.6 outcome=completed hit=None elapsed=13365.4s
+START index=113 qkud FeO epsilon=0.7 pid=1867351
+END index=113 qkud FeO epsilon=0.7 outcome=completed hit=None elapsed=13360.4s
+START index=114 qkud FeO epsilon=0.8 pid=1892376
+END index=114 qkud FeO epsilon=0.8 outcome=completed hit=None elapsed=13360.4s
+START index=115 qkud FeO epsilon=0.9 pid=1917329
+END index=115 qkud FeO epsilon=0.9 outcome=completed hit=None elapsed=13355.4s
+START index=117 qkud FeO epsilon=2 pid=1942120
+END index=117 qkud FeO epsilon=2 outcome=completed hit=None elapsed=13360.4s
+START index=118 qkud FeO epsilon=3 pid=1966758
+END index=118 qkud FeO epsilon=3 outcome=completed hit=None elapsed=13370.4s
+START index=119 qkud FeO epsilon=4 pid=1991886
+END index=119 qkud FeO epsilon=4 outcome=completed hit=None elapsed=13365.4s
+START index=120 qkud FeO epsilon=5 pid=2016752
+END index=120 qkud FeO epsilon=5 outcome=completed hit=None elapsed=13375.4s
+START index=121 qkud FeO epsilon=6 pid=2042730
+END index=121 qkud FeO epsilon=6 outcome=completed hit=None elapsed=13360.4s
+START index=122 qkud FeO epsilon=7 pid=2067735
+END index=122 qkud FeO epsilon=7 outcome=completed hit=None elapsed=13355.4s
+START index=123 qkud FeO epsilon=8 pid=2092525
+END index=123 qkud FeO epsilon=8 outcome=completed hit=None elapsed=13350.4s
+START index=124 qkud FeO epsilon=9 pid=2117371
+END index=124 qkud FeO epsilon=9 outcome=completed hit=None elapsed=13360.4s
+START index=125 qkud FeO epsilon=10 pid=2142275
+END index=125 qkud FeO epsilon=10 outcome=completed hit=None elapsed=13365.4s
+{"completed": 112, "failed": 0, "skipped_completed_at_start": 14}

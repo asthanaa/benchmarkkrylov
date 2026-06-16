@@ -1,0 +1,23 @@
+{
+  "active_orbital_labels": [
+    "C 2pz"
+  ],
+  "case_id": "cyclobutadiene_ceo",
+  "casscf_energy_hartree": -153.72228958240802,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -153.72068958240803,
+  "elapsed_seconds": 3.9124068960081786,
+  "final_min_history_energy_hartree": -153.67301239137194,
+  "final_projected_ground_energy_hartree": -153.67301239137194,
+  "h0.25": 1.934845493351637,
+  "hamiltonian_cache_dir": "/home/ayush.asthana/code/benchmark/hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qrte",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

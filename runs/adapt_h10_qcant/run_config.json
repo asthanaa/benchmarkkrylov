@@ -1,0 +1,18 @@
+{
+  "adapt_it": 5000,
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -5.378354745997449,
+  "gradient_chunk_size": null,
+  "hamiltonian_cutoff": 1e-20,
+  "hamiltonian_source": "casci",
+  "manifest": "/home/ayush.asthana/code/benchmark/manifests/molvqe21_fig1b_manifest.csv",
+  "max_workers": 16,
+  "method": "adapt_vqe_qulacs",
+  "optimizer_maxiter": 500,
+  "optimizer_method": "BFGS",
+  "parallel_gradients": true,
+  "pool_sample_size": null,
+  "pool_seed": null,
+  "pool_type": "fermionic_sd",
+  "qcant_root": "/home/ayush.asthana/code/benchmark/vendor/QCANT"
+}

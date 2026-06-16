@@ -1,0 +1,16 @@
+timestamp=20260502_194013
+canceled_jobs=252530,252531,252532
+reason=replace 0.1-only remaining runs with 10-value parameter sweep capped at 50 iterations
+backup_dir=benchmark/runs/pre_parameter_sweep_interrupted_50cap_20260502_194013
+active_cases:
+  qrte_dt0.1 feo4_2minus_ceo
+  qrte_dt0.1 fenoco3_minus
+  qrte_dt0.1 FeO
+  qrte_dt0.1 Al3_minus
+  qrte_dt0.1 feno_2plus
+  qrte_dt0.1 H10_near_equi_sto3g_0
+  qkud_eps0.1 feo4_2minus_ceo
+  qkud_eps0.1 fenoco3_minus
+  qkud_eps0.1 FeO
+  qkud_eps0.1 Al3_minus
+  qkud_eps0.1 feno_2plus

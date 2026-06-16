@@ -1,0 +1,13 @@
+{
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 6.7,
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -153.72068958240803,
+  "epsilon": 0.1,
+  "evolution_mode": "trotter",
+  "max_workers": 1,
+  "method": "qrte",
+  "n_steps": 50,
+  "qcant_root": "/home/ayush.asthana/code/benchmark/vendor/QCANT",
+  "trotter_steps": 1
+}

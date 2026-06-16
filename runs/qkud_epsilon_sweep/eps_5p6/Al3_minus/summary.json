@@ -1,0 +1,18 @@
+{
+  "case_id": "Al3_minus",
+  "casscf_energy_hartree": -725.7921857752825,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -725.7905857752825,
+  "elapsed_seconds": 17076.550938649103,
+  "final_min_history_energy_hartree": -725.7207268882323,
+  "final_projected_ground_energy_hartree": -725.7207268882323,
+  "h0.25": 6.428074004502384,
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

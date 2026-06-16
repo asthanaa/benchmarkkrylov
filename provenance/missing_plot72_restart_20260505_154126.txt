@@ -1,0 +1,5 @@
+Missing plot restart staged at 2026-05-05T15:41:26-05:00
+Backup: benchmark/runs/pre_missing_plot72_restart_20260505_154126
+Cases: Ferrocene_ceo fenoco3_minus magnesium_porphyrin_ceo
+Methods: qrte_natorb_dt0.1 qkud_natorb_eps0.1
+Requested launch: talon-large, 72 CPUs per array task, concurrency=3, max_workers=24, n_steps=50, no --force

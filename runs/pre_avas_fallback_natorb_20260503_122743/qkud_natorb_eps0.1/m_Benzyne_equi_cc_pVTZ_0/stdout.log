@@ -1,0 +1,3 @@
+converged SCF energy = -229.450916596362
+FAIL qkud m_Benzyne_equi_cc_pVTZ_0: ValueError("AVAS active space mismatch for labels ['C 2pz']: got (4, 5), expected (6, 6)")
+{"completed": 0, "failed": 1, "skipped": 0}

@@ -1,0 +1,91 @@
+{
+  "backup_root": "benchmark/runs/pre_fast_restart_completed_20260502_105646",
+  "completed_cases": [
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qrte_dt0.1/H4_near_equi_sto3g_0",
+      "case_id": "H4_near_equi_sto3g_0",
+      "hit_chemical_accuracy": true,
+      "hit_iteration": 3,
+      "method": "qrte",
+      "source_dir": "benchmark/runs/qrte_dt0.1/H4_near_equi_sto3g_0"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qrte_dt0.1/H5_near_equi_sto3g_1",
+      "case_id": "H5_near_equi_sto3g_1",
+      "hit_chemical_accuracy": true,
+      "hit_iteration": 3,
+      "method": "qrte",
+      "source_dir": "benchmark/runs/qrte_dt0.1/H5_near_equi_sto3g_1"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qrte_dt0.1/N2_equi_cc_pVTZ_2",
+      "case_id": "N2_equi_cc_pVTZ_2",
+      "hit_chemical_accuracy": true,
+      "hit_iteration": 1,
+      "method": "qrte",
+      "source_dir": "benchmark/runs/qrte_dt0.1/N2_equi_cc_pVTZ_2"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qrte_dt0.1/cyclobutadiene_ceo",
+      "case_id": "cyclobutadiene_ceo",
+      "hit_chemical_accuracy": false,
+      "hit_iteration": null,
+      "method": "qrte",
+      "source_dir": "benchmark/runs/qrte_dt0.1/cyclobutadiene_ceo"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qkud_eps0.1/H4_near_equi_sto3g_0",
+      "case_id": "H4_near_equi_sto3g_0",
+      "hit_chemical_accuracy": true,
+      "hit_iteration": 3,
+      "method": "qkud",
+      "source_dir": "benchmark/runs/qkud_eps0.1/H4_near_equi_sto3g_0"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qkud_eps0.1/H5_near_equi_sto3g_1",
+      "case_id": "H5_near_equi_sto3g_1",
+      "hit_chemical_accuracy": true,
+      "hit_iteration": 3,
+      "method": "qkud",
+      "source_dir": "benchmark/runs/qkud_eps0.1/H5_near_equi_sto3g_1"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qkud_eps0.1/N2_equi_cc_pVTZ_2",
+      "case_id": "N2_equi_cc_pVTZ_2",
+      "hit_chemical_accuracy": true,
+      "hit_iteration": 1,
+      "method": "qkud",
+      "source_dir": "benchmark/runs/qkud_eps0.1/N2_equi_cc_pVTZ_2"
+    },
+    {
+      "backup_dir": "benchmark/runs/pre_fast_restart_completed_20260502_105646/qkud_eps0.1/cyclobutadiene_ceo",
+      "case_id": "cyclobutadiene_ceo",
+      "hit_chemical_accuracy": false,
+      "hit_iteration": null,
+      "method": "qkud",
+      "source_dir": "benchmark/runs/qkud_eps0.1/cyclobutadiene_ceo"
+    }
+  ],
+  "created_at_epoch": 1777737407.3925338,
+  "old_job_ids": [
+    "251848",
+    "251849",
+    "251850"
+  ],
+  "provenance_root": "benchmark/provenance/fast_restart_20260502_105646",
+  "restart_settings": {
+    "qkud": {
+      "concurrency": 36,
+      "cpus_per_task": 36,
+      "early_stop_chemical_accuracy": true,
+      "max_workers": 1
+    },
+    "qrte": {
+      "concurrency": 36,
+      "cpus_per_task": 36,
+      "early_stop_chemical_accuracy": true,
+      "max_workers": 1
+    }
+  },
+  "timestamp": "20260502_105646"
+}

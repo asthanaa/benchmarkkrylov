@@ -1,0 +1,338 @@
+diff --git a/QCANT/qulacs_accel.py b/QCANT/qulacs_accel.py
+index 9080aef..f11710b 100755
+--- a/QCANT/qulacs_accel.py
++++ b/QCANT/qulacs_accel.py
+@@ -553,7 +553,7 @@ def _build_hamiltonian_payload(
+     mol.symmetry = False
+     mol.build()
+ 
+-    mf = scf.RHF(mol)
++    mf = scf.RHF(mol) if int(spin) == 0 else scf.ROHF(mol)
+     mf.level_shift = 0.5
+     mf.diis_space = 12
+     mf.max_cycle = 100
+@@ -672,6 +672,96 @@ def _diagonalize_projected(overlap, h_proj, overlap_tol: float, np):
+     return np.linalg.eigvalsh(h_ortho).real
+ 
+ 
++class _ProjectionAccumulator:
++    """Incrementally maintain projected overlap/Hamiltonian matrices."""
++
++    def __init__(self, h_qulacs, np, *, max_workers: Optional[int], capacity: Optional[int] = None):
++        self.h_qulacs = h_qulacs
++        self.np = np
++        self.max_workers = max_workers
++        initial_capacity = max(1, int(capacity)) if capacity is not None else 8
++        self._states = []
++        self._vectors = []
++        self._norms = np.zeros(initial_capacity, dtype=float)
++        self._overlap = np.zeros((initial_capacity, initial_capacity), dtype=complex)
++        self._h_proj = np.zeros((initial_capacity, initial_capacity), dtype=complex)
++
++    @property
++    def size(self) -> int:
++        return len(self._states)
++
++    def _ensure_capacity(self, size: int) -> None:
++        if size <= self._overlap.shape[0]:
++            return
++        new_capacity = max(size, 2 * self._overlap.shape[0])
++        self._norms = self.np.pad(self._norms, (0, new_capacity - self._norms.shape[0]))
++        self._overlap = self.np.pad(
++            self._overlap,
++            ((0, new_capacity - self._overlap.shape[0]), (0, new_capacity - self._overlap.shape[1])),
++        )
++        self._h_proj = self.np.pad(
++            self._h_proj,
++            ((0, new_capacity - self._h_proj.shape[0]), (0, new_capacity - self._h_proj.shape[1])),
++        )
++
++    def append(self, state) -> None:
++        np = self.np
++        stored_state = state.copy()
++        vector = np.asarray(stored_state.get_vector(), dtype=complex)
++        norm = float(np.linalg.norm(vector))
++        if not np.isfinite(norm) or norm == 0.0:
++            raise ValueError("projected basis contains a zero- or non-finite-norm vector")
++
++        idx = self.size
++        self._ensure_capacity(idx + 1)
++        if idx:
++            existing = np.stack(self._vectors, axis=0)
++            overlaps = existing.conj() @ vector
++            self._overlap[:idx, idx] = overlaps
++            self._overlap[idx, :idx] = overlaps.conj()
++        self._overlap[idx, idx] = norm * norm
++
++        self._states.append(stored_state)
++        self._vectors.append(vector)
++        self._norms[idx] = norm
++
++        def _compute_value(row_idx: int):
++            bra = self._states[row_idx]
++            return row_idx, complex(self.h_qulacs.get_transition_amplitude(bra, stored_state))
++
++        worker_count = 1 if self.max_workers is None else max(1, int(self.max_workers))
++        if worker_count > 1 and idx > 1:
++            with ThreadPoolExecutor(max_workers=worker_count) as executor:
++                futures = [executor.submit(_compute_value, row_idx) for row_idx in range(idx + 1)]
++                for future in as_completed(futures):
++                    row_idx, value = future.result()
++                    self._h_proj[row_idx, idx] = value
++                    if row_idx != idx:
++                        self._h_proj[idx, row_idx] = np.conj(value)
++        else:
++            for row_idx in range(idx + 1):
++                _, value = _compute_value(row_idx)
++                self._h_proj[row_idx, idx] = value
++                if row_idx != idx:
++                    self._h_proj[idx, row_idx] = np.conj(value)
++
++    def basis_array(self):
++        if not self._vectors:
++            raise ValueError("projected basis is empty")
++        return self.np.stack(self._vectors, axis=0)
++
++    def energies(self, overlap_tol: float, size: Optional[int] = None):
++        np = self.np
++        prefix_size = self.size if size is None else int(size)
++        if prefix_size <= 0 or prefix_size > self.size:
++            raise ValueError("invalid projected-basis prefix size")
++        norms = self._norms[:prefix_size]
++        norm_scales = norms[:, None] * norms[None, :]
++        overlap = self._overlap[:prefix_size, :prefix_size] / norm_scales
++        h_proj = self._h_proj[:prefix_size, :prefix_size] / norm_scales
++        return _diagonalize_projected(overlap, h_proj, overlap_tol, np)
++
++
+ def _project_hamiltonian_energies(basis_states, h_qulacs, overlap_tol: float, np, *, max_workers: Optional[int]):
+     overlap, h_proj, basis_array = _build_projection_matrices(
+         basis_states,
+@@ -1281,6 +1371,7 @@ def qkud_qulacs(
+     evolution_mode: str = "sparse",
+     trotter_steps: int = 1,
+     max_workers: Optional[int] = None,
++    early_stop_energy: Optional[float] = None,
+ ):
+     """Qulacs-backed QKUD using exact sparse or Trotterized real-time updates.
+ 
+@@ -1350,6 +1441,18 @@ def qkud_qulacs(
+             np,
+         )
+ 
++    track_projection_history = bool(return_min_energy_history or early_stop_energy is not None)
++    projection_accumulator = None
++    min_history = []
++    if track_projection_history:
++        projection_accumulator = _ProjectionAccumulator(
++            h_qulacs,
++            np,
++            max_workers=max_workers,
++            capacity=int(n_steps) + 1,
++        )
++        projection_accumulator.append(current)
++
+     for _ in range(int(n_steps)):
+         forward = _evolve_state(
+             current,
+@@ -1380,25 +1483,27 @@ def qkud_qulacs(
+         current = _state_from_vector(vector, qubits=qubits, QuantumState=QuantumState, np=np)
+         current = _threshold_state(current, basis_threshold, QuantumState, np)
+         basis_states.append(current.copy())
+-
+-    energies, basis_array = _project_hamiltonian_energies(
+-        basis_states,
+-        h_qulacs,
+-        overlap_tol,
+-        np,
+-        max_workers=max_workers,
+-    )
++        if projection_accumulator is not None:
++            projection_accumulator.append(current)
++            evals = projection_accumulator.energies(overlap_tol)
++            e0 = float(evals[0])
++            if return_min_energy_history:
++                min_history.append(e0)
++            if early_stop_energy is not None and e0 <= float(early_stop_energy):
++                break
++
++    if projection_accumulator is not None:
++        energies = projection_accumulator.energies(overlap_tol)
++        basis_array = projection_accumulator.basis_array()
++    else:
++        energies, basis_array = _project_hamiltonian_energies(
++            basis_states,
++            h_qulacs,
++            overlap_tol,
++            np,
++            max_workers=max_workers,
++        )
+     if return_min_energy_history:
+-        min_history = []
+-        for end in range(2, len(basis_states) + 1):
+-            evals, _ = _project_hamiltonian_energies(
+-                basis_states[:end],
+-                h_qulacs,
+-                overlap_tol,
+-                np,
+-                max_workers=max_workers,
+-            )
+-            min_history.append(float(evals[0]))
+         return energies, basis_array, np.asarray(min_history, dtype=float)
+     return energies, basis_array
+ 
+@@ -1420,6 +1525,7 @@ def qrte_qulacs(
+     evolution_mode: str = "sparse",
+     trotter_steps: int = 1,
+     max_workers: Optional[int] = None,
++    early_stop_energy: Optional[float] = None,
+ ):
+     """Qulacs-backed QRTE using exact sparse or Trotterized evolution.
+ 
+@@ -1466,6 +1572,16 @@ def qrte_qulacs(
+     current = _threshold_state(current, basis_threshold, QuantumState, np)
+     basis_states = [current.copy()]
+     min_history = []
++    track_projection_history = bool(return_min_energy_history or early_stop_energy is not None)
++    projection_accumulator = None
++    if track_projection_history:
++        projection_accumulator = _ProjectionAccumulator(
++            h_qulacs,
++            np,
++            max_workers=max_workers,
++            capacity=int(n_steps) + 1,
++        )
++        projection_accumulator.append(current)
+ 
+     sparse_hamiltonian = h_qulacs.get_matrix().tocsr() if evolution_mode == "sparse" else None
+     circuit = None
+@@ -1494,24 +1610,27 @@ def qrte_qulacs(
+         current = _normalize_state(current, QuantumState, np)
+         current = _threshold_state(current, basis_threshold, QuantumState, np)
+         basis_states.append(current.copy())
+-        if return_min_energy_history:
+-            evals, _ = _project_hamiltonian_energies(
+-                basis_states,
+-                h_qulacs,
+-                overlap_tol,
+-                np,
+-                max_workers=max_workers,
+-            )
+-            min_history.append(float(evals[0]))
+-
+-    energies, basis_array = _project_hamiltonian_energies(
+-        basis_states,
+-        h_qulacs,
+-        overlap_tol,
+-        np,
+-        max_workers=max_workers,
+-    )
+-    times = np.arange(int(n_steps) + 1, dtype=float) * float(delta_t)
++        if projection_accumulator is not None:
++            projection_accumulator.append(current)
++            evals = projection_accumulator.energies(overlap_tol)
++            e0 = float(evals[0])
++            if return_min_energy_history:
++                min_history.append(e0)
++            if early_stop_energy is not None and e0 <= float(early_stop_energy):
++                break
++
++    if projection_accumulator is not None:
++        energies = projection_accumulator.energies(overlap_tol)
++        basis_array = projection_accumulator.basis_array()
++    else:
++        energies, basis_array = _project_hamiltonian_energies(
++            basis_states,
++            h_qulacs,
++            overlap_tol,
++            np,
++            max_workers=max_workers,
++        )
++    times = np.arange(len(basis_states), dtype=float) * float(delta_t)
+     if return_min_energy_history:
+         return energies, basis_array, times, np.asarray(min_history, dtype=float)
+     return energies, basis_array, times
+diff --git a/QCANT/tests/test_qulacs_accel.py b/QCANT/tests/test_qulacs_accel.py
+index 63f1c07..4bbcfb9 100755
+--- a/QCANT/tests/test_qulacs_accel.py
++++ b/QCANT/tests/test_qulacs_accel.py
+@@ -74,6 +74,79 @@ def test_qrte_qulacs_matches_reference_h2():
+     np.testing.assert_allclose(np.linalg.norm(qulacs_basis, axis=1), 1.0, atol=1e-10, rtol=0.0)
+ 
+ 
++def test_qkud_qulacs_history_early_stop_truncates_h2():
++    symbols = ["H", "H"]
++    geometry = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.74]], dtype=float)
++
++    energies, basis_states, min_energy_history = QCANT.qkud_qulacs(
++        symbols,
++        geometry,
++        n_steps=5,
++        epsilon=0.1,
++        active_electrons=2,
++        active_orbitals=2,
++        basis="sto-3g",
++        charge=0,
++        spin=0,
++        return_min_energy_history=True,
++        early_stop_energy=1.0e9,
++        evolution_mode="trotter",
++    )
++
++    assert basis_states.shape[0] == 2
++    assert min_energy_history.shape == (1,)
++    assert np.isfinite(energies).all()
++    assert np.isfinite(min_energy_history).all()
++
++
++def test_qrte_qulacs_history_early_stop_truncates_h2():
++    symbols = ["H", "H"]
++    geometry = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.74]], dtype=float)
++
++    energies, basis_states, times, min_energy_history = QCANT.qrte_qulacs(
++        symbols,
++        geometry,
++        delta_t=0.1,
++        n_steps=5,
++        active_electrons=2,
++        active_orbitals=2,
++        basis="sto-3g",
++        charge=0,
++        spin=0,
++        return_min_energy_history=True,
++        early_stop_energy=1.0e9,
++        evolution_mode="trotter",
++    )
++
++    assert basis_states.shape[0] == 2
++    assert times.tolist() == [0.0, 0.1]
++    assert min_energy_history.shape == (1,)
++    assert np.isfinite(energies).all()
++    assert np.isfinite(min_energy_history).all()
++
++
++def test_qrte_qulacs_history_matches_final_energy_h2():
++    symbols = ["H", "H"]
++    geometry = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.74]], dtype=float)
++
++    energies, _basis_states, _times, min_energy_history = QCANT.qrte_qulacs(
++        symbols,
++        geometry,
++        delta_t=0.1,
++        n_steps=3,
++        active_electrons=2,
++        active_orbitals=2,
++        basis="sto-3g",
++        charge=0,
++        spin=0,
++        return_min_energy_history=True,
++        evolution_mode="trotter",
++    )
++
++    assert min_energy_history.shape == (3,)
++    np.testing.assert_allclose(min_energy_history[-1], np.min(energies), atol=1e-10, rtol=0.0)
++
++
+ def test_qrte_pmte_qulacs_runs_h2():
+     symbols = ["H", "H"]
+     geometry = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.74]], dtype=float)

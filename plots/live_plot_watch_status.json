@@ -1,0 +1,35 @@
+{
+  "next_check_seconds": 60.0,
+  "running_watched_job_ids": [
+    "252694_[0-7]",
+    "252693_[0-7]",
+    "252692",
+    "252691"
+  ],
+  "status": "watching",
+  "summary_counts": {
+    "adapt_h10": {
+      "completed": 0,
+      "failed": 0,
+      "other": 0
+    },
+    "qkud": {
+      "completed": 26,
+      "failed": 0,
+      "other": 0
+    },
+    "qrte": {
+      "completed": 26,
+      "failed": 0,
+      "other": 0
+    }
+  },
+  "summary_file_count": 52,
+  "updated_at_utc": "2026-05-04T21:27:42+00:00",
+  "watched_job_ids": [
+    "252691",
+    "252692",
+    "252693",
+    "252694"
+  ]
+}

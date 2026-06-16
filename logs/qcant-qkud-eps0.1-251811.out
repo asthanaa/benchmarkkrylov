@@ -1,0 +1,2 @@
+DONE qkud H4_near_equi_sto3g_0 hit=3
+FAIL qkud cyclobutadiene_ceo: ValueError('I/O operation on closed file.')

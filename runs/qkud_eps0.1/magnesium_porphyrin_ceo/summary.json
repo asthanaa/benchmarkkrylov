@@ -1,0 +1,18 @@
+{
+  "case_id": "magnesium_porphyrin_ceo",
+  "casscf_energy_hartree": -1182.2389641302318,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1182.2373641302318,
+  "elapsed_seconds": 18215.319917136803,
+  "final_min_history_energy_hartree": -1182.2359481496962,
+  "final_projected_ground_energy_hartree": -1182.2359481496962,
+  "h0.25": 1.8512057888622708,
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 200,
+  "n_steps_completed": 200,
+  "n_steps_requested": 200,
+  "status": "completed",
+  "stopped_early": false
+}

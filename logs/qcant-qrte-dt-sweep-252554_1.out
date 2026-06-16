@@ -1,0 +1,82 @@
+SWEEP qrte shard=1/4 tasks=40 pending=40 skipped=0 concurrency=36
+START qrte case=magnesium_porphyrin_ceo delta_t=0.1 pid=1358096
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=0.1 pid=1358097
+START qrte case=Ferrocene_ceo delta_t=0.1 pid=1358098
+START qrte case=Al3_minus delta_t=0.1 pid=1358099
+START qrte case=magnesium_porphyrin_ceo delta_t=1.2 pid=1358100
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=1.2 pid=1358101
+START qrte case=Ferrocene_ceo delta_t=1.2 pid=1358102
+START qrte case=Al3_minus delta_t=1.2 pid=1358103
+START qrte case=magnesium_porphyrin_ceo delta_t=2.3 pid=1358104
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=2.3 pid=1358106
+START qrte case=Ferrocene_ceo delta_t=2.3 pid=1358108
+START qrte case=Al3_minus delta_t=2.3 pid=1358109
+START qrte case=magnesium_porphyrin_ceo delta_t=3.4 pid=1358110
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=3.4 pid=1358111
+START qrte case=Ferrocene_ceo delta_t=3.4 pid=1358112
+START qrte case=Al3_minus delta_t=3.4 pid=1358113
+START qrte case=magnesium_porphyrin_ceo delta_t=4.5 pid=1358114
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=4.5 pid=1358115
+START qrte case=Ferrocene_ceo delta_t=4.5 pid=1358116
+START qrte case=Al3_minus delta_t=4.5 pid=1358117
+START qrte case=magnesium_porphyrin_ceo delta_t=5.6 pid=1358118
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=5.6 pid=1358119
+START qrte case=Ferrocene_ceo delta_t=5.6 pid=1358120
+START qrte case=Al3_minus delta_t=5.6 pid=1358121
+START qrte case=magnesium_porphyrin_ceo delta_t=6.7 pid=1358122
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=6.7 pid=1358123
+START qrte case=Ferrocene_ceo delta_t=6.7 pid=1358124
+START qrte case=Al3_minus delta_t=6.7 pid=1358125
+START qrte case=magnesium_porphyrin_ceo delta_t=7.8 pid=1358126
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=7.8 pid=1358127
+START qrte case=Ferrocene_ceo delta_t=7.8 pid=1358128
+START qrte case=Al3_minus delta_t=7.8 pid=1358129
+START qrte case=magnesium_porphyrin_ceo delta_t=8.9 pid=1358130
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=8.9 pid=1358131
+START qrte case=Ferrocene_ceo delta_t=8.9 pid=1358132
+START qrte case=Al3_minus delta_t=8.9 pid=1358133
+END case=CH2O_equi_cc_pVTZ_0 delta_t=0.1 outcome=completed hit=None elapsed=90.2s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=1.2 outcome=completed hit=None elapsed=90.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=2.3 outcome=completed hit=None elapsed=90.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=3.4 outcome=completed hit=None elapsed=90.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=5.6 outcome=completed hit=None elapsed=90.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=6.7 outcome=completed hit=None elapsed=90.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=7.8 outcome=completed hit=None elapsed=90.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=8.9 outcome=completed hit=None elapsed=90.0s
+START qrte case=magnesium_porphyrin_ceo delta_t=10 pid=1358379
+START qrte case=CH2O_equi_cc_pVTZ_0 delta_t=10 pid=1358380
+START qrte case=Ferrocene_ceo delta_t=10 pid=1358381
+START qrte case=Al3_minus delta_t=10 pid=1358382
+END case=CH2O_equi_cc_pVTZ_0 delta_t=4.5 outcome=completed hit=None elapsed=95.1s
+END case=CH2O_equi_cc_pVTZ_0 delta_t=10 outcome=completed hit=None elapsed=40.0s
+END case=Ferrocene_ceo delta_t=2.3 outcome=completed hit=None elapsed=8800.5s
+END case=Ferrocene_ceo delta_t=0.1 outcome=completed hit=None elapsed=8805.6s
+END case=Ferrocene_ceo delta_t=1.2 outcome=completed hit=None elapsed=8805.5s
+END case=Ferrocene_ceo delta_t=6.7 outcome=completed hit=None elapsed=8805.4s
+END case=Ferrocene_ceo delta_t=8.9 outcome=completed hit=None elapsed=8810.4s
+END case=Ferrocene_ceo delta_t=10 outcome=completed hit=None elapsed=8755.4s
+END case=Ferrocene_ceo delta_t=3.4 outcome=completed hit=None elapsed=8870.5s
+END case=Ferrocene_ceo delta_t=4.5 outcome=completed hit=None elapsed=8870.5s
+END case=Ferrocene_ceo delta_t=7.8 outcome=completed hit=None elapsed=8870.4s
+END case=Ferrocene_ceo delta_t=5.6 outcome=completed hit=None elapsed=8875.5s
+END case=Al3_minus delta_t=7.8 outcome=completed hit=None elapsed=18280.9s
+END case=Al3_minus delta_t=5.6 outcome=completed hit=None elapsed=18295.9s
+END case=Al3_minus delta_t=1.2 outcome=completed hit=None elapsed=18301.0s
+END case=Al3_minus delta_t=0.1 outcome=completed hit=None elapsed=18351.0s
+END case=Al3_minus delta_t=2.3 outcome=completed hit=None elapsed=18926.0s
+END case=Al3_minus delta_t=8.9 outcome=completed hit=None elapsed=18930.9s
+END case=Al3_minus delta_t=3.4 outcome=completed hit=None elapsed=18936.0s
+END case=Al3_minus delta_t=6.7 outcome=completed hit=None elapsed=18961.0s
+END case=Al3_minus delta_t=10 outcome=completed hit=None elapsed=18865.9s
+END case=Al3_minus delta_t=4.5 outcome=completed hit=None elapsed=19001.0s
+END case=magnesium_porphyrin_ceo delta_t=3.4 outcome=completed hit=None elapsed=21076.1s
+END case=magnesium_porphyrin_ceo delta_t=5.6 outcome=completed hit=None elapsed=21076.1s
+END case=magnesium_porphyrin_ceo delta_t=6.7 outcome=completed hit=None elapsed=21081.1s
+END case=magnesium_porphyrin_ceo delta_t=8.9 outcome=completed hit=None elapsed=21096.0s
+END case=magnesium_porphyrin_ceo delta_t=10 outcome=completed hit=None elapsed=21016.0s
+END case=magnesium_porphyrin_ceo delta_t=7.8 outcome=completed hit=None elapsed=21116.1s
+END case=magnesium_porphyrin_ceo delta_t=2.3 outcome=completed hit=None elapsed=21256.1s
+END case=magnesium_porphyrin_ceo delta_t=0.1 outcome=completed hit=None elapsed=21271.2s
+END case=magnesium_porphyrin_ceo delta_t=1.2 outcome=completed hit=None elapsed=21276.2s
+END case=magnesium_porphyrin_ceo delta_t=4.5 outcome=completed hit=None elapsed=21291.1s
+{"completed": 40, "failed": 0, "skipped_completed_at_start": 0}

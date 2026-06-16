@@ -1,0 +1,3826 @@
+{
+  "name": "H7 stretched (3A)_sto3g_0",
+  "library_version": null,
+  "meta": {
+    "molecule": {
+      "basis": "sto-3g",
+      "charge": 0,
+      "spin": 1,
+      "symmetry": false,
+      "atoms": [
+        {
+          "element": "H",
+          "xyz": [
+            -17.007535121085557,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            -11.338356747390371,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            -5.6691783736951855,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            5.6691783736951855,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            11.338356747390371,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "element": "H",
+          "xyz": [
+            17.007535121085557,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "mapping": "JordanWignerMapping",
+    "scf": {
+      "energy": -2.3084206429711083,
+      "method": "ROHF"
+    },
+    "casscf": {
+      "ncas": 7,
+      "nelec": 7,
+      "energy": -3.267725141149106,
+      "natorb": true
+    },
+    "hamiltonian": {
+      "n_pauli": 1702,
+      "n_qwc": 495,
+      "n_gc": 47
+    },
+    "ansatz": {
+      "type": "TETRIS-ADAPT-VQE",
+      "pool_size": 504
+    },
+    "target_energy": -3.267625141149106,
+    "hyperparameters": {
+      "adapt_max_iterations": 300,
+      "adapt_grad_tol": 1e-08,
+      "vqe_accuracy": 1e-06,
+      "vqe_maxiter": 500
+    }
+  },
+  "spans": [
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 0,
+        "selected_ops": [
+          {
+            "index": 73,
+            "support": [
+              0,
+              1,
+              12,
+              13
+            ],
+            "grad": 0.18424240119925467
+          },
+          {
+            "index": 65,
+            "support": [
+              10,
+              11,
+              2,
+              3
+            ],
+            "grad": 0.2222843169079601
+          },
+          {
+            "index": 59,
+            "support": [
+              8,
+              9,
+              4,
+              5
+            ],
+            "grad": 0.22236905986672084
+          }
+        ],
+        "energy_after_vqe": -2.4847600388337288,
+        "num_parameters": 3,
+        "num_cnots": 27,
+        "spin_z": 0.49999999999999917,
+        "spin_squared": 0.7499999999999991
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 1,
+        "selected_ops": [
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": -0.17492072084647964
+          },
+          {
+            "index": 32,
+            "support": [
+              2,
+              10
+            ],
+            "grad": 0.14695769586067337
+          },
+          {
+            "index": 29,
+            "support": [
+              8,
+              4
+            ],
+            "grad": -0.15324115497814228
+          },
+          {
+            "index": 15,
+            "support": [
+              1,
+              13
+            ],
+            "grad": -0.1746798526749019
+          },
+          {
+            "index": 11,
+            "support": [
+              11,
+              3
+            ],
+            "grad": 0.14632894409638447
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": -0.15324277620015897
+          }
+        ],
+        "energy_after_vqe": -3.266762491197354,
+        "num_parameters": 9,
+        "num_cnots": 39,
+        "spin_z": 0.49999999999999795,
+        "spin_squared": 3.7400933671924963
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 2,
+        "selected_ops": [
+          {
+            "index": 321,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": 0.0037495164195427873
+          },
+          {
+            "index": 170,
+            "support": [
+              9,
+              3,
+              5,
+              7
+            ],
+            "grad": 0.004011941946079677
+          },
+          {
+            "index": 72,
+            "support": [
+              0,
+              1,
+              12,
+              13
+            ],
+            "grad": -4.169198602581477e-06
+          }
+        ],
+        "energy_after_vqe": -3.2667842932198456,
+        "num_parameters": 15,
+        "num_cnots": 78,
+        "spin_z": 0.499999999999997,
+        "spin_squared": 3.7400415200707227
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 3,
+        "selected_ops": [
+          {
+            "index": 351,
+            "support": [
+              2,
+              10,
+              4,
+              12
+            ],
+            "grad": 0.0019390357828200225
+          },
+          {
+            "index": 248,
+            "support": [
+              11,
+              1,
+              3,
+              9
+            ],
+            "grad": 0.001981699537633985
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": -1.7005659228027927e-08
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": -1.504534721012497e-08
+          }
+        ],
+        "energy_after_vqe": -3.2667903378063907,
+        "num_parameters": 23,
+        "num_cnots": 108,
+        "spin_z": 0.4999999999999975,
+        "spin_squared": 3.7399839571976194
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 4,
+        "selected_ops": [
+          {
+            "index": 488,
+            "support": [
+              0,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.00029366164880792375
+          },
+          {
+            "index": 117,
+            "support": [
+              11,
+              9,
+              3,
+              13
+            ],
+            "grad": -0.0002814753807276071
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": -2.4862828159556187e-07
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": -2.2517103390985025e-07
+          }
+        ],
+        "energy_after_vqe": -3.2667904480862116,
+        "num_parameters": 29,
+        "num_cnots": 138,
+        "spin_z": 0.4999999999999968,
+        "spin_squared": 3.739852330392738
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 5,
+        "selected_ops": [
+          {
+            "index": 78,
+            "support": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "grad": 0.00031059749016258757
+          },
+          {
+            "index": 67,
+            "support": [
+              8,
+              9,
+              2,
+              3
+            ],
+            "grad": 7.699756219601759e-06
+          },
+          {
+            "index": 54,
+            "support": [
+              12,
+              13,
+              4,
+              5
+            ],
+            "grad": 0.00014415934334356025
+          }
+        ],
+        "energy_after_vqe": -3.266790599264354,
+        "num_parameters": 35,
+        "num_cnots": 177,
+        "spin_z": 0.4999999999999955,
+        "spin_squared": 3.7390400341241534
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 6,
+        "selected_ops": [
+          {
+            "index": 77,
+            "support": [
+              0,
+              1,
+              8,
+              9
+            ],
+            "grad": 3.559023813480974e-05
+          },
+          {
+            "index": 63,
+            "support": [
+              2,
+              3,
+              12,
+              13
+            ],
+            "grad": 4.257832051007922e-05
+          },
+          {
+            "index": 51,
+            "support": [
+              10,
+              11,
+              6,
+              7
+            ],
+            "grad": 0.00019405578613879715
+          }
+        ],
+        "energy_after_vqe": -3.266790751051817,
+        "num_parameters": 41,
+        "num_cnots": 216,
+        "spin_z": 0.4999999999999945,
+        "spin_squared": 3.7379452946725444
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 7,
+        "selected_ops": [
+          {
+            "index": 327,
+            "support": [
+              8,
+              2,
+              10,
+              12
+            ],
+            "grad": -0.0003521751926973717
+          },
+          {
+            "index": 235,
+            "support": [
+              11,
+              1,
+              3,
+              13
+            ],
+            "grad": 3.319033976234304e-05
+          },
+          {
+            "index": 60,
+            "support": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "grad": 0.0001972941587535907
+          }
+        ],
+        "energy_after_vqe": -3.266791030792694,
+        "num_parameters": 49,
+        "num_cnots": 255,
+        "spin_z": 0.49999999999999484,
+        "spin_squared": 3.7349548611869885
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 8,
+        "selected_ops": [
+          {
+            "index": 415,
+            "support": [
+              0,
+              8,
+              4,
+              12
+            ],
+            "grad": -0.00017020039010543723
+          },
+          {
+            "index": 278,
+            "support": [
+              11,
+              1,
+              3,
+              5
+            ],
+            "grad": 0.00026287789342413384
+          },
+          {
+            "index": 25,
+            "support": [
+              10,
+              6
+            ],
+            "grad": -5.463962213230675e-06
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": -3.1061480843748714e-07
+          }
+        ],
+        "energy_after_vqe": -3.2667911255266113,
+        "num_parameters": 57,
+        "num_cnots": 285,
+        "spin_z": 0.4999999999999921,
+        "spin_squared": 3.7344365316918435
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 9,
+        "selected_ops": [
+          {
+            "index": 458,
+            "support": [
+              0,
+              8,
+              2,
+              10
+            ],
+            "grad": 0.0001906113723517022
+          },
+          {
+            "index": 205,
+            "support": [
+              1,
+              13,
+              5,
+              9
+            ],
+            "grad": 0.00024522701199916445
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": 1.6678958961585208e-05
+          },
+          {
+            "index": 13,
+            "support": [
+              3,
+              7
+            ],
+            "grad": -4.606479191709062e-06
+          }
+        ],
+        "energy_after_vqe": -3.26679120219728,
+        "num_parameters": 65,
+        "num_cnots": 315,
+        "spin_z": 0.49999999999999534,
+        "spin_squared": 3.733655927814506
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 10,
+        "selected_ops": [
+          {
+            "index": 351,
+            "support": [
+              2,
+              10,
+              4,
+              12
+            ],
+            "grad": 2.25410750052871e-05
+          },
+          {
+            "index": 141,
+            "support": [
+              11,
+              13,
+              3,
+              5
+            ],
+            "grad": -0.00024348384610827723
+          },
+          {
+            "index": 79,
+            "support": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "grad": -0.0001572720137671062
+          }
+        ],
+        "energy_after_vqe": -3.2667993335711007,
+        "num_parameters": 71,
+        "num_cnots": 350,
+        "spin_z": 0.4999999999999913,
+        "spin_squared": 3.7169753912401204
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 11,
+        "selected_ops": [
+          {
+            "index": 327,
+            "support": [
+              8,
+              2,
+              10,
+              12
+            ],
+            "grad": -0.0003880591045070564
+          },
+          {
+            "index": 248,
+            "support": [
+              11,
+              1,
+              3,
+              9
+            ],
+            "grad": 0.0008797634349338012
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": 2.8373983030743805e-06
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": -1.2377466045553547e-06
+          }
+        ],
+        "energy_after_vqe": -3.2668011568509745,
+        "num_parameters": 79,
+        "num_cnots": 380,
+        "spin_z": 0.49999999999999356,
+        "spin_squared": 3.717104938937482
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 12,
+        "selected_ops": [
+          {
+            "index": 488,
+            "support": [
+              0,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.00031985701906285595
+          },
+          {
+            "index": 117,
+            "support": [
+              11,
+              9,
+              3,
+              13
+            ],
+            "grad": -0.00024389488731465587
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 1.2649513853719837e-06
+          }
+        ],
+        "energy_after_vqe": -3.266801359348768,
+        "num_parameters": 86,
+        "num_cnots": 408,
+        "spin_z": 0.4999999999999933,
+        "spin_squared": 3.7163237713282014
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 13,
+        "selected_ops": [
+          {
+            "index": 82,
+            "support": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "grad": -0.00021747977836309497
+          },
+          {
+            "index": 42,
+            "support": [
+              10,
+              11,
+              12,
+              13
+            ],
+            "grad": 0.000218557358896035
+          },
+          {
+            "index": 29,
+            "support": [
+              8,
+              4
+            ],
+            "grad": 4.240582189174439e-06
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": 1.7828845639484697e-06
+          }
+        ],
+        "energy_after_vqe": -3.2668017087073533,
+        "num_parameters": 92,
+        "num_cnots": 438,
+        "spin_z": 0.4999999999999869,
+        "spin_squared": 3.7145205554459126
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 14,
+        "selected_ops": [
+          {
+            "index": 72,
+            "support": [
+              0,
+              1,
+              12,
+              13
+            ],
+            "grad": -6.333752419870192e-06
+          },
+          {
+            "index": 66,
+            "support": [
+              8,
+              9,
+              2,
+              3
+            ],
+            "grad": -0.00012486895734467132
+          },
+          {
+            "index": 56,
+            "support": [
+              10,
+              11,
+              4,
+              5
+            ],
+            "grad": 0.00013633381776378227
+          }
+        ],
+        "energy_after_vqe": -3.2668019175659806,
+        "num_parameters": 98,
+        "num_cnots": 477,
+        "spin_z": 0.4999999999999934,
+        "spin_squared": 3.712879797903112
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 15,
+        "selected_ops": [
+          {
+            "index": 65,
+            "support": [
+              10,
+              11,
+              2,
+              3
+            ],
+            "grad": -0.00016481651450920206
+          },
+          {
+            "index": 59,
+            "support": [
+              8,
+              9,
+              4,
+              5
+            ],
+            "grad": -0.00016502112258641284
+          },
+          {
+            "index": 49,
+            "support": [
+              12,
+              13,
+              6,
+              7
+            ],
+            "grad": 1.4810829903918097e-06
+          }
+        ],
+        "energy_after_vqe": -3.26688659430492,
+        "num_parameters": 104,
+        "num_cnots": 516,
+        "spin_z": 0.49999999999999095,
+        "spin_squared": 3.0650796921211723
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 16,
+        "selected_ops": [
+          {
+            "index": 415,
+            "support": [
+              0,
+              8,
+              4,
+              12
+            ],
+            "grad": 0.001604318267368324
+          },
+          {
+            "index": 235,
+            "support": [
+              11,
+              1,
+              3,
+              13
+            ],
+            "grad": 0.0011401107407870998
+          },
+          {
+            "index": 34,
+            "support": [
+              2,
+              6
+            ],
+            "grad": 0.0001911675100540456
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": 2.7568722758254343e-05
+          }
+        ],
+        "energy_after_vqe": -3.26690785418705,
+        "num_parameters": 112,
+        "num_cnots": 546,
+        "spin_z": 0.4999999999999843,
+        "spin_squared": 2.899592376207959
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 17,
+        "selected_ops": [
+          {
+            "index": 361,
+            "support": [
+              8,
+              2,
+              10,
+              4
+            ],
+            "grad": 0.0009661856752618825
+          },
+          {
+            "index": 151,
+            "support": [
+              11,
+              9,
+              3,
+              5
+            ],
+            "grad": -0.002319599233336663
+          },
+          {
+            "index": 49,
+            "support": [
+              12,
+              13,
+              6,
+              7
+            ],
+            "grad": 0.00012740205830628665
+          }
+        ],
+        "energy_after_vqe": -3.266916047382614,
+        "num_parameters": 120,
+        "num_cnots": 585,
+        "spin_z": 0.499999999999983,
+        "spin_squared": 2.8424246874502352
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 18,
+        "selected_ops": [
+          {
+            "index": 351,
+            "support": [
+              2,
+              10,
+              4,
+              12
+            ],
+            "grad": 0.0008881901500904215
+          },
+          {
+            "index": 205,
+            "support": [
+              1,
+              13,
+              5,
+              9
+            ],
+            "grad": -0.0010780169719096285
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": -0.00010255177649263952
+          },
+          {
+            "index": 4,
+            "support": [
+              11,
+              7
+            ],
+            "grad": 9.437106042745093e-05
+          }
+        ],
+        "energy_after_vqe": -3.2669245596445635,
+        "num_parameters": 128,
+        "num_cnots": 615,
+        "spin_z": 0.499999999999989,
+        "spin_squared": 2.774604005209036
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 19,
+        "selected_ops": [
+          {
+            "index": 321,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": 0.0007335033976088527
+          },
+          {
+            "index": 171,
+            "support": [
+              9,
+              3,
+              5,
+              7
+            ],
+            "grad": -0.0015801506077510255
+          },
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": -8.858546004855732e-05
+          },
+          {
+            "index": 15,
+            "support": [
+              1,
+              13
+            ],
+            "grad": -9.250262949218185e-05
+          }
+        ],
+        "energy_after_vqe": -3.2669343142253098,
+        "num_parameters": 136,
+        "num_cnots": 645,
+        "spin_z": 0.4999999999999859,
+        "spin_squared": 2.7462739914886467
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 20,
+        "selected_ops": [
+          {
+            "index": 445,
+            "support": [
+              0,
+              2,
+              10,
+              12
+            ],
+            "grad": -0.0009205881701007287
+          },
+          {
+            "index": 278,
+            "support": [
+              11,
+              1,
+              3,
+              5
+            ],
+            "grad": 0.0004516939750978061
+          },
+          {
+            "index": 29,
+            "support": [
+              8,
+              4
+            ],
+            "grad": -9.605520922134527e-06
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": -0.00018623165931254702
+          }
+        ],
+        "energy_after_vqe": -3.266939617785163,
+        "num_parameters": 144,
+        "num_cnots": 675,
+        "spin_z": 0.4999999999999834,
+        "spin_squared": 2.714548211113403
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 21,
+        "selected_ops": [
+          {
+            "index": 69,
+            "support": [
+              2,
+              3,
+              6,
+              7
+            ],
+            "grad": -0.0006713433448564449
+          },
+          {
+            "index": 47,
+            "support": [
+              8,
+              9,
+              10,
+              11
+            ],
+            "grad": -0.0003709189330417612
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": -0.0002485715729861307
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": -0.00014943650145975856
+          }
+        ],
+        "energy_after_vqe": -3.266961599577732,
+        "num_parameters": 150,
+        "num_cnots": 705,
+        "spin_z": 0.49999999999998496,
+        "spin_squared": 2.5634309247650924
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 22,
+        "selected_ops": [
+          {
+            "index": 361,
+            "support": [
+              8,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.0006093940689593461
+          },
+          {
+            "index": 115,
+            "support": [
+              11,
+              9,
+              3,
+              13
+            ],
+            "grad": 0.00025410150122555435
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 9.918076315179096e-05
+          }
+        ],
+        "energy_after_vqe": -3.26700109014333,
+        "num_parameters": 157,
+        "num_cnots": 733,
+        "spin_z": 0.4999999999999812,
+        "spin_squared": 2.309160581837302
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 23,
+        "selected_ops": [
+          {
+            "index": 85,
+            "support": [
+              9,
+              11,
+              13,
+              7
+            ],
+            "grad": 0.00032278802085117524
+          },
+          {
+            "index": 82,
+            "support": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "grad": 0.00040717099580036577
+          },
+          {
+            "index": 25,
+            "support": [
+              10,
+              6
+            ],
+            "grad": -0.0007398554076277514
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 0.00041146977252528173
+          }
+        ],
+        "energy_after_vqe": -3.2670233405760425,
+        "num_parameters": 164,
+        "num_cnots": 763,
+        "spin_z": 0.4999999999999855,
+        "spin_squared": 2.18895370332641
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 24,
+        "selected_ops": [
+          {
+            "index": 310,
+            "support": [
+              10,
+              4,
+              12,
+              6
+            ],
+            "grad": 0.000534144387458514
+          },
+          {
+            "index": 113,
+            "support": [
+              9,
+              11,
+              5,
+              7
+            ],
+            "grad": 0.0002951976580804859
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": -6.131955470194022e-05
+          },
+          {
+            "index": 15,
+            "support": [
+              1,
+              13
+            ],
+            "grad": 1.6838303949631466e-06
+          }
+        ],
+        "energy_after_vqe": -3.267027696793267,
+        "num_parameters": 172,
+        "num_cnots": 793,
+        "spin_z": 0.49999999999998457,
+        "spin_squared": 2.1603150474031403
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 25,
+        "selected_ops": [
+          {
+            "index": 499,
+            "support": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "grad": 0.00037953533786558573
+          },
+          {
+            "index": 157,
+            "support": [
+              13,
+              3,
+              5,
+              7
+            ],
+            "grad": -0.0003296318547980339
+          },
+          {
+            "index": 47,
+            "support": [
+              8,
+              9,
+              10,
+              11
+            ],
+            "grad": -6.052948625368001e-05
+          }
+        ],
+        "energy_after_vqe": -3.267029273114369,
+        "num_parameters": 180,
+        "num_cnots": 832,
+        "spin_z": 0.4999999999999775,
+        "spin_squared": 2.1542113363597597
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 26,
+        "selected_ops": [
+          {
+            "index": 488,
+            "support": [
+              0,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.0002947334257874816
+          },
+          {
+            "index": 170,
+            "support": [
+              9,
+              3,
+              5,
+              7
+            ],
+            "grad": 0.000225589483175853
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 0.00010923730497703219
+          },
+          {
+            "index": 15,
+            "support": [
+              1,
+              13
+            ],
+            "grad": -4.561797208028972e-08
+          }
+        ],
+        "energy_after_vqe": -3.2670305627256,
+        "num_parameters": 188,
+        "num_cnots": 862,
+        "spin_z": 0.499999999999984,
+        "spin_squared": 2.1518065952801724
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 27,
+        "selected_ops": [
+          {
+            "index": 458,
+            "support": [
+              0,
+              8,
+              2,
+              10
+            ],
+            "grad": 0.000394660216318935
+          },
+          {
+            "index": 181,
+            "support": [
+              1,
+              11,
+              13,
+              7
+            ],
+            "grad": -0.00020382873719102077
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": 8.923827905921538e-05
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": -1.9102563925531767e-05
+          }
+        ],
+        "energy_after_vqe": -3.267035696837974,
+        "num_parameters": 196,
+        "num_cnots": 892,
+        "spin_z": 0.499999999999979,
+        "spin_squared": 2.129865661005123
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 28,
+        "selected_ops": [
+          {
+            "index": 403,
+            "support": [
+              0,
+              8,
+              10,
+              6
+            ],
+            "grad": -0.00035744032484033214
+          },
+          {
+            "index": 100,
+            "support": [
+              13,
+              11,
+              5,
+              7
+            ],
+            "grad": 0.00019192263512105327
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": -2.1762941615735704e-08
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": 4.5770573467039335e-05
+          }
+        ],
+        "energy_after_vqe": -3.2670358737864547,
+        "num_parameters": 204,
+        "num_cnots": 922,
+        "spin_z": 0.49999999999998695,
+        "spin_squared": 2.1291586148051325
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 29,
+        "selected_ops": [
+          {
+            "index": 71,
+            "support": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "grad": 0.00014296309004997127
+          },
+          {
+            "index": 50,
+            "support": [
+              10,
+              11,
+              6,
+              7
+            ],
+            "grad": -0.0002764604512092174
+          },
+          {
+            "index": 45,
+            "support": [
+              8,
+              9,
+              12,
+              13
+            ],
+            "grad": 6.260335739700169e-05
+          }
+        ],
+        "energy_after_vqe": -3.26704644300261,
+        "num_parameters": 210,
+        "num_cnots": 961,
+        "spin_z": 0.499999999999979,
+        "spin_squared": 2.0861689348507406
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 30,
+        "selected_ops": [
+          {
+            "index": 462,
+            "support": [
+              0,
+              2,
+              12,
+              6
+            ],
+            "grad": -0.00028647357823807524
+          },
+          {
+            "index": 234,
+            "support": [
+              11,
+              1,
+              3,
+              13
+            ],
+            "grad": 0.000639022424811465
+          },
+          {
+            "index": 59,
+            "support": [
+              8,
+              9,
+              4,
+              5
+            ],
+            "grad": -5.211453475692694e-05
+          }
+        ],
+        "energy_after_vqe": -3.2670761204703522,
+        "num_parameters": 218,
+        "num_cnots": 1000,
+        "spin_z": 0.49999999999997946,
+        "spin_squared": 1.8981036564987983
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 31,
+        "selected_ops": [
+          {
+            "index": 360,
+            "support": [
+              8,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.0004681200597772446
+          },
+          {
+            "index": 150,
+            "support": [
+              11,
+              9,
+              3,
+              5
+            ],
+            "grad": 0.001419042151964662
+          },
+          {
+            "index": 78,
+            "support": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "grad": 0.0004283422828640136
+          }
+        ],
+        "energy_after_vqe": -3.2670942351706884,
+        "num_parameters": 226,
+        "num_cnots": 1039,
+        "spin_z": 0.4999999999999747,
+        "spin_squared": 1.8071203900102888
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 32,
+        "selected_ops": [
+          {
+            "index": 380,
+            "support": [
+              8,
+              2,
+              4,
+              6
+            ],
+            "grad": -0.00041249625498799626
+          },
+          {
+            "index": 205,
+            "support": [
+              1,
+              13,
+              5,
+              9
+            ],
+            "grad": -0.0005673510724179178
+          },
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": 9.944470475086042e-07
+          },
+          {
+            "index": 4,
+            "support": [
+              11,
+              7
+            ],
+            "grad": 0.0001333449363727325
+          }
+        ],
+        "energy_after_vqe": -3.26710457421822,
+        "num_parameters": 234,
+        "num_cnots": 1069,
+        "spin_z": 0.4999999999999751,
+        "spin_squared": 1.742932195875786
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 33,
+        "selected_ops": [
+          {
+            "index": 369,
+            "support": [
+              2,
+              4,
+              12,
+              6
+            ],
+            "grad": -0.00032598917659643935
+          },
+          {
+            "index": 171,
+            "support": [
+              9,
+              3,
+              5,
+              7
+            ],
+            "grad": 0.0006023037861798637
+          },
+          {
+            "index": 74,
+            "support": [
+              0,
+              1,
+              10,
+              11
+            ],
+            "grad": -5.663915085801626e-05
+          }
+        ],
+        "energy_after_vqe": -3.2671064831555805,
+        "num_parameters": 242,
+        "num_cnots": 1108,
+        "spin_z": 0.49999999999997774,
+        "spin_squared": 1.7322266489843383
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 34,
+        "selected_ops": [
+          {
+            "index": 321,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": 0.0005400662108732027
+          },
+          {
+            "index": 110,
+            "support": [
+              9,
+              11,
+              5,
+              7
+            ],
+            "grad": -0.00044404872920150707
+          },
+          {
+            "index": 83,
+            "support": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "grad": -6.375260470076848e-05
+          }
+        ],
+        "energy_after_vqe": -3.2671446839266167,
+        "num_parameters": 250,
+        "num_cnots": 1147,
+        "spin_z": 0.4999999999999813,
+        "spin_squared": 1.5558136032671506
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 35,
+        "selected_ops": [
+          {
+            "index": 351,
+            "support": [
+              2,
+              10,
+              4,
+              12
+            ],
+            "grad": 0.0005539587287588181
+          },
+          {
+            "index": 141,
+            "support": [
+              11,
+              13,
+              3,
+              5
+            ],
+            "grad": 0.0003820954805558402
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": -0.00011059359836222105
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": -0.0001072943489637292
+          }
+        ],
+        "energy_after_vqe": -3.2671518636637904,
+        "num_parameters": 258,
+        "num_cnots": 1177,
+        "spin_z": 0.4999999999999757,
+        "spin_squared": 1.5370898479437725
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 36,
+        "selected_ops": [
+          {
+            "index": 444,
+            "support": [
+              0,
+              2,
+              10,
+              12
+            ],
+            "grad": -0.000445006883629283
+          },
+          {
+            "index": 250,
+            "support": [
+              11,
+              1,
+              3,
+              9
+            ],
+            "grad": 0.00024825937440332954
+          },
+          {
+            "index": 60,
+            "support": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "grad": -9.4611000756304e-05
+          }
+        ],
+        "energy_after_vqe": -3.267161736184204,
+        "num_parameters": 266,
+        "num_cnots": 1216,
+        "spin_z": 0.49999999999997385,
+        "spin_squared": 1.4959934544995317
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 37,
+        "selected_ops": [
+          {
+            "index": 414,
+            "support": [
+              0,
+              8,
+              4,
+              12
+            ],
+            "grad": -0.00033444790938167487
+          },
+          {
+            "index": 84,
+            "support": [
+              9,
+              11,
+              13,
+              7
+            ],
+            "grad": 0.0002699590266333526
+          },
+          {
+            "index": 34,
+            "support": [
+              2,
+              6
+            ],
+            "grad": 0.00013147441390049365
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 0.00012177671569645789
+          }
+        ],
+        "energy_after_vqe": -3.2671702689088105,
+        "num_parameters": 274,
+        "num_cnots": 1246,
+        "spin_z": 0.4999999999999691,
+        "spin_squared": 1.4352379545913032
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 38,
+        "selected_ops": [
+          {
+            "index": 306,
+            "support": [
+              10,
+              4,
+              12,
+              6
+            ],
+            "grad": -0.00024119960437356703
+          },
+          {
+            "index": 276,
+            "support": [
+              11,
+              1,
+              3,
+              5
+            ],
+            "grad": 0.00026707711365715135
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": 8.981489972886928e-05
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": -1.7823567293298256e-05
+          }
+        ],
+        "energy_after_vqe": -3.267171145017033,
+        "num_parameters": 282,
+        "num_cnots": 1276,
+        "spin_z": 0.49999999999998057,
+        "spin_squared": 1.4337184987919704
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 39,
+        "selected_ops": [
+          {
+            "index": 390,
+            "support": [
+              0,
+              10,
+              12,
+              6
+            ],
+            "grad": 0.0002383464839528313
+          },
+          {
+            "index": 114,
+            "support": [
+              11,
+              9,
+              3,
+              13
+            ],
+            "grad": 0.0002324280957666294
+          },
+          {
+            "index": 29,
+            "support": [
+              8,
+              4
+            ],
+            "grad": 7.48126394278776e-07
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 8.648428693618091e-07
+          }
+        ],
+        "energy_after_vqe": -3.2671716068712064,
+        "num_parameters": 290,
+        "num_cnots": 1306,
+        "spin_z": 0.49999999999996997,
+        "spin_squared": 1.4323773934885236
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 40,
+        "selected_ops": [
+          {
+            "index": 406,
+            "support": [
+              0,
+              8,
+              10,
+              6
+            ],
+            "grad": 0.00020635632134919537
+          },
+          {
+            "index": 267,
+            "support": [
+              1,
+              3,
+              9,
+              7
+            ],
+            "grad": 0.000155054017339209
+          },
+          {
+            "index": 55,
+            "support": [
+              12,
+              13,
+              4,
+              5
+            ],
+            "grad": -5.869010134903668e-05
+          }
+        ],
+        "energy_after_vqe": -3.2671728653022303,
+        "num_parameters": 298,
+        "num_cnots": 1345,
+        "spin_z": 0.4999999999999689,
+        "spin_squared": 1.4344746408825575
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 41,
+        "selected_ops": [
+          {
+            "index": 501,
+            "support": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "grad": -0.0001558256377518139
+          },
+          {
+            "index": 194,
+            "support": [
+              1,
+              11,
+              9,
+              7
+            ],
+            "grad": -0.00015057135714468864
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 5.251019985770668e-05
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": 6.695194127355628e-05
+          }
+        ],
+        "energy_after_vqe": -3.267177678409069,
+        "num_parameters": 306,
+        "num_cnots": 1375,
+        "spin_z": 0.49999999999996453,
+        "spin_squared": 1.4122842253275751
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 42,
+        "selected_ops": [
+          {
+            "index": 415,
+            "support": [
+              0,
+              8,
+              4,
+              12
+            ],
+            "grad": 8.219647043449397e-05
+          },
+          {
+            "index": 257,
+            "support": [
+              1,
+              3,
+              13,
+              7
+            ],
+            "grad": 0.00021248020932963872
+          },
+          {
+            "index": 25,
+            "support": [
+              10,
+              6
+            ],
+            "grad": 0.00032678257912916483
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": -1.6058009334089143e-05
+          }
+        ],
+        "energy_after_vqe": -3.267187637642782,
+        "num_parameters": 314,
+        "num_cnots": 1405,
+        "spin_z": 0.49999999999996997,
+        "spin_squared": 1.383804279446396
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 43,
+        "selected_ops": [
+          {
+            "index": 323,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": 0.00022605151334502535
+          },
+          {
+            "index": 292,
+            "support": [
+              1,
+              3,
+              5,
+              7
+            ],
+            "grad": 0.0002452356211614146
+          },
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": 4.044114589481289e-05
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": -2.513339814274726e-07
+          }
+        ],
+        "energy_after_vqe": -3.267193856745086,
+        "num_parameters": 322,
+        "num_cnots": 1435,
+        "spin_z": 0.49999999999996586,
+        "spin_squared": 1.3621847095040858
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 44,
+        "selected_ops": [
+          {
+            "index": 391,
+            "support": [
+              0,
+              10,
+              12,
+              6
+            ],
+            "grad": -0.00017977895066799933
+          },
+          {
+            "index": 157,
+            "support": [
+              13,
+              3,
+              5,
+              7
+            ],
+            "grad": 0.00016723398715906662
+          },
+          {
+            "index": 29,
+            "support": [
+              8,
+              4
+            ],
+            "grad": -1.658021901773651e-05
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": 7.64015298366234e-06
+          }
+        ],
+        "energy_after_vqe": -3.267195534104723,
+        "num_parameters": 330,
+        "num_cnots": 1465,
+        "spin_z": 0.49999999999997663,
+        "spin_squared": 1.3617389133152908
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 45,
+        "selected_ops": [
+          {
+            "index": 491,
+            "support": [
+              0,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.00014453415834885547
+          },
+          {
+            "index": 183,
+            "support": [
+              1,
+              11,
+              13,
+              7
+            ],
+            "grad": 0.00015437272115118614
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 0.00016331063492675988
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": -5.622834542675668e-06
+          }
+        ],
+        "energy_after_vqe": -3.2671970297265864,
+        "num_parameters": 338,
+        "num_cnots": 1495,
+        "spin_z": 0.49999999999997197,
+        "spin_squared": 1.358833006044898
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 46,
+        "selected_ops": [
+          {
+            "index": 328,
+            "support": [
+              8,
+              2,
+              10,
+              12
+            ],
+            "grad": -0.00016998760831954016
+          },
+          {
+            "index": 97,
+            "support": [
+              13,
+              11,
+              5,
+              7
+            ],
+            "grad": 0.00016900116609981468
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": -2.0032003074359158e-05
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": 3.646505079659675e-07
+          }
+        ],
+        "energy_after_vqe": -3.2671979212368174,
+        "num_parameters": 346,
+        "num_cnots": 1525,
+        "spin_z": 0.4999999999999788,
+        "spin_squared": 1.3557304669500394
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 47,
+        "selected_ops": [
+          {
+            "index": 309,
+            "support": [
+              10,
+              4,
+              12,
+              6
+            ],
+            "grad": 0.00020380612595251652
+          },
+          {
+            "index": 268,
+            "support": [
+              1,
+              3,
+              9,
+              7
+            ],
+            "grad": -0.00018667273731526654
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": 3.540114901536878e-05
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": -2.658358765199938e-05
+          }
+        ],
+        "energy_after_vqe": -3.2671983597170176,
+        "num_parameters": 354,
+        "num_cnots": 1555,
+        "spin_z": 0.49999999999995665,
+        "spin_squared": 1.3513369955615233
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 48,
+        "selected_ops": [
+          {
+            "index": 498,
+            "support": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "grad": -0.0002535667861485289
+          },
+          {
+            "index": 89,
+            "support": [
+              9,
+              11,
+              13,
+              7
+            ],
+            "grad": 0.00019878448968885332
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": -3.8541343115928334e-07
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 0.00011557383568083618
+          }
+        ],
+        "energy_after_vqe": -3.2671992812836397,
+        "num_parameters": 362,
+        "num_cnots": 1585,
+        "spin_z": 0.49999999999996747,
+        "spin_squared": 1.3508507108965664
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 49,
+        "selected_ops": [
+          {
+            "index": 478,
+            "support": [
+              0,
+              8,
+              2,
+              6
+            ],
+            "grad": -0.00020848633680815113
+          },
+          {
+            "index": 223,
+            "support": [
+              1,
+              11,
+              5,
+              7
+            ],
+            "grad": 0.00016902282789422145
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": -4.3822750265185995e-07
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": 1.3917811892046325e-05
+          }
+        ],
+        "energy_after_vqe": -3.2672016367851433,
+        "num_parameters": 370,
+        "num_cnots": 1615,
+        "spin_z": 0.4999999999999688,
+        "spin_squared": 1.3381841219781747
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 50,
+        "selected_ops": [
+          {
+            "index": 298,
+            "support": [
+              8,
+              10,
+              12,
+              6
+            ],
+            "grad": -0.0001707942649462163
+          },
+          {
+            "index": 193,
+            "support": [
+              1,
+              11,
+              9,
+              7
+            ],
+            "grad": 0.0001339892468131584
+          },
+          {
+            "index": 71,
+            "support": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "grad": -3.6554032954255165e-05
+          }
+        ],
+        "energy_after_vqe": -3.2672063380965857,
+        "num_parameters": 378,
+        "num_cnots": 1654,
+        "spin_z": 0.49999999999996597,
+        "spin_squared": 1.2984103976896835
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 51,
+        "selected_ops": [
+          {
+            "index": 309,
+            "support": [
+              10,
+              4,
+              12,
+              6
+            ],
+            "grad": 0.0002075747347418218
+          },
+          {
+            "index": 142,
+            "support": [
+              11,
+              13,
+              3,
+              5
+            ],
+            "grad": 0.0005634008206546394
+          },
+          {
+            "index": 77,
+            "support": [
+              0,
+              1,
+              8,
+              9
+            ],
+            "grad": -8.27167869200334e-05
+          }
+        ],
+        "energy_after_vqe": -3.2672144642550207,
+        "num_parameters": 386,
+        "num_cnots": 1693,
+        "spin_z": 0.49999999999996186,
+        "spin_squared": 1.2483225730769683
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 52,
+        "selected_ops": [
+          {
+            "index": 459,
+            "support": [
+              0,
+              8,
+              2,
+              10
+            ],
+            "grad": 0.00027520346713615063
+          },
+          {
+            "index": 278,
+            "support": [
+              11,
+              1,
+              3,
+              5
+            ],
+            "grad": 0.00024097492117439124
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": -1.7971264384282338e-05
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": 1.1675272389983108e-05
+          }
+        ],
+        "energy_after_vqe": -3.2672226543534046,
+        "num_parameters": 394,
+        "num_cnots": 1723,
+        "spin_z": 0.4999999999999682,
+        "spin_squared": 1.2192808537412796
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 53,
+        "selected_ops": [
+          {
+            "index": 437,
+            "support": [
+              0,
+              10,
+              4,
+              6
+            ],
+            "grad": -0.00022089325293611514
+          },
+          {
+            "index": 127,
+            "support": [
+              9,
+              3,
+              13,
+              7
+            ],
+            "grad": 0.00021233955684530462
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 1.2411147550733945e-05
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": 1.0305376052657347e-05
+          }
+        ],
+        "energy_after_vqe": -3.26722361818652,
+        "num_parameters": 402,
+        "num_cnots": 1753,
+        "spin_z": 0.4999999999999699,
+        "spin_squared": 1.2153622576387304
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 54,
+        "selected_ops": [
+          {
+            "index": 361,
+            "support": [
+              8,
+              2,
+              10,
+              4
+            ],
+            "grad": -9.903248036261666e-05
+          },
+          {
+            "index": 116,
+            "support": [
+              11,
+              9,
+              3,
+              13
+            ],
+            "grad": -0.0001912878072319145
+          },
+          {
+            "index": 79,
+            "support": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "grad": -0.00015967660962062764
+          }
+        ],
+        "energy_after_vqe": -3.267234916775467,
+        "num_parameters": 410,
+        "num_cnots": 1792,
+        "spin_z": 0.49999999999996375,
+        "spin_squared": 1.1384607422447433
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 55,
+        "selected_ops": [
+          {
+            "index": 462,
+            "support": [
+              0,
+              2,
+              12,
+              6
+            ],
+            "grad": -0.0003285390514015576
+          },
+          {
+            "index": 252,
+            "support": [
+              1,
+              3,
+              13,
+              7
+            ],
+            "grad": 0.00013456760245590042
+          },
+          {
+            "index": 59,
+            "support": [
+              8,
+              9,
+              4,
+              5
+            ],
+            "grad": 1.7223173493217413e-05
+          }
+        ],
+        "energy_after_vqe": -3.267239547607501,
+        "num_parameters": 418,
+        "num_cnots": 1831,
+        "spin_z": 0.49999999999996897,
+        "spin_squared": 1.1073621701886125
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 56,
+        "selected_ops": [
+          {
+            "index": 336,
+            "support": [
+              8,
+              2,
+              12,
+              6
+            ],
+            "grad": 0.00022476980534572727
+          },
+          {
+            "index": 170,
+            "support": [
+              9,
+              3,
+              5,
+              7
+            ],
+            "grad": 0.00012109611088815079
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": -1.622083055747047e-05
+          },
+          {
+            "index": 15,
+            "support": [
+              1,
+              13
+            ],
+            "grad": -7.397112166587853e-06
+          }
+        ],
+        "energy_after_vqe": -3.267241473000343,
+        "num_parameters": 426,
+        "num_cnots": 1861,
+        "spin_z": 0.49999999999995504,
+        "spin_squared": 1.1092835724374606
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 57,
+        "selected_ops": [
+          {
+            "index": 366,
+            "support": [
+              2,
+              4,
+              12,
+              6
+            ],
+            "grad": 0.0001481444756386607
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": -5.1475699285112737e-05
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": -7.309932848226306e-05
+          },
+          {
+            "index": 13,
+            "support": [
+              3,
+              7
+            ],
+            "grad": 0.0001629280462285401
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": 1.898055034308615e-06
+          }
+        ],
+        "energy_after_vqe": -3.2672517901616103,
+        "num_parameters": 433,
+        "num_cnots": 1882,
+        "spin_z": 0.49999999999995914,
+        "spin_squared": 1.068615672978523
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 58,
+        "selected_ops": [
+          {
+            "index": 383,
+            "support": [
+              8,
+              2,
+              4,
+              6
+            ],
+            "grad": 0.00015306747378622467
+          },
+          {
+            "index": 235,
+            "support": [
+              11,
+              1,
+              3,
+              13
+            ],
+            "grad": 0.00018576010055668373
+          },
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": -3.232805735738084e-05
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": -1.1349764007846275e-07
+          }
+        ],
+        "energy_after_vqe": -3.2672608763078497,
+        "num_parameters": 441,
+        "num_cnots": 1912,
+        "spin_z": 0.4999999999999576,
+        "spin_squared": 1.0162989530879702
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 59,
+        "selected_ops": [
+          {
+            "index": 207,
+            "support": [
+              1,
+              13,
+              5,
+              9
+            ],
+            "grad": -4.19445884169043e-05
+          },
+          {
+            "index": 51,
+            "support": [
+              10,
+              11,
+              6,
+              7
+            ],
+            "grad": 0.00020119154942882593
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": 1.997492596457817e-06
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 6.515647715122192e-05
+          }
+        ],
+        "energy_after_vqe": -3.267270766642573,
+        "num_parameters": 448,
+        "num_cnots": 1942,
+        "spin_z": 0.4999999999999628,
+        "spin_squared": 0.977434801104495
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 60,
+        "selected_ops": [
+          {
+            "index": 405,
+            "support": [
+              0,
+              8,
+              10,
+              6
+            ],
+            "grad": -0.0001397634552710038
+          },
+          {
+            "index": 249,
+            "support": [
+              11,
+              1,
+              3,
+              9
+            ],
+            "grad": -0.00010314582435853668
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": 8.143358974307307e-06
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": -2.3383971682622706e-05
+          }
+        ],
+        "energy_after_vqe": -3.2672752117622648,
+        "num_parameters": 456,
+        "num_cnots": 1972,
+        "spin_z": 0.49999999999995615,
+        "spin_squared": 0.9555313522927411
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 61,
+        "selected_ops": [
+          {
+            "index": 323,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": 0.0001775690743785258
+          },
+          {
+            "index": 293,
+            "support": [
+              1,
+              3,
+              5,
+              7
+            ],
+            "grad": 9.383654438726614e-05
+          },
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": 9.633561276064486e-07
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": 1.4864942324358906e-05
+          }
+        ],
+        "energy_after_vqe": -3.2672847355212857,
+        "num_parameters": 464,
+        "num_cnots": 2002,
+        "spin_z": 0.4999999999999522,
+        "spin_squared": 0.8785423088560682
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 62,
+        "selected_ops": [
+          {
+            "index": 326,
+            "support": [
+              8,
+              2,
+              10,
+              12
+            ],
+            "grad": -0.00017099621473442016
+          },
+          {
+            "index": 195,
+            "support": [
+              1,
+              11,
+              9,
+              7
+            ],
+            "grad": 0.00013103754246291576
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": -1.7896335658186208e-06
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": -6.483510434764545e-06
+          }
+        ],
+        "energy_after_vqe": -3.2672972042276895,
+        "num_parameters": 472,
+        "num_cnots": 2032,
+        "spin_z": 0.49999999999995764,
+        "spin_squared": 0.8163401743293429
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 63,
+        "selected_ops": [
+          {
+            "index": 350,
+            "support": [
+              2,
+              10,
+              4,
+              12
+            ],
+            "grad": -0.0001745729604663606
+          },
+          {
+            "index": 141,
+            "support": [
+              11,
+              13,
+              3,
+              5
+            ],
+            "grad": -0.00014055209062453574
+          },
+          {
+            "index": 52,
+            "support": [
+              8,
+              9,
+              6,
+              7
+            ],
+            "grad": -2.1249041941377535e-05
+          }
+        ],
+        "energy_after_vqe": -3.267304726786802,
+        "num_parameters": 480,
+        "num_cnots": 2071,
+        "spin_z": 0.4999999999999496,
+        "spin_squared": 0.8092738489820888
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 64,
+        "selected_ops": [
+          {
+            "index": 295,
+            "support": [
+              8,
+              10,
+              12,
+              6
+            ],
+            "grad": 0.00022061470909272394
+          },
+          {
+            "index": 100,
+            "support": [
+              13,
+              11,
+              5,
+              7
+            ],
+            "grad": 0.0002714683184361641
+          },
+          {
+            "index": 82,
+            "support": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "grad": 4.557519097329581e-05
+          }
+        ],
+        "energy_after_vqe": -3.2673067804293208,
+        "num_parameters": 488,
+        "num_cnots": 2110,
+        "spin_z": 0.49999999999996325,
+        "spin_squared": 0.8056611387542667
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 65,
+        "selected_ops": [
+          {
+            "index": 462,
+            "support": [
+              0,
+              2,
+              12,
+              6
+            ],
+            "grad": 0.00028766882502156727
+          },
+          {
+            "index": 223,
+            "support": [
+              1,
+              11,
+              5,
+              7
+            ],
+            "grad": 0.0002259396340979943
+          },
+          {
+            "index": 29,
+            "support": [
+              8,
+              4
+            ],
+            "grad": 1.3065457402448855e-05
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": 1.1222998001522391e-05
+          }
+        ],
+        "energy_after_vqe": -3.26730886207241,
+        "num_parameters": 496,
+        "num_cnots": 2140,
+        "spin_z": 0.4999999999999528,
+        "spin_squared": 0.7992115915475547
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 66,
+        "selected_ops": [
+          {
+            "index": 392,
+            "support": [
+              0,
+              10,
+              12,
+              6
+            ],
+            "grad": 0.0002719275297261452
+          },
+          {
+            "index": 255,
+            "support": [
+              1,
+              3,
+              13,
+              7
+            ],
+            "grad": -0.00016746808171262933
+          },
+          {
+            "index": 59,
+            "support": [
+              8,
+              9,
+              4,
+              5
+            ],
+            "grad": 2.7523288320569866e-05
+          }
+        ],
+        "energy_after_vqe": -3.26731544596596,
+        "num_parameters": 504,
+        "num_cnots": 2179,
+        "spin_z": 0.4999999999999687,
+        "spin_squared": 0.7772793562648185
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 67,
+        "selected_ops": [
+          {
+            "index": 371,
+            "support": [
+              2,
+              4,
+              12,
+              6
+            ],
+            "grad": 0.0002774639102156432
+          },
+          {
+            "index": 180,
+            "support": [
+              1,
+              11,
+              13,
+              7
+            ],
+            "grad": -0.0003286863949995086
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": 6.567756792520428e-05
+          },
+          {
+            "index": 8,
+            "support": [
+              9,
+              5
+            ],
+            "grad": 5.8360177998434995e-06
+          }
+        ],
+        "energy_after_vqe": -3.267320544440846,
+        "num_parameters": 512,
+        "num_cnots": 2209,
+        "spin_z": 0.4999999999999547,
+        "spin_squared": 0.7718910462282109
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 68,
+        "selected_ops": [
+          {
+            "index": 308,
+            "support": [
+              10,
+              4,
+              12,
+              6
+            ],
+            "grad": 0.000305875467084376
+          },
+          {
+            "index": 266,
+            "support": [
+              1,
+              3,
+              9,
+              7
+            ],
+            "grad": -0.0002798734160399316
+          },
+          {
+            "index": 38,
+            "support": [
+              0,
+              8
+            ],
+            "grad": -1.8354085346524723e-06
+          },
+          {
+            "index": 6,
+            "support": [
+              13,
+              5
+            ],
+            "grad": 1.3361195900121194e-05
+          }
+        ],
+        "energy_after_vqe": -3.267323723471326,
+        "num_parameters": 520,
+        "num_cnots": 2239,
+        "spin_z": 0.4999999999999562,
+        "spin_squared": 0.7708449564563491
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 69,
+        "selected_ops": [
+          {
+            "index": 437,
+            "support": [
+              0,
+              10,
+              4,
+              6
+            ],
+            "grad": 0.0002509519467318277
+          },
+          {
+            "index": 111,
+            "support": [
+              9,
+              11,
+              5,
+              7
+            ],
+            "grad": -0.0002524650926310596
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": -1.1261612587035119e-05
+          },
+          {
+            "index": 15,
+            "support": [
+              1,
+              13
+            ],
+            "grad": -1.3327237424648033e-06
+          }
+        ],
+        "energy_after_vqe": -3.267328948609032,
+        "num_parameters": 528,
+        "num_cnots": 2269,
+        "spin_z": 0.49999999999996014,
+        "spin_squared": 0.7755650668856676
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 70,
+        "selected_ops": [
+          {
+            "index": 320,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": -0.0003281223162947586
+          },
+          {
+            "index": 171,
+            "support": [
+              9,
+              3,
+              5,
+              7
+            ],
+            "grad": -0.0002817572578694296
+          },
+          {
+            "index": 72,
+            "support": [
+              0,
+              1,
+              12,
+              13
+            ],
+            "grad": -5.189958358919628e-05
+          }
+        ],
+        "energy_after_vqe": -3.2673403157765906,
+        "num_parameters": 536,
+        "num_cnots": 2308,
+        "spin_z": 0.4999999999999551,
+        "spin_squared": 0.790287024972088
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 71,
+        "selected_ops": [
+          {
+            "index": 475,
+            "support": [
+              0,
+              8,
+              2,
+              6
+            ],
+            "grad": -0.0004461632019216132
+          },
+          {
+            "index": 160,
+            "support": [
+              13,
+              3,
+              5,
+              7
+            ],
+            "grad": -0.0005469004896196528
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": 3.0831458119732506e-06
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": 9.36522262905062e-05
+          }
+        ],
+        "energy_after_vqe": -3.2673524730469885,
+        "num_parameters": 544,
+        "num_cnots": 2338,
+        "spin_z": 0.49999999999995404,
+        "spin_squared": 0.7842713568180709
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 72,
+        "selected_ops": [
+          {
+            "index": 501,
+            "support": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "grad": 0.0003818302318433125
+          },
+          {
+            "index": 86,
+            "support": [
+              9,
+              11,
+              13,
+              7
+            ],
+            "grad": -0.0003898198047165278
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": -3.354761941996317e-05
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": -8.709832522586596e-06
+          }
+        ],
+        "energy_after_vqe": -3.267362515705996,
+        "num_parameters": 552,
+        "num_cnots": 2368,
+        "spin_z": 0.49999999999995065,
+        "spin_squared": 0.8042251136076433
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 73,
+        "selected_ops": [
+          {
+            "index": 336,
+            "support": [
+              8,
+              2,
+              12,
+              6
+            ],
+            "grad": 0.00030808439257051535
+          },
+          {
+            "index": 279,
+            "support": [
+              11,
+              1,
+              3,
+              5
+            ],
+            "grad": -0.0004233935203103835
+          },
+          {
+            "index": 40,
+            "support": [
+              0,
+              4
+            ],
+            "grad": 6.306838894414181e-05
+          },
+          {
+            "index": 1,
+            "support": [
+              9,
+              13
+            ],
+            "grad": -4.11042645799322e-05
+          }
+        ],
+        "energy_after_vqe": -3.2674128205588233,
+        "num_parameters": 560,
+        "num_cnots": 2398,
+        "spin_z": 0.4999999999999505,
+        "spin_squared": 0.8213673519184748
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 74,
+        "selected_ops": [
+          {
+            "index": 489,
+            "support": [
+              0,
+              2,
+              10,
+              4
+            ],
+            "grad": -0.0008333434853494254
+          },
+          {
+            "index": 116,
+            "support": [
+              11,
+              9,
+              3,
+              13
+            ],
+            "grad": -0.0006749035716078833
+          },
+          {
+            "index": 22,
+            "support": [
+              8,
+              12
+            ],
+            "grad": 1.4871094312159308e-05
+          },
+          {
+            "index": 19,
+            "support": [
+              1,
+              5
+            ],
+            "grad": -5.201933609320976e-06
+          }
+        ],
+        "energy_after_vqe": -3.2674452666453377,
+        "num_parameters": 568,
+        "num_cnots": 2428,
+        "spin_z": 0.4999999999999441,
+        "spin_squared": 0.8272225491312912
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 75,
+        "selected_ops": [
+          {
+            "index": 76,
+            "support": [
+              0,
+              1,
+              8,
+              9
+            ],
+            "grad": 0.0002805329042534256
+          },
+          {
+            "index": 55,
+            "support": [
+              12,
+              13,
+              4,
+              5
+            ],
+            "grad": -0.0004237688579501591
+          },
+          {
+            "index": 34,
+            "support": [
+              2,
+              6
+            ],
+            "grad": 0.0006545978499425259
+          },
+          {
+            "index": 13,
+            "support": [
+              3,
+              7
+            ],
+            "grad": -0.0006192013866464052
+          }
+        ],
+        "energy_after_vqe": -3.2674792102985903,
+        "num_parameters": 574,
+        "num_cnots": 2458,
+        "spin_z": 0.4999999999999567,
+        "spin_squared": 0.8256653312489799
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 76,
+        "selected_ops": [
+          {
+            "index": 475,
+            "support": [
+              0,
+              8,
+              2,
+              6
+            ],
+            "grad": 0.00037149930947418815
+          },
+          {
+            "index": 99,
+            "support": [
+              13,
+              11,
+              5,
+              7
+            ],
+            "grad": -0.0005644336520595626
+          },
+          {
+            "index": 27,
+            "support": [
+              4,
+              12
+            ],
+            "grad": -0.00015893718017405723
+          },
+          {
+            "index": 17,
+            "support": [
+              1,
+              9
+            ],
+            "grad": -3.153364932325387e-05
+          }
+        ],
+        "energy_after_vqe": -3.267555543514298,
+        "num_parameters": 582,
+        "num_cnots": 2488,
+        "spin_z": 0.49999999999995853,
+        "spin_squared": 0.8273610544778836
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 77,
+        "selected_ops": [
+          {
+            "index": 381,
+            "support": [
+              8,
+              2,
+              4,
+              6
+            ],
+            "grad": -0.0005669519453683649
+          },
+          {
+            "index": 152,
+            "support": [
+              11,
+              9,
+              3,
+              5
+            ],
+            "grad": -0.0004103576318207642
+          },
+          {
+            "index": 73,
+            "support": [
+              0,
+              1,
+              12,
+              13
+            ],
+            "grad": 0.0001008505260196016
+          }
+        ],
+        "energy_after_vqe": -3.267604803989609,
+        "num_parameters": 590,
+        "num_cnots": 2527,
+        "spin_z": 0.49999999999994943,
+        "spin_squared": 0.8477925894825856
+      }
+    },
+    {
+      "type": "adapt_iter",
+      "attrs": {
+        "iter": 78,
+        "selected_ops": [
+          {
+            "index": 320,
+            "support": [
+              8,
+              10,
+              4,
+              6
+            ],
+            "grad": -0.0002447276698456091
+          },
+          {
+            "index": 206,
+            "support": [
+              1,
+              13,
+              5,
+              9
+            ],
+            "grad": -0.0003344807448341999
+          },
+          {
+            "index": 36,
+            "support": [
+              0,
+              12
+            ],
+            "grad": 5.359113134357654e-05
+          },
+          {
+            "index": 4,
+            "support": [
+              11,
+              7
+            ],
+            "grad": -0.00010964601529838912
+          }
+        ],
+        "energy_after_vqe": -3.2676675602906546,
+        "num_parameters": 598,
+        "num_cnots": 2557,
+        "spin_z": 0.4999999999999511,
+        "spin_squared": 0.816163480862232
+      }
+    }
+  ],
+  "final": {
+    "converged": true,
+    "reason": "target",
+    "energy": -3.2676675602906546,
+    "num_parameters": 598,
+    "num_cnots": 2557,
+    "spin_z": 0.4999999999999511,
+    "spin_squared": 0.816163480862232,
+    "num_iterations": 78
+  }
+}

@@ -1,0 +1,5 @@
+converged SCF energy = -1182.20598568206
+CASSCF energy = -1182.23896413034
+CASCI E = -1182.23896413034  E(CI) = -1.92983419621146  S^2 = 0.0000000
+DONE qrte magnesium_porphyrin_ceo hit=2
+{"completed": 1, "failed": 0, "skipped": 0}

@@ -1,0 +1,2 @@
+ M QCANT/qulacs_accel.py
+ M QCANT/tests/test_qulacs_accel.py

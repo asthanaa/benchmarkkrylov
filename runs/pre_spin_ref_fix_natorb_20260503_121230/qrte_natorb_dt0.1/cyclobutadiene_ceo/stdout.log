@@ -1,0 +1,5 @@
+converged SCF energy = -153.651405844179
+CASSCF energy = -153.673040305527
+CASCI E = -153.673040305527  E(CI) = -3.99308491012894  S^2 = 0.0000000
+DONE qrte cyclobutadiene_ceo hit=None
+{"completed": 1, "failed": 0, "skipped": 0}

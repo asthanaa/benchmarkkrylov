@@ -1,0 +1,71 @@
+SWEEP qrte shard=3/4 tasks=40 pending=40 skipped=0 concurrency=36
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=0.1 pid=1467788
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=0.1 pid=1467789
+START qrte case=fenoco3_minus delta_t=0.1 pid=1467790
+START qrte case=H10_near_equi_sto3g_0 delta_t=0.1 pid=1467791
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=1.2 pid=1467792
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=1.2 pid=1467793
+START qrte case=fenoco3_minus delta_t=1.2 pid=1467794
+START qrte case=H10_near_equi_sto3g_0 delta_t=1.2 pid=1467795
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=2.3 pid=1467796
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=2.3 pid=1467797
+START qrte case=fenoco3_minus delta_t=2.3 pid=1467798
+START qrte case=H10_near_equi_sto3g_0 delta_t=2.3 pid=1467799
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=3.4 pid=1467800
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=3.4 pid=1467801
+START qrte case=fenoco3_minus delta_t=3.4 pid=1467802
+START qrte case=H10_near_equi_sto3g_0 delta_t=3.4 pid=1467803
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=4.5 pid=1467804
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=4.5 pid=1467805
+START qrte case=fenoco3_minus delta_t=4.5 pid=1467806
+START qrte case=H10_near_equi_sto3g_0 delta_t=4.5 pid=1467807
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=5.6 pid=1467808
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=5.6 pid=1467809
+START qrte case=fenoco3_minus delta_t=5.6 pid=1467810
+START qrte case=H10_near_equi_sto3g_0 delta_t=5.6 pid=1467811
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=6.7 pid=1467812
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=6.7 pid=1467813
+START qrte case=fenoco3_minus delta_t=6.7 pid=1467814
+START qrte case=H10_near_equi_sto3g_0 delta_t=6.7 pid=1467815
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=7.8 pid=1467816
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=7.8 pid=1467817
+START qrte case=fenoco3_minus delta_t=7.8 pid=1467818
+START qrte case=H10_near_equi_sto3g_0 delta_t=7.8 pid=1467819
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=8.9 pid=1467820
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=8.9 pid=1467821
+START qrte case=fenoco3_minus delta_t=8.9 pid=1467822
+START qrte case=H10_near_equi_sto3g_0 delta_t=8.9 pid=1467823
+END case=CO_equi_cc_pVTZ_0 delta_t=0.1 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 delta_t=1.2 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 delta_t=2.3 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 delta_t=3.4 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 delta_t=4.5 outcome=completed hit=None elapsed=70.1s
+END case=CO_equi_cc_pVTZ_0 delta_t=5.6 outcome=completed hit=None elapsed=70.0s
+END case=CO_equi_cc_pVTZ_0 delta_t=6.7 outcome=completed hit=None elapsed=70.0s
+END case=CO_equi_cc_pVTZ_0 delta_t=7.8 outcome=completed hit=None elapsed=70.0s
+END case=CO_equi_cc_pVTZ_0 delta_t=8.9 outcome=completed hit=None elapsed=70.0s
+START qrte case=CO_equi_cc_pVTZ_0 delta_t=10 pid=1467966
+START qrte case=m_Benzyne_equi_cc_pVTZ_0 delta_t=10 pid=1467967
+START qrte case=fenoco3_minus delta_t=10 pid=1467968
+START qrte case=H10_near_equi_sto3g_0 delta_t=10 pid=1467969
+END case=CO_equi_cc_pVTZ_0 delta_t=10 outcome=completed hit=None elapsed=65.0s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=0.1 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=1.2 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=2.3 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=3.4 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=4.5 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=5.6 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=6.7 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=7.8 outcome=completed hit=None elapsed=175.1s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=8.9 outcome=completed hit=None elapsed=175.0s
+END case=m_Benzyne_equi_cc_pVTZ_0 delta_t=10 outcome=completed hit=None elapsed=160.0s
+END case=fenoco3_minus delta_t=1.2 outcome=completed hit=None elapsed=5250.3s
+END case=fenoco3_minus delta_t=3.4 outcome=completed hit=None elapsed=5250.3s
+END case=fenoco3_minus delta_t=4.5 outcome=completed hit=None elapsed=5250.3s
+END case=fenoco3_minus delta_t=2.3 outcome=completed hit=None elapsed=5255.3s
+END case=fenoco3_minus delta_t=7.8 outcome=completed hit=None elapsed=5255.3s
+END case=fenoco3_minus delta_t=8.9 outcome=completed hit=None elapsed=5255.3s
+END case=fenoco3_minus delta_t=0.1 outcome=completed hit=None elapsed=5260.3s
+END case=fenoco3_minus delta_t=5.6 outcome=completed hit=None elapsed=5260.3s
+END case=fenoco3_minus delta_t=6.7 outcome=completed hit=None elapsed=5260.3s
+END case=fenoco3_minus delta_t=10 outcome=completed hit=None elapsed=5245.3s
