@@ -1,5 +1,0 @@
-# Keep Talon input/result files visible by default.
-# Only hide oversized or regenerable runtime payloads.
-**/.git/
-**/*.tar.gz
-**/*.ezfio/work/

@@ -1,49 +1,81 @@
 # Algorithms
 
-This page is part of the **advanced** track.
+The benchmark compares two Krylov-style quantum algorithms implemented in the
+vendored QCANT package: QRTE and QKUD.
 
-If you are new to the repository, read the examples and the glossary before this page.
+## Where The Code Lives
 
-## High-level idea
+Core package folders:
 
-All three solver families build a Krylov subspace for the CAS Hamiltonian, but they do it with sparse determinant vectors instead of keeping every determinant amplitude.
+- `vendor/QCANT/QCANT/qrte`: QRTE package.
+- `vendor/QCANT/QCANT/qkud`: QKUD package.
+- `vendor/QCANT/QCANT/qulacs_accel.py`: Qulacs-accelerated implementations used by the benchmark.
 
-The basic loop is:
+Public exports are defined in `vendor/QCANT/QCANT/__init__.py`. The benchmark
+uses the Qulacs entry points:
 
-1. start from a sparse vector
-2. approximate `H q_k`
-3. orthogonalize against earlier basis vectors
-4. keep a compressed next vector
-5. solve a small Ritz problem in the built subspace
+- `QCANT.qrte_qulacs`
+- `QCANT.qkud_qulacs`
 
-## Implemented solver families
+The non-accelerated package-level implementations are still present in:
 
-- `ccik`
-  - baseline deterministic solver
-- `ccik_thick`
-  - deterministic solver with thick restart
-- `ccik_stochastic`
-  - stochastic candidate-discovery variant
+- `vendor/QCANT/QCANT/qrte/qrte.py`
+- `vendor/QCANT/QCANT/qkud/qkud.py`
 
-## Compression policies
+## QRTE
 
-- `topk`
-  - legacy fixed-support truncation
-- `threshold`
-  - threshold-based truncation
-- `fixed_budget`
-  - recommended modern policy
-  - top-`Kstore` storage
-  - top-`Kprop` propagation
+QRTE builds a Krylov basis by applying real-time evolution to an initial state.
+The benchmark driver calls `QCANT.qrte_qulacs` with:
 
-## Why `ccik_thick` is the recommended default
+- molecular symbols and Angstrom geometry from the manifest,
+- active electrons and active orbitals from the manifest,
+- basis, charge, and spin from the manifest,
+- `delta_t` from `--delta-t`,
+- `n_steps` from `--n-steps`,
+- `evolution_mode` from `--evolution-mode`,
+- optional early stopping at chemical accuracy.
 
-Thick restart keeps several useful Ritz vectors between cycles. In practice this gives a better balance of stability and cost than restarting from only one vector.
+The canonical production setting in this workspace is `delta_t=0.1`, reflected
+in run folders such as `runs/qrte_dt0.1` and Slurm files such as
+`slurm/run_qrte_dt0.1_pool.sbatch`.
 
-## Where to read the implementation
+## QKUD
 
-- baseline solver: `src/ccik/core.py`
-- thick restart: `src/ccik/thick_restart.py`
-- stochastic discovery: `src/ccik/stochastic.py`
-- selection machinery: `src/ccik/selection.py`
-- sparse vector machinery: `src/ccik/sparse_ci.py`
+QKUD builds a Krylov basis using a unitary-decomposition recurrence. The
+benchmark driver calls `QCANT.qkud_qulacs` with the same molecular and
+active-space data as QRTE, but uses:
+
+- `epsilon` from `--epsilon`,
+- `n_steps` from `--n-steps`,
+- the same cache and early-stopping options.
+
+The canonical production setting in this workspace is `epsilon=0.1`, reflected
+in run folders such as `runs/qkud_eps0.1` and Slurm files such as
+`slurm/run_qkud_eps0.1_pool.sbatch`.
+
+## Driver Integration
+
+`scripts/run_krylov_benchmark.py` is the main interface between the manifest and
+QCANT. It:
+
+1. Reads `manifests/molvqe21_fig1b_manifest.csv`.
+2. Selects cases by row index, case id, or limit.
+3. Imports QCANT from `vendor/QCANT` unless `--qcant-root` overrides it.
+4. Calls `QCANT.qrte_qulacs` for `--method qrte`.
+5. Calls `QCANT.qkud_qulacs` for `--method qkud`.
+6. Writes input snapshots, run configs, minimum-energy histories, and summaries.
+
+The driver prefers cached Hamiltonians from:
+
+```text
+hamiltonian_cache/casscf_natorb
+```
+
+The default Hamiltonian source is `casscf_natorb`, and the active-orbital labels
+for selected cases are embedded in the runner.
+
+## What Counts As A Hit
+
+For each method, a chemical-accuracy hit is the first iteration where the
+minimum projected energy is within `0.0016 Eh` of the CASSCF reference energy.
+The driver writes this value as `hit_iteration` in each `summary.json`.

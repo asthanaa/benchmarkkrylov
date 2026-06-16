@@ -1,5 +1,0 @@
-mode,stage_label,dimension,krylov_dimension,largest_projected_subspace_dimension,determinant_pool_size,energy,absolute_error,kprop,kstore,nroot,ncycles,is_control,frontier_rank
-standard_ccik,standard_ccik,17,17,2051,2051,-85.38881014040072,0.1978149257308388,1000,1000,5,16,True,1
-standard_ccik,standard_ccik,17,17,5977,5977,-85.41995278185301,0.16667228427854752,3000,3000,5,16,False,2
-standard_ccik,standard_ccik,17,17,21220,21220,-85.46852027625911,0.11810478987244721,10000,10000,5,16,False,3
-standard_ccik,standard_ccik,24,24,77992,77992,-85.56862323203093,0.018001834100630276,30000,30000,5,16,False,4

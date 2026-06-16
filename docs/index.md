@@ -1,46 +1,34 @@
-# CompressK Documentation
+# QRTE/QKUD Benchmark Documentation
 
-This documentation is written for two audiences:
+This repository is a self-contained benchmark workspace for comparing ADAPT
+iteration counts against QRTE and QKUD iteration counts on the MolVQE-21 cases
+from Zenodo record `19051536`.
 
-- **Chemistry students** who want to understand what CCIK does and run a small example
-- **Researchers and developers** who need the benchmarking, Quantum Package, and implementation details
+The repository is organized around three things:
 
-If you are new to the project, follow the beginner path first.
+- A benchmark database under `dataset/zenodo_19051536`.
+- A canonical manifest under `manifests/molvqe21_fig1b_manifest.csv`.
+- QRTE/QKUD execution code under `scripts/`, `slurm/`, and `vendor/QCANT`.
 
-## Start here
+## Start Here
 
-1. Read [quickstart.md](quickstart.md)
-2. Skim the [glossary.md](glossary.md)
-3. Run the `H2` example from [examples.md](examples.md)
-4. Use [choose_solver.md](choose_solver.md) to decide which solver to try next
+Use these pages as the main map:
 
-## Beginner path
+- `repository-map.md` lists every important top-level folder and what belongs there.
+- `dataset.md` explains the raw archive, extracted JSON database, and manifest fields.
+- `algorithms.md` explains where QRTE and QKUD live and which functions the benchmark calls.
+- `running.md` describes local, pooled, and Slurm execution.
+- `results.md` explains run directories, summaries, logs, plots, caches, and provenance.
 
-- [Quickstart](quickstart.md)
-- [Chemistry glossary](glossary.md)
-- [Choose a solver](choose_solver.md)
-- [Examples](examples.md)
-- [API](api.md)
+## Core Workflow
 
-## Advanced path
+The benchmark workflow is:
 
-- [Advanced workflows](advanced.md)
-- [Reproducible setup](reproducibility.md)
-- [Fixed-budget N2 selector results](fixed_budget_results.md)
-- [Algorithms](algorithms.md)
-- [Quantum Package backend](quantum_package_backend.md)
-- [Architecture](architecture.md)
-- [Development](development.md)
-- [Legacy](legacy.md)
+1. Keep the Zenodo database in `dataset/zenodo_19051536`.
+2. Build or inspect the manifest in `manifests/molvqe21_fig1b_manifest.csv`.
+3. Run QRTE or QKUD through `scripts/run_krylov_benchmark.py`.
+4. Use `scripts/run_krylov_pool.py` or scripts in `slurm/` for larger batches.
+5. Collect result tables and plots with `scripts/collect_and_plot.py`.
 
-## What this repository contains
-
-- `src/ccik`: the importable Python package
-- `examples`: beginner scripts and notebooks
-- `docs`: the narrative documentation
-- `scripts/advanced`: benchmark, sweep, parity, and QP workflows
-- `scripts/_shared`: helpers for the advanced workflows
-- `ccik_qp`: vendored Quantum Package plugin source
-- `sample_inputs`: tracked teaching inputs and one-command plotting wrappers
-- `inputs`: tracked Talon study inputs and shareable result files
-- `tests`: checks that keep examples, API behavior, and advanced scripts working
+Completed runs are restartable. If a case already has a completed
+`summary.json`, the runner skips it unless `--force` is passed.

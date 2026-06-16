@@ -1,7 +1,7 @@
-site_name: "CompressK / ccik"
-site_description: "Compressed Krylov solvers for active-space quantum chemistry, with a beginner-friendly learning path"
-repo_url: "https://github.com/asthanaa/CompressK"
-repo_name: "asthanaa/CompressK"
+site_name: "QRTE/QKUD Benchmark"
+site_description: "Documentation for the QCANT MolVQE-21 QRTE and QKUD benchmark workspace"
+repo_url: "https://github.com/asthanaa/benchmarkkrylov"
+repo_name: "asthanaa/benchmarkkrylov"
 edit_uri: "edit/main/docs/"
 
 use_directory_urls: false
@@ -9,7 +9,6 @@ use_directory_urls: false
 theme:
   name: material
   features:
-    - navigation.instant
     - navigation.sections
     - navigation.top
     - toc.follow
@@ -18,14 +17,6 @@ theme:
 
 plugins:
   - search
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            show_source: false
-            show_root_heading: true
-            show_signature_annotations: true
-            separate_signature: true
 
 markdown_extensions:
   - admonition
@@ -37,18 +28,8 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Quickstart: quickstart.md
-  - Chemistry Glossary: glossary.md
-  - Choose a Solver: choose_solver.md
-  - Examples: examples.md
-  - API: api.md
-  - Architecture: architecture.md
-  - Configuration: configuration.md
-  - Development: development.md
-  - Reproducible Setup: reproducibility.md
-  - Advanced:
-      - Research Workflows: advanced.md
-      - Fixed-Budget N2 Results: fixed_budget_results.md
-      - Algorithms: algorithms.md
-      - Quantum Package Backend: quantum_package_backend.md
-      - Legacy: legacy.md
+  - Repository Map: repository-map.md
+  - Dataset And Manifest: dataset.md
+  - Algorithms: algorithms.md
+  - Running The Benchmark: running.md
+  - Results And Provenance: results.md

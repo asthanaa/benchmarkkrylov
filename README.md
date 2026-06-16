@@ -1,42 +1,27 @@
 # QCANT Fig. 1b QRTE/QKUD Benchmark
 
-This directory stages the Zenodo record `19051536`, vendors QCANT, and runs a
-restartable MolVQE-21 benchmark comparing ADAPT iteration counts with QRTE and
-QKUD iteration counts to chemical accuracy.
+This repository contains the QRTE/QKUD benchmark workspace for the MolVQE-21
+systems from Zenodo record `19051536`. It keeps the source dataset, the manifest
+used by the benchmark drivers, the vendored QCANT algorithm code, Slurm launch
+scripts, cached Hamiltonians, run outputs, plots, logs, and provenance.
 
-## Data and Manifest
+Start with the documentation in `docs/`:
 
-- Raw archive: `dataset/zenodo_19051536/raw/data_repository.7z`
-- Extracted dataset: `dataset/zenodo_19051536/extracted/data_repository`
-- Canonical manifest: `manifests/molvqe21_fig1b_manifest.csv`
+- `docs/repository-map.md` explains what is present where.
+- `docs/dataset.md` describes the dataset, manifest, and database layout.
+- `docs/algorithms.md` points to the QRTE and QKUD implementations.
+- `docs/running.md` explains local and Slurm execution.
+- `docs/results.md` explains outputs, logs, plots, caches, and provenance.
 
-The manifest uses the top-level `MolVQE-21` JSON files, computes `h0.25` from
-the CASSCF CI vector, and records the first stored ADAPT iteration reaching
-`1.6e-3 Eh` relative to the CASSCF energy.
-
-## Run
-
-Submit the full QRTE, QKUD, and dependent plotting jobs:
+The main benchmark entry point is:
 
 ```bash
-cd /home/ayush.asthana/code/benchmark/slurm
-./submit_all.sh
+python scripts/run_krylov_benchmark.py --help
 ```
 
-The Slurm jobs use the `talon-ayush` partition on `talon04` as QRTE/QKUD job
-arrays, with one manifest row per array task. Each task requests 2 CPUs and
-writes restart files under `runs/qrte_dt0.1` and `runs/qkud_eps0.1`.
+The Slurm launch point for the full benchmark is:
 
-## Resume
-
-Rerun the same Slurm scripts or local driver commands. Cases with a completed
-`summary.json` are skipped automatically.
-
-## Plot Outputs
-
-- `plots/adapt_vs_qrte_iterations_vs_entropy.csv`
-- `plots/adapt_vs_qrte_iterations_vs_entropy.png`
-- `plots/adapt_vs_qrte_iterations_vs_entropy.pdf`
-- `plots/adapt_vs_qkud_iterations_vs_entropy.csv`
-- `plots/adapt_vs_qkud_iterations_vs_entropy.png`
-- `plots/adapt_vs_qkud_iterations_vs_entropy.pdf`
+```bash
+cd slurm
+./submit_all.sh
+```
