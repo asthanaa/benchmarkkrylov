@@ -1,0 +1,30 @@
+{
+  "completed": 1,
+  "concurrency": 1,
+  "early_stop_chemical_accuracy": true,
+  "events": [
+    {
+      "case_id": "N2_equi_cc_pVTZ_2",
+      "elapsed_seconds": 45.00662027485669,
+      "manifest_index": 4,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    }
+  ],
+  "excluded_case_ids": [],
+  "failed": 0,
+  "finished_at_epoch": 1782532277.4483275,
+  "force": false,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "max_workers": 2,
+  "method": "qrte",
+  "n_pending_at_start": 1,
+  "n_selected": 1,
+  "order": "manifest",
+  "pool_id": "4166",
+  "skipped_completed_at_start": 0,
+  "started_at_epoch": 1782532232.413882,
+  "updated_at_epoch": 1782532277.4483292
+}

@@ -1,0 +1,11 @@
+Computing sector gap for H10_near_equi_sto3g_0
+Output: runs/initial_state_gap/H10_near_equi_sto3g_0/sector_gap.json
+Wrote runs/initial_state_gap/H10_near_equi_sto3g_0/sector_gap.json
+case_id: H10_near_equi_sto3g_0
+status: completed
+sector_dim: 63504
+sector_ground_energy_hartree: -5.379954746092711
+first_excited_energy_hartree: -5.264473852324025
+gap_hartree: 0.11548089376868553
+gap_ev: 3.142395204371611
+elapsed_seconds: 1.8370414348319173

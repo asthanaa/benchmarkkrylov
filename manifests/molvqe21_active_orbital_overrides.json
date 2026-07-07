@@ -1,0 +1,17 @@
+{
+  "cyclobutadiene_ceo": {
+    "active_orbital_indices": [11, 13, 14, 19],
+    "active_orbital_index_base": 0,
+    "selection_method": "pyscf_canonical_rohf_mo_indices"
+  },
+  "m_Benzyne_equi_cc_pVTZ_0": {
+    "active_orbital_indices": [15, 18, 19, 20, 24, 27],
+    "active_orbital_index_base": 0,
+    "selection_method": "pyscf_canonical_rohf_mo_indices"
+  },
+  "m_Benzyne_equi_cc_pVTZ_2": {
+    "active_orbital_indices": [16, 18, 19, 20, 24, 27],
+    "active_orbital_index_base": 0,
+    "selection_method": "pyscf_canonical_rohf_mo_indices"
+  }
+}

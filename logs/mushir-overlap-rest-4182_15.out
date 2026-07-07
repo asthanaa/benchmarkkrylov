@@ -1,0 +1,15 @@
+Computing initial overlap for Al3_minus
+Run directory: runs/qkud_natorb_eps0.05/Al3_minus
+Output: runs/initial_state_overlap/Al3_minus/initial_overlap.json
+Wrote runs/initial_state_overlap/Al3_minus/initial_overlap.json
+case_id: Al3_minus
+status: completed
+sector_dim: 15876
+n_alpha: 4
+n_beta: 4
+hf_bits: 111111110000000000
+sector_ground_energy_hartree: -725.792288136506
+overlap_weight: 0.8188188783509338
+negative_log10_overlap: 0.08681215297933702
+solver: pyscf-fci
+elapsed_seconds: 5.954119247384369

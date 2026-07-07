@@ -1,0 +1,3 @@
+DONE QRTE FeO dt=0.05 hit=None ref=-1337.289017715882
+PLOT FeO plots/qrte_rohf_molvqe_fe_cases_100iter/FeO_qrte_rohf_molvqe_dt0p05_convergence.png plots/qrte_rohf_molvqe_fe_cases_100iter/FeO_qrte_rohf_molvqe_dt0p05_convergence.pdf
+{"completed": 1, "failed": 0, "skipped": 0}

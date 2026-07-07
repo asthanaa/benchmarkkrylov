@@ -1,0 +1,12 @@
+Wrote runs/initial_state_overlap/H7_near_equi_sto3g_1/initial_overlap.json
+case_id: H7_near_equi_sto3g_1
+status: completed
+sector_dim: 1225
+n_alpha: 4
+n_beta: 3
+hf_bits: 11111110000000
+sector_ground_energy_hartree: -3.7354875322115806
+overlap_weight: 0.8840787092042843
+negative_log10_overlap: 0.05350906818669872
+solver: pyscf-fci
+elapsed_seconds: 29.0169285684824

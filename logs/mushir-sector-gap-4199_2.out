@@ -1,0 +1,11 @@
+Computing sector gap for magnesium_porphyrin_ceo
+Output: runs/initial_state_gap/magnesium_porphyrin_ceo/sector_gap.json
+Wrote runs/initial_state_gap/magnesium_porphyrin_ceo/sector_gap.json
+case_id: magnesium_porphyrin_ceo
+status: completed
+sector_dim: 36
+sector_ground_energy_hartree: -1182.238964130337
+first_excited_energy_hartree: -1182.1349280323836
+gap_hartree: 0.10403609795343982
+gap_ev: 2.8309664449364926
+elapsed_seconds: 0.001395171508193016

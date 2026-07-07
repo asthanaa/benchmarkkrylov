@@ -1,0 +1,11 @@
+Computing sector gap for hexatriene_equi_cc_pVTZ_2
+Output: runs/initial_state_gap/hexatriene_equi_cc_pVTZ_2/sector_gap.json
+Wrote runs/initial_state_gap/hexatriene_equi_cc_pVTZ_2/sector_gap.json
+case_id: hexatriene_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+sector_ground_energy_hartree: -231.8656321126999
+first_excited_energy_hartree: -231.80310616129967
+gap_hartree: 0.06252595140023232
+gap_ev: 1.7014178139495957
+elapsed_seconds: 0.008081908337771893

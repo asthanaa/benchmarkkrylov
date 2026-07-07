@@ -1,0 +1,3 @@
+FeO regular ROHF QRTE dt=0.05 n_steps=100: 4145
+feno_2plus sfX2C1eROHF QRTE dt=0.05 n_steps=100: 4146
+fenoco3_minus sfX2C1eROHF unconverged-reference QRTE dt=0.05 n_steps=100: 4147

@@ -1,0 +1,15 @@
+Computing initial overlap for CH2O_equi_cc_pVTZ_2
+Run directory: runs/qkud_natorb_eps0.05/CH2O_equi_cc_pVTZ_2
+Output: runs/initial_state_overlap/CH2O_equi_cc_pVTZ_2/initial_overlap.json
+Wrote runs/initial_state_overlap/CH2O_equi_cc_pVTZ_2/initial_overlap.json
+case_id: CH2O_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+n_alpha: 4
+n_beta: 2
+hf_bits: 111110100000
+sector_ground_energy_hartree: -113.82914720544129
+overlap_weight: 0.97994765596655
+negative_log10_overlap: 0.008797121585069269
+solver: pyscf-fci
+elapsed_seconds: 2.4607592914253473

@@ -1,0 +1,11 @@
+Computing sector gap for Al3_minus
+Output: runs/initial_state_gap/Al3_minus/sector_gap.json
+Wrote runs/initial_state_gap/Al3_minus/sector_gap.json
+case_id: Al3_minus
+status: completed
+sector_dim: 15876
+sector_ground_energy_hartree: -725.792288136506
+first_excited_energy_hartree: -725.7332552320285
+gap_hartree: 0.05903290447758991
+gap_ev: 1.6063671649622133
+elapsed_seconds: 0.3959585130214691

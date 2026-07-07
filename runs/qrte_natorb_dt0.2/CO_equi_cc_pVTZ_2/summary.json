@@ -1,0 +1,24 @@
+{
+  "active_orbital_labels": [
+    "C 2p",
+    "O 2p"
+  ],
+  "case_id": "CO_equi_cc_pVTZ_2",
+  "casscf_energy_hartree": -112.60166830789687,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -112.60006830789688,
+  "elapsed_seconds": 41.34084457112476,
+  "final_min_history_energy_hartree": -112.64075236311038,
+  "final_projected_ground_energy_hartree": -112.64075236311038,
+  "h0.25": 2.568678127993894,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": true,
+  "hit_iteration": 1,
+  "method": "qrte",
+  "n_steps": 1,
+  "n_steps_completed": 1,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": true
+}

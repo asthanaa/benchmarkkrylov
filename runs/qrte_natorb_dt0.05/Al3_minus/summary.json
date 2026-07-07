@@ -1,0 +1,23 @@
+{
+  "active_orbital_labels": [
+    "Al 3p"
+  ],
+  "case_id": "Al3_minus",
+  "casscf_energy_hartree": -725.7921857752825,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -725.7905857752825,
+  "elapsed_seconds": 834.9369807932526,
+  "final_min_history_energy_hartree": -725.791484970653,
+  "final_projected_ground_energy_hartree": -725.791484970653,
+  "h0.25": 6.428074004502384,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": true,
+  "hit_iteration": 16,
+  "method": "qrte",
+  "n_steps": 16,
+  "n_steps_completed": 16,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": true
+}

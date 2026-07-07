@@ -1,0 +1,15 @@
+Computing initial overlap for m_Benzyne_equi_cc_pVTZ_2
+Run directory: runs/qkud_corrected_active_space_eps0.05/m_Benzyne_equi_cc_pVTZ_2
+Output: runs/initial_state_overlap/m_Benzyne_equi_cc_pVTZ_2/initial_overlap.json
+Wrote runs/initial_state_overlap/m_Benzyne_equi_cc_pVTZ_2/initial_overlap.json
+case_id: m_Benzyne_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+n_alpha: 4
+n_beta: 2
+hf_bits: 111110100000
+sector_ground_energy_hartree: -229.36969501815312
+overlap_weight: 0.894274559006607
+negative_log10_overlap: 0.048529124207123846
+solver: pyscf-fci
+elapsed_seconds: 12.996046193875372

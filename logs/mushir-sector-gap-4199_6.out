@@ -1,0 +1,11 @@
+Computing sector gap for N2_equi_cc_pVTZ_0
+Output: runs/initial_state_gap/N2_equi_cc_pVTZ_0/sector_gap.json
+Wrote runs/initial_state_gap/N2_equi_cc_pVTZ_0/sector_gap.json
+case_id: N2_equi_cc_pVTZ_0
+status: completed
+sector_dim: 400
+sector_ground_energy_hartree: -109.100131165772
+first_excited_energy_hartree: -108.83483343653761
+gap_hartree: 0.26529772923439054
+gap_ev: 7.219118980380543
+elapsed_seconds: 0.049784496426582336

@@ -1,0 +1,64 @@
+{
+  "active_electrons": 11,
+  "active_orbital_labels": [
+    "Fe 3d",
+    "N 2p",
+    "O 2p"
+  ],
+  "active_orbitals": 9,
+  "active_space_source": "MolVQE JSON meta.casscf ncas/nelec",
+  "basis": "cc-pvtz",
+  "case_id": "feno_2plus",
+  "casscf_energy_hartree": -1398.4787643620946,
+  "charge": 2,
+  "dataset_casscf_converged": true,
+  "dataset_casscf_energy_hartree": -1398.4787643264515,
+  "dataset_casscf_natorb": true,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.706999999945162
+    ],
+    [
+      0.6581699999788561,
+      0.0,
+      2.682776999913815
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      3.2257624946325607
+    ],
+    [
+      1.2437610434049868,
+      0.0,
+      5.069713783282284
+    ]
+  ],
+  "hamiltonian_cache_path": "hamiltonian_cache/casscf_natorb_sfx2c1erohf/d05ff05948743c30710e6737104a6b7f861c578e089df5d59733ebcba4156039.npz",
+  "hamiltonian_loaded_from_cache": true,
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -1398.4787643620946,
+  "reference_source": "local sfX2C1eROHF CASSCF/natorb",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/feno_2plus.json",
+  "source_name": "feno_2plus.json",
+  "spin": 3,
+  "symbols": [
+    "Fe",
+    "N",
+    "O"
+  ]
+}

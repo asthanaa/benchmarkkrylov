@@ -1,0 +1,15 @@
+Computing initial overlap for hexatriene_equi_cc_pVTZ_2
+Run directory: runs/qkud_natorb_eps0.05/hexatriene_equi_cc_pVTZ_2
+Output: runs/initial_state_overlap/hexatriene_equi_cc_pVTZ_2/initial_overlap.json
+Wrote runs/initial_state_overlap/hexatriene_equi_cc_pVTZ_2/initial_overlap.json
+case_id: hexatriene_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+n_alpha: 4
+n_beta: 2
+hf_bits: 111110100000
+sector_ground_energy_hartree: -231.8656321126999
+overlap_weight: 0.8153304735708532
+negative_log10_overlap: 0.08866632529974262
+solver: pyscf-fci
+elapsed_seconds: 3.0967922806739807

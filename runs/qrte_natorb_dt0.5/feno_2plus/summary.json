@@ -1,0 +1,25 @@
+{
+  "active_orbital_labels": [
+    "Fe 3d",
+    "N 2p",
+    "O 2p"
+  ],
+  "case_id": "feno_2plus",
+  "casscf_energy_hartree": -1398.4787643264515,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -1398.4771643264514,
+  "elapsed_seconds": 7650.868019547779,
+  "final_min_history_energy_hartree": -1390.9641575030764,
+  "final_projected_ground_energy_hartree": -1390.9641575030764,
+  "h0.25": 5.49249098761899,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qrte",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

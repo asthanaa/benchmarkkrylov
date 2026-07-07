@@ -1,0 +1,5 @@
+converged SCF energy = -229.321888322265
+CASSCF energy = -229.365314362856
+CASCI E = -229.365314362856  E(CI) = -7.60577678948758  S^2 = 2.0000000
+DONE qrte m_Benzyne_equi_cc_pVTZ_2 hit=2 ref=-229.365314362856
+{"completed": 1, "failed": 0, "skipped": 0}

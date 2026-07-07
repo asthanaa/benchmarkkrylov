@@ -1,0 +1,17 @@
+{
+  "active_electrons": 8,
+  "active_orbitals": 8,
+  "basis": "def2-TZVP",
+  "case_id": "feo4_2minus_ceo",
+  "charge": -2,
+  "dataset_casscf_energy_hartree": -1561.7175121505988,
+  "dataset_scf_energy_hartree": -1561.4543306994385,
+  "delta_t": 0.1,
+  "elapsed_seconds": 6678.520778044593,
+  "error": "RuntimeError('CASSCF did not converge while building the benchmark Hamiltonian')",
+  "method": "qrte",
+  "reference_source": "local converged ROHF/CASSCF Hamiltonian reference",
+  "spin": 2,
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_rohf_molvqe_fe_cases.py\", line 370, in _run_case_dt\n    reference_info = _build_local_reference(case, args, qulacs_accel, active_orbital_labels)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_rohf_molvqe_fe_cases.py\", line 164, in _build_local_reference\n    payload = qulacs_accel._build_hamiltonian_payload(\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT/QCANT/qulacs_accel.py\", line 833, in _build_hamiltonian_payload\n    integral_payload = _with_hamiltonian_cache(cache_root, cache_key, _compute_active_integrals, np)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT/QCANT/qulacs_accel.py\", line 660, in _with_hamiltonian_cache\n    payload = compute()\n              ^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT/QCANT/qulacs_accel.py\", line 791, in _compute_active_integrals\n    raise RuntimeError(\"CASSCF did not converge while building the benchmark Hamiltonian\")\nRuntimeError: CASSCF did not converge while building the benchmark Hamiltonian\n"
+}

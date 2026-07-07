@@ -1,0 +1,713 @@
+#INFO: **** input file is /home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_rohf_molvqe_fe_cases.py ****
+#!/home/mushir.kolathingal/miniforge3/envs/expk/bin/python
+"""Run ROHF and CASSCF references directly from MolVQE JSON files."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import time
+import traceback
+from pathlib import Path
+from typing import Any, Sequence
+
+for _thread_var in (
+    "OMP_NUM_THREADS",
+    "OPENBLAS_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "VECLIB_MAXIMUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+):
+    os.environ.setdefault(_thread_var, "1")
+
+
+BENCHMARK_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_OUTDIR = BENCHMARK_ROOT / "runs" / "rohf_molvqe_fe_cases"
+DEFAULT_CASE_JSONS = {
+    "FeO": BENCHMARK_ROOT
+    / "dataset"
+    / "zenodo_19051536"
+    / "extracted"
+    / "data_repository"
+    / "MolVQE-21"
+    / "FeO.json",
+    "feo4_2minus_ceo": BENCHMARK_ROOT
+    / "dataset"
+    / "zenodo_19051536"
+    / "extracted"
+    / "data_repository"
+    / "MolVQE-21"
+    / "feo4_2minus_ceo.json",
+}
+ACTIVE_ORBITAL_LABELS_BY_CASE = {
+    "FeO": ["Fe 3d", "O 2p"],
+    "feo4_2minus_ceo": ["Fe 3d"],
+}
+
+
+def _set_thread_limits() -> None:
+    os.environ.setdefault("OMP_NUM_THREADS", "1")
+    os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+    os.environ.setdefault("MKL_NUM_THREADS", "1")
+    os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+    os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+
+
+def _write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_suffix(path.suffix + ".tmp")
+    with tmp_path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    tmp_path.replace(path)
+
+
+def _load_case(case_id: str, path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+
+    meta = payload["meta"]
+    molecule = meta["molecule"]
+    casscf = meta["casscf"]
+    scf_meta = meta.get("scf", {})
+    atoms = molecule["atoms"]
+    geometry_bohr = [[float(value) for value in atom["xyz"]] for atom in atoms]
+    return {
+        "case_id": case_id,
+        "source_json_path": str(path.relative_to(BENCHMARK_ROOT)),
+        "symbols": [str(atom["element"]) for atom in atoms],
+        "geometry_bohr": geometry_bohr,
+        "basis": str(molecule["basis"]),
+        "charge": int(molecule["charge"]),
+        "spin": int(molecule["spin"]),
+        "symmetry": bool(molecule.get("symmetry", False)),
+        "active_electrons": int(casscf["nelec"]),
+        "active_orbitals": int(casscf["ncas"]),
+        "dataset_scf_method": str(scf_meta.get("method", "")),
+        "dataset_scf_converged": bool(scf_meta.get("converged", False)),
+        "dataset_scf_energy_hartree": float(scf_meta["energy"]),
+        "dataset_casscf_energy_hartree": float(casscf["energy"]),
+        "dataset_casscf_converged": bool(casscf["converged"]),
+        "dataset_casscf_natorb": bool(casscf["natorb"]),
+    }
+
+
+def _completed(summary_path: Path) -> bool:
+    if not summary_path.exists():
+        return False
+    try:
+        with summary_path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except json.JSONDecodeError:
+        return False
+    return payload.get("status") == "completed"
+
+
+def _active_orbital_labels(case_id: str, use_avas: bool) -> list[str] | None:
+    if not use_avas:
+        return None
+    labels = ACTIVE_ORBITAL_LABELS_BY_CASE.get(case_id)
+    return None if labels is None else list(labels)
+
+
+def _build_mol(case: dict[str, Any], log_path: Path, pyscf_verbose: int):
+    from pyscf import gto
+
+    atom = [
+        (case["symbols"][idx], tuple(float(value) for value in xyz))
+        for idx, xyz in enumerate(case["geometry_bohr"])
+    ]
+    mol = gto.Mole()
+    mol.atom = atom
+    mol.unit = "Bohr"
+    mol.basis = case["basis"]
+    mol.charge = int(case["charge"])
+    mol.spin = int(case["spin"])
+    mol.symmetry = bool(case["symmetry"])
+    mol.verbose = int(pyscf_verbose)
+    mol.output = str(log_path)
+    mol.build()
+    return mol
+
+
+def _run_rohf(mol, args: argparse.Namespace):
+    from pyscf import scf
+
+    mf = scf.ROHF(mol)
+    mf.conv_tol = float(args.scf_conv_tol)
+    mf.diis_space = int(args.scf_diis_space)
+    mf.level_shift = float(args.scf_level_shift)
+    mf.max_cycle = int(args.scf_max_cycle)
+    mf.kernel()
+    if not mf.converged and args.newton_if_not_converged:
+        mf = scf.newton(mf).run()
+    return mf
+
+
+def _initial_active_orbitals(mf, mol, case: dict[str, Any], active_orbital_labels: Sequence[str] | None):
+    if not active_orbital_labels:
+        return None, None
+
+    from pyscf.mcscf import avas
+
+    active_electrons = int(case["active_electrons"])
+    active_orbitals = int(case["active_orbitals"])
+    ncore = int((int(mol.nelectron) - active_electrons) // 2)
+    avas_ncas, avas_nelecas, mo0 = avas.avas(
+        mf,
+        list(active_orbital_labels),
+        canonicalize=False,
+        ncore=ncore,
+        openshell_option=2,
+        verbose=0,
+    )
+    try:
+        avas_nelecas_tuple = tuple(int(value) for value in avas_nelecas)
+    except TypeError:
+        avas_nelecas_tuple = (int(avas_nelecas),)
+    avas_nelec = int(sum(avas_nelecas_tuple))
+    avas_info = {
+        "active_orbital_labels": list(active_orbital_labels),
+        "avas_ncas": int(avas_ncas),
+        "avas_nelecas": avas_nelecas_tuple,
+        "avas_nelec_total": avas_nelec,
+        "avas_used_as_initial_guess": int(avas_ncas) == active_orbitals and avas_nelec == active_electrons,
+    }
+    if not avas_info["avas_used_as_initial_guess"]:
+        return None, avas_info
+    return mo0, avas_info
+
+
+def _run_casscf(mf, mo0, case: dict[str, Any], args: argparse.Namespace):
+    from pyscf import mcscf
+
+    natorb = bool(case["dataset_casscf_natorb"])
+    if args.force_natorb:
+        natorb = True
+
+    mc = mcscf.CASSCF(mf, int(case["active_orbitals"]), int(case["active_electrons"]))
+    mc.natorb = natorb
+    mc.conv_tol = float(args.casscf_conv_tol)
+    mc.max_cycle = int(args.casscf_max_cycle)
+    energy = float(mc.kernel(mo0)[0] if mo0 is not None else mc.kernel()[0])
+    return mc, energy, natorb
+
+
+def _run_case(case: dict[str, Any], args: argparse.Namespace) -> str:
+    case_id = case["case_id"]
+    case_dir = args.outdir / case_id
+    summary_path = case_dir / "summary.json"
+    if _completed(summary_path) and not args.force:
+        print(f"SKIP completed ROHF/CASSCF {case_id}", flush=True)
+        return "skipped"
+
+    case_dir.mkdir(parents=True, exist_ok=True)
+    pyscf_log_path = case_dir / "pyscf.log"
+    active_orbital_labels = _active_orbital_labels(case_id, not args.no_avas_labels)
+    start = time.perf_counter()
+
+    input_snapshot = {
+        **case,
+        "active_orbital_labels": active_orbital_labels,
+        "active_orbital_label_source": "local benchmark AVAS mapping; MolVQE JSON does not store orbital labels",
+        "active_space_source": "MolVQE JSON meta.casscf ncas/nelec",
+        "geometry_source": "MolVQE JSON meta.molecule atoms xyz, used directly with PySCF unit='Bohr'",
+        "scf_method_requested": "ROHF",
+    }
+    _write_json(case_dir / "input_snapshot.json", input_snapshot)
+
+    run_config = {
+        "allow_unconverged_casscf": bool(args.allow_unconverged_casscf),
+        "casscf_conv_tol": float(args.casscf_conv_tol),
+        "casscf_max_cycle": int(args.casscf_max_cycle),
+        "force_natorb": bool(args.force_natorb),
+        "honor_dataset_casscf_natorb": not bool(args.force_natorb),
+        "newton_if_not_converged": bool(args.newton_if_not_converged),
+        "pyscf_verbose": int(args.pyscf_verbose),
+        "scf_conv_tol": float(args.scf_conv_tol),
+        "scf_diis_space": int(args.scf_diis_space),
+        "scf_level_shift": float(args.scf_level_shift),
+        "scf_max_cycle": int(args.scf_max_cycle),
+        "use_avas_labels": not bool(args.no_avas_labels),
+    }
+    _write_json(case_dir / "run_config.json", run_config)
+
+    try:
+        mol = _build_mol(case, pyscf_log_path, int(args.pyscf_verbose))
+        mf = _run_rohf(mol, args)
+        mo0, avas_info = _initial_active_orbitals(mf, mol, case, active_orbital_labels)
+        mc, casscf_energy, casscf_natorb_used = _run_casscf(mf, mo0, case, args)
+
+        if not bool(mc.converged) and not args.allow_unconverged_casscf:
+            raise RuntimeError("CASSCF did not converge")
+
+        local_scf_energy = float(mf.e_tot)
+        summary = {
+            "status": "completed",
+            "case_id": case_id,
+            "source_json_path": case["source_json_path"],
+            "basis": case["basis"],
+            "charge": int(case["charge"]),
+            "spin": int(case["spin"]),
+            "symmetry": bool(case["symmetry"]),
+            "active_electrons": int(case["active_electrons"]),
+            "active_orbitals": int(case["active_orbitals"]),
+            "active_orbital_labels": active_orbital_labels,
+            "active_orbital_label_source": "local benchmark AVAS mapping; MolVQE JSON does not store orbital labels",
+            "active_space_source": "MolVQE JSON meta.casscf ncas/nelec",
+            "avas_info": avas_info,
+            "geometry_source": "MolVQE JSON meta.molecule atoms xyz, used directly with PySCF unit='Bohr'",
+            "local_scf_method": "ROHF",
+            "local_scf_energy_hartree": local_scf_energy,
+            "local_scf_converged": bool(mf.converged),
+            "dataset_scf_method": case["dataset_scf_method"],
+            "dataset_scf_energy_hartree": case["dataset_scf_energy_hartree"],
+            "dataset_scf_converged": case["dataset_scf_converged"],
+            "local_minus_dataset_scf_hartree": local_scf_energy - case["dataset_scf_energy_hartree"],
+            "local_casscf_energy_hartree": casscf_energy,
+            "local_casscf_converged": bool(mc.converged),
+            "local_casscf_natorb": bool(casscf_natorb_used),
+            "local_casscf_nelecas": tuple(int(value) for value in mc.nelecas),
+            "dataset_casscf_energy_hartree": case["dataset_casscf_energy_hartree"],
+            "dataset_casscf_converged": case["dataset_casscf_converged"],
+            "dataset_casscf_natorb": case["dataset_casscf_natorb"],
+            "local_minus_dataset_casscf_hartree": casscf_energy - case["dataset_casscf_energy_hartree"],
+            "pyscf_log_path": str(pyscf_log_path),
+            "elapsed_seconds": float(time.perf_counter() - start),
+        }
+        _write_json(summary_path, summary)
+        print(
+            f"DONE ROHF/CASSCF {case_id} "
+            f"scf={local_scf_energy:.12f} casscf={casscf_energy:.12f}",
+            flush=True,
+        )
+        return "completed"
+    except Exception as exc:  # noqa: BLE001
+        failure = {
+            "status": "failed",
+            "case_id": case_id,
+            "source_json_path": case["source_json_path"],
+            "active_electrons": int(case["active_electrons"]),
+            "active_orbitals": int(case["active_orbitals"]),
+            "basis": case["basis"],
+            "charge": int(case["charge"]),
+            "spin": int(case["spin"]),
+            "dataset_scf_energy_hartree": case["dataset_scf_energy_hartree"],
+            "dataset_casscf_energy_hartree": case["dataset_casscf_energy_hartree"],
+            "elapsed_seconds": float(time.perf_counter() - start),
+            "error": repr(exc),
+            "traceback": traceback.format_exc(),
+        }
+        _write_json(summary_path, failure)
+        print(f"FAIL ROHF/CASSCF {case_id}: {exc!r}", flush=True)
+        return "failed"
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--case-id", action="append", default=None)
+    parser.add_argument("--outdir", type=Path, default=DEFAULT_OUTDIR)
+    parser.add_argument("--scf-conv-tol", type=float, default=1e-10)
+    parser.add_argument("--scf-diis-space", type=int, default=12)
+    parser.add_argument("--scf-level-shift", type=float, default=0.0)
+    parser.add_argument("--scf-max-cycle", type=int, default=200)
+    parser.add_argument("--casscf-conv-tol", type=float, default=1e-10)
+    parser.add_argument("--casscf-max-cycle", type=int, default=100)
+    parser.add_argument("--pyscf-verbose", type=int, default=4)
+    parser.add_argument("--newton-if-not-converged", action="store_true")
+    parser.add_argument("--allow-unconverged-casscf", action="store_true")
+    parser.add_argument("--force-natorb", action="store_true")
+    parser.add_argument("--no-avas-labels", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    return parser.parse_args()
+
+
+def main() -> None:
+    _set_thread_limits()
+    args = parse_args()
+    args.outdir.mkdir(parents=True, exist_ok=True)
+
+    selected_case_ids: Sequence[str] = tuple(args.case_id or DEFAULT_CASE_JSONS)
+    missing = [case_id for case_id in selected_case_ids if case_id not in DEFAULT_CASE_JSONS]
+    if missing:
+        raise SystemExit(f"Unknown case id(s): {', '.join(missing)}")
+
+    cases = [_load_case(case_id, DEFAULT_CASE_JSONS[case_id]) for case_id in selected_case_ids]
+    counts = {"completed": 0, "failed": 0, "skipped": 0}
+    for case in cases:
+        status = _run_case(case, args)
+        counts[status] = counts.get(status, 0) + 1
+
+    print(json.dumps(counts, sort_keys=True), flush=True)
+    if counts.get("failed", 0):
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='medora03.cm.cluster', release='6.8.0-111-generic-64k', version='#111-Ubuntu SMP PREEMPT_DYNAMIC Sun Apr 12 00:17:58 UTC 2026', machine='aarch64')  Threads 1
+Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:39:32) [GCC 14.3.0]
+numpy 2.4.6  scipy 1.17.1  h5py 3.16.0
+Date: Wed Jun 24 00:27:02 2026
+PySCF version 2.13.1
+PySCF path  /home/mushir.kolathingal/miniforge3/envs/expk/lib/python3.12/site-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 34
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 4
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = Bohr
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Fe     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 O      0.000000000000   0.000000000000   1.619400000000 AA    0.000000000000   0.000000000000   3.060222486121 Bohr   0.0
+
+nuclear repulsion = 67.9689143333086
+number of shells = 26
+number of NR pGTOs = 138
+number of NR cGTOs = 76
+basis = def2-TZVP
+ecp = {}
+CPU time:         0.87
+
+
+******** <class 'pyscf.scf.rohf.ROHF'> ********
+method = ROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 12
+diis_damp = 0
+SCF conv_tol = 1e-10
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmptbhgfkyq
+max_memory 4000 MB (current use 134 MB)
+num. doubly occ = 15  num. singly occ = 4
+Set gradient conv threshold to 1e-05
+init E= -1335.55956136175
+
+WARN: HOMO 0.24068510162438 >= LUMO 0.240685101624308
+
+cycle= 1 E= -1328.30037508768  delta_E= 7.26  |g|= 5.82  |ddm|= 5.42
+  HOMO = -0.914968427307726  LUMO = -0.732107716265347
+cycle= 2 E= -1308.46071575157  delta_E= 19.8  |g|= 12.4  |ddm|= 7.14
+
+WARN: HOMO 0.382848668797656 >= LUMO -1.21109003755408
+
+cycle= 3 E= -1333.90045926695  delta_E= -25.4  |g|= 4.37  |ddm|= 8.53
+
+WARN: HOMO -0.208713717529098 >= LUMO -0.23312974295045
+
+cycle= 4 E= -1334.78894395967  delta_E= -0.888  |g|=  3.3  |ddm|= 8.31
+  HOMO = -0.149453748201353  LUMO = -0.023764514794884
+cycle= 5 E= -1336.53075935287  delta_E= -1.74  |g|= 1.55  |ddm|= 0.769
+  HOMO = -0.102779013114926  LUMO = 0.130449093026797
+cycle= 6 E= -1336.86762218331  delta_E= -0.337  |g|= 0.676  |ddm|= 0.369
+  HOMO = -0.0759553154564756  LUMO = 0.155543010721872
+cycle= 7 E= -1337.02701984701  delta_E= -0.159  |g|= 0.203  |ddm|= 0.342
+  HOMO = -0.0795096490519427  LUMO = 0.159853268941718
+cycle= 8 E= -1337.06044782888  delta_E= -0.0334  |g|= 0.206  |ddm|= 0.23
+  HOMO = -0.0888953432770805  LUMO = 0.150695476180365
+cycle= 9 E= -1337.07291964421  delta_E= -0.0125  |g|= 0.107  |ddm|= 0.12
+  HOMO = -0.0894856074440682  LUMO = 0.148627381817473
+cycle= 10 E= -1337.07826623802  delta_E= -0.00535  |g|= 0.0666  |ddm|= 0.107
+  HOMO = -0.0912672830848678  LUMO = 0.146789681207054
+cycle= 11 E= -1337.0811314104  delta_E= -0.00287  |g|= 0.035  |ddm|= 0.0575
+  HOMO = -0.0923239849523014  LUMO = 0.145757802438557
+cycle= 12 E= -1337.0846322184  delta_E= -0.0035  |g|= 0.0269  |ddm|= 0.0907
+  HOMO = -0.0939161570787874  LUMO = 0.144265051556695
+cycle= 13 E= -1337.08808361498  delta_E= -0.00345  |g|= 0.0171  |ddm|= 0.106
+  HOMO = -0.0951384129314334  LUMO = 0.14342250205056
+cycle= 14 E= -1337.09035361517  delta_E= -0.00227  |g|= 0.0122  |ddm|= 0.0927
+  HOMO = -0.0959836851295819  LUMO = 0.141890927597371
+cycle= 15 E= -1337.09196070775  delta_E= -0.00161  |g|= 0.0102  |ddm|= 0.128
+  HOMO = -0.0961444727452729  LUMO = 0.141667120667195
+cycle= 16 E= -1337.09191752364  delta_E= 4.32e-05  |g|= 0.00693  |ddm|= 0.0131
+  HOMO = -0.0974223247304096  LUMO = 0.139942851510219
+cycle= 17 E= -1337.09208855341  delta_E= -0.000171  |g|= 0.0116  |ddm|= 0.0679
+  HOMO = -0.0974905511552748  LUMO = 0.139773886258756
+cycle= 18 E= -1337.09212719801  delta_E= -3.86e-05  |g|= 0.00577  |ddm|= 0.0089
+  HOMO = -0.0975752547818658  LUMO = 0.139554637399983
+cycle= 19 E= -1337.09213972529  delta_E= -1.25e-05  |g|= 0.000788  |ddm|= 0.00429
+  HOMO = -0.0976062663747683  LUMO = 0.139502483619832
+cycle= 20 E= -1337.09213998231  delta_E= -2.57e-07  |g|= 8.55e-05  |ddm|= 0.000756
+  HOMO = -0.0976062017378823  LUMO = 0.139500421007404
+cycle= 21 E= -1337.09213998772  delta_E= -5.42e-09  |g|= 5.78e-05  |ddm|= 0.000313
+  HOMO = -0.0976076413236697  LUMO = 0.139497849244927
+cycle= 22 E= -1337.09213998935  delta_E= -1.63e-09  |g|= 2e-05  |ddm|= 0.00011
+  HOMO = -0.0976072444727265  LUMO = 0.139498013188237
+cycle= 23 E= -1337.09213998953  delta_E= -1.82e-10  |g|= 4.8e-06  |ddm|= 2.69e-05
+  HOMO = -0.0976070428938129  LUMO = 0.139498312538556
+cycle= 24 E= -1337.09213998956  delta_E= -3.27e-11  |g|= 9.3e-07  |ddm|= 2.56e-05
+  HOMO = -0.0976070305545633  LUMO = 0.139498316555817
+Extra cycle  E= -1337.09213998956  delta_E= -4.55e-13  |g|= 6.21e-07  |ddm|= 2.32e-06
+converged SCF energy = -1337.09213998956
+
+******** AVAS flags ********
+aolabels = ['Fe 3d', 'O 2p']
+ncore = 11
+minao = minao
+threshold = 0.2
+with_iao = False
+openshell_option = 2
+canonicalize = False
+
+** AVAS **
+  Total number of HF MOs  is equal to    76
+  Number of occupied HF MOs is equal to  19
+reference AO indices for minao ['Fe 3d', 'O 2p']:
+ [10 11 12 13 14 17 18 19]
+Option 2: threshold 0.2
+Active from occupied = 7 , eig [0.89146335 0.94302022 0.97395465 0.98990658 0.99795162 0.99849064
+ 0.99921781]
+Inactive from occupied = 1
+Active from unoccupied = 1 , eig [0.99972869]
+Inactive from unoccupied = 56
+Dimensions of active 8
+# of alpha electrons 7
+# of beta electrons 3
+
+******** <class 'pyscf.mcscf.mc1step.CASSCF'> ********
+CAS (8e+4e, 9o), ncore = 11, nvir = 56
+max_cycle_macro = 100
+max_cycle_micro = 4
+conv_tol = 1e-10
+conv_tol_grad = None
+orbital rotation max_stepsize = 0.02
+orbital rotation threshold for CI restart = 0.01
+augmented hessian ah_max_cycle = 30
+augmented hessian ah_conv_tol = 1e-12
+augmented hessian ah_linear dependence = 1e-14
+augmented hessian ah_level shift = 1e-08
+augmented hessian ah_start_tol = 2.5
+augmented hessian ah_start_cycle = 3
+augmented hessian ah_grad_trust_region = 3
+kf_trust_region = 3
+kf_interval = 4
+ci_response_space = 4
+ci_grad_trust_region = 3
+with_dep4 0
+natorb = True
+canonicalization = True
+sorting_mo_energy = False
+ao2mo_level = 2
+chkfile = /tmp/tmptbhgfkyq
+max_memory 4000 MB (current use 181 MB)
+internal_rotation = False
+******** <class 'pyscf.fci.direct_spin1.FCISolver'> ********
+max. cycles = 50
+conv_tol = 1e-08
+davidson only = False
+linear dependence = 1e-12
+level shift = 0.001
+max iter space = 12
+max_memory 4000 MB
+nroots = 1
+pspace_size = 400
+spin = None
+CASCI E = -1337.09628543107  S^2 = 6.0000000
+Set conv_tol_grad to 1e-05
+macro iter   1 ( 21 JK    4 micro), CASSCF E = -1337.17322025907  dE = -7.69348280e-02  S^2 = 6.0000000
+               |grad[o]|=0.0142  |grad[c]|=0.0165  |ddm|= 0.06  |maxRot[o]|=0.311
+macro iter   2 ( 21 JK    4 micro), CASSCF E = -1337.27938422787  dE = -1.06163969e-01  S^2 = 6.0000000
+               |grad[o]|=0.378  |grad[c]|=0.089  |ddm|=0.166  |maxRot[o]|=0.314
+macro iter   3 ( 11 JK    4 micro), CASSCF E = -1337.28899255907  dE = -9.60833121e-03  S^2 = 6.0000000
+               |grad[o]|=0.163  |grad[c]|=0.0123  |ddm|=0.0538  |maxRot[o]|=0.0551
+macro iter   4 ( 12 JK    4 micro), CASSCF E = -1337.28901763325  dE = -2.50741818e-05  S^2 = 6.0000000
+               |grad[o]|=0.00625  |grad[c]|=0.000366  |ddm|=0.00838  |maxRot[o]|=0.00403
+macro iter   5 ( 11 JK    4 micro), CASSCF E = -1337.28901771396  dE = -8.07035576e-08  S^2 = 6.0000000
+               |grad[o]|=0.000244  |grad[c]|=5.43e-05  |ddm|=0.000559  |maxRot[o]|=0.000266
+macro iter   6 (  6 JK    2 micro), CASSCF E = -1337.28901771495  dE = -9.92031346e-10  S^2 = 6.0000000
+               |grad[o]|=2.13e-05  |grad[c]|=2.33e-05  |ddm|=    0  |maxRot[o]|=1.39e-05
+macro iter   7 (  5 JK    2 micro), CASSCF E = -1337.28901771544  dE = -4.86579665e-10  S^2 = 6.0000000
+               |grad[o]|=1.37e-05  |grad[c]|=1.83e-05  |ddm|=    0  |maxRot[o]|=9.27e-06
+macro iter   8 (  3 JK    1 micro), CASSCF E = -1337.28901771567  dE = -2.35786501e-10  S^2 = 6.0000000
+               |grad[o]|=7.49e-06  |grad[c]|=1.4e-05  |ddm|=    0  |maxRot[o]|=3.98e-06
+macro iter   9 (  3 JK    1 micro), CASSCF E = -1337.28901771580  dE = -1.31194611e-10  S^2 = 6.0000000
+               |grad[o]|=5.95e-06  |grad[c]|=1.06e-05  |ddm|=    0  |maxRot[o]|=3.33e-06
+macro iter  10 (  3 JK    1 micro), CASSCF E = -1337.28901771588  dE = -7.84439180e-11  S^2 = 6.0000000
+               |grad[o]|=3.69e-06  |grad[c]|=9e-06  |ddm|=    0  |maxRot[o]|=2.03e-06
+1-step CASSCF converged in  10 macro ( 96 JK  27 micro) steps
+CASSCF canonicalization
+Natural occ [1.99136665 1.9654986  1.96549855 1.72870723 1.03380441 1.03380432
+ 1.00372336 1.0004721  0.27712479]
+Natural orbital (expansion on meta-Lowdin AOs) in CAS space
+               #1        #2        #3        #4        #5       
+0 Fe 1s          0.00000  -0.00000   0.00000  -0.00021  -0.00000
+0 Fe 2s          0.00000   0.00000  -0.00000   0.00093   0.00000
+0 Fe 3s          0.00000   0.00000  -0.00000   0.00095  -0.00000
+0 Fe 4s         -0.00000  -0.00000   0.00000  -0.18621   0.00000
+0 Fe 5s         -0.00000   0.00000  -0.00000   0.02723   0.00000
+0 Fe 6s          0.00000  -0.00000   0.00000  -0.00950  -0.00000
+0 Fe 2px        -0.00000  -0.00003  -0.00007   0.00000  -0.00005
+0 Fe 2py        -0.00000  -0.00007   0.00003  -0.00000  -0.00009
+0 Fe 2pz        -0.00000  -0.00000   0.00000   0.00040   0.00000
+0 Fe 3px         0.00000  -0.00705  -0.01849  -0.00000   0.00187
+0 Fe 3py         0.00000  -0.01849   0.00705   0.00000   0.00356
+0 Fe 3pz        -0.00000  -0.00000   0.00000   0.00559  -0.00000
+0 Fe 4px         0.00000  -0.02543  -0.06670  -0.00000   0.03323
+0 Fe 4py         0.00000  -0.06670   0.02543   0.00000   0.06336
+0 Fe 4pz         0.00000   0.00000  -0.00000  -0.05120   0.00000
+0 Fe 5px         0.00000  -0.00181  -0.00476  -0.00000   0.00434
+0 Fe 5py         0.00000  -0.00476   0.00181   0.00000   0.00828
+0 Fe 5pz         0.00000  -0.00000   0.00000  -0.01497  -0.00000
+0 Fe 3dxy        0.63552  -0.00000  -0.00000  -0.00000  -0.00000
+0 Fe 3dyz        0.00000   0.32282  -0.12310  -0.00000   0.82811
+0 Fe 3dz^2      -0.00000   0.00000  -0.00000   0.57916  -0.00000
+0 Fe 3dxz        0.00000   0.12310   0.32282   0.00000   0.43428
+0 Fe 3dx2-y2     0.77177  -0.00000  -0.00000   0.00000  -0.00000
+0 Fe 4dxy       -0.00897  -0.00000   0.00000   0.00000   0.00000
+0 Fe 4dyz       -0.00000   0.02047  -0.00780  -0.00000  -0.05028
+0 Fe 4dz^2       0.00000  -0.00000   0.00000  -0.00934   0.00000
+0 Fe 4dxz       -0.00000   0.00780   0.02047   0.00000  -0.02637
+0 Fe 4dx2-y2    -0.01089  -0.00000  -0.00000  -0.00000   0.00000
+0 Fe 5dxy        0.01056  -0.00000  -0.00000  -0.00000  -0.00000
+0 Fe 5dyz        0.00000   0.00617  -0.00235  -0.00000   0.01420
+0 Fe 5dz^2      -0.00000   0.00000  -0.00000   0.01903   0.00000
+0 Fe 5dxz        0.00000   0.00235   0.00617   0.00000   0.00745
+0 Fe 5dx2-y2     0.01282  -0.00000   0.00000   0.00000  -0.00000
+0 Fe 6dxy       -0.00220   0.00000   0.00000  -0.00000  -0.00000
+0 Fe 6dyz       -0.00000  -0.00433   0.00165   0.00000   0.00135
+0 Fe 6dz^2       0.00000   0.00000  -0.00000   0.00190   0.00000
+0 Fe 6dxz       -0.00000  -0.00165  -0.00433  -0.00000   0.00071
+0 Fe 6dx2-y2    -0.00268   0.00000  -0.00000   0.00000  -0.00000
+0 Fe 4f-3       -0.00000  -0.00001  -0.00006  -0.00000  -0.00002
+0 Fe 4f-2       -0.00058   0.00000  -0.00000   0.00000   0.00000
+0 Fe 4f-1        0.00000   0.00732  -0.00279  -0.00000  -0.00251
+0 Fe 4f+0        0.00000   0.00000  -0.00000   0.01053   0.00000
+0 Fe 4f+1        0.00000   0.00279   0.00732   0.00000  -0.00132
+0 Fe 4f+2       -0.00070   0.00000   0.00000  -0.00000  -0.00000
+0 Fe 4f+3       -0.00000  -0.00006   0.00001   0.00000  -0.00006
+1 O 1s          -0.00000  -0.00000   0.00000  -0.00040  -0.00000
+1 O 2s          -0.00000   0.00000  -0.00000   0.17173  -0.00000
+1 O 3s          -0.00000   0.00000  -0.00000   0.05044  -0.00000
+1 O 4s          -0.00000   0.00000  -0.00000   0.01273  -0.00000
+1 O 5s          -0.00000   0.00000  -0.00000   0.00399  -0.00000
+1 O 2px          0.00000   0.33243   0.87176   0.00000  -0.15577
+1 O 2py          0.00000   0.87176  -0.33243  -0.00000  -0.29703
+1 O 2pz         -0.00000  -0.00000   0.00000  -0.76941  -0.00000
+1 O 3px          0.00000  -0.01727  -0.04529  -0.00000   0.02998
+1 O 3py          0.00000  -0.04529   0.01727   0.00000   0.05716
+1 O 3pz         -0.00000   0.00000  -0.00000   0.00087   0.00000
+1 O 4px         -0.00000  -0.00543  -0.01423  -0.00000   0.00262
+1 O 4py         -0.00000  -0.01423   0.00543   0.00000   0.00500
+1 O 4pz          0.00000   0.00000  -0.00000   0.00793   0.00000
+1 O 3dxy         0.00158  -0.00000   0.00000   0.00000   0.00000
+1 O 3dyz        -0.00000  -0.03346   0.01276   0.00000   0.00999
+1 O 3dz^2        0.00000   0.00000  -0.00000   0.03512   0.00000
+1 O 3dxz        -0.00000  -0.01276  -0.03346  -0.00000   0.00524
+1 O 3dx2-y2      0.00191  -0.00000  -0.00000  -0.00000   0.00000
+1 O 4dxy        -0.00039  -0.00000   0.00000   0.00000   0.00000
+1 O 4dyz         0.00000  -0.01020   0.00389   0.00000   0.00910
+1 O 4dz^2        0.00000   0.00000  -0.00000   0.00692   0.00000
+1 O 4dxz         0.00000  -0.00389  -0.01020  -0.00000   0.00477
+1 O 4dx2-y2     -0.00047  -0.00000  -0.00000  -0.00000   0.00000
+1 O 4f-3        -0.00000   0.00000   0.00000  -0.00000   0.00000
+1 O 4f-2        -0.00055  -0.00000   0.00000  -0.00000   0.00000
+1 O 4f-1         0.00000   0.00758  -0.00289  -0.00000  -0.00077
+1 O 4f+0        -0.00000  -0.00000   0.00000  -0.00877  -0.00000
+1 O 4f+1         0.00000   0.00289   0.00758   0.00000  -0.00041
+1 O 4f+2        -0.00067  -0.00000  -0.00000   0.00000   0.00000
+1 O 4f+3        -0.00000   0.00000  -0.00000   0.00000   0.00000
+               #6        #7        #8        #9       
+0 Fe 1s          0.00000  -0.00039  -0.00000  -0.00006
+0 Fe 2s         -0.00000   0.00133   0.00000   0.00005
+0 Fe 3s          0.00000  -0.00695  -0.00000  -0.00154
+0 Fe 4s         -0.00000  -0.85034  -0.00000  -0.34604
+0 Fe 5s         -0.00000   0.09591   0.00000   0.06292
+0 Fe 6s          0.00000  -0.02087  -0.00000  -0.01827
+0 Fe 2px         0.00009   0.00000   0.00000  -0.00000
+0 Fe 2py        -0.00005  -0.00000  -0.00000   0.00000
+0 Fe 2pz        -0.00000  -0.00006  -0.00000  -0.00037
+0 Fe 3px        -0.00356   0.00000  -0.00000   0.00000
+0 Fe 3py         0.00187  -0.00000   0.00000  -0.00000
+0 Fe 3pz         0.00000  -0.00274   0.00000   0.01354
+0 Fe 4px        -0.06336  -0.00000  -0.00000  -0.00000
+0 Fe 4py         0.03323   0.00000   0.00000   0.00000
+0 Fe 4pz        -0.00000  -0.19330  -0.00000  -0.10274
+0 Fe 5px        -0.00828   0.00000  -0.00000  -0.00000
+0 Fe 5py         0.00434  -0.00000   0.00000   0.00000
+0 Fe 5pz         0.00000  -0.00135  -0.00000   0.00639
+0 Fe 3dxy       -0.00000  -0.00000   0.77106  -0.00000
+0 Fe 3dyz        0.43428   0.00000   0.00000  -0.00000
+0 Fe 3dz^2       0.00000  -0.44384  -0.00000   0.65718
+0 Fe 3dxz       -0.82811  -0.00000  -0.00000   0.00000
+0 Fe 3dx2-y2     0.00000   0.00000  -0.63494   0.00000
+0 Fe 4dxy        0.00000   0.00000  -0.03418   0.00000
+0 Fe 4dyz       -0.02637   0.00000  -0.00000   0.00000
+0 Fe 4dz^2      -0.00000   0.05046   0.00000  -0.06119
+0 Fe 4dxz        0.05028  -0.00000   0.00000  -0.00000
+0 Fe 4dx2-y2    -0.00000  -0.00000   0.02815  -0.00000
+0 Fe 5dxy       -0.00000  -0.00000   0.01425   0.00000
+0 Fe 5dyz        0.00745  -0.00000   0.00000   0.00000
+0 Fe 5dz^2      -0.00000  -0.01684  -0.00000   0.00106
+0 Fe 5dxz       -0.01420   0.00000  -0.00000  -0.00000
+0 Fe 5dx2-y2     0.00000   0.00000  -0.01173  -0.00000
+0 Fe 6dxy       -0.00000  -0.00000   0.00149  -0.00000
+0 Fe 6dyz        0.00071  -0.00000   0.00000  -0.00000
+0 Fe 6dz^2      -0.00000  -0.01937  -0.00000  -0.01479
+0 Fe 6dxz       -0.00135   0.00000  -0.00000   0.00000
+0 Fe 6dx2-y2     0.00000   0.00000  -0.00123   0.00000
+0 Fe 4f-3        0.00006  -0.00000  -0.00000   0.00000
+0 Fe 4f-2       -0.00000   0.00000  -0.00080   0.00000
+0 Fe 4f-1       -0.00132  -0.00000   0.00000   0.00000
+0 Fe 4f+0       -0.00000   0.00543   0.00000  -0.00645
+0 Fe 4f+1        0.00251   0.00000  -0.00000  -0.00000
+0 Fe 4f+2        0.00000  -0.00000   0.00066  -0.00000
+0 Fe 4f+3       -0.00002   0.00000   0.00000  -0.00000
+1 O 1s           0.00000   0.00033   0.00000   0.00025
+1 O 2s           0.00000   0.09158   0.00000   0.13950
+1 O 3s           0.00000   0.10911   0.00000   0.11780
+1 O 4s           0.00000   0.04001   0.00000   0.01201
+1 O 5s           0.00000   0.00384   0.00000   0.01008
+1 O 2px          0.29703   0.00000   0.00000  -0.00000
+1 O 2py         -0.15577  -0.00000  -0.00000   0.00000
+1 O 2pz          0.00000  -0.08502  -0.00000   0.62666
+1 O 3px         -0.05716  -0.00000  -0.00000  -0.00000
+1 O 3py          0.02998   0.00000   0.00000   0.00000
+1 O 3pz         -0.00000   0.01670   0.00000   0.03994
+1 O 4px         -0.00500   0.00000  -0.00000   0.00000
+1 O 4py          0.00262  -0.00000   0.00000  -0.00000
+1 O 4pz         -0.00000  -0.01216  -0.00000  -0.03558
+1 O 3dxy         0.00000   0.00000   0.00001   0.00000
+1 O 3dyz         0.00524   0.00000   0.00000   0.00000
+1 O 3dz^2       -0.00000  -0.00847  -0.00000  -0.00744
+1 O 3dxz        -0.00999  -0.00000  -0.00000  -0.00000
+1 O 3dx2-y2     -0.00000  -0.00000  -0.00001  -0.00000
+1 O 4dxy         0.00000   0.00000  -0.00157   0.00000
+1 O 4dyz         0.00477   0.00000   0.00000  -0.00000
+1 O 4dz^2       -0.00000  -0.00103   0.00000  -0.00404
+1 O 4dxz        -0.00910  -0.00000  -0.00000   0.00000
+1 O 4dx2-y2     -0.00000  -0.00000   0.00130  -0.00000
+1 O 4f-3        -0.00000  -0.00000  -0.00000  -0.00000
+1 O 4f-2         0.00000   0.00000  -0.00012  -0.00000
+1 O 4f-1        -0.00041  -0.00000   0.00000   0.00000
+1 O 4f+0         0.00000   0.00050   0.00000   0.00858
+1 O 4f+1         0.00077   0.00000  -0.00000  -0.00000
+1 O 4f+2        -0.00000  -0.00000   0.00010   0.00000
+1 O 4f+3         0.00000   0.00000   0.00000   0.00000
+<CAS-nat-orb|mo-hf>  12     13       0.99987858
+<CAS-nat-orb|mo-hf>  13     14       0.98967438
+<CAS-nat-orb|mo-hf>  14     16       0.98739627
+<CAS-nat-orb|mo-hf>  15     12       0.90549687
+<CAS-nat-orb|mo-hf>  16     18       0.99187193
+<CAS-nat-orb|mo-hf>  17     20       0.69662046
+<CAS-nat-orb|mo-hf>  17     23      -0.61968179
+<CAS-nat-orb|mo-hf>  18     15      -0.53764512
+<CAS-nat-orb|mo-hf>  18     19       0.69789727
+<CAS-nat-orb|mo-hf>  19     17       0.91740248
+<CAS-nat-orb|mo-hf>  20     15       0.69622054
+<CAS-nat-orb|mo-hf>  20     19       0.64883537
+CASSCF energy = -1337.28901771588
+CASCI E = -1337.28901771588  E(CI) = -38.8219443286541  S^2 = 6.0000000

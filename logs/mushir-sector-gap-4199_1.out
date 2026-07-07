@@ -1,0 +1,11 @@
+Computing sector gap for cyclobutadiene_ceo
+Output: runs/initial_state_gap/cyclobutadiene_ceo/sector_gap.json
+Wrote runs/initial_state_gap/cyclobutadiene_ceo/sector_gap.json
+case_id: cyclobutadiene_ceo
+status: completed
+sector_dim: 36
+sector_ground_energy_hartree: -153.72228958246038
+first_excited_energy_hartree: -153.65665071490815
+gap_hartree: 0.0656388675522237
+gap_ev: 1.7861245777128079
+elapsed_seconds: 0.0010655391961336136

@@ -1,0 +1,5 @@
+converged SCF energy = -1737.46938204067
+CASSCF energy = -1737.70235636171
+CASCI E = -1737.70235636171  E(CI) = -19.7080086555577  S^2 = 0.0000000
+FAIL qrte fenoco3_minus: RuntimeError('CASSCF did not converge while building the benchmark Hamiltonian')
+{"completed": 0, "failed": 1, "skipped": 0}

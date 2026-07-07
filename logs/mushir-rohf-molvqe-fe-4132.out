@@ -1,0 +1,5 @@
+overwrite output file: runs/rohf_molvqe_fe_cases/FeO/pyscf.log
+DONE ROHF/CASSCF FeO scf=-1337.092139989564 casscf=-1337.289017715882
+overwrite output file: runs/rohf_molvqe_fe_cases/feo4_2minus_ceo/pyscf.log
+FAIL ROHF/CASSCF feo4_2minus_ceo: RuntimeError('CASSCF did not converge')
+{"completed": 1, "failed": 1, "skipped": 0}

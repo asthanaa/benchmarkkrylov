@@ -1,0 +1,21 @@
+{
+  "active_orbital_labels": null,
+  "case_id": "H10_near_equi_sto3g_0",
+  "casscf_energy_hartree": -5.379954745997448,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -5.378354745997449,
+  "elapsed_seconds": 36301.77413345175,
+  "final_min_history_energy_hartree": -5.2693256195474785,
+  "final_projected_ground_energy_hartree": -5.2693256195474785,
+  "h0.25": 7.818083252632531,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

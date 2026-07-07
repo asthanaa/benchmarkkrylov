@@ -1,0 +1,11 @@
+Computing sector gap for feno_2plus
+Output: runs/initial_state_gap/feno_2plus/sector_gap.json
+Wrote runs/initial_state_gap/feno_2plus/sector_gap.json
+case_id: feno_2plus
+status: completed
+sector_dim: 4536
+sector_ground_energy_hartree: -1398.47876436265
+first_excited_energy_hartree: -1398.4424557965315
+gap_hartree: 0.0363085661185778
+gap_ev: 0.9880064166906138
+elapsed_seconds: 0.48945057671517134

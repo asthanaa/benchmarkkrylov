@@ -1,0 +1,57 @@
+{
+  "active_electrons": 8,
+  "active_orbital_label_source": "local benchmark AVAS mapping; MolVQE JSON does not store orbital labels",
+  "active_orbital_labels": [
+    "Fe 3d"
+  ],
+  "active_orbitals": 8,
+  "active_space_source": "MolVQE JSON meta.casscf ncas/nelec",
+  "basis": "def2-TZVP",
+  "case_id": "feo4_2minus_ceo",
+  "charge": -2,
+  "dataset_casscf_converged": true,
+  "dataset_casscf_energy_hartree": -1561.7175121505988,
+  "dataset_casscf_natorb": false,
+  "dataset_scf_converged": true,
+  "dataset_scf_energy_hartree": -1561.4543306994385,
+  "dataset_scf_method": "ROHF",
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.5617599776135123,
+      1.8104729006269278
+    ],
+    [
+      -2.5617599776135123,
+      0.0,
+      -1.8104729006269278
+    ],
+    [
+      2.5617599776135123,
+      0.0,
+      -1.8104729006269278
+    ],
+    [
+      0.0,
+      -2.5617599776135123,
+      1.8104729006269278
+    ]
+  ],
+  "geometry_source": "MolVQE JSON meta.molecule atoms xyz, used directly with PySCF unit='Bohr'",
+  "scf_method_requested": "ROHF",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/feo4_2minus_ceo.json",
+  "spin": 2,
+  "symbols": [
+    "Fe",
+    "O",
+    "O",
+    "O",
+    "O"
+  ],
+  "symmetry": false
+}

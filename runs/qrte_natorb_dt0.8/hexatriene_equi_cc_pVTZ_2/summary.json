@@ -1,0 +1,23 @@
+{
+  "active_orbital_labels": [
+    "C 2pz"
+  ],
+  "case_id": "hexatriene_equi_cc_pVTZ_2",
+  "casscf_energy_hartree": -231.86563211268302,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_energy_hartree": -231.86403211268302,
+  "elapsed_seconds": 51.518570479005575,
+  "final_min_history_energy_hartree": -231.86114182115952,
+  "final_projected_ground_energy_hartree": -231.86114182115952,
+  "h0.25": 3.6327331004268526,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": false,
+  "hit_iteration": null,
+  "method": "qrte",
+  "n_steps": 50,
+  "n_steps_completed": 50,
+  "n_steps_requested": 50,
+  "status": "completed",
+  "stopped_early": false
+}

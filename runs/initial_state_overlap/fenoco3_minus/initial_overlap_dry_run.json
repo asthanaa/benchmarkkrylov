@@ -1,0 +1,16 @@
+{
+  "case_id": "fenoco3_minus",
+  "full_hilbert_dim": 65536,
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/casscf_natorb_sfx2c1erohf_unconverged/81f2960da3054aab56acfd4abb301379881f27d14d1a107c8652ad4b849df461.npz",
+  "hamiltonian_loaded_from_cache": true,
+  "hf_bits": "1111111111000000",
+  "hf_full_basis_index": 65472,
+  "hf_sector_position": 3135,
+  "loaded_directly_from_summary_cache": true,
+  "n_alpha": 5,
+  "n_beta": 5,
+  "qubits": 16,
+  "run_dir": "runs/qkud_fe_eps0.05/fenoco3_minus",
+  "sector_dim": 3136,
+  "status": "dry_run"
+}

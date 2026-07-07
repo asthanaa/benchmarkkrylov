@@ -1,0 +1,50 @@
+{
+  "active_electrons": 12,
+  "active_orbital_label_source": "local benchmark AVAS mapping; MolVQE JSON does not store orbital labels",
+  "active_orbital_labels": [
+    "Fe 3d",
+    "O 2p"
+  ],
+  "active_orbitals": 9,
+  "active_space_source": "MolVQE JSON meta.casscf ncas/nelec",
+  "avas_info": {
+    "active_orbital_labels": [
+      "Fe 3d",
+      "O 2p"
+    ],
+    "avas_ncas": 8,
+    "avas_nelec_total": 10,
+    "avas_nelecas": [
+      10
+    ],
+    "avas_used_as_initial_guess": false
+  },
+  "basis": "def2-TZVP",
+  "case_id": "FeO",
+  "charge": 0,
+  "dataset_casscf_converged": true,
+  "dataset_casscf_energy_hartree": -1337.2890177002632,
+  "dataset_casscf_natorb": true,
+  "dataset_scf_converged": true,
+  "dataset_scf_energy_hartree": -1337.1287516796363,
+  "dataset_scf_method": "ROHF",
+  "elapsed_seconds": 12.492934902664274,
+  "geometry_source": "MolVQE JSON meta.molecule atoms xyz, used directly with PySCF unit='Bohr'",
+  "local_casscf_converged": true,
+  "local_casscf_energy_hartree": -1337.2890177158818,
+  "local_casscf_natorb": true,
+  "local_casscf_nelecas": [
+    8,
+    4
+  ],
+  "local_minus_dataset_casscf_hartree": -1.5618525139871053e-08,
+  "local_minus_dataset_scf_hartree": 0.03661169007227727,
+  "local_scf_converged": true,
+  "local_scf_energy_hartree": -1337.092139989564,
+  "local_scf_method": "ROHF",
+  "pyscf_log_path": "runs/rohf_molvqe_fe_cases/FeO/pyscf.log",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/FeO.json",
+  "spin": 4,
+  "status": "completed",
+  "symmetry": false
+}

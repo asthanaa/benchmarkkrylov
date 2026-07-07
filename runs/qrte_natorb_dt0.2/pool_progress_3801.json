@@ -1,0 +1,245 @@
+{
+  "completed": 28,
+  "concurrency": 18,
+  "early_stop_chemical_accuracy": true,
+  "events": [
+    {
+      "case_id": "H4_near_equi_sto3g_0",
+      "elapsed_seconds": 45.3492607078515,
+      "manifest_index": 0,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H5_near_equi_sto3g_1",
+      "elapsed_seconds": 45.34253016021103,
+      "manifest_index": 3,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CO_equi_cc_pVTZ_2",
+      "elapsed_seconds": 45.28930907417089,
+      "manifest_index": 5,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "N2_equi_cc_pVTZ_0",
+      "elapsed_seconds": 45.26958328904584,
+      "manifest_index": 6,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "N2_equi_cc_pVTZ_2",
+      "elapsed_seconds": 45.24587427312508,
+      "manifest_index": 4,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "BeH2_equi_cc_pVTZ_0",
+      "elapsed_seconds": 45.22611491987482,
+      "manifest_index": 9,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "cyclobutadiene_ceo",
+      "elapsed_seconds": 45.18181275203824,
+      "manifest_index": 1,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CH2O_equi_cc_pVTZ_2",
+      "elapsed_seconds": 45.12225126614794,
+      "manifest_index": 10,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H6_near_equi_cc_pVTZ_2",
+      "elapsed_seconds": 45.069338886998594,
+      "manifest_index": 12,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "BeH2_equi_cc_pVTZ_2",
+      "elapsed_seconds": 50.47590049961582,
+      "manifest_index": 8,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H6_near_equi_cc_pVTZ_0",
+      "elapsed_seconds": 60.396117435302585,
+      "manifest_index": 13,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "hexatriene_equi_cc_pVTZ_0",
+      "elapsed_seconds": 10.108988129068166,
+      "manifest_index": 18,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "hexatriene_equi_cc_pVTZ_2",
+      "elapsed_seconds": 10.079712318256497,
+      "manifest_index": 17,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CH2O_equi_cc_pVTZ_0",
+      "elapsed_seconds": 65.50423126015812,
+      "manifest_index": 11,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H6_near_equi_sto3g_0",
+      "elapsed_seconds": 70.69772789115086,
+      "manifest_index": 14,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "magnesium_porphyrin_ceo",
+      "elapsed_seconds": 5.013373313006014,
+      "manifest_index": 2,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "CO_equi_cc_pVTZ_0",
+      "elapsed_seconds": 75.69017518498003,
+      "manifest_index": 7,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "m_Benzyne_equi_cc_pVTZ_0",
+      "elapsed_seconds": 60.243457842152566,
+      "manifest_index": 16,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "m_Benzyne_equi_cc_pVTZ_2",
+      "elapsed_seconds": 60.240845404565334,
+      "manifest_index": 15,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H7_near_equi_sto3g_1",
+      "elapsed_seconds": 180.60053713293746,
+      "manifest_index": 19,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "Al3_minus",
+      "elapsed_seconds": 830.5738239521161,
+      "manifest_index": 25,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H8_near_equi_sto3g_0",
+      "elapsed_seconds": 1390.7479242929257,
+      "manifest_index": 22,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "feo4_2minus_ceo",
+      "elapsed_seconds": 2065.6331888833083,
+      "manifest_index": 21,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "fenoco3_minus",
+      "elapsed_seconds": 2530.5843498781323,
+      "manifest_index": 23,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "FeO",
+      "elapsed_seconds": 5661.217770189978,
+      "manifest_index": 24,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H9_near_equi_sto3g_1",
+      "elapsed_seconds": 7036.476469088811,
+      "manifest_index": 27,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "feno_2plus",
+      "elapsed_seconds": 7201.398500775918,
+      "manifest_index": 26,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    },
+    {
+      "case_id": "H10_near_equi_sto3g_0",
+      "elapsed_seconds": 35379.10175623186,
+      "manifest_index": 28,
+      "outcome": "completed",
+      "returncode": 0,
+      "summary_status": "completed"
+    }
+  ],
+  "failed": 0,
+  "force": false,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "max_workers": 2,
+  "method": "qrte",
+  "n_pending_at_start": 29,
+  "n_selected": 29,
+  "order": "small-first",
+  "pool_id": "3801",
+  "skipped_completed_at_start": 0,
+  "started_at_epoch": 1781648698.945733,
+  "stopped": true,
+  "updated_at_epoch": 1781814551.0697606
+}

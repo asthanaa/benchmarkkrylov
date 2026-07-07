@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=mushir-live-0p2
-#SBATCH --partition=talon
+#SBATCH --partition=compute
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=28-00:00:00
-#SBATCH --output=/home/ayush.asthana/code/benchmark/logs/%x-%j.out
-#SBATCH --error=/home/ayush.asthana/code/benchmark/logs/%x-%j.err
+#SBATCH --time=15-00:00:00
+#SBATCH --output=/home/mushir.kolathingal/benchmarkkrylov/logs/%x-%j.out
+#SBATCH --error=/home/mushir.kolathingal/benchmarkkrylov/logs/%x-%j.err
 
 set -euo pipefail
 
-cd /home/ayush.asthana/code/benchmark
+cd /home/mushir.kolathingal/benchmarkkrylov
 
-PYTHON=${PYTHON:-/home/ayush.asthana/miniconda3/bin/python}
+PYTHON=${PYTHON:-/home/mushir.kolathingal/miniforge3/envs/expk/bin/python}
 
 WATCH_JOB_ARGS=()
+for job_id in "$@"; do
+  WATCH_JOB_ARGS+=(--watch-job-id "${job_id}")
+done
 for job_id in ${WATCH_JOB_IDS:-}; do
   WATCH_JOB_ARGS+=(--watch-job-id "${job_id}")
 done

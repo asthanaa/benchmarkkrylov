@@ -1,0 +1,11 @@
+Computing sector gap for CH2O_equi_cc_pVTZ_2
+Output: runs/initial_state_gap/CH2O_equi_cc_pVTZ_2/sector_gap.json
+Wrote runs/initial_state_gap/CH2O_equi_cc_pVTZ_2/sector_gap.json
+case_id: CH2O_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+sector_ground_energy_hartree: -113.82914720544129
+first_excited_energy_hartree: -113.74720302620003
+gap_hartree: 0.08194417924126185
+gap_ev: 2.229814711944448
+elapsed_seconds: 0.008078849874436855

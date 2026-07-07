@@ -14,8 +14,9 @@ qrte_job=${qrte_job%%;*}
 qkud_job=${qkud_job%%;*}
 
 watch_job=$(sbatch --parsable \
-  --export=ALL,WATCH_JOB_IDS="${qrte_job},${qkud_job}" \
-  "${SCRIPT_DIR}/watch_plots_dt0p2_eps0p2.sbatch")
+  --export=NIL \
+  "${SCRIPT_DIR}/watch_plots_dt0p2_eps0p2.sbatch" \
+  "${qrte_job}" "${qkud_job}")
 watch_job=${watch_job%%;*}
 
 printf 'QRTE delta_t=0.2 job: %s\n' "${qrte_job}"

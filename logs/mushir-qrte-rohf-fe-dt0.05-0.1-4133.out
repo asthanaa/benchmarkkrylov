@@ -1,0 +1,15 @@
+converged SCF energy = -1337.09213998956
+CASSCF energy = -1337.28901771588
+CASCI E = -1337.28901771588  E(CI) = -38.8219443286541  S^2 = 6.0000000
+DONE QRTE FeO dt=0.05 hit=None ref=-1337.289017715882
+DONE QRTE FeO dt=0.1 hit=None ref=-1337.289017715882
+PLOT FeO plots/qrte_rohf_molvqe_fe_cases/FeO_qrte_rohf_molvqe_dt0p05_dt0p1_convergence.png plots/qrte_rohf_molvqe_fe_cases/FeO_qrte_rohf_molvqe_dt0p05_dt0p1_convergence.pdf
+converged SCF energy = -1561.31980757406
+CASSCF energy = -1561.68743241606
+CASCI E = -1561.68743241606  E(CI) = -12.4927409841177  S^2 = 2.0000000
+FAIL QRTE feo4_2minus_ceo dt=0.05: RuntimeError('CASSCF did not converge while building the benchmark Hamiltonian')
+converged SCF energy = -1561.31980757406
+CASSCF energy = -1561.68743241606
+CASCI E = -1561.68743241606  E(CI) = -12.4927409841177  S^2 = 2.0000000
+FAIL QRTE feo4_2minus_ceo dt=0.1: RuntimeError('CASSCF did not converge while building the benchmark Hamiltonian')
+{"completed": 2, "failed": 2, "skipped": 0}

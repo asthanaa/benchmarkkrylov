@@ -1,0 +1,134 @@
+{
+  "abs_local_minus_dataset_casscf_hartree": 4.934008757118136e-11,
+  "active_electrons": 4,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [
+    11,
+    13,
+    14,
+    19
+  ],
+  "active_orbital_overrides_path": "manifests/molvqe21_active_orbital_overrides.json",
+  "active_orbital_selection_method": "pyscf_canonical_rohf_mo_indices",
+  "active_orbitals": 4,
+  "active_space_selection": "active_orbital_indices",
+  "active_space_source": "explicit PySCF canonical MO indices from override JSON",
+  "basis": "cc-pvdz",
+  "case_id": "cyclobutadiene_ceo",
+  "casscf_energy_hartree": -153.72228958245736,
+  "casscf_match_tolerance_hartree": 1e-05,
+  "charge": 0,
+  "dataset_casscf_converged": true,
+  "dataset_casscf_energy_hartree": -153.72228958240802,
+  "dataset_casscf_natorb": true,
+  "dataset_scf_energy_hartree": -153.65140584417622,
+  "dataset_scf_method": "SymAdaptedROHF",
+  "effective_active_electrons": 4,
+  "geometry_angstrom": [
+    [
+      1.5531999999501027,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.3656999999561261,
+      0.0
+    ],
+    [
+      1.5531999999501027,
+      1.3656999999561261,
+      0.0
+    ],
+    [
+      2.308318999925844,
+      -0.7551189999757414,
+      0.0
+    ],
+    [
+      -0.7551189999757414,
+      -0.7551189999757414,
+      0.0
+    ],
+    [
+      -0.7551189999757414,
+      2.1208189999318674,
+      0.0
+    ],
+    [
+      2.308318999925844,
+      2.1208189999318674,
+      0.0
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      2.935122616674454,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.5807989683185046,
+      0.0
+    ],
+    [
+      2.935122616674454,
+      2.5807989683185046,
+      0.0
+    ],
+    [
+      4.362090718129899,
+      -1.426968101455445,
+      0.0
+    ],
+    [
+      -1.426968101455445,
+      -1.426968101455445,
+      0.0
+    ],
+    [
+      -1.426968101455445,
+      4.00776706977395,
+      0.0
+    ],
+    [
+      4.362090718129899,
+      4.00776706977395,
+      0.0
+    ]
+  ],
+  "hamiltonian_cache_path": "hamiltonian_cache/casscf_natorb_corrected_active_space_dt0p05/ae485c01a500fed77cbfd2ceafbd62994bcd63222507ad81e2550ff98699f5da.npz",
+  "hamiltonian_loaded_from_cache": true,
+  "local_minus_dataset_casscf_hartree": -4.934008757118136e-11,
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -153.72228958245736,
+  "local_reference_matches_dataset": true,
+  "reference_source": "local corrected CASSCF/natorb Hamiltonian reference",
+  "scf_converged": true,
+  "scf_energy_hartree": -153.65140584417833,
+  "scf_policy": "QCANT/PySCF RHF for spin=0, ROHF for spin>0",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/cyclobutadiene_ceo.json",
+  "source_name": "cyclobutadiene_ceo.json",
+  "spin": 0,
+  "symbols": [
+    "C",
+    "C",
+    "C",
+    "C",
+    "H",
+    "H",
+    "H",
+    "H"
+  ]
+}

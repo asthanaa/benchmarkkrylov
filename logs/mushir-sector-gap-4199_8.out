@@ -1,0 +1,11 @@
+Computing sector gap for BeH2_equi_cc_pVTZ_2
+Output: runs/initial_state_gap/BeH2_equi_cc_pVTZ_2/sector_gap.json
+Wrote runs/initial_state_gap/BeH2_equi_cc_pVTZ_2/sector_gap.json
+case_id: BeH2_equi_cc_pVTZ_2
+status: completed
+sector_dim: 120
+sector_ground_energy_hartree: -15.577504296998772
+first_excited_energy_hartree: -15.541474963708602
+gap_hartree: 0.036029333290169774
+gap_ev: 0.9804081043442433
+elapsed_seconds: 0.003338920883834362

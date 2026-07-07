@@ -1,0 +1,5 @@
+output file: runs/rohf_molvqe_fe_cases/FeO/pyscf.log
+FAIL ROHF/CASSCF FeO: TypeError("'numpy.int64' object is not iterable")
+output file: runs/rohf_molvqe_fe_cases/feo4_2minus_ceo/pyscf.log
+FAIL ROHF/CASSCF feo4_2minus_ceo: TypeError("'numpy.int64' object is not iterable")
+{"completed": 0, "failed": 2, "skipped": 0}

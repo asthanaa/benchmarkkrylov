@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=mushir-qkud-eps0.2
-#SBATCH --partition=talon
+#SBATCH --partition=compute
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=36
 #SBATCH --exclusive
-#SBATCH --time=28-00:00:00
-#SBATCH --output=/home/ayush.asthana/code/benchmark/logs/%x-%j.out
-#SBATCH --error=/home/ayush.asthana/code/benchmark/logs/%x-%j.err
+#SBATCH --time=48:00:00
+#SBATCH --output=/home/mushir.kolathingal/benchmarkkrylov/logs/%x-%j.out
+#SBATCH --error=/home/mushir.kolathingal/benchmarkkrylov/logs/%x-%j.err
 
 set -euo pipefail
 
-cd /home/ayush.asthana/code/benchmark
+cd /home/mushir.kolathingal/benchmarkkrylov
 
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
@@ -19,7 +19,7 @@ export MKL_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
-PYTHON=${PYTHON:-/home/ayush.asthana/miniconda3/bin/python}
+PYTHON=${PYTHON:-/home/mushir.kolathingal/miniforge3/envs/expk/bin/python}
 
 exec "${PYTHON}" scripts/run_krylov_pool.py \
   --method qkud \

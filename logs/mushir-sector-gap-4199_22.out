@@ -1,0 +1,11 @@
+Computing sector gap for FeO
+Output: runs/initial_state_gap/FeO/sector_gap.json
+Wrote runs/initial_state_gap/FeO/sector_gap.json
+case_id: FeO
+status: completed
+sector_dim: 1134
+sector_ground_energy_hartree: -1337.2890177159752
+first_excited_energy_hartree: -1337.2842275996907
+gap_hartree: 0.004790116284539181
+gap_ev: 0.1303457043817926
+elapsed_seconds: 0.06522395368665457

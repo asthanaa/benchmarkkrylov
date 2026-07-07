@@ -1,0 +1,15 @@
+Computing initial overlap for FeO
+Run directory: runs/qkud_fe_eps0.05/FeO
+Output: runs/initial_state_overlap/FeO/initial_overlap.json
+Wrote runs/initial_state_overlap/FeO/initial_overlap.json
+case_id: FeO
+status: completed
+sector_dim: 1134
+n_alpha: 8
+n_beta: 4
+hf_bits: 111111111010101000
+sector_ground_energy_hartree: -1337.2890177159616
+overlap_weight: 0.7852645122663396
+negative_log10_overlap: 0.10498402877351679
+solver: pyscf-fci
+elapsed_seconds: 5.739632929675281

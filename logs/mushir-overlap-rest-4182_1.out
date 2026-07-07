@@ -1,0 +1,15 @@
+Computing initial overlap for magnesium_porphyrin_ceo
+Run directory: runs/qkud_natorb_eps0.05/magnesium_porphyrin_ceo
+Output: runs/initial_state_overlap/magnesium_porphyrin_ceo/initial_overlap.json
+Wrote runs/initial_state_overlap/magnesium_porphyrin_ceo/initial_overlap.json
+case_id: magnesium_porphyrin_ceo
+status: completed
+sector_dim: 36
+n_alpha: 2
+n_beta: 2
+hf_bits: 11110000
+sector_ground_energy_hartree: -1182.238964130337
+overlap_weight: 0.9267530162040449
+negative_log10_overlap: 0.033035991844240234
+solver: pyscf-fci
+elapsed_seconds: 13.071856785565615

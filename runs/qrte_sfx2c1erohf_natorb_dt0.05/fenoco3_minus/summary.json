@@ -1,0 +1,18 @@
+{
+  "active_electrons": 10,
+  "active_orbitals": 8,
+  "case_id": "fenoco3_minus",
+  "chemical_accuracy_hartree": 0.0016,
+  "dataset_casscf_energy_hartree": -1737.7023563618047,
+  "delta_t": 0.05,
+  "elapsed_seconds": 24499.323795539793,
+  "error": "RuntimeError('CASSCF did not converge while building the benchmark Hamiltonian')",
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb_sfx2c1erohf",
+  "hamiltonian_source": "casscf_natorb",
+  "method": "qrte",
+  "n_steps_requested": 50,
+  "reference_scf": "sfX2C1eROHF",
+  "reference_source": "local sfX2C1eROHF CASSCF/natorb",
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_sfx2c1erohf_dt0p05_cases.py\", line 212, in _run_case\n    reference_info = _build_local_reference(case, args, qulacs_accel, active_orbital_labels)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_sfx2c1erohf_dt0p05_cases.py\", line 179, in _build_local_reference\n    payload = qulacs_accel._build_hamiltonian_payload(\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT/QCANT/qulacs_accel.py\", line 792, in _build_hamiltonian_payload\n    integral_payload = _with_hamiltonian_cache(cache_root, cache_key, _compute_active_integrals, np)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT/QCANT/qulacs_accel.py\", line 653, in _with_hamiltonian_cache\n    payload = compute()\n              ^^^^^^^^^\n  File \"/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT/QCANT/qulacs_accel.py\", line 753, in _compute_active_integrals\n    raise RuntimeError(\"CASSCF did not converge while building the benchmark Hamiltonian\")\nRuntimeError: CASSCF did not converge while building the benchmark Hamiltonian\n"
+}

@@ -1,0 +1,12 @@
+Wrote runs/initial_state_overlap/H6_near_equi_cc_pVTZ_2/initial_overlap.json
+case_id: H6_near_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+n_alpha: 4
+n_beta: 2
+hf_bits: 111110100000
+sector_ground_energy_hartree: -3.1849788447000122
+overlap_weight: 0.9300496760353304
+negative_log10_overlap: 0.03149385418600252
+solver: pyscf-fci
+elapsed_seconds: 22.652624988928437

@@ -1,0 +1,15 @@
+{
+  "active_electrons": 8,
+  "active_orbitals": 8,
+  "basis": "def2-TZVP",
+  "case_id": "feo4_2minus_ceo",
+  "charge": -2,
+  "dataset_casscf_energy_hartree": -1561.7175121505988,
+  "dataset_scf_energy_hartree": -1561.4543306994385,
+  "elapsed_seconds": 2371.093619656749,
+  "error": "RuntimeError('CASSCF did not converge')",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/feo4_2minus_ceo.json",
+  "spin": 2,
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_rohf_molvqe_fe_cases.py\", line 242, in _run_case\n    raise RuntimeError(\"CASSCF did not converge\")\nRuntimeError: CASSCF did not converge\n"
+}

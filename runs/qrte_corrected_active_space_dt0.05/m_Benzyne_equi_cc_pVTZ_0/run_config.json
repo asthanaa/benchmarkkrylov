@@ -1,0 +1,33 @@
+{
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [
+    15,
+    18,
+    19,
+    20,
+    24,
+    27
+  ],
+  "active_orbital_selection_method": "pyscf_canonical_rohf_mo_indices",
+  "casscf_conv_tol": 1e-10,
+  "casscf_match_tolerance_hartree": 1e-05,
+  "casscf_max_cycle": 200,
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.05,
+  "early_stop_chemical_accuracy": false,
+  "early_stop_energy_hartree": null,
+  "evolution_mode": "trotter",
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb_corrected_active_space_dt0p05",
+  "hamiltonian_source": "casscf_natorb",
+  "max_workers": 36,
+  "method": "qrte",
+  "n_steps": 80,
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_source": "local corrected CASSCF/natorb Hamiltonian reference",
+  "scf_conv_tol": null,
+  "scf_diis_space": 12,
+  "scf_level_shift": 0.5,
+  "scf_max_cycle": 100,
+  "scf_newton_if_not_converged": true,
+  "trotter_steps": 1
+}

@@ -31,6 +31,7 @@ BENCHMARK_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = BENCHMARK_ROOT / "manifests" / "molvqe21_fig1b_manifest.csv"
 DEFAULT_QCANT_ROOT = BENCHMARK_ROOT / "vendor" / "QCANT"
 DEFAULT_HAMILTONIAN_CACHE_DIR = BENCHMARK_ROOT / "hamiltonian_cache" / "casscf_natorb"
+DEFAULT_ACTIVE_ORBITAL_OVERRIDES = BENCHMARK_ROOT / "manifests" / "molvqe21_active_orbital_overrides.json"
 AVAS_LABELS_BY_CASE = {
     "Al3_minus": ["Al 3p"],
     "CO_equi_cc_pVTZ_0": ["C 2p", "O 2p"],
@@ -59,6 +60,37 @@ def _set_thread_limits() -> None:
 def _load_manifest(path: Path) -> list[dict[str, str]]:
     with path.open("r", newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def _load_active_orbital_overrides(path: Path | None) -> dict[str, dict[str, Any]]:
+    if path is None or not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    if not isinstance(payload, dict):
+        raise ValueError(f"active orbital override file must contain a JSON object: {path}")
+
+    overrides: dict[str, dict[str, Any]] = {}
+    for case_id, value in payload.items():
+        if not isinstance(value, dict):
+            raise ValueError(f"active orbital override for {case_id!r} must be a JSON object")
+        raw_indices = value.get("active_orbital_indices")
+        if raw_indices is None:
+            continue
+        if not isinstance(raw_indices, list):
+            raise ValueError(f"active_orbital_indices for {case_id!r} must be a JSON list")
+        indices = [int(index) for index in raw_indices]
+        if len(indices) != len(set(indices)):
+            raise ValueError(f"active_orbital_indices for {case_id!r} contains duplicates")
+        base = int(value.get("active_orbital_index_base", 0))
+        if any(index < base for index in indices):
+            raise ValueError(f"active_orbital_indices for {case_id!r} are inconsistent with base={base}")
+        overrides[str(case_id)] = {
+            "active_orbital_indices": indices,
+            "active_orbital_index_base": base,
+            "selection_method": str(value.get("selection_method", "pyscf_canonical_rohf_mo_indices")),
+        }
+    return overrides
 
 
 def _json_loads(value: str) -> Any:
@@ -134,6 +166,22 @@ def _active_orbital_labels(case_id: str) -> list[str] | None:
     return None if labels is None else list(labels)
 
 
+def _active_orbital_override(row: dict[str, str], args: argparse.Namespace) -> dict[str, Any] | None:
+    overrides = getattr(args, "active_orbital_overrides_by_case", {})
+    override = overrides.get(row["case_id"])
+    if override is None:
+        return None
+
+    indices = list(override["active_orbital_indices"])
+    active_orbitals = int(row["active_orbitals"])
+    if len(indices) != active_orbitals:
+        raise ValueError(
+            f"active_orbital_indices for {row['case_id']!r} has length {len(indices)}, "
+            f"but active_orbitals={active_orbitals}"
+        )
+    return dict(override)
+
+
 def _import_qcant(qcant_root: Path):
     sys.path.insert(0, str(qcant_root.resolve()))
     try:
@@ -163,6 +211,10 @@ def _prepare_case(row: dict[str, str], args: argparse.Namespace) -> tuple[Path, 
     geometry_angstrom = np.asarray(_json_loads(row["geometry_angstrom"]), dtype=float)
     casscf_energy = float(row["casscf_energy_hartree"])
     active_orbital_labels = _active_orbital_labels(case_id)
+    active_orbital_override = _active_orbital_override(row, args)
+    active_orbital_indices = None if active_orbital_override is None else active_orbital_override["active_orbital_indices"]
+    active_orbital_index_base = None if active_orbital_override is None else active_orbital_override["active_orbital_index_base"]
+    active_orbital_selection_method = None if active_orbital_override is None else active_orbital_override["selection_method"]
 
     input_snapshot = {
         "case_id": case_id,
@@ -179,6 +231,11 @@ def _prepare_case(row: dict[str, str], args: argparse.Namespace) -> tuple[Path, 
         "casscf_energy_hartree": casscf_energy,
         "h0.25": float(row["h0.25"]),
         "active_orbital_labels": active_orbital_labels,
+        "active_orbital_indices": active_orbital_indices,
+        "active_orbital_index_base": active_orbital_index_base,
+        "active_orbital_selection_method": active_orbital_selection_method,
+        "active_orbital_override": active_orbital_override,
+        "active_orbital_overrides_path": str(args.active_orbital_overrides),
         "adapt_chem_accuracy_iteration": _int_or_none(row["adapt_chem_accuracy_iteration"]),
         "has_adapt_chem_hit": row["has_adapt_chem_hit"] == "true",
     }
@@ -197,6 +254,11 @@ def _prepare_case(row: dict[str, str], args: argparse.Namespace) -> tuple[Path, 
         "hamiltonian_cache_dir": None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir.resolve()),
         "hamiltonian_source": args.hamiltonian_source,
         "active_orbital_labels": active_orbital_labels,
+        "active_orbital_indices": active_orbital_indices,
+        "active_orbital_index_base": active_orbital_index_base,
+        "active_orbital_selection_method": active_orbital_selection_method,
+        "active_orbital_override": active_orbital_override,
+        "active_orbital_overrides_path": str(args.active_orbital_overrides),
     }
 
     _write_json(case_dir / "input_snapshot.json", input_snapshot)
@@ -215,6 +277,10 @@ def _run_case_body(row: dict[str, str], args: argparse.Namespace, QCANT) -> str:
     geometry_angstrom = np.asarray(_json_loads(row["geometry_angstrom"]), dtype=float)
     casscf_energy = float(row["casscf_energy_hartree"])
     active_orbital_labels = _active_orbital_labels(case_id)
+    active_orbital_override = _active_orbital_override(row, args)
+    active_orbital_indices = None if active_orbital_override is None else active_orbital_override["active_orbital_indices"]
+    active_orbital_index_base = 0 if active_orbital_override is None else active_orbital_override["active_orbital_index_base"]
+    active_orbital_selection_method = None if active_orbital_override is None else active_orbital_override["selection_method"]
     early_stop_energy = casscf_energy + CHEMICAL_ACCURACY_HARTREE if args.early_stop_chemical_accuracy else None
     start = time.perf_counter()
     try:
@@ -237,6 +303,8 @@ def _run_case_body(row: dict[str, str], args: argparse.Namespace, QCANT) -> str:
                 hamiltonian_cache_dir=None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir),
                 hamiltonian_source=args.hamiltonian_source,
                 active_orbital_labels=active_orbital_labels,
+                active_orbital_indices=active_orbital_indices,
+                active_orbital_index_base=active_orbital_index_base,
             )
         else:
             energies, _basis_states, min_history = QCANT.qkud_qulacs(
@@ -257,6 +325,8 @@ def _run_case_body(row: dict[str, str], args: argparse.Namespace, QCANT) -> str:
                 hamiltonian_cache_dir=None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir),
                 hamiltonian_source=args.hamiltonian_source,
                 active_orbital_labels=active_orbital_labels,
+                active_orbital_indices=active_orbital_indices,
+                active_orbital_index_base=active_orbital_index_base,
             )
 
         min_history = np.asarray(min_history, dtype=float)
@@ -285,6 +355,10 @@ def _run_case_body(row: dict[str, str], args: argparse.Namespace, QCANT) -> str:
             "hamiltonian_cache_dir": None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir),
             "hamiltonian_source": args.hamiltonian_source,
             "active_orbital_labels": active_orbital_labels,
+            "active_orbital_indices": active_orbital_indices,
+            "active_orbital_index_base": active_orbital_index_base if active_orbital_indices is not None else None,
+            "active_orbital_selection_method": active_orbital_selection_method,
+            "active_orbital_override": active_orbital_override,
             "elapsed_seconds": float(time.perf_counter() - start),
         }
         _write_json(summary_path, summary)
@@ -305,6 +379,10 @@ def _run_case_body(row: dict[str, str], args: argparse.Namespace, QCANT) -> str:
             "hamiltonian_cache_dir": None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir),
             "hamiltonian_source": args.hamiltonian_source,
             "active_orbital_labels": active_orbital_labels,
+            "active_orbital_indices": active_orbital_indices,
+            "active_orbital_index_base": active_orbital_index_base if active_orbital_indices is not None else None,
+            "active_orbital_selection_method": active_orbital_selection_method,
+            "active_orbital_override": active_orbital_override,
             "elapsed_seconds": float(time.perf_counter() - start),
             "error": repr(exc),
             "traceback": traceback.format_exc(),
@@ -349,6 +427,8 @@ def _run_case_parent(row: dict[str, str], args: argparse.Namespace) -> str:
         str(args.max_workers),
         "--hamiltonian-source",
         args.hamiltonian_source,
+        "--active-orbital-overrides",
+        str(args.active_orbital_overrides),
     ]
     if args.hamiltonian_cache_dir is not None:
         cmd.extend(["--hamiltonian-cache-dir", str(args.hamiltonian_cache_dir)])
@@ -387,6 +467,7 @@ def _run_case_parent(row: dict[str, str], args: argparse.Namespace) -> str:
         "hamiltonian_cache_dir": None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir),
         "hamiltonian_source": args.hamiltonian_source,
         "active_orbital_labels": _active_orbital_labels(case_id),
+        "active_orbital_override": _active_orbital_override(row, args),
         "error": f"single-case subprocess exited with code {result.returncode}",
     }
     _write_json(summary_path, failure)
@@ -410,6 +491,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--trotter-steps", type=int, default=1)
     parser.add_argument("--max-workers", type=int, default=36)
     parser.add_argument("--hamiltonian-cache-dir", type=Path, default=DEFAULT_HAMILTONIAN_CACHE_DIR)
+    parser.add_argument("--active-orbital-overrides", type=Path, default=DEFAULT_ACTIVE_ORBITAL_OVERRIDES)
     parser.add_argument(
         "--hamiltonian-source",
         choices=("casci", "casscf", "casscf_natorb", "casscf-natural", "molecular"),
@@ -427,6 +509,7 @@ def main() -> None:
     args.outdir.mkdir(parents=True, exist_ok=True)
     if args.hamiltonian_cache_dir is not None:
         args.hamiltonian_cache_dir.mkdir(parents=True, exist_ok=True)
+    args.active_orbital_overrides_by_case = _load_active_orbital_overrides(args.active_orbital_overrides)
     rows = _load_manifest(args.manifest)
     if args.row_index is not None:
         if args.row_index < 0 or args.row_index >= len(rows):

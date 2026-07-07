@@ -1,0 +1,14 @@
+{
+  "allow_unconverged_casscf": false,
+  "casscf_conv_tol": 1e-10,
+  "casscf_max_cycle": 100,
+  "force_natorb": false,
+  "honor_dataset_casscf_natorb": true,
+  "newton_if_not_converged": true,
+  "pyscf_verbose": 4,
+  "scf_conv_tol": 1e-10,
+  "scf_diis_space": 12,
+  "scf_level_shift": 0.0,
+  "scf_max_cycle": 200,
+  "use_avas_labels": true
+}

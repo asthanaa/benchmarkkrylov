@@ -130,6 +130,9 @@ def _select_rows(rows: list[dict[str, str]], args: argparse.Namespace) -> list[d
     if args.case_id:
         allowed_cases = set(args.case_id)
         selected = [row for row in selected if row["case_id"] in allowed_cases]
+    if args.exclude_case_id:
+        excluded_cases = set(args.exclude_case_id)
+        selected = [row for row in selected if row["case_id"] not in excluded_cases]
     if args.order == "small-first":
         selected = sorted(selected, key=_small_first_key)
     if args.limit is not None:
@@ -290,6 +293,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--outdir", type=Path, required=True)
     parser.add_argument("--qcant-root", type=Path, default=DEFAULT_QCANT_ROOT)
     parser.add_argument("--case-id", action="append", default=None)
+    parser.add_argument("--exclude-case-id", action="append", default=None)
     parser.add_argument("--row-index", action="append", type=int, default=None)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--n-steps", type=int, default=200)
@@ -346,6 +350,7 @@ def main() -> None:
         "events": [],
         "failed": 0,
         "force": bool(args.force),
+        "excluded_case_ids": [] if args.exclude_case_id is None else list(args.exclude_case_id),
         "early_stop_chemical_accuracy": bool(args.early_stop_chemical_accuracy),
         "hamiltonian_cache_dir": None if args.hamiltonian_cache_dir is None else str(args.hamiltonian_cache_dir),
         "hamiltonian_source": args.hamiltonian_source,

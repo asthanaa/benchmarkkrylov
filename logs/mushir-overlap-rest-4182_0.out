@@ -1,0 +1,15 @@
+Computing initial overlap for cyclobutadiene_ceo
+Run directory: runs/qkud_corrected_active_space_eps0.05/cyclobutadiene_ceo
+Output: runs/initial_state_overlap/cyclobutadiene_ceo/initial_overlap.json
+Wrote runs/initial_state_overlap/cyclobutadiene_ceo/initial_overlap.json
+case_id: cyclobutadiene_ceo
+status: completed
+sector_dim: 36
+n_alpha: 2
+n_beta: 2
+hf_bits: 11110000
+sector_ground_energy_hartree: -153.72228958246038
+overlap_weight: 0.8550678576050824
+negative_log10_overlap: 0.0679994185887342
+solver: pyscf-fci
+elapsed_seconds: 8.332717839628458

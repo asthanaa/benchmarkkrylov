@@ -1,0 +1,11 @@
+Computing sector gap for m_Benzyne_equi_cc_pVTZ_2
+Output: runs/initial_state_gap/m_Benzyne_equi_cc_pVTZ_2/sector_gap.json
+Wrote runs/initial_state_gap/m_Benzyne_equi_cc_pVTZ_2/sector_gap.json
+case_id: m_Benzyne_equi_cc_pVTZ_2
+status: completed
+sector_dim: 225
+sector_ground_energy_hartree: -229.36969501815312
+first_excited_energy_hartree: -229.34429977446757
+gap_hartree: 0.02539524368555135
+gap_ev: 0.6910397847385256
+elapsed_seconds: 0.009133526124060154

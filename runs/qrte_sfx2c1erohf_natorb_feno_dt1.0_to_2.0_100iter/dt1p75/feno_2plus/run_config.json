@@ -1,0 +1,22 @@
+{
+  "active_orbital_labels": [
+    "Fe 3d",
+    "N 2p",
+    "O 2p"
+  ],
+  "allow_unconverged_casscf": false,
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 1.75,
+  "early_stop_chemical_accuracy": false,
+  "early_stop_energy_hartree": null,
+  "evolution_mode": "trotter",
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb_sfx2c1erohf",
+  "hamiltonian_source": "casscf_natorb",
+  "max_workers": 18,
+  "method": "qrte",
+  "n_steps": 100,
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_scf": "sfX2C1eROHF",
+  "reference_source": "local sfX2C1eROHF CASSCF/natorb",
+  "trotter_steps": 1
+}

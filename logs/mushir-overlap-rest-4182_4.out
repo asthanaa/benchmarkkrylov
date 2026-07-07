@@ -1,0 +1,15 @@
+Computing initial overlap for N2_equi_cc_pVTZ_0
+Run directory: runs/qkud_natorb_eps0.05/N2_equi_cc_pVTZ_0
+Output: runs/initial_state_overlap/N2_equi_cc_pVTZ_0/initial_overlap.json
+Wrote runs/initial_state_overlap/N2_equi_cc_pVTZ_0/initial_overlap.json
+case_id: N2_equi_cc_pVTZ_0
+status: completed
+sector_dim: 400
+n_alpha: 3
+n_beta: 3
+hf_bits: 111111000000
+sector_ground_energy_hartree: -109.100131165772
+overlap_weight: 0.9124156293153752
+negative_log10_overlap: 0.039807284040624086
+solver: pyscf-fci
+elapsed_seconds: 3.0654533114284277

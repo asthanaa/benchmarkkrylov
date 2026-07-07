@@ -1,0 +1,4 @@
+POOL qrte selected=1 pending=1 skipped=0 concurrency=1 max_workers=2
+START qrte row=4 case=N2_equi_cc_pVTZ_2 pid=3811533
+END qrte row=4 case=N2_equi_cc_pVTZ_2 outcome=completed rc=0 elapsed=45.0s
+{"completed": 1, "failed": 0, "skipped_completed_at_start": 0}

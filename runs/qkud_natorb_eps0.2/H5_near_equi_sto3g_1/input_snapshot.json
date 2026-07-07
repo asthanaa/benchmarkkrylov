@@ -1,0 +1,76 @@
+{
+  "active_electrons": 5,
+  "active_orbital_labels": null,
+  "active_orbitals": 5,
+  "adapt_chem_accuracy_iteration": 10,
+  "basis": "sto-3g",
+  "case_id": "H5_near_equi_sto3g_1",
+  "casscf_energy_hartree": -2.6545169682127527,
+  "charge": 0,
+  "geometry_angstrom": [
+    [
+      -1.999999999935749,
+      0.0,
+      0.0
+    ],
+    [
+      -0.9999999999678745,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.9999999999678745,
+      0.0,
+      0.0
+    ],
+    [
+      1.999999999935749,
+      0.0,
+      0.0
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      -3.7794522491301237,
+      0.0,
+      0.0
+    ],
+    [
+      -1.8897261245650618,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.8897261245650618,
+      0.0,
+      0.0
+    ],
+    [
+      3.7794522491301237,
+      0.0,
+      0.0
+    ]
+  ],
+  "h0.25": 2.7427255836126165,
+  "has_adapt_chem_hit": true,
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/H5 near equi._sto3g_1.json",
+  "source_name": "H5 near equi._sto3g_1.json",
+  "spin": 1,
+  "symbols": [
+    "H",
+    "H",
+    "H",
+    "H",
+    "H"
+  ]
+}

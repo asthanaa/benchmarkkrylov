@@ -1,0 +1,7 @@
+SCF not converged.
+SCF energy = -1398.15232940604
+converged SCF energy = -1398.15230205059
+CASSCF energy = -1398.47876436209
+CASCI E = -1398.47876436209  E(CI) = -38.1579843234472  S^2 = 3.7500000
+DONE qrte feno_2plus hit=None ref=-1398.478764362095
+{"completed": 1, "failed": 0, "skipped": 0}

@@ -1,0 +1,16 @@
+case_id,source_name,h0.25,adapt_chem_accuracy_iteration,qrte_dt0p1_chem_accuracy_iteration,qrte_dt0p1_hit_chemical_accuracy,qrte_dt0p1_status,qrte_dt0p2_chem_accuracy_iteration,qrte_dt0p2_hit_chemical_accuracy,qrte_dt0p2_status,casscf_energy_hartree
+BeH2_equi_cc_pVTZ_2,BeH2 equi._cc-pVTZ_2.json,1.7637455967891338,5,4,true,completed,22,true,completed,-15.577504296993196
+H4_near_equi_sto3g_0,H4 near equi._sto3g_0.json,1.807519407015623,3,3,true,completed,3,true,completed,-2.1663874486347625
+magnesium_porphyrin_ceo,magnesium_porphyrin_ceo.json,1.8512057888622708,3,2,true,completed,2,true,completed,-1182.2389641302318
+CH2O_equi_cc_pVTZ_2,CH2O equi._cc-pVTZ_2.json,1.994618284788223,7,2,true,completed,2,true,completed,-113.8291472051797
+BeH2_equi_cc_pVTZ_0,BeH2 equi._cc-pVTZ_0.json,1.9953821822599993,4,2,true,completed,2,true,completed,-15.803244181133712
+N2_equi_cc_pVTZ_2,N2 equi._cc-pVTZ_2.json,2.4058499185074655,8,29,true,completed,16,true,completed,-108.87152580010415
+CO_equi_cc_pVTZ_2,CO equi._cc-pVTZ_2.json,2.568678127993894,10,1,true,completed,1,true,completed,-112.60166830789687
+H5_near_equi_sto3g_1,H5 near equi._sto3g_1.json,2.7427255836126165,10,3,true,completed,7,true,completed,-2.6545169682127527
+H6_near_equi_cc_pVTZ_2,H6 near equi._cc-pVTZ_2.json,3.3042107888407966,12,3,true,completed,11,true,completed,-3.1849788446911473
+N2_equi_cc_pVTZ_0,N2 equi._cc-pVTZ_0.json,3.44406881760021,10,4,true,completed,4,true,completed,-109.1001311657515
+H6_near_equi_cc_pVTZ_0,H6 near equi._cc-pVTZ_0.json,3.6163748590503406,12,6,true,completed,38,true,completed,-3.323389711558537
+hexatriene_equi_cc_pVTZ_2,hexatriene equi._cc-pVTZ_2.json,3.6327331004268526,17,4,true,completed,6,true,completed,-231.86563211268302
+H6_near_equi_sto3g_0,H6 near equi._sto3g_0.json,3.645659903694176,11,5,true,completed,46,true,completed,-3.2360662798923414
+hexatriene_equi_cc_pVTZ_0,hexatriene equi._cc-pVTZ_0.json,3.926060611953842,13,4,true,completed,3,true,completed,-231.97262390091163
+Al3_minus,Al3_minus.json,6.428074004502384,63,9,true,completed,16,true,completed,-725.7921857752825

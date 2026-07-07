@@ -1,0 +1,17 @@
+{
+  "active_orbital_labels": [
+    "Fe 3d"
+  ],
+  "case_id": "Ferrocene_ceo",
+  "casscf_energy_hartree": -1655.9904378745648,
+  "chemical_accuracy_hartree": 0.0016,
+  "early_stop_chemical_accuracy": true,
+  "error": "single-case subprocess exited with code 1",
+  "h0.25": 2.998624301634845,
+  "hamiltonian_cache_dir": "hamiltonian_cache/casscf_natorb",
+  "hamiltonian_source": "casscf_natorb",
+  "method": "qkud",
+  "n_steps": 50,
+  "n_steps_requested": 50,
+  "status": "failed"
+}

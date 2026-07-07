@@ -1,0 +1,6 @@
+4158
+
+Array mapping:
+0 FeO
+1 fenoco3_minus
+2 feno_2plus

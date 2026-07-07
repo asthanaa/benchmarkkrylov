@@ -1,0 +1,11 @@
+Computing sector gap for fenoco3_minus
+Output: runs/initial_state_gap/fenoco3_minus/sector_gap.json
+Wrote runs/initial_state_gap/fenoco3_minus/sector_gap.json
+case_id: fenoco3_minus
+status: completed
+sector_dim: 3136
+sector_ground_energy_hartree: -1737.7023563617151
+first_excited_energy_hartree: -1737.5908545415034
+gap_hartree: 0.1115018202117426
+gap_ev: 3.034119096912439
+elapsed_seconds: 0.16497213207185268

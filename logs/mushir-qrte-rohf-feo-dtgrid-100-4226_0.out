@@ -1,0 +1,4 @@
+Running FeO QRTE ROHF/MolVQE 100-iteration task 0: dt0p2
+DONE QRTE FeO dt=0.2 hit=None ref=-1337.289017715882
+PLOT FeO plots/qrte_rohf_molvqe_fe_cases_100iter/FeO_qrte_rohf_molvqe_dt0p2_convergence.png plots/qrte_rohf_molvqe_fe_cases_100iter/FeO_qrte_rohf_molvqe_dt0p2_convergence.pdf
+{"completed": 1, "failed": 0, "skipped": 0}

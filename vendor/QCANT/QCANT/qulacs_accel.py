@@ -539,6 +539,9 @@ def _hamiltonian_cache_key(
     hamiltonian_cutoff: float,
     hamiltonian_source: str,
     active_orbital_labels: Optional[Sequence[str]],
+    active_orbital_indices: Optional[Sequence[int]] = None,
+    active_orbital_index_base: int = 0,
+    cache_metadata: Optional[Mapping[str, object]] = None,
     np,
 ) -> str:
     payload = {
@@ -553,6 +556,11 @@ def _hamiltonian_cache_key(
         "spin": int(spin),
         "symbols": [str(symbol) for symbol in symbols],
     }
+    if active_orbital_indices is not None:
+        payload["active_orbital_indices"] = [int(index) for index in active_orbital_indices]
+        payload["active_orbital_index_base"] = int(active_orbital_index_base)
+    if cache_metadata:
+        payload["reference_build"] = dict(cache_metadata)
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
@@ -564,6 +572,9 @@ def _load_hamiltonian_integral_cache(path: Path, np):
         return {
             "ecore": float(payload["ecore"]),
             "effective_active_electrons": int(payload["effective_active_electrons"]),
+            "active_orbital_index_base": int(payload["active_orbital_index_base"]) if "active_orbital_index_base" in payload.files else 0,
+            "active_orbital_indices": np.asarray(payload["active_orbital_indices"], dtype=int).tolist() if "active_orbital_indices" in payload.files else [],
+            "active_space_selection": str(payload["active_space_selection"].item()) if "active_space_selection" in payload.files else "",
             "h1ecas": np.asarray(payload["h1ecas"], dtype=float),
             "hamiltonian_source": str(payload["hamiltonian_source"].item()),
             "mo_occ": np.asarray(payload["mo_occ"], dtype=float),
@@ -571,6 +582,8 @@ def _load_hamiltonian_integral_cache(path: Path, np):
             "nelecas": tuple(int(value) for value in np.asarray(payload["nelecas"], dtype=int).tolist()),
             "reference_energy": float(payload["reference_energy"]),
             "reference_converged": bool(payload["reference_converged"]),
+            "scf_energy": float(payload["scf_energy"]) if "scf_energy" in payload.files else float("nan"),
+            "scf_converged": bool(payload["scf_converged"]) if "scf_converged" in payload.files else None,
             "two_mo": np.asarray(payload["two_mo"], dtype=float),
         }
 
@@ -583,6 +596,9 @@ def _write_hamiltonian_integral_cache(path: Path, payload: Mapping[str, object],
             handle,
             ecore=float(payload["ecore"]),
             effective_active_electrons=int(payload["effective_active_electrons"]),
+            active_orbital_index_base=int(payload.get("active_orbital_index_base", 0)),
+            active_orbital_indices=np.asarray(payload.get("active_orbital_indices", []), dtype=int),
+            active_space_selection=np.asarray(str(payload.get("active_space_selection", ""))),
             h1ecas=np.asarray(payload["h1ecas"], dtype=float),
             hamiltonian_source=np.asarray(str(payload["hamiltonian_source"])),
             mo_occ=np.asarray(payload.get("mo_occ", []), dtype=float),
@@ -590,6 +606,8 @@ def _write_hamiltonian_integral_cache(path: Path, payload: Mapping[str, object],
             nelecas=np.asarray(payload.get("nelecas", []), dtype=int),
             reference_energy=float(payload.get("reference_energy", float("nan"))),
             reference_converged=bool(payload.get("reference_converged", False)),
+            scf_energy=float(payload.get("scf_energy", float("nan"))),
+            scf_converged=bool(payload.get("scf_converged", False)),
             two_mo=np.asarray(payload["two_mo"], dtype=float),
         )
     tmp_path.replace(path)
@@ -676,6 +694,18 @@ def _build_hamiltonian_payload(
     hamiltonian_source: str = "casci",
     hamiltonian_cache_dir: Optional[str] = None,
     active_orbital_labels: Optional[Sequence[str]] = None,
+    active_orbital_indices: Optional[Sequence[int]] = None,
+    active_orbital_index_base: int = 0,
+    allow_unconverged_casscf: bool = False,
+    geometry_unit: str = "Angstrom",
+    molecule_symmetry: bool = False,
+    scf_conv_tol: Optional[float] = None,
+    scf_diis_space: int = 12,
+    scf_level_shift: float = 0.5,
+    scf_max_cycle: int = 100,
+    scf_newton_if_not_converged: bool = True,
+    casscf_conv_tol: float = 1e-10,
+    casscf_max_cycle: int = 100,
 ):
     stack = _import_optional_stack()
     np = stack["np"]
@@ -690,32 +720,66 @@ def _build_hamiltonian_payload(
     if hamiltonian_source == "casscf-natural":
         hamiltonian_source = "casscf_natorb"
 
+    active_indices = None if active_orbital_indices is None else [int(index) for index in active_orbital_indices]
+    active_index_base = int(active_orbital_index_base)
+    if active_indices is not None:
+        if len(active_indices) != int(active_orbitals):
+            raise ValueError(
+                f"active_orbital_indices length {len(active_indices)} does not match active_orbitals={int(active_orbitals)}"
+            )
+        if len(active_indices) != len(set(active_indices)):
+            raise ValueError("active_orbital_indices must not contain duplicates")
+        if any(index < active_index_base for index in active_indices):
+            raise ValueError(f"active_orbital_indices are inconsistent with base={active_index_base}")
+
     mol = None
     mf = None
     mycas = None
     integral_payload = None
+    cache_metadata = {}
+    if str(geometry_unit) != "Angstrom":
+        cache_metadata["geometry_unit"] = str(geometry_unit)
+    if bool(molecule_symmetry):
+        cache_metadata["molecule_symmetry"] = bool(molecule_symmetry)
+    if scf_conv_tol is not None:
+        cache_metadata["scf_conv_tol"] = float(scf_conv_tol)
+    if int(scf_diis_space) != 12:
+        cache_metadata["scf_diis_space"] = int(scf_diis_space)
+    if float(scf_level_shift) != 0.5:
+        cache_metadata["scf_level_shift"] = float(scf_level_shift)
+    if int(scf_max_cycle) != 100:
+        cache_metadata["scf_max_cycle"] = int(scf_max_cycle)
+    if bool(scf_newton_if_not_converged) is not True:
+        cache_metadata["scf_newton_if_not_converged"] = bool(scf_newton_if_not_converged)
+    if float(casscf_conv_tol) != 1e-10:
+        cache_metadata["casscf_conv_tol"] = float(casscf_conv_tol)
+    if int(casscf_max_cycle) != 100:
+        cache_metadata["casscf_max_cycle"] = int(casscf_max_cycle)
 
     def _compute_active_integrals():
         atom = [(symbols[i], tuple(float(x) for x in geometry[i])) for i in range(len(symbols))]
         mol_local = gto.Mole()
         mol_local.atom = atom
-        mol_local.unit = "Angstrom"
+        mol_local.unit = str(geometry_unit)
         mol_local.basis = basis
         mol_local.charge = charge
         mol_local.spin = spin
-        mol_local.symmetry = False
+        mol_local.symmetry = bool(molecule_symmetry)
         mol_local.build()
 
         mf_local = scf.RHF(mol_local) if int(spin) == 0 else scf.ROHF(mol_local)
-        mf_local.level_shift = 0.5
-        mf_local.diis_space = 12
-        mf_local.max_cycle = 100
+        if scf_conv_tol is not None:
+            mf_local.conv_tol = float(scf_conv_tol)
+        mf_local.level_shift = float(scf_level_shift)
+        mf_local.diis_space = int(scf_diis_space)
+        mf_local.max_cycle = int(scf_max_cycle)
         mf_local.kernel()
-        if not mf_local.converged:
+        if not mf_local.converged and bool(scf_newton_if_not_converged):
             mf_local = scf.newton(mf_local).run()
 
         mo0 = None
-        avas_labels = None if active_orbital_labels is None else [str(label) for label in active_orbital_labels]
+        active_space_selection = "default"
+        avas_labels = None if active_indices is not None or active_orbital_labels is None else [str(label) for label in active_orbital_labels]
         if avas_labels:
             from pyscf.mcscf import avas
 
@@ -735,21 +799,37 @@ def _build_hamiltonian_payload(
                 # not reproduce the stored (electrons, orbitals) active-space size,
                 # keep the benchmark running with the requested CASSCF active size.
                 mo0 = None
+            else:
+                active_space_selection = "avas_labels"
+
+        def _initial_mo_for_active_space(cas_local):
+            if active_indices is None:
+                return mo0
+            n_mo = int(np.asarray(mf_local.mo_coeff).shape[1])
+            zero_based_indices = [int(index) - active_index_base for index in active_indices]
+            if any(index < 0 or index >= n_mo for index in zero_based_indices):
+                raise ValueError(f"active_orbital_indices exceed available MO range for {n_mo} orbitals")
+            return mcscf.sort_mo(cas_local, mf_local.mo_coeff, active_indices, base=active_index_base)
+
+        if active_indices is not None:
+            active_space_selection = "active_orbital_indices"
 
         if hamiltonian_source == "casci":
             cas_local = mcscf.CASCI(mf_local, active_orbitals, active_electrons)
-            mo_coeff = mf_local.mo_coeff if mo0 is None else mo0
+            initial_mo = _initial_mo_for_active_space(cas_local)
+            mo_coeff = mf_local.mo_coeff if initial_mo is None else initial_mo
             reference_energy = float("nan")
             reference_converged = True
             mo_occ = []
         elif hamiltonian_source in {"casscf", "casscf_natorb"}:
             cas_local = mcscf.CASSCF(mf_local, active_orbitals, active_electrons)
             cas_local.natorb = hamiltonian_source == "casscf_natorb"
-            cas_local.max_cycle = 100
-            cas_local.conv_tol = 1e-10
-            reference_energy = float(cas_local.kernel(mo0)[0] if mo0 is not None else cas_local.kernel()[0])
+            cas_local.max_cycle = int(casscf_max_cycle)
+            cas_local.conv_tol = float(casscf_conv_tol)
+            initial_mo = _initial_mo_for_active_space(cas_local)
+            reference_energy = float(cas_local.kernel(initial_mo)[0] if initial_mo is not None else cas_local.kernel()[0])
             reference_converged = bool(cas_local.converged)
-            if not reference_converged:
+            if not reference_converged and not allow_unconverged_casscf:
                 raise RuntimeError("CASSCF did not converge while building the benchmark Hamiltonian")
             mo_coeff = cas_local.mo_coeff
             mo_occ = [] if getattr(cas_local, "mo_occ", None) is None else np.asarray(cas_local.mo_occ, dtype=float)
@@ -763,6 +843,9 @@ def _build_hamiltonian_payload(
         return {
             "ecore": float(ecore),
             "effective_active_electrons": int(sum(cas_local.nelecas)),
+            "active_orbital_index_base": active_index_base,
+            "active_orbital_indices": [] if active_indices is None else [int(index) for index in active_indices],
+            "active_space_selection": active_space_selection,
             "h1ecas": np.asarray(h1ecas, dtype=float),
             "hamiltonian_source": hamiltonian_source,
             "active_orbital_labels": [] if active_orbital_labels is None else [str(label) for label in active_orbital_labels],
@@ -771,6 +854,8 @@ def _build_hamiltonian_payload(
             "nelecas": tuple(int(value) for value in cas_local.nelecas),
             "reference_converged": reference_converged,
             "reference_energy": reference_energy,
+            "scf_converged": bool(mf_local.converged),
+            "scf_energy": float(mf_local.e_tot),
             "two_mo": np.asarray(two_mo_local, dtype=float),
         }
 
@@ -787,9 +872,18 @@ def _build_hamiltonian_payload(
             hamiltonian_cutoff=hamiltonian_cutoff,
             hamiltonian_source=hamiltonian_source,
             active_orbital_labels=active_orbital_labels,
+            active_orbital_indices=active_indices,
+            active_orbital_index_base=active_index_base,
+            cache_metadata=cache_metadata or None,
             np=np,
         )
         integral_payload = _with_hamiltonian_cache(cache_root, cache_key, _compute_active_integrals, np)
+        if (
+            hamiltonian_source in {"casscf", "casscf_natorb"}
+            and not allow_unconverged_casscf
+            and integral_payload.get("reference_converged") is False
+        ):
+            raise RuntimeError("CASSCF did not converge while building the benchmark Hamiltonian")
         h1ecas = integral_payload["h1ecas"]
         two_mo = integral_payload["two_mo"]
         ecore = float(integral_payload["ecore"])
@@ -819,6 +913,9 @@ def _build_hamiltonian_payload(
             "cache_path": None,
             "loaded_from_cache": False,
             "hamiltonian_source": hamiltonian_source,
+            "active_orbital_index_base": 0,
+            "active_orbital_indices": [],
+            "active_space_selection": "default",
             "mo_occ": [],
             "ncas": int(active_orbitals),
             "nelecas": [],
@@ -849,11 +946,16 @@ def _build_hamiltonian_payload(
         "qubits": int(qubits),
         "hf_bits": hf_bits,
         "active_electrons": int(effective_active_electrons),
+        "active_orbital_index_base": int(integral_payload.get("active_orbital_index_base", 0)) if integral_payload else 0,
+        "active_orbital_indices": list(integral_payload.get("active_orbital_indices", [])) if integral_payload else [],
+        "active_space_selection": integral_payload.get("active_space_selection") if integral_payload else None,
         "hamiltonian_cache_path": integral_payload.get("cache_path") if integral_payload else None,
         "hamiltonian_loaded_from_cache": bool(integral_payload.get("loaded_from_cache", False)) if integral_payload else False,
         "hamiltonian_source": hamiltonian_source,
         "reference_energy": float(integral_payload.get("reference_energy", float("nan"))) if integral_payload else float("nan"),
         "reference_converged": integral_payload.get("reference_converged") if integral_payload else None,
+        "scf_energy": float(integral_payload.get("scf_energy", float("nan"))) if integral_payload else float("nan"),
+        "scf_converged": integral_payload.get("scf_converged") if integral_payload else None,
     }
 
 
@@ -1616,6 +1718,18 @@ def qkud_qulacs(
     hamiltonian_source: str = "casci",
     hamiltonian_cache_dir: Optional[str] = None,
     active_orbital_labels: Optional[Sequence[str]] = None,
+    active_orbital_indices: Optional[Sequence[int]] = None,
+    active_orbital_index_base: int = 0,
+    allow_unconverged_casscf: bool = False,
+    geometry_unit: str = "Angstrom",
+    molecule_symmetry: bool = False,
+    scf_conv_tol: Optional[float] = None,
+    scf_diis_space: int = 12,
+    scf_level_shift: float = 0.5,
+    scf_max_cycle: int = 100,
+    scf_newton_if_not_converged: bool = True,
+    casscf_conv_tol: float = 1e-10,
+    casscf_max_cycle: int = 100,
 ):
     """Qulacs-backed QKUD using exact sparse or Trotterized real-time updates.
 
@@ -1647,6 +1761,18 @@ def qkud_qulacs(
         hamiltonian_source=hamiltonian_source,
         hamiltonian_cache_dir=hamiltonian_cache_dir,
         active_orbital_labels=active_orbital_labels,
+        active_orbital_indices=active_orbital_indices,
+        active_orbital_index_base=active_orbital_index_base,
+        allow_unconverged_casscf=allow_unconverged_casscf,
+        geometry_unit=geometry_unit,
+        molecule_symmetry=molecule_symmetry,
+        scf_conv_tol=scf_conv_tol,
+        scf_diis_space=scf_diis_space,
+        scf_level_shift=scf_level_shift,
+        scf_max_cycle=scf_max_cycle,
+        scf_newton_if_not_converged=scf_newton_if_not_converged,
+        casscf_conv_tol=casscf_conv_tol,
+        casscf_max_cycle=casscf_max_cycle,
     )
     np = payload["np"]
     QuantumState = payload["QuantumState"]
@@ -1776,6 +1902,18 @@ def qrte_qulacs(
     hamiltonian_source: str = "casci",
     hamiltonian_cache_dir: Optional[str] = None,
     active_orbital_labels: Optional[Sequence[str]] = None,
+    active_orbital_indices: Optional[Sequence[int]] = None,
+    active_orbital_index_base: int = 0,
+    allow_unconverged_casscf: bool = False,
+    geometry_unit: str = "Angstrom",
+    molecule_symmetry: bool = False,
+    scf_conv_tol: Optional[float] = None,
+    scf_diis_space: int = 12,
+    scf_level_shift: float = 0.5,
+    scf_max_cycle: int = 100,
+    scf_newton_if_not_converged: bool = True,
+    casscf_conv_tol: float = 1e-10,
+    casscf_max_cycle: int = 100,
 ):
     """Qulacs-backed QRTE using exact sparse or Trotterized evolution.
 
@@ -1807,6 +1945,18 @@ def qrte_qulacs(
         hamiltonian_source=hamiltonian_source,
         hamiltonian_cache_dir=hamiltonian_cache_dir,
         active_orbital_labels=active_orbital_labels,
+        active_orbital_indices=active_orbital_indices,
+        active_orbital_index_base=active_orbital_index_base,
+        allow_unconverged_casscf=allow_unconverged_casscf,
+        geometry_unit=geometry_unit,
+        molecule_symmetry=molecule_symmetry,
+        scf_conv_tol=scf_conv_tol,
+        scf_diis_space=scf_diis_space,
+        scf_level_shift=scf_level_shift,
+        scf_max_cycle=scf_max_cycle,
+        scf_newton_if_not_converged=scf_newton_if_not_converged,
+        casscf_conv_tol=casscf_conv_tol,
+        casscf_max_cycle=casscf_max_cycle,
     )
     np = payload["np"]
     QuantumState = payload["QuantumState"]
