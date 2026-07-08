@@ -1,0 +1,4 @@
+case_id,system,raw_npz,equilibrium_npz,bond_length_angstrom,active_electrons,active_orbitals,spin,n_qubits,reference_bits,reference_energy_hartree
+N2_eq,N2,hamiltonian_cache/benchmark_qc/raw/N2_PES_H1.npz,hamiltonian_cache/benchmark_qc/equilibrium/N2_eq.npz,1.4,4,4,0,8,"[1,1,1,1,0,0,0,0]",-108.59978166970491
+FeS_eq,FeS,hamiltonian_cache/benchmark_qc/raw/FeS_PES_H.npz,hamiltonian_cache/benchmark_qc/equilibrium/FeS_eq.npz,2.4,6,6,4,12,"[1,1,1,0,1,0,1,0,1,0,0,0]",-1655.4648532711371
+U2_eq,U2,hamiltonian_cache/benchmark_qc/raw/U2_PES_H.npz,hamiltonian_cache/benchmark_qc/equilibrium/U2_eq.npz,2.48,6,6,0,12,"[1,1,1,1,1,1,0,0,0,0,0,0]",-55985.66282346922

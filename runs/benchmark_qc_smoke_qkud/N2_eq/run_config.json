@@ -1,0 +1,17 @@
+{
+  "basis_threshold": 0.0,
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.05,
+  "early_stop_chemical_accuracy": false,
+  "early_stop_energy_hartree": null,
+  "epsilon": 0.05,
+  "evolution_mode": "trotter",
+  "manifest": "/Users/mushir/Library/CloudStorage/OneDrive-NorthDakotaUniversitySystem/Research_work/benchmarkkrylov/manifests/benchmark_qc_equilibrium_manifest.csv",
+  "max_workers": 1,
+  "method": "qkud",
+  "n_steps": 1,
+  "normalize_basis": true,
+  "overlap_tol": 1e-10,
+  "qcant_root": "/Users/mushir/Library/CloudStorage/OneDrive-NorthDakotaUniversitySystem/Research_work/benchmarkkrylov/vendor/QCANT",
+  "trotter_steps": 1
+}
