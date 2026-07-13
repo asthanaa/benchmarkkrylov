@@ -209,7 +209,167 @@ def _annotate(ax, row: dict[str, Any], y_key: str, *, xytext: tuple[int, int]) -
     )
 
 
-def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
+def _display_case_label(case_id: str) -> str:
+    replacements = {
+        "m_Benzyne": "m-Benzyne",
+        "near_equi": "near-eq",
+        "equi": "eq",
+        "cc_pVTZ": "cc-pVTZ",
+        "sto3g": "STO-3G",
+        "magnesium_porphyrin_ceo": "Mg porphyrin",
+        "cyclobutadiene_ceo": "cyclobutadiene",
+        "Al3_minus": "Al3-",
+        "feno_2plus": "feno 2+",
+        "fenoco3_minus": "fenoco3-",
+    }
+    label = case_id
+    for old, new in replacements.items():
+        label = label.replace(old, new)
+    return label.replace("_", " ")
+
+
+def _label_anchor(row: dict[str, Any]) -> tuple[float, float] | None:
+    x = _positive_number(row.get("cumulant_2rdm_frobenius_norm_squared"))
+    qkud_iter = _positive_number(row.get("qkud_eps0p05_chem_accuracy_iteration"))
+    qrte_iter = _positive_number(row.get("qrte_dt0p05_chem_accuracy_iteration"))
+    if x is None:
+        return None
+    if qkud_iter is not None and qrte_iter is not None:
+        return x, math.sqrt(qkud_iter * qrte_iter)
+    if qkud_iter is not None:
+        return x, qkud_iter
+    if qrte_iter is not None:
+        return x, qrte_iter
+    return None
+
+
+def _numbered_label_rows(rows: list[dict[str, Any]]) -> list[tuple[int, dict[str, Any]]]:
+    labeled_rows = [row for row in rows if _label_anchor(row) is not None]
+    labeled_rows.sort(
+        key=lambda row: (
+            float(row["cumulant_2rdm_frobenius_norm_squared"]),
+            str(row["case_id"]),
+        )
+    )
+    return list(enumerate(labeled_rows, start=1))
+
+
+def _bbox_overlap(first: tuple[float, float, float, float], second: tuple[float, float, float, float]) -> float:
+    left = max(first[0], second[0])
+    bottom = max(first[1], second[1])
+    right = min(first[2], second[2])
+    top = min(first[3], second[3])
+    if right <= left or top <= bottom:
+        return 0.0
+    return (right - left) * (top - bottom)
+
+
+def _draw_numeric_label_map(ax, rows: list[dict[str, Any]]) -> list[tuple[int, dict[str, Any]]]:
+    numbered_rows = _numbered_label_rows(rows)
+    anchors = [(number, row, *_label_anchor(row)) for number, row in numbered_rows]
+    point_pixels = [ax.transData.transform((x, y)) for _, _, x, y in anchors]
+    label_boxes: list[tuple[float, float, float, float]] = []
+    point_boxes = [
+        (px - 12.0, py - 12.0, px + 12.0, py + 12.0)
+        for px, py in point_pixels
+    ]
+    candidate_offsets = [
+        (0, 13),
+        (0, -13),
+        (12, 9),
+        (-12, 9),
+        (12, -9),
+        (-12, -9),
+        (18, 0),
+        (-18, 0),
+        (19, 14),
+        (-19, 14),
+        (19, -14),
+        (-19, -14),
+    ]
+    point_per_pt = ax.figure.dpi / 72.0
+
+    for number, row, x, y in anchors:
+        px, py = ax.transData.transform((x, y))
+        label_width = 13.0 if number < 10 else 17.0
+        label_height = 13.0
+        best_offset = candidate_offsets[0]
+        best_box: tuple[float, float, float, float] | None = None
+        best_score = float("inf")
+        for dx_pt, dy_pt in candidate_offsets:
+            cx = px + dx_pt * point_per_pt
+            cy = py + dy_pt * point_per_pt
+            box = (
+                cx - label_width / 2.0,
+                cy - label_height / 2.0,
+                cx + label_width / 2.0,
+                cy + label_height / 2.0,
+            )
+            score = 0.018 * (dx_pt**2 + dy_pt**2)
+            score += sum(35.0 * _bbox_overlap(box, other) for other in label_boxes)
+            score += sum(2.0 * _bbox_overlap(box, other) for other in point_boxes)
+            if score < best_score:
+                best_score = score
+                best_offset = (dx_pt, dy_pt)
+                best_box = box
+        if best_box is not None:
+            label_boxes.append(best_box)
+        ax.annotate(
+            str(number),
+            xy=(x, y),
+            xycoords="data",
+            xytext=best_offset,
+            textcoords="offset points",
+            annotation_clip=False,
+            fontsize=6.8,
+            fontweight="bold",
+            color="#202020",
+            ha="center",
+            va="center",
+            bbox={
+                "boxstyle": "circle,pad=0.18",
+                "facecolor": "white",
+                "edgecolor": "#444444",
+                "linewidth": 0.5,
+                "alpha": 0.94,
+            },
+            zorder=10,
+        )
+    return numbered_rows
+
+
+def _draw_label_key(fig, numbered_rows: list[tuple[int, dict[str, Any]]]) -> None:
+    key_ax = fig.add_axes([0.68, 0.155, 0.295, 0.79])
+    key_ax.axis("off")
+    key_ax.text(
+        0.0,
+        1.015,
+        "System key",
+        fontsize=9.0,
+        fontweight="bold",
+        ha="left",
+        va="bottom",
+        transform=key_ax.transAxes,
+    )
+    rows_per_column = math.ceil(len(numbered_rows) / 2)
+    for index, (number, row) in enumerate(numbered_rows):
+        col = index // rows_per_column
+        row_in_col = index % rows_per_column
+        x = 0.0 if col == 0 else 0.53
+        y = 0.975 - row_in_col * (0.94 / max(1, rows_per_column - 1))
+        key_ax.text(
+            x,
+            y,
+            f"{number}. {_display_case_label(str(row['case_id']))}",
+            fontsize=7.2,
+            color="#222222",
+            ha="left",
+            va="center",
+            transform=key_ax.transAxes,
+        )
+
+
+def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_all: bool) -> None:
     qrte_x, qrte_y, qrte_rows = _xy(rows, "qrte_dt0p05_chem_accuracy_iteration")
     qkud_x, qkud_y, qkud_rows = _xy(rows, "qkud_eps0p05_chem_accuracy_iteration")
     benchmark_rows = [row for row in rows if row.get("benchmark_qc")]
@@ -245,8 +405,12 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
     qrte_color = "#1F77B4"
     qkud_color = "#D62728"
 
-    fig, ax = plt.subplots(figsize=(8.8, 5.9), constrained_layout=False)
-    fig.subplots_adjust(left=0.115, right=0.985, top=0.975, bottom=0.225)
+    if label_all:
+        fig, ax = plt.subplots(figsize=(11.7, 6.6), constrained_layout=False)
+        fig.subplots_adjust(left=0.09, right=0.64, top=0.965, bottom=0.19)
+    else:
+        fig, ax = plt.subplots(figsize=(8.8, 5.9), constrained_layout=False)
+        fig.subplots_adjust(left=0.115, right=0.985, top=0.975, bottom=0.225)
     ax.scatter(
         qrte_x,
         qrte_y,
@@ -354,12 +518,16 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
         frameon=False,
         ncol=2,
         loc="lower center",
-        bbox_to_anchor=(0.5, 0.025),
+        bbox_to_anchor=((0.365 if label_all else 0.5), 0.025),
         bbox_transform=fig.transFigure,
         handlelength=1.5,
         columnspacing=1.8,
         labelspacing=0.75,
     )
+
+    if label_all:
+        numbered_rows = _draw_numeric_label_map(ax, rows)
+        _draw_label_key(fig, numbered_rows)
 
     png_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(png_path, dpi=600)
@@ -378,6 +546,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-adapt-hits", type=int, default=27)
     parser.add_argument("--expected-qkud-hits", type=int, default=None)
     parser.add_argument("--expected-qrte-hits", type=int, default=None)
+    parser.add_argument(
+        "--label-all-systems",
+        action="store_true",
+        help="Add numbered tags on the plot and a side key for every plotted system.",
+    )
     return parser.parse_args()
 
 
@@ -426,7 +599,7 @@ def main() -> None:
     png_path = args.output_prefix.with_suffix(".png")
     pdf_path = args.output_prefix.with_suffix(".pdf")
     _write_rows(rows, csv_path)
-    _plot(rows, png_path, pdf_path)
+    _plot(rows, png_path, pdf_path, label_all=bool(args.label_all_systems))
     print(f"Wrote {csv_path}")
     print(f"Wrote {png_path}")
     print(f"Wrote {pdf_path}")
