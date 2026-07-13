@@ -52,6 +52,13 @@ def _resolve_path(value: Any) -> Path:
     return path
 
 
+def _relative(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(BENCHMARK_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def _sector_dim_from_occupations(n_spatial: int, n_alpha: int, n_beta: int) -> int:
     import math
 
@@ -136,7 +143,7 @@ def compute(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "status": "completed",
         "case_id": case_id,
-        "overlap_path": str(overlap_path.relative_to(BENCHMARK_ROOT)),
+        "overlap_path": _relative(overlap_path),
         "overlap_run_dir": str(overlap.get("run_dir", "")),
         "hamiltonian_cache_path": str(cache_path),
         "hamiltonian_source": str(integral_payload["hamiltonian_source"]),

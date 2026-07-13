@@ -1,0 +1,12 @@
+Computing N2 PES sector gap for N2_R2p00_cc_pVTZ_2
+Overlap JSON: runs/n2_pes_initial_state_overlap/N2_R2p00_cc_pVTZ_2/initial_overlap.json
+Output: runs/n2_pes_initial_state_gap/N2_R2p00_cc_pVTZ_2/sector_gap.json
+Wrote runs/n2_pes_initial_state_gap/N2_R2p00_cc_pVTZ_2/sector_gap.json
+case_id: N2_R2p00_cc_pVTZ_2
+status: completed
+sector_dim: 225
+sector_ground_energy_hartree: -108.79765932779331
+first_excited_energy_hartree: -108.77701533453697
+gap_hartree: 0.020643993256342696
+gap_ev: 0.5617516741579126
+elapsed_seconds: 0.012325937859714031

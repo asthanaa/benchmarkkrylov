@@ -1,0 +1,55 @@
+{
+  "active_electrons": 6,
+  "active_orbital_index_base": null,
+  "active_orbital_indices": null,
+  "active_orbital_labels": null,
+  "active_orbital_selection_method": null,
+  "active_orbitals": 6,
+  "active_space_selection": "default",
+  "active_space_source": "MolVQE N2 equilibrium active size: 6e/6o; varied N-N distance",
+  "basis": "cc-pVTZ",
+  "bond_length_angstrom": 1.5,
+  "case_id": "N2_R1p50_cc_pVTZ_0",
+  "casscf_energy_hartree": -108.95128124224048,
+  "charge": 0,
+  "effective_active_electrons": 6,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.5
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.8345891869386555
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/casscf_natorb_n2_pes/5b53c93b2b8e136c13e0b65828f0a9847691939356023d7fd348262ff7c5f8ef.npz",
+  "hamiltonian_loaded_from_cache": true,
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -108.95128124224048,
+  "reference_source": "local CASSCF/natorb Hamiltonian reference",
+  "scf_converged": true,
+  "scf_energy_hartree": -108.70274843948536,
+  "scf_policy": "QCANT/PySCF RHF for spin=0, ROHF for spin>0",
+  "source_json_path": null,
+  "source_name": "generated N2 PES grid from MolVQE equilibrium N2 settings",
+  "spin": 0,
+  "symbols": [
+    "N",
+    "N"
+  ]
+}

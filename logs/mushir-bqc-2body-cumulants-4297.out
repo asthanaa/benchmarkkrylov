@@ -1,0 +1,7 @@
+START N2_eq: N2
+DONE N2_eq: ||Delta_2||_F^2=2.11963351604
+START FeS_eq: FeS
+DONE FeS_eq: ||Delta_2||_F^2=1.34850698086
+START U2_eq: U2
+DONE U2_eq: ||Delta_2||_F^2=1.54228893527
+Wrote /home/mushir.kolathingal/benchmarkkrylov/runs/benchmark_qc_2body_cumulants/two_body_cumulants.csv

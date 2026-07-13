@@ -50,6 +50,7 @@ class Case:
     n_qubits: int
     reference_bits: list[int]
     reference_energy_hartree: float | None
+    label_index: int | None = None
 
 
 def _set_thread_limits() -> None:
@@ -74,6 +75,12 @@ def _float_or_none(value: str | None) -> float | None:
     return float(value)
 
 
+def _int_or_none(value: str | None) -> int | None:
+    if value is None or value == "":
+        return None
+    return int(value)
+
+
 def _load_manifest(path: Path) -> list[Case]:
     cases: list[Case] = []
     with path.open("r", newline="", encoding="utf-8") as handle:
@@ -92,6 +99,7 @@ def _load_manifest(path: Path) -> list[Case]:
                     n_qubits=int(row["n_qubits"]),
                     reference_bits=reference_bits,
                     reference_energy_hartree=_float_or_none(row.get("reference_energy_hartree")),
+                    label_index=_int_or_none(row.get("label_index")),
                 )
             )
     return cases
@@ -126,14 +134,16 @@ def _write_history_csv(path: Path, min_history, reference_energy: float, np) -> 
                     "iteration": idx,
                     "min_energy_hartree": float(energy),
                     "error_vs_reference_hartree": error,
-                    "within_chemical_accuracy": str(error <= CHEMICAL_ACCURACY_HARTREE).lower(),
+                    "within_chemical_accuracy": str(
+                        abs(error) <= CHEMICAL_ACCURACY_HARTREE
+                    ).lower(),
                 }
             )
 
 
 def _first_hit(min_history, reference_energy: float, np) -> int | None:
     for idx, energy in enumerate(np.asarray(min_history, dtype=float), start=1):
-        if float(energy) - float(reference_energy) <= CHEMICAL_ACCURACY_HARTREE:
+        if abs(float(energy) - float(reference_energy)) <= CHEMICAL_ACCURACY_HARTREE:
             return idx
     return None
 
@@ -202,7 +212,14 @@ def _load_raw_case(case: Case, stack: dict[str, Any]) -> dict[str, Any]:
     if not case.raw_npz.exists():
         raise FileNotFoundError(f"Missing raw Benchmark-QC NPZ: {case.raw_npz}")
     data = np.load(case.raw_npz, allow_pickle=True)
-    idx = _nearest_label_index(data["labels"], case.bond_length_angstrom, np)
+    if case.label_index is None:
+        idx = _nearest_label_index(data["labels"], case.bond_length_angstrom, np)
+    else:
+        idx = int(case.label_index)
+        if idx < 0 or idx >= len(data["labels"]):
+            raise ValueError(
+                f"{case.case_id}: label_index {idx} outside raw label range [0, {len(data['labels'])})"
+            )
     chosen_label = float(data["labels"][idx])
     if abs(chosen_label - case.bond_length_angstrom) > 1e-8:
         raise ValueError(
@@ -340,7 +357,11 @@ def _run_krylov(case: Case, args: argparse.Namespace, payload: dict[str, Any], s
             projection_accumulator.append(current)
             e0 = float(projection_accumulator.energies(args.overlap_tol)[0])
             min_history.append(e0)
-            if args.early_stop_chemical_accuracy and e0 <= float(payload["reference_energy_hartree"]) + CHEMICAL_ACCURACY_HARTREE:
+            if (
+                args.early_stop_chemical_accuracy
+                and abs(e0 - float(payload["reference_energy_hartree"]))
+                <= CHEMICAL_ACCURACY_HARTREE
+            ):
                 break
     else:
         forward_circuit = None
@@ -397,7 +418,11 @@ def _run_krylov(case: Case, args: argparse.Namespace, payload: dict[str, Any], s
             projection_accumulator.append(current)
             e0 = float(projection_accumulator.energies(args.overlap_tol)[0])
             min_history.append(e0)
-            if args.early_stop_chemical_accuracy and e0 <= float(payload["reference_energy_hartree"]) + CHEMICAL_ACCURACY_HARTREE:
+            if (
+                args.early_stop_chemical_accuracy
+                and abs(e0 - float(payload["reference_energy_hartree"]))
+                <= CHEMICAL_ACCURACY_HARTREE
+            ):
                 break
 
     energies = projection_accumulator.energies(args.overlap_tol)

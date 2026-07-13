@@ -1,0 +1,31 @@
+{
+  "active_electrons": 6,
+  "active_orbitals": 6,
+  "bond_length_angstrom": 4.0,
+  "case_id": "FeS_b4p0",
+  "equilibrium_npz": "hamiltonian_cache/benchmark_qc/remaining_geometries/FeS_b4p0.npz",
+  "hamiltonian_source": "Benchmark-QC saved PennyLane qubit Hamiltonian",
+  "label_index": 10,
+  "n_qubits": 12,
+  "raw_npz": "hamiltonian_cache/benchmark_qc/raw/FeS_PES_H.npz",
+  "reference_bits": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0
+  ],
+  "reference_energy_hartree": -1655.4300216149663,
+  "reference_energy_source": "Benchmark-QC casci_energies at selected bond length",
+  "source_npz": "hamiltonian_cache/benchmark_qc/raw/FeS_PES_H.npz",
+  "spin": 4,
+  "system": "FeS",
+  "term_count": 1779
+}

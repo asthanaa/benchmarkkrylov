@@ -1,0 +1,15 @@
+Computing N2 PES initial overlap for N2_R1p00_cc_pVTZ_2
+Run directory: runs/n2_pes_qkud_natorb_eps0.05/N2_R1p00_cc_pVTZ_2
+Output: runs/n2_pes_initial_state_overlap/N2_R1p00_cc_pVTZ_2/initial_overlap.json
+Wrote runs/n2_pes_initial_state_overlap/N2_R1p00_cc_pVTZ_2/initial_overlap.json
+case_id: N2_R1p00_cc_pVTZ_2
+status: completed
+sector_dim: 225
+n_alpha: 4
+n_beta: 2
+hf_bits: 111110100000
+sector_ground_energy_hartree: -108.69572986237597
+overlap_weight: 0.48550278086323484
+negative_log10_overlap: 0.31380827819655505
+solver: pyscf-fci
+elapsed_seconds: 32.93595489114523

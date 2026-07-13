@@ -1,0 +1,21 @@
+{
+  "active_electrons": 6,
+  "active_orbitals": 6,
+  "active_space_selection": "default",
+  "basis": "cc-pVTZ",
+  "bond_length_angstrom": 0.9,
+  "case_id": "N2_R0p90_cc_pVTZ_2",
+  "charge": 0,
+  "effective_active_electrons": 6,
+  "elapsed_seconds": 2.205660187639296,
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/casscf_natorb_n2_pes/a2d64220b00eda43420f9f43996004c8ced687a7301876215936bb1141829f7a.npz",
+  "hamiltonian_loaded_from_cache": false,
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -108.47386221166535,
+  "method": "reference_only",
+  "scf_converged": true,
+  "scf_energy_hartree": -108.4056366369168,
+  "spin": 2,
+  "status": "completed"
+}

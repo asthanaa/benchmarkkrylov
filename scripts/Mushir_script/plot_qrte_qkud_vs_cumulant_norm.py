@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import os
 from pathlib import Path
@@ -34,6 +35,14 @@ DEFAULT_OUTPUT_PREFIX = (
 DEFAULT_ITERATIONS_CSV = (
     BENCHMARK_ROOT / "plots" / "qkud_eps0p05_vs_qrte_dt0p05_iterations_vs_entropy.csv"
 )
+DEFAULT_BENCHMARK_QC_CSV = (
+    BENCHMARK_ROOT / "runs" / "benchmark_qc_2body_cumulants" / "two_body_cumulants.csv"
+)
+DEFAULT_BENCHMARK_QC_QKUD_DIR = BENCHMARK_ROOT / "runs" / "benchmark_qc_qkud_eps0.05"
+DEFAULT_BENCHMARK_QC_QRTE_DIR = BENCHMARK_ROOT / "runs" / "benchmark_qc_qrte_dt0.05"
+BASE_EXPECTED_QKUD_HITS = 27
+BASE_EXPECTED_QRTE_HITS = 25
+EXCLUDED_CASE_IDS = {"U2_eq", "FeS_eq", "N2_eq"}
 
 FIELDNAMES = [
     "case_id",
@@ -89,6 +98,56 @@ def _read_rows(path: Path, iterations_csv: Path) -> list[dict[str, Any]]:
                     "n_alpha": int(row["n_alpha"]),
                     "n_beta": int(row["n_beta"]),
                     "sector_dim": int(row["sector_dim"]),
+                }
+            )
+    rows.sort(key=lambda item: (float(item["cumulant_2rdm_frobenius_norm_squared"]), item["case_id"]))
+    return rows
+
+
+def _read_hit_iteration(summary_path: Path) -> float | None:
+    if not summary_path.exists():
+        return None
+    with summary_path.open("r", encoding="utf-8") as handle:
+        summary = json.load(handle)
+    if str(summary.get("hit_chemical_accuracy", "")).lower() != "true":
+        return None
+    return _positive_number(summary.get("hit_iteration"))
+
+
+def _read_benchmark_qc_rows(
+    cumulants_csv: Path, qkud_dir: Path, qrte_dir: Path
+) -> list[dict[str, Any]]:
+    if not cumulants_csv.exists():
+        return []
+
+    rows: list[dict[str, Any]] = []
+    with cumulants_csv.open("r", newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if str(row.get("status", "")).lower() != "completed":
+                continue
+            norm2 = _positive_number(row.get("cumulant_2rdm_frobenius_norm_squared"))
+            case_id = str(row["case_id"])
+            qkud_iter = _read_hit_iteration(qkud_dir / case_id / "summary.json")
+            if norm2 is None or qkud_iter is None:
+                continue
+            qrte_iter = _read_hit_iteration(qrte_dir / case_id / "summary.json")
+            rows.append(
+                {
+                    "case_id": case_id,
+                    "cumulant_2rdm_frobenius_norm_squared": norm2,
+                    "cumulant_2rdm_frobenius_norm": _positive_number(
+                        row.get("cumulant_2rdm_frobenius_norm")
+                    ),
+                    "adapt_chem_accuracy_iteration": None,
+                    "qkud_eps0p05_chem_accuracy_iteration": qkud_iter,
+                    "qrte_dt0p05_chem_accuracy_iteration": qrte_iter,
+                    "qkud_only_hit": str(qrte_iter is None).lower(),
+                    "h0.25": None,
+                    "n_spatial_orbitals": int(row["active_orbitals"]),
+                    "n_alpha": int(row["n_alpha"]),
+                    "n_beta": int(row["n_beta"]),
+                    "sector_dim": int(row["sector_dim"]),
+                    "benchmark_qc": True,
                 }
             )
     rows.sort(key=lambda item: (float(item["cumulant_2rdm_frobenius_norm_squared"]), item["case_id"]))
@@ -151,10 +210,15 @@ def _annotate(ax, row: dict[str, Any], y_key: str, *, xytext: tuple[int, int]) -
 
 
 def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
-    adapt_x, adapt_y, adapt_rows = _xy(rows, "adapt_chem_accuracy_iteration")
-    qkud_x, qkud_y, qkud_rows = _xy(rows, "qkud_eps0p05_chem_accuracy_iteration")
     qrte_x, qrte_y, qrte_rows = _xy(rows, "qrte_dt0p05_chem_accuracy_iteration")
-    qkud_only_rows = [row for row in rows if str(row.get("qkud_only_hit", "")).lower() == "true"]
+    qkud_x, qkud_y, qkud_rows = _xy(rows, "qkud_eps0p05_chem_accuracy_iteration")
+    benchmark_rows = [row for row in rows if row.get("benchmark_qc")]
+    special_case_ids = {"FeO", "feno_2plus"}
+    qkud_special_rows = [
+        row
+        for row in qkud_rows
+        if str(row.get("case_id", "")) in special_case_ids
+    ]
 
     plt.rcParams.update(
         {
@@ -162,72 +226,94 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
             "font.sans-serif": ["DejaVu Sans", "Arial", "Helvetica"],
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
-            "axes.linewidth": 0.85,
-            "axes.labelsize": 12,
-            "xtick.labelsize": 10,
-            "ytick.labelsize": 10,
-            "legend.fontsize": 9,
-            "xtick.major.width": 0.85,
-            "ytick.major.width": 0.85,
-            "xtick.minor.width": 0.65,
-            "ytick.minor.width": 0.65,
-            "xtick.major.size": 4.0,
-            "ytick.major.size": 4.0,
-            "xtick.minor.size": 2.4,
-            "ytick.minor.size": 2.4,
+            "axes.linewidth": 1.0,
+            "axes.labelsize": 13,
+            "xtick.labelsize": 11,
+            "ytick.labelsize": 11,
+            "legend.fontsize": 10,
+            "xtick.major.width": 1.0,
+            "ytick.major.width": 1.0,
+            "xtick.minor.width": 0.75,
+            "ytick.minor.width": 0.75,
+            "xtick.major.size": 4.5,
+            "ytick.major.size": 4.5,
+            "xtick.minor.size": 2.6,
+            "ytick.minor.size": 2.6,
         }
     )
 
-    fig, ax = plt.subplots(figsize=(7.25, 4.75), constrained_layout=True)
-    ax.scatter(
-        adapt_x,
-        adapt_y,
-        s=42,
-        facecolor="#D2D2D2",
-        edgecolor="#8C8C8C",
-        linewidth=0.45,
-        alpha=0.78,
-        marker="o",
-        label=f"ADAPT-VQE hit (n={len(adapt_rows)})",
-        zorder=2,
-    )
+    qrte_color = "#1F77B4"
+    qkud_color = "#D62728"
+
+    fig, ax = plt.subplots(figsize=(8.8, 5.9), constrained_layout=False)
+    fig.subplots_adjust(left=0.115, right=0.985, top=0.975, bottom=0.225)
     ax.scatter(
         qrte_x,
         qrte_y,
-        s=56,
-        color="#D55E00",
+        s=58,
+        color=qrte_color,
         marker="s",
-        label=rf"QRTE $dt=0.05$ hit (n={len(qrte_rows)})",
+        label=rf"QRTE $dt=0.05$ (n={len(qrte_rows)})",
         zorder=4,
     )
     ax.scatter(
         qkud_x,
         qkud_y,
-        s=58,
-        color="#009E73",
+        s=62,
+        color=qkud_color,
         marker="^",
-        label=rf"QKUD $\epsilon=0.05$ hit (n={len(qkud_rows)})",
+        label=rf"QKUD $\epsilon=0.05$ (n={len(qkud_rows)})",
         zorder=5,
     )
 
-    if qkud_only_rows:
+    if qkud_special_rows:
         ax.scatter(
-            [float(row["cumulant_2rdm_frobenius_norm_squared"]) for row in qkud_only_rows],
-            [float(row["qkud_eps0p05_chem_accuracy_iteration"]) for row in qkud_only_rows],
-            s=160,
-            color="#F0E442",
-            edgecolor="black",
-            linewidth=0.7,
+            [float(row["cumulant_2rdm_frobenius_norm_squared"]) for row in qkud_special_rows],
+            [float(row["qkud_eps0p05_chem_accuracy_iteration"]) for row in qkud_special_rows],
+            s=190,
+            facecolor="#F0C808",
+            edgecolor="#111111",
+            linewidth=0.8,
             marker="*",
-            label="QKUD hit; QRTE not hit",
+            label="_nolegend_",
             zorder=6,
         )
-        for idx, row in enumerate(qkud_only_rows):
+
+    if benchmark_rows:
+        benchmark_qrte_x, benchmark_qrte_y, _ = _xy(
+            benchmark_rows, "qrte_dt0p05_chem_accuracy_iteration"
+        )
+        benchmark_qkud_x, benchmark_qkud_y, _ = _xy(
+            benchmark_rows, "qkud_eps0p05_chem_accuracy_iteration"
+        )
+        ax.scatter(
+            benchmark_qrte_x,
+            benchmark_qrte_y,
+            s=115,
+            facecolor="none",
+            edgecolor="#111111",
+            linewidth=1.05,
+            marker="s",
+            label="_nolegend_",
+            zorder=7,
+        )
+        ax.scatter(
+            benchmark_qkud_x,
+            benchmark_qkud_y,
+            s=120,
+            facecolor="none",
+            edgecolor="#111111",
+            linewidth=1.05,
+            marker="^",
+            label="_nolegend_",
+            zorder=8,
+        )
+        for row in benchmark_rows:
             _annotate(
                 ax,
                 row,
-                "qkud_eps0p05_chem_accuracy_iteration",
-                xytext=(6, 6 if idx % 2 == 0 else -12),
+                "qrte_dt0p05_chem_accuracy_iteration",
+                xytext=(5, 5),
             )
 
     for row in rows:
@@ -239,9 +325,8 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
         ax.plot([x, x], [qkud_iter, qrte_iter], color="#999999", alpha=0.25, linewidth=0.8, zorder=1)
 
     for label, x, y, color, linestyle in (
-        ("ADAPT-VQE", adapt_x, adapt_y, "#A7A7A7", "--"),
-        (r"QRTE $dt=0.05$", qrte_x, qrte_y, "#D55E00", "-"),
-        (r"QKUD $\epsilon=0.05$", qkud_x, qkud_y, "#009E73", "-"),
+        (r"QRTE $dt=0.05$", qrte_x, qrte_y, qrte_color, "-"),
+        (r"QKUD $\epsilon=0.05$", qkud_x, qkud_y, qkud_color, "-"),
     ):
         fit = _fit_log_y(x, y)
         if fit is None:
@@ -252,28 +337,33 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
             y_fit,
             color=color,
             linestyle=linestyle,
-            linewidth=1.55,
-            alpha=0.72,
-            label=rf"{label} log-y fit $R^2$={r2:.3f}",
+            linewidth=1.65,
+            alpha=0.64,
+            label=rf"{label} trend $R^2$={r2:.3f}",
             zorder=3,
         )
 
-    top_norm_row = max(rows, key=lambda row: float(row["cumulant_2rdm_frobenius_norm_squared"]))
-    _annotate(ax, top_norm_row, "qkud_eps0p05_chem_accuracy_iteration", xytext=(6, -14))
-
     ax.set_yscale("log")
-    ax.set_xlabel(r"Two-body cumulant squared Frobenius norm, $||\Delta_2||_F^2$")
-    ax.set_ylabel("Iterations to chemical accuracy")
-    ax.set_title(r"QRTE/QKUD convergence versus $||\Delta_2||_F^2$")
-    ax.grid(True, which="major", color="#D8D8D8", alpha=0.55, linewidth=0.7)
-    ax.grid(True, which="minor", color="#E8E8E8", alpha=0.35, linewidth=0.45)
+    ax.set_xlabel(r"$\|{}^{2}\Delta\|_{\mathrm{F}}^{2}$")
+    ax.set_ylabel("Iter. to chem. accuracy (~ 1 mHa)")
+    ax.grid(True, which="major", color="#D9D9D9", alpha=0.5, linewidth=0.7)
+    ax.grid(True, which="minor", color="#EBEBEB", alpha=0.36, linewidth=0.45)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, ncol=2, loc="upper center", bbox_to_anchor=(0.5, -0.15), handlelength=1.6)
+    ax.legend(
+        frameon=False,
+        ncol=2,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.025),
+        bbox_transform=fig.transFigure,
+        handlelength=1.5,
+        columnspacing=1.8,
+        labelspacing=0.75,
+    )
 
     png_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(png_path, dpi=450, bbox_inches="tight")
-    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(png_path, dpi=600)
+    fig.savefig(pdf_path)
     plt.close(fig)
 
 
@@ -281,25 +371,56 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-csv", type=Path, default=DEFAULT_INPUT_CSV)
     parser.add_argument("--iterations-csv", type=Path, default=DEFAULT_ITERATIONS_CSV)
+    parser.add_argument("--benchmark-qc-csv", type=Path, default=DEFAULT_BENCHMARK_QC_CSV)
+    parser.add_argument("--benchmark-qc-qkud-dir", type=Path, default=DEFAULT_BENCHMARK_QC_QKUD_DIR)
+    parser.add_argument("--benchmark-qc-qrte-dir", type=Path, default=DEFAULT_BENCHMARK_QC_QRTE_DIR)
     parser.add_argument("--output-prefix", type=Path, default=DEFAULT_OUTPUT_PREFIX)
     parser.add_argument("--expected-adapt-hits", type=int, default=27)
-    parser.add_argument("--expected-qkud-hits", type=int, default=27)
-    parser.add_argument("--expected-qrte-hits", type=int, default=25)
+    parser.add_argument("--expected-qkud-hits", type=int, default=None)
+    parser.add_argument("--expected-qrte-hits", type=int, default=None)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     rows = _read_rows(args.input_csv, args.iterations_csv)
+    seen_case_ids = {str(row["case_id"]) for row in rows}
+    benchmark_qc_rows = [
+        row
+        for row in _read_benchmark_qc_rows(
+            args.benchmark_qc_csv,
+            args.benchmark_qc_qkud_dir,
+            args.benchmark_qc_qrte_dir,
+        )
+        if str(row["case_id"]) not in seen_case_ids
+    ]
+    rows.extend(benchmark_qc_rows)
+    rows = [row for row in rows if str(row["case_id"]) not in EXCLUDED_CASE_IDS]
+    benchmark_qc_rows = [
+        row for row in benchmark_qc_rows if str(row["case_id"]) not in EXCLUDED_CASE_IDS
+    ]
+    rows.sort(key=lambda item: (float(item["cumulant_2rdm_frobenius_norm_squared"]), item["case_id"]))
+    expected_qkud_hits = (
+        args.expected_qkud_hits
+        if args.expected_qkud_hits is not None
+        else BASE_EXPECTED_QKUD_HITS
+        + sum(row["qkud_eps0p05_chem_accuracy_iteration"] is not None for row in benchmark_qc_rows)
+    )
+    expected_qrte_hits = (
+        args.expected_qrte_hits
+        if args.expected_qrte_hits is not None
+        else BASE_EXPECTED_QRTE_HITS
+        + sum(row["qrte_dt0p05_chem_accuracy_iteration"] is not None for row in benchmark_qc_rows)
+    )
     adapt_hits = [row for row in rows if row["adapt_chem_accuracy_iteration"] is not None]
     qkud_hits = [row for row in rows if row["qkud_eps0p05_chem_accuracy_iteration"] is not None]
     qrte_hits = [row for row in rows if row["qrte_dt0p05_chem_accuracy_iteration"] is not None]
     if len(adapt_hits) != int(args.expected_adapt_hits):
         raise SystemExit(f"Expected {args.expected_adapt_hits} ADAPT hits, found {len(adapt_hits)}")
-    if len(qkud_hits) != int(args.expected_qkud_hits):
-        raise SystemExit(f"Expected {args.expected_qkud_hits} QKUD hits, found {len(qkud_hits)}")
-    if len(qrte_hits) != int(args.expected_qrte_hits):
-        raise SystemExit(f"Expected {args.expected_qrte_hits} QRTE hits, found {len(qrte_hits)}")
+    if len(qkud_hits) != int(expected_qkud_hits):
+        raise SystemExit(f"Expected {expected_qkud_hits} QKUD hits, found {len(qkud_hits)}")
+    if len(qrte_hits) != int(expected_qrte_hits):
+        raise SystemExit(f"Expected {expected_qrte_hits} QRTE hits, found {len(qrte_hits)}")
 
     csv_path = args.output_prefix.with_suffix(".csv")
     png_path = args.output_prefix.with_suffix(".png")

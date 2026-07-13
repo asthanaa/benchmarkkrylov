@@ -1,0 +1,31 @@
+{
+  "active_electrons": 6,
+  "active_orbitals": 6,
+  "bond_length_angstrom": 2.6,
+  "case_id": "U2_b2p6",
+  "equilibrium_npz": "hamiltonian_cache/benchmark_qc/remaining_geometries/U2_b2p6.npz",
+  "hamiltonian_source": "Benchmark-QC saved PennyLane qubit Hamiltonian",
+  "label_index": 4,
+  "n_qubits": 12,
+  "raw_npz": "hamiltonian_cache/benchmark_qc/raw/U2_PES_H.npz",
+  "reference_bits": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "reference_energy_hartree": -55985.62864378612,
+  "reference_energy_source": "Benchmark-QC casci_energies at selected bond length",
+  "source_npz": "hamiltonian_cache/benchmark_qc/raw/U2_PES_H.npz",
+  "spin": 0,
+  "system": "U2",
+  "term_count": 1859
+}
