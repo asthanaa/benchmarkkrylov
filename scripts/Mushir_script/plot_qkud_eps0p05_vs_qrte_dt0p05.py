@@ -285,67 +285,86 @@ def _fit_semilog(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray, 
 
 
 def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
-    adapt_hit_rows = [row for row in rows if row["adapt_hit_chemical_accuracy"] == "true"]
     qkud_hit_rows = [row for row in rows if row["qkud_hit_chemical_accuracy"] == "true"]
     qrte_hit_rows = [row for row in rows if row["qrte_hit_chemical_accuracy"] == "true"]
     qkud_only_rows = [row for row in rows if row["qkud_only_hit"] == "true"]
+    qkud_hit_case_ids = {str(row["case_id"]) for row in qkud_hit_rows}
+    qkud_only_case_ids = {str(row["case_id"]) for row in qkud_only_rows}
+    adapt_hit_rows = [
+        row
+        for row in rows
+        if row["adapt_hit_chemical_accuracy"] == "true"
+        and str(row["case_id"]) in qkud_hit_case_ids
+    ]
+    qkud_marker_rows = [
+        row
+        for row in qkud_hit_rows
+        if str(row["case_id"]) not in qkud_only_case_ids
+    ]
 
     adapt_x, adapt_y = _finite_xy(adapt_hit_rows, "adapt_chem_accuracy_iteration")
-    qkud_x, qkud_y = _finite_xy(qkud_hit_rows, "qkud_eps0p05_chem_accuracy_iteration")
     qrte_x, qrte_y = _finite_xy(qrte_hit_rows, "qrte_dt0p05_chem_accuracy_iteration")
+    qkud_x, qkud_y = _finite_xy(qkud_hit_rows, "qkud_eps0p05_chem_accuracy_iteration")
+    qkud_marker_x, qkud_marker_y = _finite_xy(qkud_marker_rows, "qkud_eps0p05_chem_accuracy_iteration")
     qkud_only_x, qkud_only_y = _finite_xy(qkud_only_rows, "qkud_eps0p05_chem_accuracy_iteration")
 
     plt.rcParams.update(
         {
             "font.family": "sans-serif",
             "font.sans-serif": ["DejaVu Sans", "Arial", "Helvetica"],
+            "font.size": 13,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
-            "axes.linewidth": 0.85,
-            "axes.labelsize": 12,
-            "xtick.labelsize": 10,
-            "ytick.labelsize": 10,
-            "legend.fontsize": 9,
-            "xtick.major.width": 0.85,
-            "ytick.major.width": 0.85,
-            "xtick.minor.width": 0.65,
-            "ytick.minor.width": 0.65,
-            "xtick.major.size": 4.0,
-            "ytick.major.size": 4.0,
-            "xtick.minor.size": 2.4,
-            "ytick.minor.size": 2.4,
+            "axes.linewidth": 1.1,
+            "axes.labelsize": 16,
+            "xtick.labelsize": 13.5,
+            "ytick.labelsize": 13.5,
+            "legend.fontsize": 12.2,
+            "xtick.major.width": 1.1,
+            "ytick.major.width": 1.1,
+            "xtick.minor.width": 0.8,
+            "ytick.minor.width": 0.8,
+            "xtick.major.size": 5.0,
+            "ytick.major.size": 5.0,
+            "xtick.minor.size": 2.9,
+            "ytick.minor.size": 2.9,
         }
     )
 
-    fig, ax = plt.subplots(figsize=(7.25, 4.75), constrained_layout=True)
+    qrte_color = "#0072B2"
+    qkud_color = "#D55E00"
+    adapt_face = "#D7D7D7"
+    adapt_edge = "#8B8B8B"
+
+    fig, ax = plt.subplots(figsize=(8.0, 5.25), constrained_layout=True)
     ax.scatter(
         adapt_x,
         adapt_y,
-        s=42,
-        facecolor="#D2D2D2",
-        edgecolor="#8C8C8C",
-        linewidth=0.45,
-        alpha=0.78,
+        s=56,
+        facecolor=adapt_face,
+        edgecolor=adapt_edge,
+        linewidth=0.55,
+        alpha=0.82,
         marker="o",
-        label=f"ADAPT-VQE (n={len(adapt_hit_rows)})",
+        label="ADAPT-VQE",
         zorder=2,
     )
     ax.scatter(
         qrte_x,
         qrte_y,
-        s=54,
-        color="#D55E00",
+        s=74,
+        color=qrte_color,
         marker="s",
-        label=rf"QRTE $\Delta t=0.05$ (n={len(qrte_hit_rows)})",
+        label="QRTE",
         zorder=4,
     )
     ax.scatter(
-        qkud_x,
-        qkud_y,
-        s=58,
-        color="#009E73",
+        qkud_marker_x,
+        qkud_marker_y,
+        s=80,
+        color=qkud_color,
         marker="^",
-        label=rf"QKUD $\epsilon=0.05$ (n={len(qkud_hit_rows)})",
+        label="QKUD",
         zorder=5,
     )
 
@@ -353,30 +372,14 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
         ax.scatter(
             qkud_only_x,
             qkud_only_y,
-            s=160,
+            s=220,
             color="#F0E442",
             edgecolor="black",
-            linewidth=0.7,
+            linewidth=0.9,
             marker="*",
-            label="QKUD hit; QRTE not hit",
+            label="_nolegend_",
             zorder=6,
         )
-        for idx, row in enumerate(qkud_only_rows):
-            y = _positive_number(row["qkud_eps0p05_chem_accuracy_iteration"])
-            if y is None:
-                continue
-            label = row["case_id"]
-            y_factor = 1.18 if idx % 2 == 0 else 0.82
-            ax.annotate(
-                label,
-                (float(row["h0.25"]), y),
-                xytext=(6, 4),
-                textcoords="offset points",
-                fontsize=8.0,
-                color="#333333",
-                ha="left",
-                va="bottom" if y_factor >= 1.0 else "top",
-            )
 
     for row in rows:
         qkud_iter = _positive_number(row["qkud_eps0p05_chem_accuracy_iteration"])
@@ -384,12 +387,12 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
         if qkud_iter is None or qrte_iter is None:
             continue
         x = float(row["h0.25"])
-        ax.plot([x, x], [qrte_iter, qkud_iter], color="#999999", alpha=0.24, linewidth=0.8, zorder=1)
+        ax.plot([x, x], [qrte_iter, qkud_iter], color="#999999", alpha=0.24, linewidth=0.9, zorder=1)
 
     for label, x, y, color, linestyle, linewidth, alpha in (
-        ("ADAPT-VQE", adapt_x, adapt_y, "#A7A7A7", "--", 1.35, 0.78),
-        (r"QRTE $\Delta t=0.05$", qrte_x, qrte_y, "#D55E00", "-", 1.7, 0.82),
-        (r"QKUD $\epsilon=0.05$", qkud_x, qkud_y, "#009E73", "-", 1.7, 0.82),
+        ("ADAPT-VQE", adapt_x, adapt_y, "#A8A8A8", "--", 1.65, 0.78),
+        ("QRTE", qrte_x, qrte_y, qrte_color, "-", 2.1, 0.82),
+        ("QKUD", qkud_x, qkud_y, qkud_color, "-", 2.1, 0.82),
     ):
         fit = _fit_semilog(x, y)
         if fit is None:
@@ -409,13 +412,13 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
     ax.set_yscale("log")
     ax.set_xlabel(r"Renyi entropy, $h_{0.25}$")
     ax.set_ylabel("Iterations to chemical accuracy")
-    ax.grid(True, which="major", color="#D8D8D8", alpha=0.55, linewidth=0.7)
-    ax.grid(True, which="minor", color="#E8E8E8", alpha=0.35, linewidth=0.45)
+    ax.grid(True, which="major", color="#D8D8D8", alpha=0.55, linewidth=0.75)
+    ax.grid(True, which="minor", color="#E8E8E8", alpha=0.35, linewidth=0.48)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.15), handlelength=1.6)
+    ax.legend(frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.15), handlelength=1.65)
     png_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(png_path, dpi=450, bbox_inches="tight")
+    fig.savefig(png_path, dpi=600, bbox_inches="tight")
     fig.savefig(pdf_path, bbox_inches="tight")
     plt.close(fig)
 

@@ -31,12 +31,20 @@ DEFAULT_QRTE_DIR = BENCHMARK_ROOT / "runs" / "n2_pes_qrte_natorb_dt0.05"
 DEFAULT_QKUD_DIR = BENCHMARK_ROOT / "runs" / "n2_pes_qkud_natorb_eps0.05"
 DEFAULT_GAP_DIR = BENCHMARK_ROOT / "runs" / "n2_pes_initial_state_gap"
 DEFAULT_OUTPUT_PREFIX = BENCHMARK_ROOT / "plots" / "n2_pes_overlap_gap_iterations"
+DEFAULT_EQUILIBRIUM_QRTE_DIR = BENCHMARK_ROOT / "runs" / "qrte_natorb_dt0.05"
+DEFAULT_EQUILIBRIUM_QRTE_RERUN_DIR = BENCHMARK_ROOT / "runs" / "qrte_natorb_dt0.05_100iter"
+DEFAULT_EQUILIBRIUM_QKUD_DIR = BENCHMARK_ROOT / "runs" / "qkud_natorb_eps0.05"
+DEFAULT_EQUILIBRIUM_GAP_DIR = BENCHMARK_ROOT / "runs" / "initial_state_gap"
+EQUILIBRIUM_BOND_LENGTH_ANGSTROM = 1.20
+EQUILIBRIUM_CASE_IDS = ("N2_equi_cc_pVTZ_0", "N2_equi_cc_pVTZ_2")
 CASE_RE = re.compile(r"^N2_R(?P<bond>[0-9]+p[0-9]+)_cc_pVTZ_(?P<spin>[02])$")
+EQUILIBRIUM_CASE_RE = re.compile(r"^N2_equi_cc_pVTZ_(?P<spin>[02])$")
 
 FIELDNAMES = [
     "case_id",
     "bond_length_angstrom",
     "spin",
+    "point_kind",
     "method",
     "hit_chemical_accuracy",
     "iteration_to_chemical_accuracy",
@@ -65,11 +73,18 @@ def _relative(path: Path) -> str:
 
 def _case_metadata(case_id: str) -> tuple[float, int]:
     match = CASE_RE.match(case_id)
-    if match is None:
-        raise ValueError(f"Unexpected N2 PES case id: {case_id}")
-    bond = float(match.group("bond").replace("p", "."))
-    spin = int(match.group("spin"))
-    return bond, spin
+    if match is not None:
+        bond = float(match.group("bond").replace("p", "."))
+        spin = int(match.group("spin"))
+        return bond, spin
+    equilibrium_match = EQUILIBRIUM_CASE_RE.match(case_id)
+    if equilibrium_match is not None:
+        return EQUILIBRIUM_BOND_LENGTH_ANGSTROM, int(equilibrium_match.group("spin"))
+    raise ValueError(f"Unexpected N2 PES/equilibrium case id: {case_id}")
+
+
+def _case_kind(case_id: str) -> str:
+    return "equilibrium" if EQUILIBRIUM_CASE_RE.match(case_id) else "pes"
 
 
 def _summary_hit(summary: dict[str, Any] | None) -> bool:
@@ -93,11 +108,91 @@ def _discover_case_ids(gap_dir: Path) -> list[str]:
     return sorted(case_ids, key=lambda case_id: (*_case_metadata(case_id), case_id))
 
 
+def _preferred_summary(
+    case_id: str,
+    summary_dir: Path,
+    *,
+    rerun_dir: Path | None = None,
+) -> tuple[Path, dict[str, Any] | None]:
+    base_path = summary_dir / case_id / "summary.json"
+    base_summary = _load_json(base_path) if base_path.exists() else None
+
+    rerun_path = None if rerun_dir is None else rerun_dir / case_id / "summary.json"
+    rerun_summary = _load_json(rerun_path) if rerun_path is not None and rerun_path.exists() else None
+    if _summary_hit(rerun_summary):
+        return rerun_path, rerun_summary
+    if base_summary is not None:
+        return base_path, base_summary
+    if rerun_path is not None:
+        return rerun_path, rerun_summary
+    return base_path, None
+
+
+def _append_case_rows(
+    rows: list[dict[str, Any]],
+    missing: list[str],
+    *,
+    case_id: str,
+    gap_dir: Path,
+    qrte_dir: Path,
+    qkud_dir: Path,
+    qrte_rerun_dir: Path | None = None,
+) -> None:
+    bond, spin = _case_metadata(case_id)
+    point_kind = _case_kind(case_id)
+    gap_path = gap_dir / case_id / "sector_gap.json"
+    if not gap_path.exists():
+        missing.append(f"{case_id}: gap")
+        return
+    gap = _load_json(gap_path)
+    if gap.get("status") != "completed" or float(gap.get("gap_hartree", 0.0)) <= 0.0:
+        missing.append(f"{case_id}: invalid gap")
+        return
+
+    for method, summary_dir, method_label in (
+        ("qrte", qrte_dir, "QRTE dt=0.05"),
+        ("qkud", qkud_dir, "QKUD eps=0.05"),
+    ):
+        summary_path, summary = _preferred_summary(
+            case_id,
+            summary_dir,
+            rerun_dir=qrte_rerun_dir if method == "qrte" else None,
+        )
+        hit = _summary_hit(summary)
+        if summary is None:
+            missing.append(f"{case_id}: {method} summary")
+        rows.append(
+            {
+                "case_id": case_id,
+                "bond_length_angstrom": float(bond),
+                "spin": int(spin),
+                "point_kind": point_kind,
+                "method": method_label,
+                "method_key": method,
+                "hit_chemical_accuracy": str(hit).lower(),
+                "iteration_to_chemical_accuracy": _float_or_blank(summary.get("hit_iteration") if hit else ""),
+                "steps_completed": _float_or_blank(None if summary is None else summary.get("n_steps_completed")),
+                "overlap_weight": float(gap["overlap_weight"]),
+                "negative_log10_overlap": float(gap["negative_log10_overlap"]),
+                "gap_hartree": float(gap["gap_hartree"]),
+                "gap_millihartree": float(gap["gap_millihartree"]),
+                "gap_ev": float(gap["gap_ev"]),
+                "gap_path": _relative(gap_path),
+                "summary_path": _relative(summary_path) if summary_path.exists() else "",
+            }
+        )
+
+
 def _build_rows(
     *,
     qrte_dir: Path,
     qkud_dir: Path,
     gap_dir: Path,
+    equilibrium_qrte_dir: Path,
+    equilibrium_qkud_dir: Path,
+    equilibrium_gap_dir: Path,
+    equilibrium_qrte_rerun_dir: Path | None,
+    include_equilibrium: bool,
     expected_count: int,
     allow_missing: bool,
 ) -> list[dict[str, Any]]:
@@ -108,50 +203,32 @@ def _build_rows(
     rows: list[dict[str, Any]] = []
     missing: list[str] = []
     for case_id in case_ids:
-        bond, spin = _case_metadata(case_id)
-        gap_path = gap_dir / case_id / "sector_gap.json"
-        if not gap_path.exists():
-            missing.append(f"{case_id}: gap")
-            continue
-        gap = _load_json(gap_path)
-        if gap.get("status") != "completed" or float(gap.get("gap_hartree", 0.0)) <= 0.0:
-            missing.append(f"{case_id}: invalid gap")
-            continue
+        _append_case_rows(
+            rows,
+            missing,
+            case_id=case_id,
+            gap_dir=gap_dir,
+            qrte_dir=qrte_dir,
+            qkud_dir=qkud_dir,
+        )
 
-        for method, summary_dir, method_label in (
-            ("qrte", qrte_dir, "QRTE dt=0.05"),
-            ("qkud", qkud_dir, "QKUD eps=0.05"),
-        ):
-            summary_path = summary_dir / case_id / "summary.json"
-            summary = _load_json(summary_path) if summary_path.exists() else None
-            hit = _summary_hit(summary)
-            if summary is None:
-                missing.append(f"{case_id}: {method} summary")
-            rows.append(
-                {
-                    "case_id": case_id,
-                    "bond_length_angstrom": float(bond),
-                    "spin": int(spin),
-                    "method": method_label,
-                    "method_key": method,
-                    "hit_chemical_accuracy": str(hit).lower(),
-                    "iteration_to_chemical_accuracy": _float_or_blank(summary.get("hit_iteration") if hit else ""),
-                    "steps_completed": _float_or_blank(None if summary is None else summary.get("n_steps_completed")),
-                    "overlap_weight": float(gap["overlap_weight"]),
-                    "negative_log10_overlap": float(gap["negative_log10_overlap"]),
-                    "gap_hartree": float(gap["gap_hartree"]),
-                    "gap_millihartree": float(gap["gap_millihartree"]),
-                    "gap_ev": float(gap["gap_ev"]),
-                    "gap_path": _relative(gap_path),
-                    "summary_path": _relative(summary_path) if summary_path.exists() else "",
-                }
+    if include_equilibrium:
+        for case_id in EQUILIBRIUM_CASE_IDS:
+            _append_case_rows(
+                rows,
+                missing,
+                case_id=case_id,
+                gap_dir=equilibrium_gap_dir,
+                qrte_dir=equilibrium_qrte_dir,
+                qkud_dir=equilibrium_qkud_dir,
+                qrte_rerun_dir=equilibrium_qrte_rerun_dir,
             )
 
     if missing and not allow_missing:
         missing_text = "\n  ".join(missing)
         raise SystemExit(f"Missing or invalid N2 PES inputs:\n  {missing_text}\nUse --allow-missing for a preview.")
 
-    rows.sort(key=lambda row: (row["spin"], row["bond_length_angstrom"], row["method"]))
+    rows.sort(key=lambda row: (row["spin"], row["bond_length_angstrom"], row["point_kind"], row["method"]))
     return rows
 
 
@@ -185,12 +262,12 @@ def _display_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def _marker_for(row: dict[str, Any]) -> str:
     if row["method_key"] == "qrte":
-        return "s" if int(row["spin"]) == 0 else "D"
-    return "^" if int(row["spin"]) == 0 else "v"
+        return "o" if int(row["spin"]) == 0 else "s"
+    return "s" if int(row["spin"]) == 0 else "o"
 
 
 def _method_spin_label(method_key: str, spin: int) -> str:
-    method = r"QRTE $\Delta t=0.05$" if method_key == "qrte" else r"QKUD $\epsilon=0.05$"
+    method = "QRTE" if method_key == "qrte" else "QKUD"
     return rf"{method}, spin {spin}"
 
 
@@ -210,7 +287,7 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
             "axes.labelsize": 9.8,
             "xtick.labelsize": 8.8,
             "ytick.labelsize": 8.8,
-            "legend.fontsize": 8.0,
+            "legend.fontsize": 8.2,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
             "axes.linewidth": 0.8,
@@ -335,34 +412,40 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
     axes[1].set_xlim(max(0.001, float(gap_values.min()) * 0.82), float(gap_values.max()) * 1.22)
 
     legend_handles = [
+        Line2D([0], [0], marker="o", linestyle="none", markerfacecolor="none", markeredgecolor="#4B5563", markersize=6.2),
         Line2D([0], [0], marker="s", linestyle="none", markerfacecolor="none", markeredgecolor="#4B5563", markersize=6.0),
-        Line2D([0], [0], marker="D", linestyle="none", markerfacecolor="none", markeredgecolor="#4B5563", markersize=5.6),
-        Line2D([0], [0], marker="^", linestyle="none", markerfacecolor="#4B5563", markeredgecolor="#303030", markersize=6.0),
-        Line2D([0], [0], marker="v", linestyle="none", markerfacecolor="#4B5563", markeredgecolor="#303030", markersize=6.0),
-        Line2D([0], [0], color="#A8A8A8", linewidth=0.9),
+        Line2D([0], [0], marker="s", linestyle="none", markerfacecolor="#4B5563", markeredgecolor="#303030", markersize=6.0),
+        Line2D([0], [0], marker="o", linestyle="none", markerfacecolor="#4B5563", markeredgecolor="#303030", markersize=6.0),
     ]
     legend_labels = [
         _method_spin_label("qrte", 0),
         _method_spin_label("qrte", 2),
         _method_spin_label("qkud", 0),
         _method_spin_label("qkud", 2),
-        "same PES point",
     ]
     if miss_rows:
         legend_handles.append(
             Line2D([0], [0], marker="X", linestyle="none", markerfacecolor="#4B5563", markeredgecolor="black", markersize=6.8)
         )
         legend_labels.append("no hit; final step")
-    fig.legend(
-        legend_handles,
-        legend_labels,
-        frameon=False,
-        ncol=6 if miss_rows else 5,
-        loc="lower center",
-        bbox_to_anchor=(0.5, -0.13),
-        handlelength=1.2,
-        columnspacing=1.0,
-    )
+    for ax in axes:
+        legend = ax.legend(
+            legend_handles,
+            legend_labels,
+            frameon=True,
+            loc="upper right",
+            bbox_to_anchor=(1.02, 0.985),
+            borderaxespad=0.0,
+            handlelength=1.2,
+            handletextpad=0.5,
+            labelspacing=0.32,
+            borderpad=0.38,
+            fontsize=8.2,
+        )
+        legend.get_frame().set_facecolor("white")
+        legend.get_frame().set_alpha(0.88)
+        legend.get_frame().set_edgecolor("#D1D5DB")
+        legend.get_frame().set_linewidth(0.65)
 
     sm = cm.ScalarMappable(norm=norm, cmap=cmap)
     sm.set_array([])
@@ -383,9 +466,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--qrte-dir", type=Path, default=DEFAULT_QRTE_DIR)
     parser.add_argument("--qkud-dir", type=Path, default=DEFAULT_QKUD_DIR)
     parser.add_argument("--gap-dir", type=Path, default=DEFAULT_GAP_DIR)
+    parser.add_argument("--equilibrium-qrte-dir", type=Path, default=DEFAULT_EQUILIBRIUM_QRTE_DIR)
+    parser.add_argument("--equilibrium-qkud-dir", type=Path, default=DEFAULT_EQUILIBRIUM_QKUD_DIR)
+    parser.add_argument("--equilibrium-gap-dir", type=Path, default=DEFAULT_EQUILIBRIUM_GAP_DIR)
+    parser.add_argument("--equilibrium-qrte-rerun-dir", type=Path, default=DEFAULT_EQUILIBRIUM_QRTE_RERUN_DIR)
     parser.add_argument("--output-prefix", type=Path, default=DEFAULT_OUTPUT_PREFIX)
     parser.add_argument("--expected-count", type=int, default=16)
     parser.add_argument("--allow-missing", action="store_true")
+    parser.add_argument("--no-equilibrium", action="store_true")
     return parser.parse_args()
 
 
@@ -395,6 +483,11 @@ def main() -> None:
         qrte_dir=args.qrte_dir,
         qkud_dir=args.qkud_dir,
         gap_dir=args.gap_dir,
+        equilibrium_qrte_dir=args.equilibrium_qrte_dir,
+        equilibrium_qkud_dir=args.equilibrium_qkud_dir,
+        equilibrium_gap_dir=args.equilibrium_gap_dir,
+        equilibrium_qrte_rerun_dir=args.equilibrium_qrte_rerun_dir,
+        include_equilibrium=not args.no_equilibrium,
         expected_count=int(args.expected_count),
         allow_missing=bool(args.allow_missing),
     )
@@ -409,7 +502,12 @@ def main() -> None:
     print(f"Wrote {csv_path}")
     print(f"Wrote {args.output_prefix.with_suffix('.png')}")
     print(f"Wrote {args.output_prefix.with_suffix('.pdf')}")
-    print(f"Included {len(rows) // 2} N2 PES points and {len(hit_rows)} method-hit points.")
+    pes_points = len({row["case_id"] for row in rows if row.get("point_kind") == "pes"})
+    equilibrium_points = len({row["case_id"] for row in rows if row.get("point_kind") == "equilibrium"})
+    print(
+        f"Included {pes_points} N2 PES points, {equilibrium_points} equilibrium points, "
+        f"and {len(hit_rows)} method-hit points."
+    )
 
 
 if __name__ == "__main__":

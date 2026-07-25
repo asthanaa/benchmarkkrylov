@@ -202,7 +202,7 @@ def _annotate(ax, row: dict[str, Any], y_key: str, *, xytext: tuple[int, int]) -
         (float(row["cumulant_2rdm_frobenius_norm_squared"]), y),
         xytext=xytext,
         textcoords="offset points",
-        fontsize=8.0,
+        fontsize=9.3,
         color="#333333",
         ha="left",
         va="bottom",
@@ -321,7 +321,7 @@ def _draw_numeric_label_map(ax, rows: list[dict[str, Any]]) -> list[tuple[int, d
             xytext=best_offset,
             textcoords="offset points",
             annotation_clip=False,
-            fontsize=6.8,
+            fontsize=7.8,
             fontweight="bold",
             color="#202020",
             ha="center",
@@ -345,7 +345,7 @@ def _draw_label_key(fig, numbered_rows: list[tuple[int, dict[str, Any]]]) -> Non
         0.0,
         1.015,
         "System key",
-        fontsize=9.0,
+        fontsize=10.4,
         fontweight="bold",
         ha="left",
         va="bottom",
@@ -361,7 +361,7 @@ def _draw_label_key(fig, numbered_rows: list[tuple[int, dict[str, Any]]]) -> Non
             x,
             y,
             f"{number}. {_display_case_label(str(row['case_id']))}",
-            fontsize=7.2,
+            fontsize=8.2,
             color="#222222",
             ha="left",
             va="center",
@@ -379,26 +379,41 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
         for row in qkud_rows
         if str(row.get("case_id", "")) in special_case_ids
     ]
+    qkud_special_case_ids = {str(row["case_id"]) for row in qkud_special_rows}
+    qkud_marker_rows = [
+        row
+        for row in qkud_rows
+        if str(row.get("case_id", "")) not in qkud_special_case_ids
+    ]
+    qkud_marker_x = np.asarray(
+        [float(row["cumulant_2rdm_frobenius_norm_squared"]) for row in qkud_marker_rows],
+        dtype=float,
+    )
+    qkud_marker_y = np.asarray(
+        [float(row["qkud_eps0p05_chem_accuracy_iteration"]) for row in qkud_marker_rows],
+        dtype=float,
+    )
 
     plt.rcParams.update(
         {
             "font.family": "sans-serif",
             "font.sans-serif": ["DejaVu Sans", "Arial", "Helvetica"],
+            "font.size": 13,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
-            "axes.linewidth": 1.0,
-            "axes.labelsize": 13,
-            "xtick.labelsize": 11,
-            "ytick.labelsize": 11,
-            "legend.fontsize": 10,
-            "xtick.major.width": 1.0,
-            "ytick.major.width": 1.0,
-            "xtick.minor.width": 0.75,
-            "ytick.minor.width": 0.75,
-            "xtick.major.size": 4.5,
-            "ytick.major.size": 4.5,
-            "xtick.minor.size": 2.6,
-            "ytick.minor.size": 2.6,
+            "axes.linewidth": 1.15,
+            "axes.labelsize": 16.4,
+            "xtick.labelsize": 14,
+            "ytick.labelsize": 14,
+            "legend.fontsize": 13.2,
+            "xtick.major.width": 1.15,
+            "ytick.major.width": 1.15,
+            "xtick.minor.width": 0.85,
+            "ytick.minor.width": 0.85,
+            "xtick.major.size": 5.2,
+            "ytick.major.size": 5.2,
+            "xtick.minor.size": 3.0,
+            "ytick.minor.size": 3.0,
         }
     )
 
@@ -407,26 +422,26 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
 
     if label_all:
         fig, ax = plt.subplots(figsize=(11.7, 6.6), constrained_layout=False)
-        fig.subplots_adjust(left=0.09, right=0.64, top=0.965, bottom=0.19)
+        fig.subplots_adjust(left=0.095, right=0.64, top=0.965, bottom=0.16)
     else:
         fig, ax = plt.subplots(figsize=(8.8, 5.9), constrained_layout=False)
-        fig.subplots_adjust(left=0.115, right=0.985, top=0.975, bottom=0.225)
+        fig.subplots_adjust(left=0.13, right=0.985, top=0.975, bottom=0.155)
     ax.scatter(
         qrte_x,
         qrte_y,
-        s=58,
+        s=74,
         color=qrte_color,
         marker="s",
-        label=rf"QRTE $dt=0.05$ (n={len(qrte_rows)})",
+        label="QRTE",
         zorder=4,
     )
     ax.scatter(
-        qkud_x,
-        qkud_y,
-        s=62,
+        qkud_marker_x,
+        qkud_marker_y,
+        s=78,
         color=qkud_color,
         marker="^",
-        label=rf"QKUD $\epsilon=0.05$ (n={len(qkud_rows)})",
+        label="QKUD",
         zorder=5,
     )
 
@@ -434,10 +449,10 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
         ax.scatter(
             [float(row["cumulant_2rdm_frobenius_norm_squared"]) for row in qkud_special_rows],
             [float(row["qkud_eps0p05_chem_accuracy_iteration"]) for row in qkud_special_rows],
-            s=190,
+            s=220,
             facecolor="#F0C808",
             edgecolor="#111111",
-            linewidth=0.8,
+            linewidth=0.9,
             marker="*",
             label="_nolegend_",
             zorder=6,
@@ -453,10 +468,10 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
         ax.scatter(
             benchmark_qrte_x,
             benchmark_qrte_y,
-            s=115,
+            s=126,
             facecolor="none",
             edgecolor="#111111",
-            linewidth=1.05,
+            linewidth=1.15,
             marker="s",
             label="_nolegend_",
             zorder=7,
@@ -464,10 +479,10 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
         ax.scatter(
             benchmark_qkud_x,
             benchmark_qkud_y,
-            s=120,
+            s=132,
             facecolor="none",
             edgecolor="#111111",
-            linewidth=1.05,
+            linewidth=1.15,
             marker="^",
             label="_nolegend_",
             zorder=8,
@@ -486,11 +501,11 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
         if qkud_iter is None or qrte_iter is None:
             continue
         x = float(row["cumulant_2rdm_frobenius_norm_squared"])
-        ax.plot([x, x], [qkud_iter, qrte_iter], color="#999999", alpha=0.25, linewidth=0.8, zorder=1)
+        ax.plot([x, x], [qkud_iter, qrte_iter], color="#999999", alpha=0.25, linewidth=0.9, zorder=1)
 
     for label, x, y, color, linestyle in (
-        (r"QRTE $dt=0.05$", qrte_x, qrte_y, qrte_color, "-"),
-        (r"QKUD $\epsilon=0.05$", qkud_x, qkud_y, qkud_color, "-"),
+        ("QRTE", qrte_x, qrte_y, qrte_color, "-"),
+        ("QKUD", qkud_x, qkud_y, qkud_color, "-"),
     ):
         fit = _fit_log_y(x, y)
         if fit is None:
@@ -501,28 +516,31 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *, label_a
             y_fit,
             color=color,
             linestyle=linestyle,
-            linewidth=1.65,
-            alpha=0.64,
-            label=rf"{label} trend $R^2$={r2:.3f}",
+            linewidth=2.0,
+            alpha=0.66,
+            label=rf"{label} $R^2$={r2:.3f}",
             zorder=3,
         )
 
     ax.set_yscale("log")
     ax.set_xlabel(r"$\|{}^{2}\Delta\|_{\mathrm{F}}^{2}$")
-    ax.set_ylabel("Iter. to chem. accuracy (~ 1 mHa)")
-    ax.grid(True, which="major", color="#D9D9D9", alpha=0.5, linewidth=0.7)
-    ax.grid(True, which="minor", color="#EBEBEB", alpha=0.36, linewidth=0.45)
+    ax.set_ylabel("Iter. to chem. accuracy (~ 1.6 mHa)")
+    ax.grid(True, which="major", color="#D9D9D9", alpha=0.5, linewidth=0.75)
+    ax.grid(True, which="minor", color="#EBEBEB", alpha=0.36, linewidth=0.48)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.legend(
-        frameon=False,
-        ncol=2,
-        loc="lower center",
-        bbox_to_anchor=((0.365 if label_all else 0.5), 0.025),
-        bbox_transform=fig.transFigure,
-        handlelength=1.5,
-        columnspacing=1.8,
-        labelspacing=0.75,
+        frameon=True,
+        facecolor="white",
+        edgecolor="#CFCFCF",
+        framealpha=0.92,
+        ncol=1,
+        loc="upper left",
+        bbox_to_anchor=(0.02, 0.98),
+        bbox_transform=ax.transAxes,
+        borderpad=0.45,
+        handlelength=1.65,
+        labelspacing=0.48,
     )
 
     if label_all:
