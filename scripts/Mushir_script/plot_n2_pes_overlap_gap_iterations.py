@@ -282,11 +282,11 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
         {
             "figure.dpi": 150,
             "savefig.dpi": 450,
-            "font.size": 9.5,
-            "axes.titlesize": 10.5,
-            "axes.labelsize": 9.8,
-            "xtick.labelsize": 8.8,
-            "ytick.labelsize": 8.8,
+            "font.size": 11.0,
+            "axes.titlesize": 13.0,
+            "axes.labelsize": 12.5,
+            "xtick.labelsize": 11.0,
+            "ytick.labelsize": 11.0,
             "legend.fontsize": 8.2,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
@@ -392,7 +392,7 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
             ax.xaxis.set_major_formatter(ScalarFormatter())
         ax.grid(True, which="major", color="#D8D8D8", alpha=0.52, linewidth=0.6)
         ax.grid(True, which="minor", color="#ECECEC", alpha=0.35, linewidth=0.4)
-        ax.tick_params(which="both", direction="out")
+        ax.tick_params(which="both", direction="out", labelsize=11.0, length=4.5, width=0.95)
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
