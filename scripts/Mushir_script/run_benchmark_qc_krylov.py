@@ -43,7 +43,7 @@ class Case:
     system: str
     raw_npz: Path
     equilibrium_npz: Path
-    bond_length_angstrom: float
+    bond_length_angstrom: float | None
     active_electrons: int
     active_orbitals: int
     spin: int
@@ -69,6 +69,13 @@ def _resolve_repo_path(value: str) -> Path:
     return path if path.is_absolute() else BENCHMARK_ROOT / path
 
 
+def _display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(BENCHMARK_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def _float_or_none(value: str | None) -> float | None:
     if value is None or value == "":
         return None
@@ -81,27 +88,97 @@ def _int_or_none(value: str | None) -> int | None:
     return int(value)
 
 
+def _reference_bits(*, active_electrons: int, spin: int, n_qubits: int) -> list[int]:
+    if (active_electrons + spin) % 2 != 0:
+        raise ValueError(
+            f"Invalid active_electrons={active_electrons}, spin={spin}: active_electrons+spin must be even"
+        )
+    n_alpha = (active_electrons + spin) // 2
+    n_beta = (active_electrons - spin) // 2
+    if n_alpha < 0 or n_beta < 0:
+        raise ValueError(
+            f"Invalid active_electrons={active_electrons}, spin={spin}: negative spin sector"
+        )
+
+    bits = [0] * n_qubits
+    alpha_wires = list(range(0, n_qubits, 2))
+    beta_wires = list(range(1, n_qubits, 2))
+    if n_alpha > len(alpha_wires) or n_beta > len(beta_wires):
+        raise ValueError(
+            f"Invalid reference sector: n_alpha={n_alpha}, n_beta={n_beta}, n_qubits={n_qubits}"
+        )
+    for wire in alpha_wires[:n_alpha]:
+        bits[wire] = 1
+    for wire in beta_wires[:n_beta]:
+        bits[wire] = 1
+    return bits
+
+
+def _resolve_dataset_path(manifest_path: Path, value: str) -> Path:
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    dataset_root = manifest_path.parent.parent
+    candidate = dataset_root / path
+    if candidate.exists():
+        return candidate
+    return _resolve_repo_path(value)
+
+
+def _case_from_legacy_manifest_row(row: dict[str, str]) -> Case:
+    reference_bits = [int(bit) for bit in json.loads(row["reference_bits"])]
+    return Case(
+        case_id=row["case_id"],
+        system=row["system"],
+        raw_npz=_resolve_repo_path(row["raw_npz"]),
+        equilibrium_npz=_resolve_repo_path(row["equilibrium_npz"]),
+        bond_length_angstrom=float(row["bond_length_angstrom"]),
+        active_electrons=int(row["active_electrons"]),
+        active_orbitals=int(row["active_orbitals"]),
+        spin=int(row["spin"]),
+        n_qubits=int(row["n_qubits"]),
+        reference_bits=reference_bits,
+        reference_energy_hartree=_float_or_none(row.get("reference_energy_hartree")),
+        label_index=_int_or_none(row.get("label_index")),
+    )
+
+
+def _case_from_dataset_manifest_row(row: dict[str, str], manifest_path: Path) -> Case:
+    active_electrons = int(row["active_electrons"])
+    active_orbitals = int(row["active_spatial_orbitals"])
+    spin = int(row["spin"])
+    n_qubits = int(row["qubits"])
+    case_id = row["case_id"]
+    raw_npz = _resolve_dataset_path(manifest_path, row["hamiltonian_path"])
+    return Case(
+        case_id=case_id,
+        system=row.get("source_case_id") or row.get("system", "BenchmarkQC"),
+        raw_npz=raw_npz,
+        equilibrium_npz=raw_npz,
+        bond_length_angstrom=None,
+        active_electrons=active_electrons,
+        active_orbitals=active_orbitals,
+        spin=spin,
+        n_qubits=n_qubits,
+        reference_bits=_reference_bits(
+            active_electrons=active_electrons,
+            spin=spin,
+            n_qubits=n_qubits,
+        ),
+        reference_energy_hartree=_float_or_none(row.get("reference_energy_hartree")),
+        label_index=0,
+    )
+
+
 def _load_manifest(path: Path) -> list[Case]:
     cases: list[Case] = []
     with path.open("r", newline="", encoding="utf-8") as handle:
-        for row in csv.DictReader(handle):
-            reference_bits = [int(bit) for bit in json.loads(row["reference_bits"])]
-            cases.append(
-                Case(
-                    case_id=row["case_id"],
-                    system=row["system"],
-                    raw_npz=_resolve_repo_path(row["raw_npz"]),
-                    equilibrium_npz=_resolve_repo_path(row["equilibrium_npz"]),
-                    bond_length_angstrom=float(row["bond_length_angstrom"]),
-                    active_electrons=int(row["active_electrons"]),
-                    active_orbitals=int(row["active_orbitals"]),
-                    spin=int(row["spin"]),
-                    n_qubits=int(row["n_qubits"]),
-                    reference_bits=reference_bits,
-                    reference_energy_hartree=_float_or_none(row.get("reference_energy_hartree")),
-                    label_index=_int_or_none(row.get("label_index")),
-                )
-            )
+        reader = csv.DictReader(handle)
+        for row in reader:
+            if "hamiltonian_path" in row:
+                cases.append(_case_from_dataset_manifest_row(row, path))
+            else:
+                cases.append(_case_from_legacy_manifest_row(row))
     return cases
 
 
@@ -213,6 +290,8 @@ def _load_raw_case(case: Case, stack: dict[str, Any]) -> dict[str, Any]:
         raise FileNotFoundError(f"Missing raw Benchmark-QC NPZ: {case.raw_npz}")
     data = np.load(case.raw_npz, allow_pickle=True)
     if case.label_index is None:
+        if case.bond_length_angstrom is None:
+            raise ValueError(f"{case.case_id}: missing bond_length_angstrom and label_index")
         idx = _nearest_label_index(data["labels"], case.bond_length_angstrom, np)
     else:
         idx = int(case.label_index)
@@ -221,7 +300,7 @@ def _load_raw_case(case: Case, stack: dict[str, Any]) -> dict[str, Any]:
                 f"{case.case_id}: label_index {idx} outside raw label range [0, {len(data['labels'])})"
             )
     chosen_label = float(data["labels"][idx])
-    if abs(chosen_label - case.bond_length_angstrom) > 1e-8:
+    if case.bond_length_angstrom is not None and abs(chosen_label - case.bond_length_angstrom) > 1e-8:
         raise ValueError(
             f"{case.case_id}: requested bond {case.bond_length_angstrom} A but nearest saved label is {chosen_label} A"
         )
@@ -251,13 +330,15 @@ def _load_raw_case(case: Case, stack: dict[str, Any]) -> dict[str, Any]:
 
 
 def _write_equilibrium_case(case: Case, raw_payload: dict[str, Any], stack: dict[str, Any]) -> None:
+    if case.equilibrium_npz == case.raw_npz:
+        return
     np = stack["np"]
     case.equilibrium_npz.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         case.equilibrium_npz,
         case_id=np.asarray(case.case_id),
         system=np.asarray(case.system),
-        source_npz=np.asarray(str(case.raw_npz.relative_to(BENCHMARK_ROOT))),
+        source_npz=np.asarray(_display_path(case.raw_npz)),
         label_index=int(raw_payload["label_index"]),
         bond_length_angstrom=float(raw_payload["chosen_label"]),
         reference_energy_hartree=float(raw_payload["reference_energy_hartree"]),
@@ -453,9 +534,9 @@ def _run_case(case: Case, args: argparse.Namespace, stack: dict[str, Any]) -> st
         input_snapshot = {
             "case_id": case.case_id,
             "system": case.system,
-            "raw_npz": str(case.raw_npz.relative_to(BENCHMARK_ROOT)),
-            "equilibrium_npz": str(case.equilibrium_npz.relative_to(BENCHMARK_ROOT)),
-            "source_npz": str(case.raw_npz.relative_to(BENCHMARK_ROOT)),
+            "raw_npz": _display_path(case.raw_npz),
+            "equilibrium_npz": _display_path(case.equilibrium_npz),
+            "source_npz": _display_path(case.raw_npz),
             "label_index": int(payload["label_index"]),
             "bond_length_angstrom": float(payload["chosen_label"]),
             "active_electrons": int(case.active_electrons),

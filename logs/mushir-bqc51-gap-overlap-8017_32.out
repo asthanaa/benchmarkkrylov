@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for n2_ccpvdz_cas10e8o_casci_natural_orbitals_r1p0977
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/n2_ccpvdz_cas10e8o_casci_natural_orbitals_r1p0977/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/n2_ccpvdz_cas10e8o_casci_natural_orbitals_r1p0977/sector_gap.json
+START n2_ccpvdz_cas10e8o_casci_natural_orbitals_r1p0977
+DONE n2_ccpvdz_cas10e8o_casci_natural_orbitals_r1p0977: gap=0.300712703147 Ha, overlap=0.942160896601

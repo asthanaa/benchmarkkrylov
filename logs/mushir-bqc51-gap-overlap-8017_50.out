@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for u2_sfx2c_anorccmb_cas6e6o_r2p4800
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/u2_sfx2c_anorccmb_cas6e6o_r2p4800/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/u2_sfx2c_anorccmb_cas6e6o_r2p4800/sector_gap.json
+START u2_sfx2c_anorccmb_cas6e6o_r2p4800
+DONE u2_sfx2c_anorccmb_cas6e6o_r2p4800: gap=0.0135355332823 Ha, overlap=0.190587988173

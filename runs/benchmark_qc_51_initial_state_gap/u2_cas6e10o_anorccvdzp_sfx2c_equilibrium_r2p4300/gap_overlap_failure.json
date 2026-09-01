@@ -1,0 +1,7 @@
+{
+  "case_id": "u2_cas6e10o_anorccvdzp_sfx2c_equilibrium_r2p4300",
+  "error": "RuntimeError('u2_cas6e10o_anorccvdzp_sfx2c_equilibrium_r2p4300: ground energy -55957.200905462224910 differs from reference -55957.175838248978835 by -2.507e-02 Ha')",
+  "integral_data_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/u2_cas6e10o_anorccvdzp_sfx2c_equilibrium_r2p4300/inputs/source_integrals.npz",
+  "manifest": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/source/manifest.csv",
+  "status": "failed"
+}

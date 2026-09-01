@@ -1,0 +1,27 @@
+{
+  "active_electrons": 4,
+  "active_orbitals": 4,
+  "bond_length_angstrom": 2.1999999999999997,
+  "case_id": "n2_sto6g_cas4e4o_historical_r2p2000",
+  "equilibrium_npz": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/n2_sto6g_cas4e4o_historical_r2p2000/hamiltonian.npz",
+  "hamiltonian_source": "Benchmark-QC saved PennyLane qubit Hamiltonian",
+  "label_index": 0,
+  "n_qubits": 8,
+  "raw_npz": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/n2_sto6g_cas4e4o_historical_r2p2000/hamiltonian.npz",
+  "reference_bits": [
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "reference_energy_hartree": -108.30724918032749,
+  "reference_energy_source": "Benchmark-QC casci_energies at selected bond length",
+  "source_npz": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/n2_sto6g_cas4e4o_historical_r2p2000/hamiltonian.npz",
+  "spin": 0,
+  "system": "BenchmarkQC",
+  "term_count": 161
+}

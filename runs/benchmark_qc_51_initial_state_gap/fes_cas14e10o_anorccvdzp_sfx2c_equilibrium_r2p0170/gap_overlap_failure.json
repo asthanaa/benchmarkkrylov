@@ -1,0 +1,7 @@
+{
+  "case_id": "fes_cas14e10o_anorccvdzp_sfx2c_equilibrium_r2p0170",
+  "error": "RuntimeError('fes_cas14e10o_anorccvdzp_sfx2c_equilibrium_r2p0170: ground energy -1669.956809817040948 differs from reference -1669.955186064719555 by -1.624e-03 Ha')",
+  "integral_data_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/fes_cas14e10o_anorccvdzp_sfx2c_equilibrium_r2p0170/inputs/source_integrals.npz",
+  "manifest": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/source/manifest.csv",
+  "status": "failed"
+}

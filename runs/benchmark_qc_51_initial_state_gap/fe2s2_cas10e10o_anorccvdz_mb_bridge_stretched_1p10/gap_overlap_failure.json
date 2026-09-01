@@ -1,0 +1,7 @@
+{
+  "case_id": "fe2s2_cas10e10o_anorccvdz_mb_bridge_stretched_1p10",
+  "error": "RuntimeError('fe2s2_cas10e10o_anorccvdz_mb_bridge_stretched_1p10: FCI roots did not both converge: [False, False]')",
+  "integral_data_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/fe2s2_cas10e10o_anorccvdz_mb_bridge_stretched_1p10/inputs/source_integrals.npz",
+  "manifest": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/source/manifest.csv",
+  "status": "failed"
+}

@@ -1,0 +1,7 @@
+{
+  "case_id": "u2_cas6e10o_anorccvdzp_sfx2c_stretched_r2p8000",
+  "error": "RuntimeError('u2_cas6e10o_anorccvdzp_sfx2c_stretched_r2p8000: ground energy -55957.203788434650050 differs from reference -55957.189823358588910 by -1.397e-02 Ha')",
+  "integral_data_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/u2_cas6e10o_anorccvdzp_sfx2c_stretched_r2p8000/inputs/source_integrals.npz",
+  "manifest": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/source/manifest.csv",
+  "status": "failed"
+}

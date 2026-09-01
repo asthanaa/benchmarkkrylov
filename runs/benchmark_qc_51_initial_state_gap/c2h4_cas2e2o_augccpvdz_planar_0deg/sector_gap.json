@@ -1,0 +1,81 @@
+{
+  "active_electrons": 2,
+  "active_orbitals": 2,
+  "amplitude_imag": 0.0,
+  "amplitude_real": 0.9803968242138166,
+  "case_id": "c2h4_cas2e2o_augccpvdz_planar_0deg",
+  "conv_tol": 1e-12,
+  "conv_tol_residual": 1e-11,
+  "davidson_only": true,
+  "elapsed_seconds": 0.0032377634197473526,
+  "energies_hartree": [
+    -78.0691581246013,
+    -77.87547628774657
+  ],
+  "first_excited_energy_hartree": -77.87547628774657,
+  "fixed_population_ground_energy_hartree": -78.0691581246013,
+  "fixed_population_ground_minus_reference_hartree": 0.0,
+  "fixed_population_roots_converged": [
+    true,
+    true
+  ],
+  "gap_ev": 5.270351271486665,
+  "gap_hartree": 0.1936818368547364,
+  "gap_millihartree": 193.6818368547364,
+  "ground_minus_reference_hartree": 0.0,
+  "hamiltonian_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/c2h4_cas2e2o_augccpvdz_planar_0deg/hamiltonian.npz",
+  "hamiltonian_representation": "validated spatial integrals equivalent to saved JW Hamiltonian",
+  "integral_data_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/c2h4_cas2e2o_augccpvdz_planar_0deg/inputs/source_integrals.npz",
+  "largest_determinant_probability": 0.9611779329285371,
+  "lindep": 1e-24,
+  "manifest": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/source/manifest.csv",
+  "max_cycle": 1000,
+  "max_space": 100,
+  "metadata_path": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/c2h4_cas2e2o_augccpvdz_planar_0deg/metadata.json",
+  "n_alpha": 1,
+  "n_beta": 1,
+  "negative_log10_overlap": 0.017196208443854537,
+  "nroots_requested": 2,
+  "nroots_returned": 2,
+  "overlap_weight": 0.9611779329285371,
+  "qubits": 4,
+  "reference_alpha_position": 0,
+  "reference_alpha_string": 1,
+  "reference_beta_position": 0,
+  "reference_beta_string": 1,
+  "reference_bits": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "reference_bitstring": "1100",
+  "reference_energy_hartree": -78.0691581246013,
+  "reference_is_largest_determinant": true,
+  "reference_sector": "fixed_n_alpha_n_beta",
+  "reference_sector_position": 0,
+  "reference_sector_selection": "Use the fixed-N_alpha,N_beta ground state when it matches the stored BenchmarkQC reference; otherwise use the manifest target-S^2 ground state.",
+  "root_multiplicities": [
+    1.0,
+    3.0000000000000004
+  ],
+  "root_spin_squares": [
+    1.075975243186986e-31,
+    2.000000000000001
+  ],
+  "roots_converged": [
+    true,
+    true
+  ],
+  "schema": "benchmark-qc.reference-matched-gap.v1",
+  "sector_dim": 4,
+  "sector_ground_energy_hartree": -78.0691581246013,
+  "solver": "pyscf-direct_spin1-fci",
+  "spin": 0,
+  "spin_orbital_order": "interleaved",
+  "spin_penalty_shift": 0.5,
+  "spin_square_atol": 1e-07,
+  "status": "completed",
+  "system": "BenchmarkQC",
+  "target_spin_square": 0.0
+}

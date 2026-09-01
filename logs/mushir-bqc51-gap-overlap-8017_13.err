@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 407, in <module>
+    main()
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 403, in main
+    compute_case(case, args)
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 339, in compute_case
+    overlap, gap = _solve_case(case, args)
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 239, in _solve_case
+    raise RuntimeError(
+RuntimeError: feh_cas9e10o_augccpvtzdk_sfx2c_stretched_r2p3000: ground energy -1271.889980490745756 differs from reference -1271.877447600642881 by -1.253e-02 Ha

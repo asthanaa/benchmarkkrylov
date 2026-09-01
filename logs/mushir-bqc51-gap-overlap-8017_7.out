@@ -1,0 +1,4 @@
+Computing BenchmarkQC gap and initial overlap for fe2s2_cas10e10o_anorccvdz_mb_published_geometry
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/fe2s2_cas10e10o_anorccvdz_mb_published_geometry/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/fe2s2_cas10e10o_anorccvdz_mb_published_geometry/sector_gap.json
+START fe2s2_cas10e10o_anorccvdz_mb_published_geometry

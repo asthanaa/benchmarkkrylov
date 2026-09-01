@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for c2h4_cas2e2o_augccpvdz_planar_0deg
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/c2h4_cas2e2o_augccpvdz_planar_0deg/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/c2h4_cas2e2o_augccpvdz_planar_0deg/sector_gap.json
+START c2h4_cas2e2o_augccpvdz_planar_0deg
+DONE c2h4_cas2e2o_augccpvdz_planar_0deg: gap=0.193681836855 Ha, overlap=0.961177932929

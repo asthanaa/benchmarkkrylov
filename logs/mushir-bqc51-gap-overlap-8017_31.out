@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for n2_ccpvdz_cas10e8o_canonical_r2p0000
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/n2_ccpvdz_cas10e8o_canonical_r2p0000/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/n2_ccpvdz_cas10e8o_canonical_r2p0000/sector_gap.json
+START n2_ccpvdz_cas10e8o_canonical_r2p0000
+DONE n2_ccpvdz_cas10e8o_canonical_r2p0000: gap=0.0300950708372 Ha, overlap=0.35015688398

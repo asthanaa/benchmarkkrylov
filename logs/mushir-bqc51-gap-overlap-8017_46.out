@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for o2_cas12e8o_augccpvtz_stretched_r2p0000
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/o2_cas12e8o_augccpvtz_stretched_r2p0000/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/o2_cas12e8o_augccpvtz_stretched_r2p0000/sector_gap.json
+START o2_cas12e8o_augccpvtz_stretched_r2p0000
+DONE o2_cas12e8o_augccpvtz_stretched_r2p0000: gap=0.0134113471655 Ha, overlap=0.587313499319

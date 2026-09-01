@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for n2_sto6g_cas4e4o_historical_r2p4000
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/n2_sto6g_cas4e4o_historical_r2p4000/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/n2_sto6g_cas4e4o_historical_r2p4000/sector_gap.json
+START n2_sto6g_cas4e4o_historical_r2p4000
+DONE n2_sto6g_cas4e4o_historical_r2p4000: gap=0.000434120734354 Ha, overlap=0.220745238137

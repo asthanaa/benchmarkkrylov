@@ -1,0 +1,4 @@
+Computing BenchmarkQC gap and initial overlap for c2h4_cas2e2o_augccpvdz_twisted_90deg
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/c2h4_cas2e2o_augccpvdz_twisted_90deg/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/c2h4_cas2e2o_augccpvdz_twisted_90deg/sector_gap.json
+START c2h4_cas2e2o_augccpvdz_twisted_90deg

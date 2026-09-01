@@ -1,0 +1,4 @@
+Computing BenchmarkQC gap and initial overlap for ch2_cas6e6o_augccpvtz_bent_102deg
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/ch2_cas6e6o_augccpvtz_bent_102deg/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/ch2_cas6e6o_augccpvtz_bent_102deg/sector_gap.json
+START ch2_cas6e6o_augccpvtz_bent_102deg

@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for fe2s2_chan30e20o_historical_rhf_cas8e6o_point0
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/fe2s2_chan30e20o_historical_rhf_cas8e6o_point0/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/fe2s2_chan30e20o_historical_rhf_cas8e6o_point0/sector_gap.json
+START fe2s2_chan30e20o_historical_rhf_cas8e6o_point0
+DONE fe2s2_chan30e20o_historical_rhf_cas8e6o_point0: gap=0.00800736800812 Ha, overlap=0.866690457928

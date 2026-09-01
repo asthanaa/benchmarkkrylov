@@ -1,0 +1,5 @@
+Computing BenchmarkQC gap and initial overlap for fes_anorccmb_cas6e6o_r2p8000
+Overlap output: runs/benchmark_qc_51_initial_state_overlap/fes_anorccmb_cas6e6o_r2p8000/initial_overlap.json
+Gap output: runs/benchmark_qc_51_initial_state_gap/fes_anorccmb_cas6e6o_r2p8000/sector_gap.json
+START fes_anorccmb_cas6e6o_r2p8000
+DONE fes_anorccmb_cas6e6o_r2p8000: gap=0.00242766671067 Ha, overlap=2.60035288963e-26

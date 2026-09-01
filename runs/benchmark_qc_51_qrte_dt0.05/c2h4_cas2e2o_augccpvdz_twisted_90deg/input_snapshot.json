@@ -1,0 +1,23 @@
+{
+  "active_electrons": 2,
+  "active_orbitals": 2,
+  "bond_length_angstrom": 90.0,
+  "case_id": "c2h4_cas2e2o_augccpvdz_twisted_90deg",
+  "equilibrium_npz": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/c2h4_cas2e2o_augccpvdz_twisted_90deg/hamiltonian.npz",
+  "hamiltonian_source": "Benchmark-QC saved PennyLane qubit Hamiltonian",
+  "label_index": 0,
+  "n_qubits": 4,
+  "raw_npz": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/c2h4_cas2e2o_augccpvdz_twisted_90deg/hamiltonian.npz",
+  "reference_bits": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "reference_energy_hartree": -77.95435497575266,
+  "reference_energy_source": "Benchmark-QC casci_energies at selected bond length",
+  "source_npz": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/systems/c2h4_cas2e2o_augccpvdz_twisted_90deg/hamiltonian.npz",
+  "spin": 0,
+  "system": "BenchmarkQC",
+  "term_count": 15
+}

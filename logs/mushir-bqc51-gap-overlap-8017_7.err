@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 407, in <module>
+    main()
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 403, in main
+    compute_case(case, args)
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 339, in compute_case
+    overlap, gap = _solve_case(case, args)
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/compute_benchmark_qc_gap_overlap.py", line 230, in _solve_case
+    raise RuntimeError(f"{case.case_id}: FCI roots did not both converge: {convergence}")
+RuntimeError: fe2s2_cas10e10o_anorccvdz_mb_published_geometry: FCI roots did not both converge: [False, False]

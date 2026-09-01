@@ -1,0 +1,17 @@
+{
+  "basis_threshold": 0.0,
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.05,
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -1655.3719998040528,
+  "epsilon": 0.05,
+  "evolution_mode": "trotter",
+  "manifest": "/home/mushir.kolathingal/BenchmarkQC/datasets/benchmarkQC/source/manifest.csv",
+  "max_workers": 2,
+  "method": "qkud",
+  "n_steps": 100,
+  "normalize_basis": true,
+  "overlap_tol": 1e-10,
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "trotter_steps": 1
+}
