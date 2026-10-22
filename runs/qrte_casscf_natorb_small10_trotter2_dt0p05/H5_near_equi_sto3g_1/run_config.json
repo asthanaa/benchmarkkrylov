@@ -1,0 +1,134 @@
+{
+  "active_space_bandwidth_hartree": 3.687890315096215,
+  "active_space_ground_energy_hartree": -2.6545169682170364,
+  "active_space_highest_energy_hartree": 1.0333733468791784,
+  "active_spin_occupations": [
+    3,
+    2
+  ],
+  "bandwidth_delta_t": 0.8518671612140479,
+  "bandwidth_delta_t_rule": "pi / (Emax - E0); interacting CASSCF/natorb active-space Hamiltonian",
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.05,
+  "delta_t_rule": "fixed timestep (independent of spectral width)",
+  "delta_t_units": "atomic units of time",
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -2.6529169682170464,
+  "evolution_mode": "trotter",
+  "fixed_delta_t": 0.05,
+  "fock_profile": {
+    "case": {
+      "active_electrons": 5,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [],
+      "active_orbital_labels": null,
+      "active_orbitals": 5,
+      "basis": "sto-3g",
+      "cached_scf_energy_hartree": null,
+      "case_id": "H5_near_equi_sto3g_1",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -2.6545169682127527,
+      "geometry_angstrom": [
+        [
+          -1.999999999935749,
+          0.0,
+          0.0
+        ],
+        [
+          -0.9999999999678745,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9999999999678745,
+          0.0,
+          0.0
+        ],
+        [
+          1.999999999935749,
+          0.0,
+          0.0
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          -3.7794522491301237,
+          0.0,
+          0.0
+        ],
+        [
+          -1.8897261245650618,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.8897261245650618,
+          0.0,
+          0.0
+        ],
+        [
+          3.7794522491301237,
+          0.0,
+          0.0
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/c508cd3bc1189229881e58a0b84d52a5320a7210318d33be2de6f89d67c8108a.npz",
+      "hamiltonian_sha256": "4eb768aa5167a4b724c4aae2c127496a9d0a5dfe9dbda034cc8a1a2cb3a52d67",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -2.654516968217046,
+      "nelecas": [
+        3,
+        2
+      ],
+      "previous_reference_source": "",
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "ROHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_natorb/c508cd3bc1189229881e58a0b84d52a5320a7210318d33be2de6f89d67c8108a.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/H5 near equi._sto3g_1.json",
+      "source_summary_path": "runs/qkud_natorb_eps0.05/H5_near_equi_sto3g_1/summary.json",
+      "spin": 1,
+      "symbols": [
+        "H",
+        "H",
+        "H",
+        "H",
+        "H"
+      ]
+    },
+    "scf_match_tolerance": 1e-06,
+    "spectrum_scope": "interacting_casscf_natorb_active_fixed_nalpha_nbeta"
+  },
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/c508cd3bc1189229881e58a0b84d52a5320a7210318d33be2de6f89d67c8108a.npz",
+  "max_workers": 18,
+  "method": "qrte",
+  "n_steps": 100,
+  "overlap_tol": 1e-10,
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "sector_dim": 100,
+  "spectrum_scope": "interacting_casscf_natorb_active_fixed_nalpha_nbeta",
+  "trotter_order": 2,
+  "trotter_steps": 1,
+  "width_definition": "Emax - E0 of the interacting CASSCF/natorb active-space Hamiltonian",
+  "width_reference_method": "CASSCF/natorb active-space exact CI spectrum"
+}

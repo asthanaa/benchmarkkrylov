@@ -1,0 +1,182 @@
+{
+  "fock_operator": "ROHF effective Roothaan spatial Fock",
+  "fock_profile": {
+    "case": {
+      "active_electrons": 9,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [],
+      "active_orbital_labels": null,
+      "active_orbitals": 9,
+      "basis": "sto-3g",
+      "cached_scf_energy_hartree": null,
+      "case_id": "H9_near_equi_sto3g_1",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -4.814010787321555,
+      "geometry_angstrom": [
+        [
+          -3.999999999871498,
+          0.0,
+          0.0
+        ],
+        [
+          -2.9999999999036233,
+          0.0,
+          0.0
+        ],
+        [
+          -1.999999999935749,
+          0.0,
+          0.0
+        ],
+        [
+          -0.9999999999678745,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9999999999678745,
+          0.0,
+          0.0
+        ],
+        [
+          1.999999999935749,
+          0.0,
+          0.0
+        ],
+        [
+          2.9999999999036233,
+          0.0,
+          0.0
+        ],
+        [
+          3.999999999871498,
+          0.0,
+          0.0
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          -7.558904498260247,
+          0.0,
+          0.0
+        ],
+        [
+          -5.6691783736951855,
+          0.0,
+          0.0
+        ],
+        [
+          -3.7794522491301237,
+          0.0,
+          0.0
+        ],
+        [
+          -1.8897261245650618,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.8897261245650618,
+          0.0,
+          0.0
+        ],
+        [
+          3.7794522491301237,
+          0.0,
+          0.0
+        ],
+        [
+          5.6691783736951855,
+          0.0,
+          0.0
+        ],
+        [
+          7.558904498260247,
+          0.0,
+          0.0
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/00262abe9f01b7a883fe4118e5bd3e049a262f5dd9c9600afda7e602394ee7a8.npz",
+      "hamiltonian_sha256": "b1e5ee5f2306dedc6fff7f6b750fdff5605923d0ef01f0bdb2851d4d4bf72034",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -4.814010787328446,
+      "nelecas": [
+        5,
+        4
+      ],
+      "previous_reference_source": "",
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "ROHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_natorb/00262abe9f01b7a883fe4118e5bd3e049a262f5dd9c9600afda7e602394ee7a8.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/H9 near equi._sto3g_1.json",
+      "source_summary_path": "runs/qkud_natorb_eps0.05/H9_near_equi_sto3g_1/summary.json",
+      "spin": 1,
+      "symbols": [
+        "H",
+        "H",
+        "H",
+        "H",
+        "H",
+        "H",
+        "H",
+        "H",
+        "H"
+      ]
+    },
+    "scf_match_tolerance": 1e-06
+  },
+  "full_scf_orbital_energies_hartree": [
+    -0.6864537107794726,
+    -0.621267446532755,
+    -0.5124451493608879,
+    -0.36514437501834757,
+    -0.06209520072745245,
+    0.29214386147907867,
+    0.5765473664535584,
+    0.8845267235843403,
+    1.1411226376161312
+  ],
+  "full_scf_orbital_occupations": [
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "n_scf_spatial_orbitals": 9,
+  "nelecas": [
+    5,
+    4
+  ],
+  "reference_scf": "ROHF",
+  "scf_converged": true,
+  "scf_energy_hartree": -4.66344807670643,
+  "scf_minus_cached_energy_hartree": null,
+  "spectrum_scope": "full mean-field orbital space, including core and virtual orbitals",
+  "status": "completed",
+  "used_newton_scf": false
+}

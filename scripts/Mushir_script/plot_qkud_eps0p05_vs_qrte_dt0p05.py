@@ -284,7 +284,9 @@ def _fit_semilog(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray, 
     return x_fit, y_fit, float(r2)
 
 
-def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
+def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path, *,
+          qrte_iteration_key: str = "qrte_dt0p05_chem_accuracy_iteration",
+          subtitle: str | None = None, note: str | None = None) -> None:
     qkud_hit_rows = [row for row in rows if row["qkud_hit_chemical_accuracy"] == "true"]
     qrte_hit_rows = [row for row in rows if row["qrte_hit_chemical_accuracy"] == "true"]
     qkud_only_rows = [row for row in rows if row["qkud_only_hit"] == "true"]
@@ -303,7 +305,7 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
     ]
 
     adapt_x, adapt_y = _finite_xy(adapt_hit_rows, "adapt_chem_accuracy_iteration")
-    qrte_x, qrte_y = _finite_xy(qrte_hit_rows, "qrte_dt0p05_chem_accuracy_iteration")
+    qrte_x, qrte_y = _finite_xy(qrte_hit_rows, qrte_iteration_key)
     qkud_x, qkud_y = _finite_xy(qkud_hit_rows, "qkud_eps0p05_chem_accuracy_iteration")
     qkud_marker_x, qkud_marker_y = _finite_xy(qkud_marker_rows, "qkud_eps0p05_chem_accuracy_iteration")
     qkud_only_x, qkud_only_y = _finite_xy(qkud_only_rows, "qkud_eps0p05_chem_accuracy_iteration")
@@ -383,7 +385,7 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
 
     for row in rows:
         qkud_iter = _positive_number(row["qkud_eps0p05_chem_accuracy_iteration"])
-        qrte_iter = _positive_number(row["qrte_dt0p05_chem_accuracy_iteration"])
+        qrte_iter = _positive_number(row[qrte_iteration_key])
         if qkud_iter is None or qrte_iter is None:
             continue
         x = float(row["h0.25"])
@@ -412,6 +414,11 @@ def _plot(rows: list[dict[str, Any]], png_path: Path, pdf_path: Path) -> None:
     ax.set_yscale("log")
     ax.set_xlabel(r"Renyi entropy, $h_{0.25}$")
     ax.set_ylabel("Iterations to chemical accuracy")
+    if subtitle:
+        ax.set_title(subtitle, fontsize=10.5, pad=13)
+    if note:
+        ax.text(0.025, 0.965, note, transform=ax.transAxes, ha="left", va="top",
+                fontsize=10, color="#444444")
     ax.grid(True, which="major", color="#D8D8D8", alpha=0.55, linewidth=0.75)
     ax.grid(True, which="minor", color="#E8E8E8", alpha=0.35, linewidth=0.48)
     ax.spines["top"].set_visible(False)

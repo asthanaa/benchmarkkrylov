@@ -1,0 +1,19 @@
+Worker 0/4: 6 conditions, task indices [0, 4, 8, 12, 16, 20]
+REFERENCE hexatriene_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+hexatriene_equi_cc_pVTZ_0 W=3.11246293082 Eh dt=0.0100935905854 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE hexatriene_equi_cc_pVTZ_0 iterations=26 chemical_accuracy_hit=26
+REFERENCE hexatriene_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+hexatriene_equi_cc_pVTZ_0 W=3.11246293082 Eh dt=0.252339764634 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE hexatriene_equi_cc_pVTZ_0 iterations=3 chemical_accuracy_hit=3
+REFERENCE hexatriene_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+hexatriene_equi_cc_pVTZ_0 W=3.11246293082 Eh dt=1.26169882317 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE hexatriene_equi_cc_pVTZ_0 iterations=3 chemical_accuracy_hit=3
+REFERENCE hexatriene_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+hexatriene_equi_cc_pVTZ_2 W=2.30167896732 Eh dt=0.0341228370484 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE hexatriene_equi_cc_pVTZ_2 iterations=10 chemical_accuracy_hit=10
+REFERENCE hexatriene_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+hexatriene_equi_cc_pVTZ_2 W=2.30167896732 Eh dt=0.682456740968 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE hexatriene_equi_cc_pVTZ_2 iterations=3 chemical_accuracy_hit=3
+REFERENCE hexatriene_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+hexatriene_equi_cc_pVTZ_2 W=2.30167896732 Eh dt=2.04737022291 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE hexatriene_equi_cc_pVTZ_2 iterations=4 chemical_accuracy_hit=4

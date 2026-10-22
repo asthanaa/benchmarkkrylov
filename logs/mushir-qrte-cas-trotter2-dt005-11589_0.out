@@ -1,0 +1,3 @@
+REFERENCE H4_near_equi_sto3g_0 spectrum_source=interacting_casscf_natorb_active_fixed_nalpha_nbeta
+H4_near_equi_sto3g_0 W=2.91735103705 Eh dt=0.05 au (fixed timestep (independent of spectral width))
+DONE H4_near_equi_sto3g_0 iterations=5 chemical_accuracy_hit=5

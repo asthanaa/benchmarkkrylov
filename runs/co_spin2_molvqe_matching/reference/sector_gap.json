@@ -1,0 +1,18 @@
+{
+  "case_id": "CO_equi_cc_pVTZ_2",
+  "status": "completed",
+  "solver": "complete-sector PySCF pspace / scipy eigh",
+  "hamiltonian_cache_path": "hamiltonian_cache/co_spin2_molvqe_matching/CO_equi_cc_pVTZ_2.npz",
+  "hamiltonian_sha256": "1f06e491371fdbcdcfb413ace69104a15459ecafdf510977ff25942797d4f062",
+  "sector_dim": 225,
+  "n_alpha": 4,
+  "n_beta": 2,
+  "sector_ground_energy_hartree": -112.60166830799055,
+  "first_excited_energy_hartree": -112.5650616164081,
+  "gap_hartree": 0.036606691582449,
+  "gap_millihartree": 36.606691582449,
+  "gap_ev": 0.9961188238377774,
+  "overlap_weight": 0.48646162811334837,
+  "h0.25": 2.578338944199332,
+  "reference_energy_hartree": -112.60166830790772
+}

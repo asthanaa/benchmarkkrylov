@@ -1,0 +1,34 @@
+{
+  "cases": [
+    "N2_equi_cc_pVTZ_0",
+    "N2_equi_cc_pVTZ_2",
+    "Al3_minus",
+    "H10_near_equi_sto3g_0",
+    "BeH2_equi_cc_pVTZ_0",
+    "BeH2_equi_cc_pVTZ_2",
+    "H4_near_equi_sto3g_0",
+    "H6_near_equi_sto3g_0",
+    "H6_near_equi_cc_pVTZ_0",
+    "H6_near_equi_cc_pVTZ_2",
+    "H7_near_equi_sto3g_1"
+  ],
+  "chemical_accuracy_hartree": 0.0016,
+  "completed_hits": 77,
+  "factors": [
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.25,
+    1.5,
+    2.0
+  ],
+  "interpretation": "Best refers to iteration count at tested points only; no wall-time or exact-width optimization is inferred.",
+  "new_molecular_calculations": false,
+  "source_csv_sha256": {
+    "runs/qrte_mean_field_active_dt_scan4_trotter2/scan_results.csv": "b891050d012227adcd8e7083fe51f67bc10d89eef464e32a31ed5c909e6beb1e",
+    "runs/qrte_mean_field_active_dt_scan_beh2_hchains_trotter2/scan_results.csv": "690a8aca1faa87808e7b577708f88943e168828c10501100a307f2e1f0b37a69"
+  },
+  "trotter_order": 2,
+  "trotter_steps": 1
+}

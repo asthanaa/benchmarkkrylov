@@ -1,0 +1,190 @@
+{
+  "active_electrons": 4,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": null,
+  "active_orbitals": 6,
+  "basis": "cc-pVTZ",
+  "cached_scf_energy_hartree": null,
+  "case_id": "BeH2_equi_cc_pVTZ_2",
+  "casscf_energy_hartree": -15.577504296997867,
+  "charge": 0,
+  "chemical_accuracy_hartree": 0.0016,
+  "dataset_casscf_energy_hartree": -15.577504296993196,
+  "delta_t": 0.3253743568086484,
+  "delta_t_rule": "pi / (max(full_scf_mo_energy) - min(full_scf_mo_energy))",
+  "delta_t_units": "atomic units of time",
+  "early_stop_energy_hartree": -15.575904296997868,
+  "elapsed_seconds": 48.040573441423476,
+  "evolution_mode": "trotter",
+  "final_error_vs_local_reference_hartree": 0.0011891060005631005,
+  "final_min_history_energy_hartree": -15.576315190997304,
+  "final_projected_ground_energy_hartree": -15.576315190997304,
+  "fock_bandwidth_hartree": 9.655317291759884,
+  "fock_spectral_max_hartree": 4.958187177262591,
+  "fock_spectral_min_hartree": -4.697130114497293,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.299999999958237
+    ],
+    [
+      0.0,
+      0.0,
+      -1.299999999958237
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.4566439619345806
+    ],
+    [
+      0.0,
+      0.0,
+      -2.4566439619345806
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+  "hamiltonian_sha256": "abe766306735a5f36b88c1c3e3c55797c04d97be3ea245e60c0c300762ad28f7",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": true,
+  "hit_iteration": 45,
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -15.577504296997867,
+  "method": "qrte",
+  "n_steps": 45,
+  "n_steps_completed": 45,
+  "n_steps_requested": 100,
+  "nelecas": [
+    3,
+    1
+  ],
+  "overlap_tol": 1e-10,
+  "previous_reference_source": "",
+  "reference_settings": {
+    "geometry_unit": "Angstrom",
+    "molecule_symmetry": false,
+    "reference_scf": "ROHF",
+    "scf_conv_tol": null,
+    "scf_diis_space": 12,
+    "scf_level_shift": 0.5,
+    "scf_max_cycle": 100,
+    "scf_newton_if_not_converged": true
+  },
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "run_profile": {
+    "chemical_accuracy_hartree": 0.0016,
+    "evolution_mode": "trotter",
+    "fock_profile": {
+      "case": {
+        "active_electrons": 4,
+        "active_orbital_index_base": 0,
+        "active_orbital_indices": [],
+        "active_orbital_labels": null,
+        "active_orbitals": 6,
+        "basis": "cc-pVTZ",
+        "cached_scf_energy_hartree": null,
+        "case_id": "BeH2_equi_cc_pVTZ_2",
+        "charge": 0,
+        "dataset_casscf_energy_hartree": -15.577504296993196,
+        "geometry_angstrom": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.299999999958237
+          ],
+          [
+            0.0,
+            0.0,
+            -1.299999999958237
+          ]
+        ],
+        "geometry_bohr": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.4566439619345806
+          ],
+          [
+            0.0,
+            0.0,
+            -2.4566439619345806
+          ]
+        ],
+        "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+        "hamiltonian_sha256": "abe766306735a5f36b88c1c3e3c55797c04d97be3ea245e60c0c300762ad28f7",
+        "hamiltonian_source": "casscf_natorb",
+        "local_reference_converged": true,
+        "local_reference_energy_hartree": -15.577504296997867,
+        "nelecas": [
+          3,
+          1
+        ],
+        "previous_reference_source": "",
+        "reference_settings": {
+          "geometry_unit": "Angstrom",
+          "molecule_symmetry": false,
+          "reference_scf": "ROHF",
+          "scf_conv_tol": null,
+          "scf_diis_space": 12,
+          "scf_level_shift": 0.5,
+          "scf_max_cycle": 100,
+          "scf_newton_if_not_converged": true
+        },
+        "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+        "source_cache_path": "hamiltonian_cache/casscf_natorb/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+        "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/BeH2 equi._cc-pVTZ_2.json",
+        "source_summary_path": "runs/qkud_natorb_eps0.05/BeH2_equi_cc_pVTZ_2/summary.json",
+        "spin": 2,
+        "symbols": [
+          "Be",
+          "H",
+          "H"
+        ]
+      },
+      "scf_match_tolerance": 1e-06
+    },
+    "max_workers": 18,
+    "n_steps": 100,
+    "overlap_tol": 1e-10,
+    "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+    "spectrum_scope": "full_scf_orbitals",
+    "trotter_steps": 1
+  },
+  "source_cache_path": "hamiltonian_cache/casscf_natorb/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/BeH2 equi._cc-pVTZ_2.json",
+  "source_summary_path": "runs/qkud_natorb_eps0.05/BeH2_equi_cc_pVTZ_2/summary.json",
+  "spin": 2,
+  "status": "completed",
+  "stopped_early": true,
+  "symbols": [
+    "Be",
+    "H",
+    "H"
+  ],
+  "trotter_steps": 1,
+  "width_definition": "full SCF one-electron orbital energy range, including core and virtual orbitals"
+}

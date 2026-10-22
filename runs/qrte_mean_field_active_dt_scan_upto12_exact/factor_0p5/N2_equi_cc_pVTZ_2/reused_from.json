@@ -1,0 +1,12 @@
+{
+  "copied_file_sha256": {
+    "input_snapshot.json": "8eec76a82f5fa76f90d6a1a2341d7eefdd16197e5c840e5d6463bf16ac05d66c",
+    "mean_field_active_reference.json": "8f866c229450c9a874cbe055d5e68a0c401a4938d93a5c501faecfd7993477dc",
+    "min_energy_history.csv": "e6643839d48b70517c1859ebe71add5e64b9c0055aa4b12e567020462eb56afd",
+    "run_config.json": "6e856d00b51d895bc64b709d3f41d746d401bb323c8933f623ef842dafd3702e",
+    "summary.json": "7384c172cc0749fb276894fa67429af372181d8b977146f49cff3bda28d29a1c"
+  },
+  "new_qrte_calculation": false,
+  "source_directory": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_mean_field_active_dt_scan4_exact/factor_0p5/N2_equi_cc_pVTZ_2",
+  "validation": "Exact run profile, timestep, Hamiltonian/HF hashes, cached reference and history-derived hit"
+}

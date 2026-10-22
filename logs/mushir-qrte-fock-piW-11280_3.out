@@ -1,0 +1,4 @@
+SCF cyclobutadiene_ceo RHF
+output file: runs/qrte_fock_pi_over_w/cyclobutadiene_ceo/fock_scf.log
+cyclobutadiene_ceo W=14.9995040028 Eh dt=0.209446435895 au (full SCF orbital spectrum)
+DONE cyclobutadiene_ceo iterations=3 chemical_accuracy_hit=3

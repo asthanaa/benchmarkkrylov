@@ -1,0 +1,3 @@
+REFERENCE H6_near_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_cc_pVTZ_0 W=4.49426198689 Eh dt=0.699023034873 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_cc_pVTZ_0 iterations=4 chemical_accuracy_hit=4

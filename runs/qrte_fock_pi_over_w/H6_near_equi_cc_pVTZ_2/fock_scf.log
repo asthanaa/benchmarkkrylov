@@ -1,0 +1,482 @@
+#INFO: **** input file is /home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_fock_pi_over_w.py ****
+#!/usr/bin/env python
+"""Run cached MolVQE QRTE with dt = pi / the full SCF orbital bandwidth.
+
+Only the mean-field reference is recomputed. QRTE uses the explicit, validated
+Hamiltonian cache path, including the earlier orbital and relativistic fixes.
+"""
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import csv
+import hashlib
+import json
+import math
+import os
+import sys
+import time
+import traceback
+from pathlib import Path
+
+for _var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+             "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
+import numpy as np
+
+from compute_initial_overlap import _payload_from_cache_path
+
+ROOT = Path(__file__).resolve().parents[2]
+CHEMICAL_ACCURACY = 1.6e-3
+DEFAULT_CACHE_MANIFEST = ROOT / "hamiltonian_cache/correct_27_systems/manifest.csv"
+DEFAULT_MANIFEST = ROOT / "manifests/molvqe21_fig1b_manifest.csv"
+DEFAULT_OUTDIR = ROOT / "runs/qrte_fock_pi_over_w"
+
+
+def resolve_path(value):
+    path = Path(value)
+    return path if path.is_absolute() else ROOT / path
+
+
+def load_json(path):
+    with Path(path).open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def write_json(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True, allow_nan=False)
+        handle.write("\n")
+    temporary.replace(path)
+
+
+def load_cases(args):
+    with args.manifest.open(newline="", encoding="utf-8") as handle:
+        by_case = {row["case_id"]: row for row in csv.DictReader(handle)}
+    with args.cache_manifest.open(newline="", encoding="utf-8") as handle:
+        cache_rows = list(csv.DictReader(handle))
+    overrides = load_json(args.active_orbital_overrides)
+    cases = []
+    seen = set()
+    for cache_row in cache_rows:
+        case_id = cache_row["case_id"]
+        if case_id == "Ferrocene_ceo":
+            continue
+        if case_id in seen:
+            raise ValueError(f"Duplicate cache mapping for {case_id}")
+        seen.add(case_id)
+        row = by_case[case_id]
+        cache_path = resolve_path(cache_row["consolidated_cache_path"])
+        digest = hashlib.sha256(cache_path.read_bytes()).hexdigest()
+        if digest != cache_row["sha256"]:
+            raise ValueError(f"Hamiltonian checksum mismatch: {cache_path}")
+        run_dir = resolve_path(cache_row["summary_path"]).parent
+        summary = load_json(run_dir / "summary.json")
+        config = load_json(run_dir / "run_config.json")
+        snapshot = load_json(run_dir / "input_snapshot.json")
+        if summary.get("status") != "completed" or summary.get("case_id") != case_id:
+            raise ValueError(f"Invalid source summary for {case_id}")
+        with np.load(cache_path, allow_pickle=False) as cache:
+            norb = int(cache["ncas"])
+            occupations = np.asarray(cache["nelecas"], dtype=int).tolist()
+            reference = float(cache["reference_energy"])
+            reference_converged = bool(cache["reference_converged"])
+            indices = (np.asarray(cache["active_orbital_indices"], dtype=int).tolist()
+                       if "active_orbital_indices" in cache.files else [])
+            index_base = int(cache["active_orbital_index_base"]) if "active_orbital_index_base" in cache.files else 0
+            scf_energy = float(cache["scf_energy"]) if "scf_energy" in cache.files else None
+            source = str(cache["hamiltonian_source"].item())
+        if (norb != int(row["active_orbitals"]) or len(occupations) != 2
+                or sum(occupations) != int(row["active_electrons"])
+                or occupations[0] - occupations[1] != int(row["spin"])
+                or any(n < 0 or n > norb for n in occupations)):
+            raise ValueError(f"Cache active-space/spin mismatch for {case_id}")
+        if not math.isfinite(reference):
+            raise ValueError(f"Nonfinite cached reference for {case_id}")
+        summary_reference = summary.get("local_reference_energy_hartree")
+        if summary_reference is not None and abs(reference - float(summary_reference)) > 1e-6:
+            raise ValueError(f"Cache/source reference energy mismatch for {case_id}")
+        if not reference_converged and case_id != "fenoco3_minus":
+            raise ValueError(f"Unvalidated unconverged CASSCF reference for {case_id}")
+        if case_id in overrides:
+            override = overrides[case_id]
+            if (indices != override["active_orbital_indices"]
+                    or index_base != int(override.get("active_orbital_index_base", 0))):
+                raise ValueError(f"Corrected active orbital mismatch for {case_id}")
+        reference_scf = config.get("reference_scf", "RHF" if int(row["spin"]) == 0 else "ROHF")
+        if case_id in {"feno_2plus", "fenoco3_minus"} and reference_scf != "sfX2C1eROHF":
+            raise ValueError(f"Missing sfX2C1eROHF provenance for {case_id}")
+        if case_id == "FeO" and reference_scf != "ROHF":
+            raise ValueError("FeO must use the validated ROHF reference")
+        labels = config.get("active_orbital_labels") or snapshot.get("active_orbital_labels")
+        if config.get("use_avas_labels") is False:
+            labels = None
+        settings = {
+            "reference_scf": reference_scf,
+            "geometry_unit": config.get("geometry_unit", "Angstrom"),
+            "molecule_symmetry": bool(snapshot.get("symmetry", False)) if case_id == "FeO" else False,
+            "scf_conv_tol": config.get("scf_conv_tol"),
+            "scf_diis_space": int(config.get("scf_diis_space", 12)),
+            "scf_level_shift": float(config.get("scf_level_shift", 0.5)),
+            "scf_max_cycle": int(config.get("scf_max_cycle", 100)),
+            "scf_newton_if_not_converged": bool(config.get("scf_newton_if_not_converged",
+                                                         config.get("newton_if_not_converged", True))),
+        }
+        cases.append({
+            "case_id": case_id,
+            "symbols": json.loads(row["symbols"]),
+            "geometry_angstrom": json.loads(row["geometry_angstrom"]),
+            "geometry_bohr": json.loads(row["geometry_bohr"]),
+            "basis": row["basis"], "charge": int(row["charge"]), "spin": int(row["spin"]),
+            "active_electrons": sum(occupations), "active_orbitals": norb,
+            "nelecas": occupations, "active_orbital_indices": indices,
+            "active_orbital_index_base": index_base, "active_orbital_labels": labels,
+            "reference_settings": settings,
+            "hamiltonian_cache_path": str(cache_path), "hamiltonian_sha256": digest,
+            "source_cache_path": cache_row["source_cache_path"],
+            "source_summary_path": cache_row["summary_path"], "hamiltonian_source": source,
+            "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+            "previous_reference_source": summary.get("reference_source", ""),
+            "local_reference_energy_hartree": reference,
+            "local_reference_converged": reference_converged,
+            "cached_scf_energy_hartree": scf_energy if scf_energy is not None and math.isfinite(scf_energy) else None,
+            "dataset_casscf_energy_hartree": float(row["casscf_energy_hartree"]),
+            "source_json_path": row["source_json_path"],
+        })
+    if args.case_id is not None:
+        requested = set(args.case_id)
+        missing = requested - {case["case_id"] for case in cases}
+        if missing:
+            raise ValueError(f"Cases absent from validated cache manifest: {sorted(missing)}")
+        cases = [case for case in cases if case["case_id"] in requested]
+    if args.case_index is not None:
+        if not 0 <= args.case_index < len(cases):
+            raise ValueError(f"--case-index must be in [0, {len(cases) - 1}]")
+        cases = [cases[args.case_index]]
+    return cases
+
+
+def fock_bandwidth(orbital_energies):
+    energies = np.asarray(orbital_energies, dtype=float)
+    if energies.ndim != 1 or not energies.size or not np.all(np.isfinite(energies)):
+        raise ValueError("Invalid full-space SCF orbital energies")
+    energies = np.sort(energies)
+    minimum, maximum = float(energies[0]), float(energies[-1])
+    width = maximum - minimum
+    if not math.isfinite(width) or width <= 0:
+        raise ValueError(f"Fock bandwidth must be positive, got {width}")
+    return {
+        "width_definition": "full SCF one-electron orbital energy range, including core and virtual orbitals",
+        "fock_spectral_min_hartree": minimum,
+        "fock_spectral_max_hartree": maximum,
+        "fock_bandwidth_hartree": width,
+        "delta_t": math.pi / width,
+        "delta_t_units": "atomic units of time",
+        "delta_t_rule": "pi / (max(full_scf_mo_energy) - min(full_scf_mo_energy))",
+    }
+
+
+def compute_fock_spectrum(case, case_dir, args):
+    from pyscf import gto, scf
+
+    settings = case["reference_settings"]
+    unit = settings["geometry_unit"]
+    geometry = case["geometry_bohr"] if unit == "Bohr" else case["geometry_angstrom"]
+    mol = gto.M(atom=list(zip(case["symbols"], geometry)), unit=unit, basis=case["basis"],
+                charge=case["charge"], spin=case["spin"], symmetry=settings["molecule_symmetry"],
+                verbose=4, output=str(case_dir / "fock_scf.log"))
+    method = settings["reference_scf"]
+    if method == "RHF":
+        mf = scf.RHF(mol)
+    elif method in {"ROHF", "sfX2C1eROHF"}:
+        mf = scf.ROHF(mol)
+        if method == "sfX2C1eROHF":
+            mf = scf.sfx2c1e(mf)
+    else:
+        raise ValueError(f"Unsupported reference SCF method: {method}")
+    if settings["scf_conv_tol"] is not None:
+        mf.conv_tol = float(settings["scf_conv_tol"])
+    mf.diis_space = settings["scf_diis_space"]
+    mf.level_shift = settings["scf_level_shift"]
+    mf.max_cycle = settings["scf_max_cycle"]
+    mf.kernel()
+    used_newton = False
+    if not mf.converged and settings["scf_newton_if_not_converged"]:
+        mf = scf.newton(mf).run()
+        used_newton = True
+    if not mf.converged:
+        raise RuntimeError(f"{case['case_id']}: mean-field calculation did not converge")
+    cached_energy = case["cached_scf_energy_hartree"]
+    scf_difference = None if cached_energy is None else float(mf.e_tot) - cached_energy
+    if scf_difference is not None and abs(scf_difference) > args.scf_match_tolerance:
+        raise RuntimeError(f"{case['case_id']}: SCF energy differs from cached reference "
+                           f"by {scf_difference:.12g} Eh")
+    # ROHF reports the effective Roothaan orbital energies in mo_energy.
+    # Include every orbital; the subsequent QRTE active-space selection does
+    # not restrict this mean-field spectrum.
+    spectrum = np.asarray(mf.mo_energy, dtype=float)
+    fock_bandwidth(spectrum)
+    return {
+        "full_scf_orbital_energies_hartree": spectrum.tolist(),
+        "full_scf_orbital_occupations": np.asarray(mf.mo_occ, dtype=float).tolist(),
+        "n_scf_spatial_orbitals": int(spectrum.size),
+        "fock_operator": "restricted spatial Fock" if method == "RHF" else "ROHF effective Roothaan spatial Fock",
+        "spectrum_scope": "full mean-field orbital space, including core and virtual orbitals",
+        "reference_scf": method,
+        "scf_energy_hartree": float(mf.e_tot), "scf_converged": bool(mf.converged),
+        "scf_minus_cached_energy_hartree": scf_difference,
+        "used_newton_scf": used_newton,
+        "nelecas": case["nelecas"],
+    }
+
+
+@contextlib.contextmanager
+def cached_hamiltonian(qa, payload):
+    original = qa._build_hamiltonian_payload
+    qa._build_hamiltonian_payload = lambda *args, **kwargs: payload
+    try:
+        yield
+    finally:
+        qa._build_hamiltonian_payload = original
+
+
+def run_case(case, args):
+    case_dir = args.outdir / case["case_id"]
+    summary_path = case_dir / "summary.json"
+    fock_profile = {"case": case, "scf_match_tolerance": args.scf_match_tolerance}
+    run_profile = {
+        "fock_profile": fock_profile, "spectrum_scope": "full_scf_orbitals",
+        "n_steps": args.n_steps, "overlap_tol": args.overlap_tol,
+        "evolution_mode": args.evolution_mode, "trotter_steps": args.trotter_steps,
+        "max_workers": args.max_workers, "chemical_accuracy_hartree": CHEMICAL_ACCURACY,
+        "qcant_root": str(args.qcant_root.resolve()),
+    }
+    if summary_path.exists() and not args.force and not args.reference_only:
+        summary = load_json(summary_path)
+        if summary.get("status") == "completed" and summary.get("run_profile") == run_profile:
+            print(f"SKIP completed {case['case_id']}", flush=True)
+            return
+    case_dir.mkdir(parents=True, exist_ok=True)
+    write_json(case_dir / "input_snapshot.json", case)
+    start = time.perf_counter()
+    try:
+        fock_path = case_dir / "fock_reference.json"
+        fock_result = load_json(fock_path) if fock_path.exists() and not args.force else {}
+        if fock_result.get("status") != "completed" or fock_result.get("fock_profile") != fock_profile:
+            print(f"SCF {case['case_id']} {case['reference_settings']['reference_scf']}", flush=True)
+            fock_result = compute_fock_spectrum(case, case_dir, args)
+            fock_result.update(status="completed", fock_profile=fock_profile)
+            write_json(fock_path, fock_result)
+        width = fock_bandwidth(fock_result["full_scf_orbital_energies_hartree"])
+        reference = case["local_reference_energy_hartree"]
+        early_stop_energy = reference + CHEMICAL_ACCURACY
+        config = {**run_profile, **width, "method": "qrte", "early_stop_chemical_accuracy": True,
+                  "early_stop_energy_hartree": early_stop_energy,
+                  "hamiltonian_cache_path": case["hamiltonian_cache_path"],
+                  "reference_source": case["reference_source"]}
+        write_json(case_dir / "run_config.json", config)
+        print(f"{case['case_id']} W={width['fock_bandwidth_hartree']:.12g} Eh "
+              f"dt={width['delta_t']:.12g} au (full SCF orbital spectrum)", flush=True)
+        if args.reference_only:
+            return
+        sys.path.insert(0, str(args.qcant_root.resolve()))
+        from QCANT import qulacs_accel as qa
+
+        payload = _payload_from_cache_path(Path(case["hamiltonian_cache_path"]),
+                                           hamiltonian_cutoff=1e-20, qa=qa)
+        # Pin the builder during this one-process run so QRTE cannot rebuild a
+        # different Hamiltonian through its geometry/settings-based cache key.
+        with cached_hamiltonian(qa, payload):
+            energies, _states, _times, history = qa.qrte_qulacs(
+                symbols=case["symbols"], geometry=np.asarray(case["geometry_angstrom"]),
+                basis=case["basis"], charge=case["charge"], spin=case["spin"],
+                active_electrons=case["active_electrons"], active_orbitals=case["active_orbitals"],
+                delta_t=width["delta_t"], n_steps=args.n_steps, overlap_tol=args.overlap_tol,
+                evolution_mode=args.evolution_mode, trotter_steps=args.trotter_steps,
+                max_workers=args.max_workers, early_stop_energy=early_stop_energy,
+                return_min_energy_history=True, hamiltonian_source=case["hamiltonian_source"],
+                allow_unconverged_casscf=not case["local_reference_converged"],
+            )
+        history = np.asarray(history, dtype=float)
+        if not history.size or not np.all(np.isfinite(history)):
+            raise RuntimeError("QRTE returned an empty or nonfinite convergence history")
+        errors = history - reference
+        hit = next((i for i, error in enumerate(errors, 1) if abs(error) <= CHEMICAL_ACCURACY), None)
+        with (case_dir / "min_energy_history.csv").open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle, lineterminator="\n")
+            writer.writerow(["iteration", "min_energy_hartree", "error_vs_local_reference_hartree",
+                             "error_vs_molvqe_casscf_hartree", "within_chemical_accuracy"])
+            for i, (energy, error) in enumerate(zip(history, errors), 1):
+                writer.writerow([i, float(energy), float(error),
+                                 float(energy) - case["dataset_casscf_energy_hartree"],
+                                 str(abs(error) <= CHEMICAL_ACCURACY).lower()])
+        if np.min(errors) < -CHEMICAL_ACCURACY:
+            raise RuntimeError("Projected QRTE energy fell below the cached reference by more than chemical accuracy")
+        write_json(summary_path, {
+            **case, **width, "run_profile": run_profile, "status": "completed", "method": "qrte",
+            "chemical_accuracy_hartree": CHEMICAL_ACCURACY,
+            "casscf_energy_hartree": reference, "early_stop_energy_hartree": early_stop_energy,
+            "n_steps_requested": args.n_steps, "n_steps_completed": int(history.size),
+            "n_steps": int(history.size), "hit_iteration": hit, "hit_chemical_accuracy": hit is not None,
+            "stopped_early": history.size < args.n_steps and hit is not None,
+            "final_min_history_energy_hartree": float(history[-1]),
+            "final_projected_ground_energy_hartree": float(np.min(energies)),
+            "final_error_vs_local_reference_hartree": float(errors[-1]),
+            "overlap_tol": args.overlap_tol, "evolution_mode": args.evolution_mode,
+            "trotter_steps": args.trotter_steps, "elapsed_seconds": time.perf_counter() - start,
+        })
+        print(f"DONE {case['case_id']} iterations={history.size} chemical_accuracy_hit={hit}", flush=True)
+    except Exception as exc:
+        failure_path = case_dir / "fock_reference_failure.json" if args.reference_only else summary_path
+        write_json(failure_path, {"status": "failed", "case_id": case["case_id"],
+                                 "run_profile": run_profile, "error": repr(exc),
+                                 "traceback": traceback.format_exc()})
+        raise
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--cache-manifest", type=Path, default=DEFAULT_CACHE_MANIFEST)
+    parser.add_argument("--active-orbital-overrides", type=Path,
+                        default=ROOT / "manifests/molvqe21_active_orbital_overrides.json")
+    parser.add_argument("--qcant-root", type=Path, default=ROOT / "vendor/QCANT")
+    parser.add_argument("--outdir", type=Path, default=DEFAULT_OUTDIR)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--case-id", action="append")
+    selection.add_argument("--case-index", type=int)
+    parser.add_argument("--n-steps", type=int, default=100)
+    parser.add_argument("--overlap-tol", type=float, default=1e-10)
+    parser.add_argument("--evolution-mode", choices=("trotter", "sparse"), default="trotter")
+    parser.add_argument("--trotter-steps", type=int, default=1)
+    parser.add_argument("--max-workers", type=int, default=18)
+    parser.add_argument("--scf-match-tolerance", type=float, default=1e-6)
+    parser.add_argument("--dry-run", action="store_true", help="Validate caches and references; do no SCF or QRTE work")
+    parser.add_argument("--reference-only", action="store_true", help="Compute Fock spectrum and dt without QRTE")
+    parser.add_argument("--count-cases", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    args = parser.parse_args()
+    for name in ("n_steps", "trotter_steps", "max_workers", "overlap_tol", "scf_match_tolerance"):
+        value = getattr(args, name)
+        if not math.isfinite(value) or value <= 0:
+            parser.error(f"--{name.replace('_', '-')} must be positive and finite")
+    return args
+
+
+def main():
+    args = parse_args()
+    cases = load_cases(args)
+    if not cases:
+        raise SystemExit("No validated cases selected")
+    if args.count_cases:
+        print(len(cases))
+        return
+    if args.dry_run:
+        for i, case in enumerate(cases):
+            print(f"{i:2d} {case['case_id']:32s} SCF={case['reference_settings']['reference_scf']:14s} "
+                  f"CAS={case['active_electrons']}e{case['active_orbitals']}o "
+                  f"indices={case['active_orbital_indices']} labels={case['active_orbital_labels']}")
+        print(f"Validated {len(cases)} cases; W=max(full SCF orbital energy)-min(full SCF orbital energy); "
+              f"max_iterations={args.n_steps}; overlap_tol={args.overlap_tol:g}; "
+              f"early_stop=chemical_accuracy; outdir={args.outdir}")
+        return
+    failures = 0
+    for case in cases:
+        try:
+            run_case(case, args)
+        except Exception as exc:
+            failures += 1
+            print(f"FAIL {case['case_id']}: {exc!r}", flush=True)
+    if failures:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='medora10.cm.cluster', release='6.8.0-111-generic-64k', version='#111-Ubuntu SMP PREEMPT_DYNAMIC Sun Apr 12 00:17:58 UTC 2026', machine='aarch64')  Threads 1
+Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:39:32) [GCC 14.3.0]
+numpy 2.4.6  scipy 1.17.1  h5py 3.16.0
+Date: Wed Oct  7 12:52:24 2026
+PySCF version 2.13.1
+PySCF path  /home/mushir.kolathingal/miniforge3/envs/expk/lib/python3.12/site-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 6
+[INPUT] num. electrons = 6
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 2
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = Angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 H      0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 H      0.000000000000   0.000000000000   0.999999999968 AA    0.000000000000   0.000000000000   1.889726124504 Bohr   0.0
+[INPUT]  3 H      0.000000000000   0.000000000000   1.999999999936 AA    0.000000000000   0.000000000000   3.779452249009 Bohr   0.0
+[INPUT]  4 H      0.000000000000   0.000000000000   2.999999999904 AA    0.000000000000   0.000000000000   5.669178373513 Bohr   0.0
+[INPUT]  5 H      0.000000000000   0.000000000000   3.999999999871 AA    0.000000000000   0.000000000000   7.558904498017 Bohr   0.0
+[INPUT]  6 H      0.000000000000   0.000000000000   4.999999999839 AA    0.000000000000   0.000000000000   9.448630622522 Bohr   0.0
+
+nuclear repulsion = 4.6038417351519
+number of shells = 36
+number of NR pGTOs = 96
+number of NR cGTOs = 84
+basis = cc-pVTZ
+ecp = {}
+CPU time:         0.80
+
+
+******** <class 'pyscf.scf.rohf.ROHF'> ********
+method = ROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.5
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 12
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 100
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpwkwrg3kt
+max_memory 4000 MB (current use 135 MB)
+num. doubly occ = 2  num. singly occ = 2
+Set gradient conv threshold to 3.16228e-05
+init E= -2.53497703139566
+  HOMO = 0.369447622694839  LUMO = 0.662337492752331
+cycle= 1 E= -3.09877196499197  delta_E= -0.564  |g|= 0.143  |ddm|= 1.51
+  HOMO = 0.180077622550646  LUMO = 0.702363401236329
+cycle= 2 E= -3.11584595738318  delta_E= -0.0171  |g|= 0.059  |ddm|= 0.554
+  HOMO = 0.19270562274317  LUMO = 0.712162268206115
+cycle= 3 E= -3.11996651149176  delta_E= -0.00412  |g|= 0.0294  |ddm|= 0.117
+  HOMO = 0.191149424097161  LUMO = 0.714830289278707
+cycle= 4 E= -3.12152591191341  delta_E= -0.00156  |g|= 0.015  |ddm|= 0.0707
+  HOMO = 0.188646555753796  LUMO = 0.715050146541769
+cycle= 5 E= -3.12214634306566  delta_E= -0.00062  |g|= 0.00811  |ddm|= 0.0438
+  HOMO = 0.187164627580902  LUMO = 0.714984609767177
+cycle= 6 E= -3.12241703255602  delta_E= -0.000271  |g|= 0.00352  |ddm|= 0.0456
+  HOMO = 0.186684878841779  LUMO = 0.714958729236767
+cycle= 7 E= -3.12246582565507  delta_E= -4.88e-05  |g|= 0.00159  |ddm|= 0.0254
+  HOMO = 0.186508244400259  LUMO = 0.714923929247861
+cycle= 8 E= -3.12247378073013  delta_E= -7.96e-06  |g|= 0.000664  |ddm|= 0.0129
+  HOMO = 0.186468100725475  LUMO = 0.714911785813029
+cycle= 9 E= -3.12247488973396  delta_E= -1.11e-06  |g|= 0.000261  |ddm|= 0.00529
+  HOMO = 0.186468977523414  LUMO = 0.714908280880187
+cycle= 10 E= -3.12247503301239  delta_E= -1.43e-07  |g|= 0.000102  |ddm|= 0.00221
+  HOMO = 0.186466499041086  LUMO = 0.714907076797266
+cycle= 11 E= -3.12247505265632  delta_E= -1.96e-08  |g|= 3.83e-05  |ddm|= 0.000788
+  HOMO = 0.186467997857874  LUMO = 0.714907241971061
+cycle= 12 E= -3.12247505527755  delta_E= -2.62e-09  |g|= 1.42e-05  |ddm|= 0.000303
+  HOMO = 0.186468021973256  LUMO = 0.714907235925005
+cycle= 13 E= -3.1224750556319  delta_E= -3.54e-10  |g|= 5.25e-06  |ddm|= 0.000107
+  HOMO = -0.0635312844887793  LUMO = 0.214907354839016
+Extra cycle  E= -3.12247505567504  delta_E= -4.31e-11  |g|= 2.82e-06  |ddm|= 3.36e-05
+converged SCF energy = -3.12247505567504

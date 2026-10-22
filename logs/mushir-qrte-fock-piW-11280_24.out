@@ -1,0 +1,3 @@
+SCF Al3_minus RHF
+output file: runs/qrte_fock_pi_over_w/Al3_minus/fock_scf.log
+Al3_minus W=68.7529607465 Eh dt=0.0456939253158 au (full SCF orbital spectrum)

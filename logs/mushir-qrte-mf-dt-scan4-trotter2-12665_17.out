@@ -1,0 +1,3 @@
+REFERENCE Al3_minus spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+Al3_minus W=2.56573055552 Eh dt=1.22444371519 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE Al3_minus iterations=4 chemical_accuracy_hit=4

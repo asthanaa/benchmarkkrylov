@@ -1,0 +1,30 @@
+{
+  "case_count": 27,
+  "qrte_hits": 25,
+  "qkud_hits": 27,
+  "qrte_no_hit_cases": [
+    "FeO",
+    "feno_2plus"
+  ],
+  "new_molecular_calculations": false,
+  "entropy_source": "/home/mushir.kolathingal/benchmarkkrylov/manifests/molvqe21_fig1b_manifest.csv",
+  "entropy_definition": "Original manifest h0.25 from dataset CI probabilities, natural logarithm; unchanged",
+  "qrte_roots": [
+    "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_mean_field_active_pi_over_w_small10_trotter2",
+    "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_mean_field_active_pi_over_w_remaining17_trotter2"
+  ],
+  "qkud_propagation": "first-order product formula, one slice, epsilon=0.05",
+  "qkud_order_evidence": "QCANT.qulacs_accel.qkud_qulacs calls _build_time_evolution_circuit without order; its default is 1",
+  "fit_definition": "Least squares of log(iterations) against entropy, successful cases only; R2 in log space",
+  "fit_r_squared_log_space": {
+    "qrte": 0.062417583879228467,
+    "qkud": 0.4258662557333922,
+    "adapt": 0.9437100148285456
+  },
+  "notes": [
+    "Original QKUD points and ADAPT overrides retained; no-hit QRTE cases are excluded from QRTE fit.",
+    "QKUD-only hits are yellow stars; QRTE no-hit rows retain blank hit iterations in CSV.",
+    "Legacy QKUD accuracy targets are unchanged, including CO spin 2 and Al3-minus; reference differences are recorded in CSV.",
+    "fenoco3_minus retains its explicitly recorded unconverged CASSCF/natorb cache."
+  ]
+}

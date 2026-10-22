@@ -1,0 +1,3 @@
+REFERENCE N2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_0 W=4.81005531531 Eh dt=0.979695382169 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_0 iterations=6 chemical_accuracy_hit=6

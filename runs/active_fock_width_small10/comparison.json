@@ -1,0 +1,1803 @@
+{
+  "cases": [
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          2,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_orbital_energies_hartree": [
+          -0.6233416967894463,
+          -0.38254302218360103,
+          0.29659905875092674,
+          0.8657563839687471
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.6233416967894463,
+          -0.38254302218360103,
+          0.29659905875092674,
+          0.8657563839687471
+        ],
+        "caveat": "The active space is the full molecular orbital space; CASSCF rotations cannot change that subspace.",
+        "delta_t_pi_over_estimated_w": 0.7244567989039522,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 4.336480323385443,
+        "fock_operator": "restricted spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 2.3247108854393477,
+        "lowest_determinant_orbital_sum_hartree": -2.0117694379460946,
+        "ncore": 0,
+        "one_electron_range_hartree": 1.4890980807581933,
+        "reference_method": "RHF",
+        "relative_w_error_percent": 48.644447250684486,
+        "timestep_ratio_to_exact": 0.6727462871946568,
+        "w_ratio_to_exact": 1.4864444725068449
+      },
+      "case_id": "H4_near_equi_sto3g_0",
+      "exact_delta_t": 1.0768648043007827,
+      "exact_width_hartree": 2.917351037050241,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          2,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.6236173117098143,
+            -1.4138059182901368e-16,
+            -0.004011628740101317,
+            -1.436861491127373e-16
+          ],
+          [
+            -1.2262727575164706e-16,
+            -0.3815715142471767,
+            -2.274672771289654e-16,
+            -0.00465031200855142
+          ],
+          [
+            -0.004011628740101261,
+            -2.4989031327951433e-16,
+            0.2955414628297578,
+            1.3938710991999117e-16
+          ],
+          [
+            -2.623213187237022e-16,
+            -0.0046503120085514965,
+            3.603327291493191e-16,
+            0.8663825523434804
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.6236348199565456,
+          -0.3815888426906514,
+          0.2955589710764889,
+          0.8663998807869551
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.6236173117098143,
+            -1.4138059182901368e-16,
+            -0.004011628740101317,
+            -1.436861491127373e-16
+          ],
+          [
+            -1.2262727575164706e-16,
+            -0.3815715142471767,
+            -2.274672771289654e-16,
+            -0.00465031200855142
+          ],
+          [
+            -0.004011628740101261,
+            -2.4989031327951433e-16,
+            0.2955414628297578,
+            1.3938710991999117e-16
+          ],
+          [
+            -2.623213187237022e-16,
+            -0.0046503120085514965,
+            3.603327291493191e-16,
+            0.8663825523434804
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.6236348199565456,
+          -0.3815888426906514,
+          0.2955589710764889,
+          0.8663998807869551
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.7248103545859352,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 4.334365029021282,
+        "highest_determinant_orbital_sum_hartree": 2.323917703726888,
+        "lowest_determinant_orbital_sum_hartree": -2.010447325294394,
+        "one_electron_range_hartree": 1.4900347007435006,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 48.57193988570523,
+        "timestep_ratio_to_exact": 0.6730746066648178,
+        "w_ratio_to_exact": 1.4857193988570523
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/0e14a674e16c2908807717a6c88160dec55c93fba0308e95744ffc38e6d64d4c.npz",
+      "hamiltonian_sha256": "c1538fef702aed0ace384d42ab29af0e7f7384a9c69a37d6cda6c7c0cbc7a52f",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/H4_near_equi_sto3g_0/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/H4_near_equi_sto3g_0/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          3,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_orbital_energies_hartree": [
+          -0.6434126917777963,
+          -0.4712810461015178,
+          -0.06589442484446903,
+          0.4727909262080045,
+          0.9655477221411806
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.6434126917777963,
+          -0.4712810461015178,
+          -0.06589442484446903,
+          0.4727909262080045,
+          0.9655477221411806
+        ],
+        "caveat": "The active space is the full molecular orbital space; CASSCF rotations cannot change that subspace.",
+        "delta_t_pi_over_estimated_w": 0.6152669019273102,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 5.106064772456998,
+        "fock_operator": "ROHF effective Roothaan spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 2.810782871853901,
+        "lowest_determinant_orbital_sum_hartree": -2.295281900603097,
+        "ncore": 0,
+        "one_electron_range_hartree": 1.6089604139189768,
+        "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+        "reference_method": "ROHF",
+        "relative_w_error_percent": 38.45489795495134,
+        "timestep_ratio_to_exact": 0.72225686109376,
+        "w_ratio_to_exact": 1.3845489795495134
+      },
+      "case_id": "H5_near_equi_sto3g_1",
+      "exact_delta_t": 0.8518671612140479,
+      "exact_width_hartree": 3.687890315096215,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          3,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.695977287805676,
+            -6.095917523258147e-16,
+            -0.01255374337570261,
+            1.2906128375573577e-16,
+            -0.048198331789628075
+          ],
+          [
+            -7.294012697168052e-16,
+            -0.5284338730336442,
+            8.43738114998513e-16,
+            0.055693084315326824,
+            3.958311268692125e-16
+          ],
+          [
+            -0.012553743375702628,
+            6.530100387037699e-16,
+            -0.27743384204668664,
+            -8.420725338220701e-17,
+            -0.011314199243732448
+          ],
+          [
+            1.2753399204422306e-16,
+            0.05569308431532667,
+            -1.1448452587817738e-16,
+            0.41113389501218894,
+            4.25487331737777e-16
+          ],
+          [
+            -0.048198331789628256,
+            1.3316835385466772e-16,
+            -0.011314199243732524,
+            4.050768005220185e-16,
+            0.9174082811995135
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.6978109350557982,
+          -0.5317235745428428,
+          -0.27713873905877767,
+          0.4144235965213873,
+          0.9189468254617271
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.59271176002087,
+            -4.2669031541913134e-16,
+            0.011126566562663948,
+            -8.836553620551972e-17,
+            0.048091694953743346
+          ],
+          [
+            -5.55443654765231e-16,
+            -0.4094370509976002,
+            5.132611567031913e-16,
+            -0.054161505194059434,
+            5.325459701136972e-16
+          ],
+          [
+            0.011126566562663948,
+            3.1165514385822033e-16,
+            0.14651061013118438,
+            8.408570552693097e-17,
+            0.016780085642034342
+          ],
+          [
+            -7.754324513097483e-17,
+            -0.05416150519405957,
+            8.35760619407405e-17,
+            0.5304215230224572,
+            2.5121029373766314e-16
+          ],
+          [
+            0.04809169495374315,
+            2.7435929045638874e-16,
+            0.016780085642034287,
+            1.986187917399644e-16,
+            1.0209589428103354
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.5942960961405873,
+          -0.4125479350456329,
+          0.14632906094250386,
+          0.53353240707049,
+          1.0227248281187333
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.6128733622760291,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 5.126006197957199,
+        "highest_determinant_orbital_sum_hartree": 2.61248891811356,
+        "lowest_determinant_orbital_sum_hartree": -2.513517279843639,
+        "one_electron_range_hartree": 1.7205357631745315,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 38.995625140317244,
+        "timestep_ratio_to_exact": 0.7194471041735966,
+        "w_ratio_to_exact": 1.3899562514031725
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/c508cd3bc1189229881e58a0b84d52a5320a7210318d33be2de6f89d67c8108a.npz",
+      "hamiltonian_sha256": "4eb768aa5167a4b724c4aae2c127496a9d0a5dfe9dbda034cc8a1a2cb3a52d67",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/H5_near_equi_sto3g_1/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/H5_near_equi_sto3g_1/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_orbital_energies_hartree": [
+          -0.6657814545725736,
+          -0.5357986499791358,
+          -0.3260080511652189,
+          0.22361378628600248,
+          0.6162566101759329,
+          1.0381552958558267
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.6657814545725736,
+          -0.5357986499791358,
+          -0.3260080511652189,
+          0.22361378628600248,
+          0.6162566101759329,
+          1.0381552958558267
+        ],
+        "caveat": "The active space is the full molecular orbital space; CASSCF rotations cannot change that subspace.",
+        "delta_t_pi_over_estimated_w": 0.4612373559913056,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 6.8112276960693805,
+        "fock_operator": "restricted spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 3.756051384635524,
+        "lowest_determinant_orbital_sum_hartree": -3.055176311433857,
+        "ncore": 0,
+        "one_electron_range_hartree": 1.7039367504284004,
+        "reference_method": "RHF",
+        "relative_w_error_percent": 35.73980385712572,
+        "timestep_ratio_to_exact": 0.7367035840515579,
+        "w_ratio_to_exact": 1.3573980385712572
+      },
+      "case_id": "H6_near_equi_sto3g_0",
+      "exact_delta_t": 0.6260826823383909,
+      "exact_width_hartree": 5.017855855485548,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.6658379375226042,
+            1.6412994415287213e-16,
+            -0.00014412527736293312,
+            9.748668906591783e-17,
+            0.0030330110917874686,
+            -1.373856105506427e-16
+          ],
+          [
+            1.828530543790748e-16,
+            -0.5359739314198451,
+            1.2029534370975602e-16,
+            -0.0051389904937227185,
+            -1.4676359733521232e-16,
+            0.0034817659388407737
+          ],
+          [
+            -0.00014412527736291925,
+            8.479005762578176e-17,
+            -0.3240574023440361,
+            2.228792260322411e-16,
+            -0.00507029024290756,
+            -1.9801913824001875e-16
+          ],
+          [
+            7.870798009578376e-17,
+            -0.005138990493722809,
+            1.2475930983915652e-16,
+            0.22169044757214051,
+            1.2394298921173003e-16,
+            -0.0016528517205579296
+          ],
+          [
+            0.003033011091787642,
+            2.0969613204681115e-17,
+            -0.005070290242907456,
+            9.651920848381346e-17,
+            0.616593894520149,
+            5.222187551799262e-16
+          ],
+          [
+            2.852020385042424e-17,
+            0.00348176593884051,
+            -1.0047365113765794e-16,
+            -0.001652851720557947,
+            5.066044162175597e-16,
+            1.0389071626310813
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.665845161780337,
+          -0.5360164334156226,
+          -0.32408468361179976,
+          0.22172186299856203,
+          0.6166284000456455,
+          1.0389182492004376
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.6658379375226042,
+            1.6412994415287213e-16,
+            -0.00014412527736293312,
+            9.748668906591783e-17,
+            0.0030330110917874686,
+            -1.373856105506427e-16
+          ],
+          [
+            1.828530543790748e-16,
+            -0.5359739314198451,
+            1.2029534370975602e-16,
+            -0.0051389904937227185,
+            -1.4676359733521232e-16,
+            0.0034817659388407737
+          ],
+          [
+            -0.00014412527736291925,
+            8.479005762578176e-17,
+            -0.3240574023440361,
+            2.228792260322411e-16,
+            -0.00507029024290756,
+            -1.9801913824001875e-16
+          ],
+          [
+            7.870798009578376e-17,
+            -0.005138990493722809,
+            1.2475930983915652e-16,
+            0.22169044757214051,
+            1.2394298921173003e-16,
+            -0.0016528517205579296
+          ],
+          [
+            0.003033011091787642,
+            2.0969613204681115e-17,
+            -0.005070290242907456,
+            9.651920848381346e-17,
+            0.616593894520149,
+            5.222187551799262e-16
+          ],
+          [
+            2.852020385042424e-17,
+            0.00348176593884051,
+            -1.0047365113765794e-16,
+            -0.001652851720557947,
+            5.066044162175597e-16,
+            1.0389071626310813
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.665845161780337,
+          -0.5360164334156226,
+          -0.32408468361179976,
+          0.22172186299856203,
+          0.6166284000456455,
+          1.0389182492004376
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.4615624999411648,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 6.806429582104808,
+        "highest_determinant_orbital_sum_hartree": 3.75453702448929,
+        "lowest_determinant_orbital_sum_hartree": -3.0518925576155187,
+        "one_electron_range_hartree": 1.7047634109807746,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 35.64418305607526,
+        "timestep_ratio_to_exact": 0.7372229147390716,
+        "w_ratio_to_exact": 1.3564418305607526
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/8d30737e8e8d7b50419867a30d3c98c883e646e537fe6bdc87be63d5375cbb8b.npz",
+      "hamiltonian_sha256": "c64b7008c6d1eb7673a50b3a59d90172ed5f65093e71614f67607db35d29b58b",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/H6_near_equi_sto3g_0/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/H6_near_equi_sto3g_0/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.7011835735619931,
+          -0.5767359267315951,
+          -0.3898407393750985,
+          0.05516969225010848,
+          0.21378494630833467,
+          0.31041611521837265
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.7011835735619931,
+          -0.5767359267315951,
+          -0.3898407393750985,
+          0.05516969225010848,
+          0.21378494630833467,
+          0.31041611521837265
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 0.6990230348727517,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 4.494261986891004,
+        "fock_operator": "restricted spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 1.1587415075536316,
+        "lowest_determinant_orbital_sum_hartree": -3.335520479337373,
+        "ncore": 0,
+        "one_electron_range_hartree": 1.0115996887803658,
+        "reference_method": "RHF",
+        "relative_w_error_percent": -1.7722102554763808,
+        "timestep_ratio_to_exact": 1.018041841927683,
+        "w_ratio_to_exact": 0.9822778974452362
+      },
+      "case_id": "H6_near_equi_cc_pVTZ_0",
+      "exact_delta_t": 0.6866348769605946,
+      "exact_width_hartree": 4.575346751240087,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.6970753772029498,
+            -4.849053858340923e-16,
+            -0.006687274998092532,
+            -1.8200549813335393e-16,
+            0.0023606009561829844,
+            -2.3699345944454913e-16
+          ],
+          [
+            -9.512791363809666e-16,
+            -0.5727030164626509,
+            1.6542693812362423e-15,
+            0.003976952401322877,
+            5.843186069951512e-17,
+            0.004094592753395767
+          ],
+          [
+            -0.006687274998092171,
+            1.4902883982888839e-15,
+            -0.3840274681101836,
+            -5.510975556396451e-16,
+            0.005855984275725812,
+            -2.1125951134389278e-16
+          ],
+          [
+            -7.035061256019772e-17,
+            0.003976952401322759,
+            -2.205878790618519e-16,
+            0.133519831971171,
+            1.9246667596142344e-15,
+            0.004273348031752486
+          ],
+          [
+            0.002360600956183269,
+            3.262061910562556e-16,
+            0.005855984275725742,
+            1.7200419362871965e-15,
+            0.4798753157447316,
+            -2.8177781780474124e-15
+          ],
+          [
+            -1.3152797300481986e-16,
+            0.004094592753395576,
+            1.291154368122575e-16,
+            0.004273348031752524,
+            -2.7309916565566532e-15,
+            0.8777528567003618
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.6972234114041274,
+          -0.5727368341874568,
+          -0.38392368138377964,
+          0.1335174254732259,
+          0.47991956321950463,
+          0.8777890809231133
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.6970753772029498,
+            -4.849053858340923e-16,
+            -0.006687274998092532,
+            -1.8200549813335393e-16,
+            0.0023606009561829844,
+            -2.3699345944454913e-16
+          ],
+          [
+            -9.512791363809666e-16,
+            -0.5727030164626509,
+            1.6542693812362423e-15,
+            0.003976952401322877,
+            5.843186069951512e-17,
+            0.004094592753395767
+          ],
+          [
+            -0.006687274998092171,
+            1.4902883982888839e-15,
+            -0.3840274681101836,
+            -5.510975556396451e-16,
+            0.005855984275725812,
+            -2.1125951134389278e-16
+          ],
+          [
+            -7.035061256019772e-17,
+            0.003976952401322759,
+            -2.205878790618519e-16,
+            0.133519831971171,
+            1.9246667596142344e-15,
+            0.004273348031752486
+          ],
+          [
+            0.002360600956183269,
+            3.262061910562556e-16,
+            0.005855984275725742,
+            1.7200419362871965e-15,
+            0.4798753157447316,
+            -2.8177781780474124e-15
+          ],
+          [
+            -1.3152797300481986e-16,
+            0.004094592753395576,
+            1.291154368122575e-16,
+            0.004273348031752524,
+            -2.7309916565566532e-15,
+            0.8777528567003618
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.6972234114041274,
+          -0.5727368341874568,
+          -0.38392368138377964,
+          0.1335174254732259,
+          0.47991956321950463,
+          0.8777890809231133
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.4994408235315734,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 6.290219993182415,
+        "highest_determinant_orbital_sum_hartree": 2.982452139231688,
+        "lowest_determinant_orbital_sum_hartree": -3.3077678539507276,
+        "one_electron_range_hartree": 1.5750124923272406,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 37.4807273673309,
+        "timestep_ratio_to_exact": 0.7273746794546176,
+        "w_ratio_to_exact": 1.374807273673309
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/e2a6a607c4f16ad9d459a0851074cb833e592b671190ff8e77d4f703ba34525c.npz",
+      "hamiltonian_sha256": "8cd88aebd4de3be92e5aa8b93e5d27ab65a28df7a78276519a5d86d5014aa428",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/H6_near_equi_cc_pVTZ_0/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/H6_near_equi_cc_pVTZ_0/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          2,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.4920690270553587,
+          -0.45272107679439344,
+          0.06061394040661049,
+          0.06061394040661325,
+          0.10523278727571217,
+          0.1336111455311535
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.4920690270553587,
+          -0.45272107679439344,
+          0.06061394040661049,
+          0.06061394040661325,
+          0.10523278727571217,
+          0.1336111455311535
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 1.3270962798872248,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 2.3672680733132356,
+        "fock_operator": "restricted spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 0.47768786561373133,
+        "lowest_determinant_orbital_sum_hartree": -1.8895802076995043,
+        "ncore": 1,
+        "one_electron_range_hartree": 0.6256801725865122,
+        "reference_method": "RHF",
+        "relative_w_error_percent": -26.828483910822676,
+        "timestep_ratio_to_exact": 1.366652016313638,
+        "w_ratio_to_exact": 0.7317151608917732
+      },
+      "case_id": "BeH2_equi_cc_pVTZ_0",
+      "exact_delta_t": 0.9710564679565544,
+      "exact_width_hartree": 3.2352316855484347,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          2,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.45066540128920296,
+            3.954547076726269e-06,
+            -2.5853314265594347e-07,
+            -0.005330817677905678,
+            1.8209156577942484e-17,
+            -1.631633762747559e-17
+          ],
+          [
+            3.954547076588466e-06,
+            -0.4914167546727738,
+            0.002850764962715302,
+            -4.945510200817176e-07,
+            1.5240325162873743e-18,
+            7.526661681109631e-19
+          ],
+          [
+            -2.5853314268027364e-07,
+            0.002850764962714636,
+            0.5083152728897771,
+            -3.172609820063069e-07,
+            -1.0296071543540103e-17,
+            3.4576882748943966e-17
+          ],
+          [
+            -0.005330817677905414,
+            -4.945510202745819e-07,
+            -3.172609823857596e-07,
+            0.931747971910034,
+            9.17984534483769e-16,
+            3.0794853929725127e-16
+          ],
+          [
+            1.8209156577942083e-17,
+            1.5240325162876273e-18,
+            -1.029607154354081e-17,
+            9.179845344837686e-16,
+            0.3345276310101723,
+            3.1373280200908906e-14
+          ],
+          [
+            -1.6316337627475244e-17,
+            7.526661681107412e-19,
+            3.457688274894374e-17,
+            3.079485392972512e-16,
+            3.1380042833479206e-14,
+            0.3345276309824075
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.49142488402972256,
+          -0.45068595712644755,
+          0.3345276309824075,
+          0.3345276310101724,
+          0.508323401862736,
+          0.9317685281312685
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.45066540128920296,
+            3.954547076726269e-06,
+            -2.5853314265594347e-07,
+            -0.005330817677905678,
+            1.8209156577942484e-17,
+            -1.631633762747559e-17
+          ],
+          [
+            3.954547076588466e-06,
+            -0.4914167546727738,
+            0.002850764962715302,
+            -4.945510200817176e-07,
+            1.5240325162873743e-18,
+            7.526661681109631e-19
+          ],
+          [
+            -2.5853314268027364e-07,
+            0.002850764962714636,
+            0.5083152728897771,
+            -3.172609820063069e-07,
+            -1.0296071543540103e-17,
+            3.4576882748943966e-17
+          ],
+          [
+            -0.005330817677905414,
+            -4.945510202745819e-07,
+            -3.172609823857596e-07,
+            0.931747971910034,
+            9.17984534483769e-16,
+            3.0794853929725127e-16
+          ],
+          [
+            1.8209156577942083e-17,
+            1.5240325162876273e-18,
+            -1.029607154354081e-17,
+            9.179845344837686e-16,
+            0.3345276310101723,
+            3.1373280200908906e-14
+          ],
+          [
+            -1.6316337627475244e-17,
+            7.526661681107412e-19,
+            3.457688274894374e-17,
+            3.079485392972512e-16,
+            3.1380042833479206e-14,
+            0.3345276309824075
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.49142488402972256,
+          -0.45068595712644755,
+          0.3345276309824075,
+          0.3345276310101724,
+          0.508323401862736,
+          0.9317685281312685
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.6593881704018358,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 4.764405542300349,
+        "highest_determinant_orbital_sum_hartree": 2.880183859988009,
+        "lowest_determinant_orbital_sum_hartree": -1.88422168231234,
+        "one_electron_range_hartree": 1.423193412160991,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 47.266285860843674,
+        "timestep_ratio_to_exact": 0.67904204560773,
+        "w_ratio_to_exact": 1.4726628586084367
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/e3e0bf93f4fe7154aa460e5a8e6779a390a3c4673de1e5db48743ce98f1283f8.npz",
+      "hamiltonian_sha256": "0a2127441b655207ab95136f2f6a1064418b282e888b40928970904a3693020e",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/BeH2_equi_cc_pVTZ_0/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/BeH2_equi_cc_pVTZ_0/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          3,
+          1
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.5148187654966527,
+          -0.35751084270011635,
+          -0.043448485556178085,
+          0.05127936187636628,
+          0.09928968243880387,
+          0.12374512336548626
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.5148187654966527,
+          -0.35751084270011635,
+          -0.043448485556178085,
+          0.05127936187636628,
+          0.09928968243880387,
+          0.12374512336548626
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 1.7179788847026893,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 1.8286561502957426,
+        "fock_operator": "ROHF effective Roothaan spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 0.3980592910461427,
+        "lowest_determinant_orbital_sum_hartree": -1.4305968592496,
+        "ncore": 1,
+        "one_electron_range_hartree": 0.638563888862139,
+        "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+        "reference_method": "ROHF",
+        "relative_w_error_percent": -28.00423945667404,
+        "timestep_ratio_to_exact": 1.3889706733470994,
+        "w_ratio_to_exact": 0.7199576054332596
+      },
+      "case_id": "BeH2_equi_cc_pVTZ_2",
+      "exact_delta_t": 1.2368719640154502,
+      "exact_width_hartree": 2.5399497643965923,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          3,
+          1
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.6206666123405956,
+            -8.320694889635678e-11,
+            -7.273282428832222e-17,
+            0.04225031953274805,
+            4.472273989684486e-16,
+            -1.3837063647883261e-11
+          ],
+          [
+            -8.320694593240218e-11,
+            -0.5842775620885106,
+            -7.85752896381954e-14,
+            1.4087040744590135e-11,
+            1.4671515742099955e-16,
+            0.028363636485315244
+          ],
+          [
+            -7.2732824288394e-17,
+            -7.857528963819538e-14,
+            -0.20851794729839573,
+            -4.640744488909932e-15,
+            1.5321097198086997e-16,
+            5.920450970233851e-15
+          ],
+          [
+            0.04225031953274776,
+            1.4087213863025412e-11,
+            -4.640744488909909e-15,
+            0.24069419647321197,
+            1.1895991223315541e-15,
+            9.082577235553254e-11
+          ],
+          [
+            4.47227398968449e-16,
+            1.4671515742100015e-16,
+            -8.127597434541604e-17,
+            1.189599122331555e-15,
+            0.19962450748995345,
+            2.8175303587617623e-15
+          ],
+          [
+            -1.3836928756342763e-11,
+            0.028363636485315757,
+            5.9204509702338e-15,
+            9.082512109937325e-11,
+            2.817530358761797e-15,
+            0.7369430521357304
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.6227340562711661,
+          -0.5848861852388574,
+          -0.20851794729839568,
+          0.19962450748995356,
+          0.24276164040378245,
+          0.7375516752860775
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.4052242083998119,
+            2.027455189085074e-11,
+            -7.648890859916881e-16,
+            -0.03189581113490538,
+            -4.233856506615125e-16,
+            7.449228450667318e-12
+          ],
+          [
+            2.027454601273831e-11,
+            -0.11919655709757321,
+            -5.0858330308023035e-14,
+            -5.370336323447693e-11,
+            5.345889795479518e-16,
+            0.09362254676273651
+          ],
+          [
+            -7.648890859917718e-16,
+            -5.0858330308023004e-14,
+            0.12435776354565925,
+            -9.162739032644713e-15,
+            -1.5145477381116197e-16,
+            1.9620546616518607e-14
+          ],
+          [
+            -0.031895811134905694,
+            -5.370320192110746e-11,
+            -9.162739032644667e-15,
+            0.37818593051104377,
+            1.1021882441311736e-15,
+            5.715449063076386e-11
+          ],
+          [
+            -4.2338565066151317e-16,
+            5.345889795479602e-16,
+            -3.660348892257043e-16,
+            1.1021882441311725e-15,
+            0.24247531536213984,
+            2.989257240987821e-15
+          ],
+          [
+            7.449353197668406e-12,
+            0.09362254676273704,
+            1.9620546616518538e-14,
+            5.7153862154374525e-11,
+            2.9892572409878535e-15,
+            0.8119062407756034
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.4065206710088723,
+          -0.12851702120843397,
+          0.12435776354565936,
+          0.2424753153621399,
+          0.37948239312010446,
+          0.8212267048864641
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.8215841410313198,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 3.823823387883569,
+        "highest_determinant_orbital_sum_hartree": 2.0011645280662775,
+        "lowest_determinant_orbital_sum_hartree": -1.8226588598172915,
+        "one_electron_range_hartree": 1.4439607611576302,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 50.547205361440774,
+        "timestep_ratio_to_exact": 0.664243482699764,
+        "w_ratio_to_exact": 1.5054720536144077
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+      "hamiltonian_sha256": "abe766306735a5f36b88c1c3e3c55797c04d97be3ea245e60c0c300762ad28f7",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/BeH2_equi_cc_pVTZ_2/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/BeH2_equi_cc_pVTZ_2/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.621806819341737,
+          -0.5719014088806758,
+          -0.5719014088806705,
+          0.11423074346552153,
+          0.11423074346552388,
+          0.41095653361984574
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.621806819341737,
+          -0.5719014088806758,
+          -0.5719014088806705,
+          0.11423074346552153,
+          0.11423074346552388,
+          0.41095653361984574
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 0.6531302547793387,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 4.810055315307949,
+        "fock_operator": "restricted spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 1.2788360411017823,
+        "lowest_determinant_orbital_sum_hartree": -3.5312192742061663,
+        "ncore": 4,
+        "one_electron_range_hartree": 1.0327633529615827,
+        "reference_method": "RHF",
+        "relative_w_error_percent": -8.946344449890908,
+        "timestep_ratio_to_exact": 1.0982535450756012,
+        "w_ratio_to_exact": 0.9105365555010909
+      },
+      "case_id": "N2_equi_cc_pVTZ_0",
+      "exact_delta_t": 0.594698972480329,
+      "exact_width_hartree": 5.282660302046693,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.9319073317613269,
+            6.29377296972391e-17,
+            3.2754125242188e-15,
+            2.3055368156631296e-17,
+            1.0429551953257813e-17,
+            1.4875391805275238e-15
+          ],
+          [
+            6.29377296972396e-17,
+            -0.5633071920225959,
+            -2.690133721429044e-16,
+            -1.0577644468041407e-17,
+            -1.7082274859722247e-17,
+            -5.661697615355344e-19
+          ],
+          [
+            3.2754125242188045e-15,
+            -2.3149878139242463e-16,
+            -0.5633071920225967,
+            3.781374565362748e-16,
+            -4.308687657286405e-16,
+            1.984252251715258e-18
+          ],
+          [
+            2.3055368156627807e-17,
+            -2.308697517513497e-16,
+            2.74282707602044e-16,
+            0.23117766884370122,
+            2.8915978335553364e-16,
+            -2.7224634341518604e-17
+          ],
+          [
+            1.0429551953254817e-17,
+            -3.898438024348509e-16,
+            -1.4681824297247267e-16,
+            -1.957779708806115e-16,
+            0.23117766884370114,
+            8.39848222424771e-17
+          ],
+          [
+            2.202239404436046e-15,
+            -5.6616976153558375e-19,
+            1.9842522517304435e-18,
+            -2.722463434151811e-17,
+            8.398482224248223e-17,
+            0.9685616223197037
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.931907331761327,
+          -0.5633071920225966,
+          -0.563307192022596,
+          0.23117766884370095,
+          0.23117766884370128,
+          0.9685616223197034
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.9319073317613269,
+            6.29377296972391e-17,
+            3.2754125242188e-15,
+            2.3055368156631296e-17,
+            1.0429551953257813e-17,
+            1.4875391805275238e-15
+          ],
+          [
+            6.29377296972396e-17,
+            -0.5633071920225959,
+            -2.690133721429044e-16,
+            -1.0577644468041407e-17,
+            -1.7082274859722247e-17,
+            -5.661697615355344e-19
+          ],
+          [
+            3.2754125242188045e-15,
+            -2.3149878139242463e-16,
+            -0.5633071920225967,
+            3.781374565362748e-16,
+            -4.308687657286405e-16,
+            1.984252251715258e-18
+          ],
+          [
+            2.3055368156627807e-17,
+            -2.308697517513497e-16,
+            2.74282707602044e-16,
+            0.23117766884370122,
+            2.8915978335553364e-16,
+            -2.7224634341518604e-17
+          ],
+          [
+            1.0429551953254817e-17,
+            -3.898438024348509e-16,
+            -1.4681824297247267e-16,
+            -1.957779708806115e-16,
+            0.23117766884370114,
+            8.39848222424771e-17
+          ],
+          [
+            2.202239404436046e-15,
+            -5.6616976153558375e-19,
+            1.9842522517304435e-18,
+            -2.722463434151811e-17,
+            8.398482224248223e-17,
+            0.9685616223197037
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.931907331761327,
+          -0.5633071920225966,
+          -0.563307192022596,
+          0.23117766884370095,
+          0.23117766884370128,
+          0.9685616223197034
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.4501573097365401,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 6.978877351627251,
+        "highest_determinant_orbital_sum_hartree": 2.8618339200142113,
+        "lowest_determinant_orbital_sum_hartree": -4.117043431613039,
+        "one_electron_range_hartree": 1.9004689540810304,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 32.10914487390721,
+        "timestep_ratio_to_exact": 0.7569498697114868,
+        "w_ratio_to_exact": 1.3210914487390721
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/56eab94e96a54cb31395cd5a3523a5c4e38a934d54e4b6d18b3fad6513cc447b.npz",
+      "hamiltonian_sha256": "782e0e961bb35b81c69b32b2758600ef46fe1b2613ca44153252eabd9de4772a",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/N2_equi_cc_pVTZ_0/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/N2_equi_cc_pVTZ_0/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          4,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.6046844088996188,
+          -0.5643056568725378,
+          -0.39515644589049437,
+          -0.08741157342297612,
+          0.11665210796146219,
+          0.3992542245817674
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.6046844088996188,
+          -0.5643056568725378,
+          -0.39515644589049437,
+          -0.08741157342297612,
+          0.11665210796146219,
+          0.3992542245817674
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 0.932280660321566,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 3.3697927966307724,
+        "fock_operator": "ROHF effective Roothaan spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 0.5492446457729887,
+        "lowest_determinant_orbital_sum_hartree": -2.8205481508577837,
+        "ncore": 4,
+        "one_electron_range_hartree": 1.0039386334813862,
+        "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+        "reference_method": "ROHF",
+        "relative_w_error_percent": -9.138800186295015,
+        "timestep_ratio_to_exact": 1.1005797876875116,
+        "w_ratio_to_exact": 0.9086119981370498
+      },
+      "case_id": "N2_equi_cc_pVTZ_2",
+      "exact_delta_t": 0.8470813935993063,
+      "exact_width_hartree": 3.7087258406668013,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          4,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -1.0012672675356062,
+            -7.830185617403049e-16,
+            -4.5014844903921156e-13,
+            -4.575654806080592e-16,
+            3.40733362026621e-18,
+            1.0116386638788555e-13
+          ],
+          [
+            -7.830185617408751e-16,
+            -0.5813786396208186,
+            1.9582186807958225e-15,
+            3.0987907680245797e-16,
+            3.993274109815587e-13,
+            1.0000403032378234e-16
+          ],
+          [
+            -4.5014844903921197e-13,
+            2.1144785744699413e-15,
+            -0.7425839288290682,
+            3.1974925991459e-12,
+            -5.64283619325554e-17,
+            3.163341023121015e-17
+          ],
+          [
+            -4.575654806094625e-16,
+            3.8634308056836755e-16,
+            3.197112329837007e-12,
+            -0.39001051909582485,
+            -6.257719921616669e-16,
+            3.839601570795529e-14
+          ],
+          [
+            3.4073336201052024e-18,
+            4.00521852955582e-13,
+            -6.118061018277437e-17,
+            -6.989991943484193e-16,
+            0.14266601576205876,
+            -1.2793669190930023e-16
+          ],
+          [
+            1.0196834155261881e-13,
+            1.0000403032375035e-16,
+            3.1633410232402593e-17,
+            3.839601570795605e-14,
+            -1.279366919094012e-16,
+            0.9276995339629815
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -1.001267267535606,
+          -0.7425839288290691,
+          -0.581378639620819,
+          -0.39001051909582507,
+          0.14266601576205873,
+          0.9276995339629821
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.9384551885208064,
+            -5.092047919913126e-16,
+            -5.2496850026010135e-14,
+            -4.583030181113893e-16,
+            4.145465775994604e-18,
+            -6.626733347594896e-12
+          ],
+          [
+            -5.092047919919146e-16,
+            -0.543060452570484,
+            -7.652468956251027e-16,
+            2.956304820860233e-16,
+            1.6776779268158672e-13,
+            1.0082803376328498e-16
+          ],
+          [
+            -5.2496850026010406e-14,
+            -6.040208098227245e-16,
+            -0.007236130223350401,
+            -7.483358662723007e-13,
+            2.087794249782948e-16,
+            -7.805898661278227e-17
+          ],
+          [
+            -4.583030181130859e-16,
+            3.7151021806116587e-16,
+            -7.487641110715198e-13,
+            0.3414583569173374,
+            2.0453310159273327e-15,
+            2.1137339404252813e-13
+          ],
+          [
+            4.145465775794087e-18,
+            1.6897243441268693e-13,
+            2.31102803187093e-16,
+            1.9836483845942988e-15,
+            0.1807410880343425,
+            -4.007932803705991e-16
+          ],
+          [
+            -6.625923811211438e-12,
+            1.0082803376326549e-16,
+            -7.805898661106108e-17,
+            2.1137339404252904e-13,
+            -4.007932803707194e-16,
+            0.9977605232625366
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.9384551885208068,
+          -0.5430604525704842,
+          -0.00723613022335046,
+          0.18074108803434252,
+          0.3414583569173372,
+          0.9977605232625371
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.5575190457789267,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 5.634951267360882,
+        "highest_determinant_orbital_sum_hartree": 1.438195271188271,
+        "lowest_determinant_orbital_sum_hartree": -4.196755996172611,
+        "one_electron_range_hartree": 1.999027790798143,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 51.937660249045514,
+        "timestep_ratio_to_exact": 0.6581646698789954,
+        "w_ratio_to_exact": 1.5193766024904551
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/714f53e508f35490aeff6ceeae04ee73e476bfcbf6363801f21319a8d13ded08.npz",
+      "hamiltonian_sha256": "be5c8eb1556f4d40f75de62971aa1da614b3d8e985fe83fdf68fa24c2847567c",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/N2_equi_cc_pVTZ_2/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/N2_equi_cc_pVTZ_2/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.6091427563435894,
+          -0.6091427563435775,
+          -0.5603394303712079,
+          0.11306875265051802,
+          0.11306875265052163,
+          0.2758215954563443
+        ],
+        "avas_caveat": "AVAS labels were recorded; this energy-window baseline does not reconstruct the AVAS projector.",
+        "beta_orbital_energies_hartree": [
+          -0.6091427563435894,
+          -0.6091427563435775,
+          -0.5603394303712079,
+          0.11306875265051802,
+          0.11306875265052163,
+          0.2758215954563443
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 0.6887693225138588,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 4.5611680876315175,
+        "fock_operator": "restricted spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 1.003918201514768,
+        "lowest_determinant_orbital_sum_hartree": -3.5572498861167494,
+        "ncore": 4,
+        "one_electron_range_hartree": 0.8849643517999337,
+        "reference_method": "RHF",
+        "relative_w_error_percent": -31.39021709379638,
+        "timestep_ratio_to_exact": 1.4575180938367043,
+        "w_ratio_to_exact": 0.6860978290620362
+      },
+      "case_id": "CO_equi_cc_pVTZ_0",
+      "exact_delta_t": 0.472563136901288,
+      "exact_width_hartree": 6.647985016753495,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          3,
+          3
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.9481718350020193,
+            -1.053177152978324e-09,
+            -5.027429900771237e-09,
+            -5.900861795346715e-10,
+            -7.236248537342613e-09,
+            0.002331924914333511
+          ],
+          [
+            -1.053177152978396e-09,
+            -0.6108066127615798,
+            8.609551790041113e-10,
+            -4.177323801932598e-05,
+            0.010218014128252184,
+            3.4307625794743732e-09
+          ],
+          [
+            -5.027429900771161e-09,
+            8.609549171474267e-10,
+            -0.6108066082009908,
+            -0.01021802109135958,
+            -4.1768564675850536e-05,
+            4.147128727033543e-10
+          ],
+          [
+            -5.900861795341794e-10,
+            -4.1773238019431904e-05,
+            -0.010218021091358997,
+            0.3639584492339688,
+            -1.693537637955352e-08,
+            -9.629553499246423e-09
+          ],
+          [
+            -7.236248537342759e-09,
+            0.010218014128252795,
+            -4.176856467600666e-05,
+            -1.6935376561449913e-08,
+            0.36395850939350627,
+            1.997748468790081e-08
+          ],
+          [
+            0.002331924914334177,
+            3.4307625794741218e-09,
+            4.147128727033742e-10,
+            -9.629553499245738e-09,
+            1.9977484687900745e-08,
+            1.0527236692885023
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.9481745527183663,
+          -0.6109137136686754,
+          -0.6109137089701466,
+          0.36406554567606886,
+          0.3640656146276573,
+          1.0527263870048502
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.9481718350020193,
+            -1.053177152978324e-09,
+            -5.027429900771237e-09,
+            -5.900861795346715e-10,
+            -7.236248537342613e-09,
+            0.002331924914333511
+          ],
+          [
+            -1.053177152978396e-09,
+            -0.6108066127615798,
+            8.609551790041113e-10,
+            -4.177323801932598e-05,
+            0.010218014128252184,
+            3.4307625794743732e-09
+          ],
+          [
+            -5.027429900771161e-09,
+            8.609549171474267e-10,
+            -0.6108066082009908,
+            -0.01021802109135958,
+            -4.1768564675850536e-05,
+            4.147128727033543e-10
+          ],
+          [
+            -5.900861795341794e-10,
+            -4.1773238019431904e-05,
+            -0.010218021091358997,
+            0.3639584492339688,
+            -1.693537637955352e-08,
+            -9.629553499246423e-09
+          ],
+          [
+            -7.236248537342759e-09,
+            0.010218014128252795,
+            -4.176856467600666e-05,
+            -1.6935376561449913e-08,
+            0.36395850939350627,
+            1.997748468790081e-08
+          ],
+          [
+            0.002331924914334177,
+            3.4307625794741218e-09,
+            4.147128727033742e-10,
+            -9.629553499245738e-09,
+            1.9977484687900745e-08,
+            1.0527236692885023
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.9481745527183663,
+          -0.6109137136686754,
+          -0.6109137089701466,
+          0.36406554567606886,
+          0.3640656146276573,
+          1.0527263870048502
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.3975834417253673,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 7.90171904533153,
+        "highest_determinant_orbital_sum_hartree": 3.5617150946171527,
+        "lowest_determinant_orbital_sum_hartree": -4.340003950714377,
+        "one_electron_range_hartree": 2.0009009397232163,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 18.85885761502948,
+        "timestep_ratio_to_exact": 0.8413340158786381,
+        "w_ratio_to_exact": 1.1885885761502948
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/d8595c22a35fd963529d5bed9ef016416316fa832c4c23512a1a012531b8d6e4.npz",
+      "hamiltonian_sha256": "7a97e00d85f7da39a60609e204b7da294869b148b021ac7eef5325d9c6607cd9",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/CO_equi_cc_pVTZ_0/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/CO_equi_cc_pVTZ_0/fock_reference.json"
+    },
+    {
+      "canonical_hf_window": {
+        "active_orbital_indices_zero_based": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+        "active_spin_occupations": [
+          4,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+        "alpha_orbital_energies_hartree": [
+          -0.602501594399806,
+          -0.564677699384637,
+          -0.3648180039561346,
+          -0.05919479673179673,
+          0.12250906971764763,
+          0.2834195561803021
+        ],
+        "avas_caveat": "AVAS labels were recorded; this energy-window baseline does not reconstruct the AVAS projector.",
+        "beta_orbital_energies_hartree": [
+          -0.602501594399806,
+          -0.564677699384637,
+          -0.3648180039561346,
+          -0.05919479673179673,
+          0.12250906971764763,
+          0.2834195561803021
+        ],
+        "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+        "delta_t_pi_over_estimated_w": 0.9985305567033425,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 3.1462158393647854,
+        "fock_operator": "ROHF effective Roothaan spatial Fock",
+        "highest_determinant_orbital_sum_hartree": 0.38784445110796817,
+        "lowest_determinant_orbital_sum_hartree": -2.7583713882568173,
+        "ncore": 4,
+        "one_electron_range_hartree": 0.8859211505801081,
+        "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+        "reference_method": "ROHF",
+        "relative_w_error_percent": -22.601329264084,
+        "timestep_ratio_to_exact": 1.29201185303556,
+        "w_ratio_to_exact": 0.77398670735916
+      },
+      "case_id": "CO_equi_cc_pVTZ_2",
+      "exact_delta_t": 0.772849377780329,
+      "exact_width_hartree": 4.064948156667526,
+      "frozen_natorb_reference_fock": {
+        "active_spin_occupations": [
+          4,
+          2
+        ],
+        "active_subspace_matches_optimized_casscf": true,
+        "alpha_fock_matrix_hartree": [
+          [
+            -0.9706809054223939,
+            -2.0556977699068595e-09,
+            -0.08555026862777494,
+            1.0999160846584062e-05,
+            -1.1826952041541484e-10,
+            0.0063747765673581105
+          ],
+          [
+            -2.055697769910473e-09,
+            -0.5750723800964052,
+            6.347295987301113e-10,
+            -4.641110436369453e-09,
+            -0.003004310778711744,
+            2.028166727182108e-10
+          ],
+          [
+            -0.08555026862777454,
+            6.34729598725877e-10,
+            -0.7200816631742751,
+            7.7940873818198e-05,
+            -2.013301980281857e-12,
+            0.01235987733540524
+          ],
+          [
+            1.0999160846584117e-05,
+            -4.641110458801155e-09,
+            7.794087381819799e-05,
+            -0.36353837044178494,
+            -2.636018770830912e-09,
+            -3.06620057127937e-06
+          ],
+          [
+            -1.1826952041689322e-10,
+            -0.0030043107787102313,
+            -2.013301983789103e-12,
+            -2.6360187457187218e-09,
+            0.22050140700605614,
+            -5.061391071285932e-09
+          ],
+          [
+            0.0063747765673582354,
+            2.0281667271778191e-10,
+            0.012359877335405021,
+            -3.0662005712793007e-06,
+            -5.06139107128573e-09,
+            0.9598756157510034
+          ]
+        ],
+        "alpha_orbital_energies_hartree": [
+          -0.9971493711348469,
+          -0.693721279768709,
+          -0.5750837250586116,
+          -0.36353835330279494,
+          0.22051275196826237,
+          0.9599836809188993
+        ],
+        "beta_fock_matrix_hartree": [
+          [
+            -0.884677727262825,
+            -1.885223092650769e-09,
+            0.002685410432180055,
+            1.2494061877644887e-07,
+            2.5892478794212643e-10,
+            -0.012062941643356875
+          ],
+          [
+            -1.885223092654646e-09,
+            -0.5442016545018779,
+            -1.242681112920594e-09,
+            4.451949332023272e-10,
+            0.03183845028424789,
+            1.6309709518628357e-09
+          ],
+          [
+            0.0026854104321803046,
+            -1.2426811129240002e-09,
+            0.009863520192312777,
+            5.120975334672974e-05,
+            -7.214929860427952e-09,
+            -0.03869471591093859
+          ],
+          [
+            1.249406187764997e-07,
+            4.451949120370364e-10,
+            5.120975334672971e-05,
+            0.2547940075900578,
+            -2.83388541133718e-09,
+            7.5275801482757085e-06
+          ],
+          [
+            2.589247879400351e-10,
+            0.03183845028424939,
+            -7.21492986043344e-09,
+            -2.8338853771977864e-09,
+            0.2918386668605602,
+            -1.4647465547636637e-09
+          ],
+          [
+            -0.012062941643356771,
+            1.6309709518625987e-09,
+            -0.03869471591093861,
+            7.527580148275844e-06,
+            -1.464746554763722e-09,
+            1.045933477140211
+          ]
+        ],
+        "beta_orbital_energies_hartree": [
+          -0.884759776900679,
+          -0.5454123868288614,
+          0.008425952246334304,
+          0.25479401829693277,
+          0.29304939918754375,
+          1.0474530840171692
+        ],
+        "caveat": "Not the original molecular SCF spectrum and not a new self-consistent HF solution. Requires the cached CASSCF integrals; only the small one-electron Fock matrices are diagonalized.",
+        "delta_t_pi_over_estimated_w": 0.5568184007717568,
+        "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+        "determinant_width_hartree": 5.642041730724971,
+        "highest_determinant_orbital_sum_hartree": 1.582376837730468,
+        "lowest_determinant_orbital_sum_hartree": -4.059664892994503,
+        "one_electron_range_hartree": 2.044602455152016,
+        "reference_method": "frozen QRTE reference determinant in the optimized CAS",
+        "relative_w_error_percent": 38.79738469654575,
+        "timestep_ratio_to_exact": 0.720474670460334,
+        "w_ratio_to_exact": 1.3879738469654574
+      },
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/21f38681ebfab2f9340a3a4893b46d76362cb576d6427ed10be9fc76fc9c5956.npz",
+      "hamiltonian_sha256": "6dbd1158e5030cd2c950db9fe1e76e2bf864954558505ebb5ad3ce38b63225d9",
+      "source_exact_summary": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_casscf_natorb_pi_over_w_small10_exact/CO_equi_cc_pVTZ_2/summary.json",
+      "source_fock_reference": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/CO_equi_cc_pVTZ_2/fock_reference.json"
+    }
+  ],
+  "methods": "canonical molecular HF window baseline and frozen-reference Fock in the actual optimized CAS",
+  "new_molecular_calculations": false
+}

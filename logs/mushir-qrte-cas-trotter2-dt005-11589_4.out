@@ -1,0 +1,3 @@
+REFERENCE BeH2_equi_cc_pVTZ_0 spectrum_source=interacting_casscf_natorb_active_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_0 W=3.23523168555 Eh dt=0.05 au (fixed timestep (independent of spectral width))
+DONE BeH2_equi_cc_pVTZ_0 iterations=1 chemical_accuracy_hit=1

@@ -1,0 +1,127 @@
+{
+  "active_orbital_estimate": {
+    "active_orbital_indices_zero_based": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+    "active_spin_occupations": [
+      4,
+      2
+    ],
+    "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+    "alpha_orbital_energies_hartree": [
+      -0.5497270962034086,
+      -0.4699471204664363,
+      -0.31523381971610576,
+      -0.12892470550163715,
+      0.028688978292150225,
+      0.2871085061093872
+    ],
+    "beta_orbital_energies_hartree": [
+      -0.5497270962034086,
+      -0.4699471204664363,
+      -0.31523381971610576,
+      -0.12892470550163715,
+      0.028688978292150225,
+      0.2871085061093872
+    ],
+    "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+    "delta_t_pi_over_estimated_w": 1.176210866568513,
+    "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+    "determinant_width_hartree": 2.6709434021427647,
+    "fock_operator": "ROHF effective Roothaan spatial Fock",
+    "highest_determinant_orbital_sum_hartree": 0.18743644358533196,
+    "lowest_determinant_orbital_sum_hartree": -2.4835069585574328,
+    "ncore": 4,
+    "one_electron_range_hartree": 0.8368356023127959,
+    "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+    "reference_method": "ROHF"
+  },
+  "fock_profile": {
+    "case": {
+      "active_electrons": 6,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [],
+      "active_orbital_labels": null,
+      "active_orbitals": 6,
+      "basis": "cc-pVTZ",
+      "bond_length_angstrom": 1.5,
+      "cached_scf_energy_hartree": -108.70661906299037,
+      "case_id": "N2_R1p50_cc_pVTZ_2",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": null,
+      "geometry_angstrom": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.5
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          2.8345891869386555
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/casscf_natorb_n2_pes/6e243702f3fea2e2c9ea183cada97592ff357d2b45a1a82e61b278df9faa9688.npz",
+      "hamiltonian_sha256": "73ec48055c96c7b0ae76ce8ae1fd8adc82844dfaa1d0501d72a15eba8c8a034a",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -108.86235467934463,
+      "nelecas": [
+        4,
+        2
+      ],
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "ROHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy in the original geometry-specific N2 PES cache",
+      "source_file_sha256": {
+        "input_snapshot.json": "a74c24da51c13e4e2803570d1a2368af6d3a862200219b7b7ff5bec3ae4e3afa",
+        "run_config.json": "18a2f01a752543653224331c558b1f8b479d7e4a2c901810ab1c9f7d2bd9aa4c",
+        "summary.json": "0f243896176558151696c4e99c8c4f1b99b94db092f8fc87dec8be55f7c8c4b3"
+      },
+      "source_json_path": null,
+      "source_run_dir": "/home/mushir.kolathingal/benchmarkkrylov/runs/n2_pes_qrte_natorb_dt0.05/N2_R1p50_cc_pVTZ_2",
+      "spin": 2,
+      "symbols": [
+        "N",
+        "N"
+      ],
+      "task_index": 9
+    },
+    "scf_match_tolerance": 1e-06,
+    "spectrum_scope": "geometry_specific_molecular_hf_active_window_fixed_nalpha_nbeta"
+  },
+  "mean_field_policy": "RHF/ROHF at this geometry; match SCF energy in the original PES cache",
+  "reference_scf": "ROHF",
+  "source_mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/n2_pes_qrte_mean_field_pi_over_w_trotter2/N2_R1p50_cc_pVTZ_2/fock_reference.json",
+  "source_mean_field_reference_sha256": "a0b0045fa5562e490c95345917f53ebe37b5d1566865ec6b44ba8df7fe2bc1c3",
+  "source_scf_converged": true,
+  "source_scf_energy_hartree": -108.70661906299037,
+  "spectrum_scope": "geometry_specific_molecular_hf_active_window_fixed_nalpha_nbeta",
+  "status": "completed"
+}

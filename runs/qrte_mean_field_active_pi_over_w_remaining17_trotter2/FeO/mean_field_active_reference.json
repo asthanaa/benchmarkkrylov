@@ -1,0 +1,137 @@
+{
+  "active_orbital_estimate": {
+    "active_orbital_indices_zero_based": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+    "active_spin_occupations": [
+      8,
+      4
+    ],
+    "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+    "alpha_orbital_energies_hartree": [
+      -0.6593854941415174,
+      -0.5841118041467865,
+      -0.5330876047500297,
+      -0.46898462008093134,
+      -0.25251171998472444,
+      -0.17728820009826685,
+      -0.17596472854231718,
+      -0.09760703055456332,
+      0.13949831655581665
+    ],
+    "avas_caveat": "AVAS labels were recorded; this energy-window baseline does not reconstruct the AVAS projector.",
+    "beta_orbital_energies_hartree": [
+      -0.6593854941415174,
+      -0.5841118041467865,
+      -0.5330876047500297,
+      -0.46898462008093134,
+      -0.25251171998472444,
+      -0.17728820009826685,
+      -0.17596472854231718,
+      -0.09760703055456332,
+      0.13949831655581665
+    ],
+    "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+    "delta_t_pi_over_estimated_w": 1.1494647851483404,
+    "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+    "determinant_width_hartree": 2.7330916911772682,
+    "fock_operator": "ROHF effective Roothaan spatial Fock",
+    "highest_determinant_orbital_sum_hartree": -2.4614190342411337,
+    "lowest_determinant_orbital_sum_hartree": -5.194510725418402,
+    "ncore": 11,
+    "one_electron_range_hartree": 0.798883810697334,
+    "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+    "reference_method": "ROHF"
+  },
+  "fock_profile": {
+    "case": {
+      "active_electrons": 12,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [],
+      "active_orbital_labels": [
+        "Fe 3d",
+        "O 2p"
+      ],
+      "active_orbitals": 9,
+      "basis": "def2-TZVP",
+      "cached_scf_energy_hartree": -1337.092139989564,
+      "case_id": "FeO",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -1337.2890177002632,
+      "geometry_angstrom": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.619399999947976
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          3.060222486120661
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/4a84116875f0d78ce0e299432363b5026eae1692585dc18637d84761a65d4db8.npz",
+      "hamiltonian_sha256": "a34575e0d5d341087114803f0594427c04b2fe5e987dd0d99ca0f8771745a08c",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -1337.2890177158818,
+      "mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/FeO/fock_reference.json",
+      "mean_field_reference_sha256": "00d8d4a18e8c3b6203afa0dc17594e51b0130cb78b5a63ea05e3d6a44ae9a099",
+      "nelecas": [
+        8,
+        4
+      ],
+      "previous_reference_source": "local converged ROHF/CASSCF Hamiltonian reference",
+      "reference_settings": {
+        "geometry_unit": "Bohr",
+        "molecule_symmetry": false,
+        "reference_scf": "ROHF",
+        "scf_conv_tol": 1e-10,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.0,
+        "scf_max_cycle": 200,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_rohf_molvqe_fe_cases/4a84116875f0d78ce0e299432363b5026eae1692585dc18637d84761a65d4db8.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/FeO.json",
+      "source_summary_path": "runs/qkud_fe_eps0.05/FeO/summary.json",
+      "spin": 4,
+      "symbols": [
+        "Fe",
+        "O"
+      ]
+    },
+    "scf_match_tolerance": 1e-06,
+    "spectrum_scope": "saved_molecular_hf_active_window_fixed_nalpha_nbeta"
+  },
+  "new_reference_calculation": false,
+  "reference_scf": "ROHF",
+  "source_mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/FeO/fock_reference.json",
+  "source_mean_field_reference_sha256": "00d8d4a18e8c3b6203afa0dc17594e51b0130cb78b5a63ea05e3d6a44ae9a099",
+  "source_scf_converged": true,
+  "source_scf_energy_hartree": -1337.092139989564,
+  "spectrum_scope": "saved_molecular_hf_active_window_fixed_nalpha_nbeta",
+  "status": "completed"
+}

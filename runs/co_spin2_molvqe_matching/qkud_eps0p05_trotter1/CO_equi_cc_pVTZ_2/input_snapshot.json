@@ -1,0 +1,61 @@
+{
+  "active_electrons": 6,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": [
+    "C 2p",
+    "O 2p"
+  ],
+  "active_orbitals": 6,
+  "avas_canonicalize": false,
+  "avas_ncore": 0,
+  "avas_openshell_option": 2,
+  "avas_recommended_active_electrons": 8,
+  "avas_recommended_active_orbitals": 7,
+  "basis": "cc-pVTZ",
+  "case_id": "CO_equi_cc_pVTZ_2",
+  "charge": 0,
+  "dataset_casscf_energy_hartree": -112.60166830789687,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.1999999999614492
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.267671349478074
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/co_spin2_molvqe_matching/CO_equi_cc_pVTZ_2.npz",
+  "hamiltonian_sha256": "1f06e491371fdbcdcfb413ace69104a15459ecafdf510977ff25942797d4f062",
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -112.60166830790772,
+  "nelecas": [
+    4,
+    2
+  ],
+  "reference_settings": {
+    "reference_scf": "ROHF"
+  },
+  "reference_source": "MolVQE-matching full-space AVAS/cropped CAS(6e,6o) checkpoint",
+  "spin": 2,
+  "symbols": [
+    "C",
+    "O"
+  ]
+}

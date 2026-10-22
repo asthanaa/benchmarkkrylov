@@ -1,0 +1,41 @@
+#!/bin/bash
+#SBATCH --job-name=mushir-n2-pes-qrte-mf-piW-trotter2
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=36
+#SBATCH --mem=8G
+#SBATCH --time=06:00:00
+#SBATCH --array=0-15%4
+#SBATCH --output=/home/mushir.kolathingal/benchmarkkrylov/logs/%x-%A_%a.out
+#SBATCH --error=/home/mushir.kolathingal/benchmarkkrylov/logs/%x-%A_%a.err
+
+set -euo pipefail
+cd /home/mushir.kolathingal/benchmarkkrylov
+
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-/tmp/python-pycache-${USER:-mushir.kolathingal}}"
+mkdir -p logs provenance "${PYTHONPYCACHEPREFIX}"
+
+PYTHON=${PYTHON:-/home/mushir.kolathingal/miniforge3/envs/expk/bin/python}
+RUN_OPTIONS=()
+if [[ "${QCANT_REFERENCE_ONLY:-0}" == 1 ]]; then
+  RUN_OPTIONS+=(--reference-only)
+fi
+if [[ "${QCANT_FORCE:-0}" == 1 ]]; then
+  RUN_OPTIONS+=(--force)
+fi
+
+exec "${PYTHON}" scripts/Mushir_script/run_n2_pes_qrte_mean_field_pi_over_w.py \
+  --case-index "${SLURM_ARRAY_TASK_ID:?Slurm array task ID is required}" \
+  --outdir "${QCANT_OUTDIR:-runs/n2_pes_qrte_mean_field_pi_over_w_trotter2}" \
+  --n-steps "${QCANT_N_STEPS:-100}" \
+  --overlap-tol "${QCANT_OVERLAP_TOL:-1e-10}" \
+  --scf-match-tolerance "${QCANT_SCF_MATCH_TOLERANCE:-1e-6}" \
+  --evolution-mode trotter --trotter-order 2 --trotter-steps 1 \
+  --max-workers "${QCANT_MAX_WORKERS:-18}" \
+  "${RUN_OPTIONS[@]}"

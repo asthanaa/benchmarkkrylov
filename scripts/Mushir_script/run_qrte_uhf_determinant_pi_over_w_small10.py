@@ -1,0 +1,194 @@
+#!/usr/bin/env python
+"""Run ten small MolVQE cases with dt = pi / the full UHF determinant bandwidth.
+
+W is the spectral range of the frozen many-electron UHF Fock operator at fixed
+full-system Nalpha and Nbeta, including core and virtual orbitals. Only W uses
+UHF; the QRTE reference determinant, Hamiltonian, and accuracy target are the
+same as in the earlier cached-Hamiltonian runs.
+"""
+
+from __future__ import annotations
+
+import argparse
+import math
+
+import run_qrte_fock_pi_over_w as qrte
+
+np = qrte.np
+DEFAULT_OUTDIR = qrte.ROOT / "runs/qrte_uhf_determinant_pi_over_w_small10"
+SPECTRUM_SCOPE = "full_system_frozen_uhf_fock_determinants"
+CASE_IDS = (
+    "H4_near_equi_sto3g_0",
+    "H5_near_equi_sto3g_1",
+    "H6_near_equi_sto3g_0",
+    "H6_near_equi_cc_pVTZ_0",
+    "BeH2_equi_cc_pVTZ_0",
+    "BeH2_equi_cc_pVTZ_2",
+    "N2_equi_cc_pVTZ_0",
+    "N2_equi_cc_pVTZ_2",
+    "CO_equi_cc_pVTZ_0",
+    "CO_equi_cc_pVTZ_2",
+)
+
+
+def load_cases(args):
+    selection = argparse.Namespace(**vars(args))
+    selection.case_id = list(CASE_IDS)
+    selection.case_index = None
+    by_id = {case["case_id"]: case for case in qrte.load_cases(selection)}
+    cases = [by_id[case_id] for case_id in CASE_IDS]
+    if args.case_id is not None:
+        requested = set(args.case_id)
+        missing = requested - set(CASE_IDS)
+        if missing:
+            raise ValueError(f"Cases outside the ten-system subset: {sorted(missing)}")
+        cases = [case for case in cases if case["case_id"] in requested]
+    if args.case_index is not None:
+        if not 0 <= args.case_index < len(cases):
+            raise ValueError(f"--case-index must be in [0, {len(cases) - 1}]")
+        cases = [cases[args.case_index]]
+    return cases
+
+
+def determinant_bandwidth(alpha_energies, beta_energies, occupations):
+    if len(occupations) != 2:
+        raise ValueError("UHF determinant spectrum needs Nalpha and Nbeta")
+    minimum, maximum = 0.0, 0.0
+    min_indices, max_indices = [], []
+    for energies, count in zip((alpha_energies, beta_energies), occupations):
+        values = np.asarray(energies, dtype=float)
+        if values.ndim != 1 or not values.size or not np.all(np.isfinite(values)):
+            raise ValueError("Invalid unrestricted spin orbital energies")
+        if int(count) != count or not 0 <= count <= values.size:
+            raise ValueError("Full-system spin occupation exceeds the orbital space")
+        count = int(count)
+        order = np.argsort(values)
+        low = order[:count]
+        high = order[-count:] if count else order[:0]
+        minimum += float(values[low].sum())
+        maximum += float(values[high].sum())
+        min_indices.append(low.tolist())
+        max_indices.append(high.tolist())
+    width = maximum - minimum
+    if not math.isfinite(width) or width <= 0:
+        raise ValueError(f"UHF determinant bandwidth must be positive, got {width}")
+    return {
+        "width_definition": "highest minus lowest frozen UHF Fock determinant energy at fixed full-system Nalpha/Nbeta",
+        "width_scf_method": "UHF",
+        "spectrum_scope": SPECTRUM_SCOPE,
+        "full_system_spin_occupations": [int(n) for n in occupations],
+        "lowest_determinant_orbital_sum_hartree": minimum,
+        "highest_determinant_orbital_sum_hartree": maximum,
+        "lowest_determinant_alpha_orbital_indices": min_indices[0],
+        "lowest_determinant_beta_orbital_indices": min_indices[1],
+        "highest_determinant_alpha_orbital_indices": max_indices[0],
+        "highest_determinant_beta_orbital_indices": max_indices[1],
+        "fock_bandwidth_hartree": width,
+        "delta_t": math.pi / width,
+        "delta_t_units": "atomic units of time",
+        "delta_t_rule": "pi / (Emax_det - Emin_det); full frozen UHF Fock operator",
+    }
+
+
+def width_from_reference(result):
+    width = determinant_bandwidth(
+        result["full_uhf_alpha_orbital_energies_hartree"],
+        result["full_uhf_beta_orbital_energies_hartree"],
+        result["full_system_spin_occupations"],
+    )
+    # A common offset makes the occupied reference determinant reproduce E_UHF.
+    # It cancels in W; orbital sums alone are not total interacting HF energies.
+    offset = float(result["uhf_fock_constant_offset_hartree"])
+    width.update({
+        "uhf_fock_constant_offset_hartree": offset,
+        "fock_spectral_min_hartree": width["lowest_determinant_orbital_sum_hartree"] + offset,
+        "fock_spectral_max_hartree": width["highest_determinant_orbital_sum_hartree"] + offset,
+        "determinant_energy_definition": "frozen UHF Fock eigenvalues with a common reference-energy offset; no excited-determinant SCF relaxation",
+    })
+    return width
+
+
+def compute_uhf_spectrum(case, case_dir, args):
+    from pyscf import gto, scf
+
+    settings = case["reference_settings"]
+    unit = settings["geometry_unit"]
+    geometry = case["geometry_bohr"] if unit == "Bohr" else case["geometry_angstrom"]
+    mol = gto.M(atom=list(zip(case["symbols"], geometry)), unit=unit,
+                basis=case["basis"], charge=case["charge"], spin=case["spin"],
+                symmetry=settings["molecule_symmetry"], verbose=4,
+                output=str(case_dir / "fock_scf.log"))
+    mf = scf.UHF(mol)
+    if settings["scf_conv_tol"] is not None:
+        mf.conv_tol = float(settings["scf_conv_tol"])
+    mf.diis_space = settings["scf_diis_space"]
+    mf.level_shift = settings["scf_level_shift"]
+    mf.max_cycle = settings["scf_max_cycle"]
+    guess = str(mf.init_guess)
+    breaksym = int(mf.init_guess_breaksym)
+    mf.kernel()
+    used_newton = False
+    if not mf.converged and settings["scf_newton_if_not_converged"]:
+        mf = scf.newton(mf).run()
+        used_newton = True
+    if not mf.converged or not math.isfinite(float(mf.e_tot)):
+        raise RuntimeError(f"{case['case_id']}: UHF did not converge to a finite energy")
+    alpha, beta = (np.asarray(values, dtype=float) for values in mf.mo_energy)
+    occupations = [int(n) for n in mol.nelec]
+    determinant_bandwidth(alpha, beta, occupations)
+    mo_occ = np.asarray(mf.mo_occ, dtype=float)
+    if (mo_occ.shape != (2, alpha.size) or beta.size != alpha.size
+            or not np.all(np.isfinite(mo_occ))
+            or not np.allclose(mo_occ.sum(axis=1), occupations)
+            or not np.all((mo_occ == 0) | (mo_occ == 1))):
+        raise RuntimeError("UHF orbital occupations do not match full-system Nalpha/Nbeta")
+    occupied_sum = float(np.dot(alpha, mo_occ[0]) + np.dot(beta, mo_occ[1]))
+    spin_squared, multiplicity = mf.spin_square()
+    return {
+        "reference_scf": "UHF", "width_scf_method": "UHF", "spectrum_scope": SPECTRUM_SCOPE,
+        "full_uhf_alpha_orbital_energies_hartree": alpha.tolist(),
+        "full_uhf_beta_orbital_energies_hartree": beta.tolist(),
+        "full_uhf_orbital_occupations": mo_occ.tolist(),
+        "n_scf_spatial_orbitals_per_spin": int(alpha.size),
+        "full_system_spin_occupations": occupations,
+        "scf_energy_hartree": float(mf.e_tot), "scf_converged": True,
+        "uhf_reference_occupied_orbital_sum_hartree": occupied_sum,
+        "uhf_fock_constant_offset_hartree": float(mf.e_tot) - occupied_sum,
+        "uhf_spin_squared": float(spin_squared), "uhf_effective_multiplicity": float(multiplicity),
+        "used_newton_scf": used_newton, "initial_guess": guess, "initial_guess_breaksym": breaksym,
+        "alpha_beta_orbital_energy_max_difference_hartree": float(np.max(np.abs(alpha - beta))),
+    }
+
+
+def parse_args():
+    return qrte.parse_args(default_outdir=DEFAULT_OUTDIR, description=__doc__)
+
+
+def main():
+    args = parse_args()
+    cases = load_cases(args)
+    if args.count_cases:
+        print(len(cases))
+        return
+    if args.dry_run:
+        for i, case in enumerate(cases):
+            print(f"{i:2d} {case['case_id']:30s} W_source=UHF "
+                  f"QRTE_CAS={case['active_electrons']}e{case['active_orbitals']}o")
+        print(f"Validated {len(cases)} cases; W=frozen full-system UHF determinant energy range; "
+              f"max_iterations={args.n_steps}; overlap_tol={args.overlap_tol:g}; "
+              f"early_stop=chemical_accuracy; outdir={args.outdir}")
+        return
+    failures = 0
+    for case in cases:
+        try:
+            qrte.run_case(case, args, spectrum_builder=compute_uhf_spectrum,
+                          width_builder=width_from_reference, spectrum_scope=SPECTRUM_SCOPE)
+        except Exception as exc:
+            failures += 1
+            print(f"FAIL {case['case_id']}: {exc!r}", flush=True)
+    if failures:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()

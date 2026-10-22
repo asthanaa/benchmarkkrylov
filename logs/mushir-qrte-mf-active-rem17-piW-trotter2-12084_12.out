@@ -1,0 +1,3 @@
+REFERENCE feno_2plus spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+feno_2plus W=3.5285162561 Eh dt=0.890343823174 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE feno_2plus iterations=100 chemical_accuracy_hit=None

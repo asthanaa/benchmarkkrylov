@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import os
 import sys
@@ -30,9 +31,11 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import plot_sector_gap_vs_iterations as gap_data  # noqa: E402
+import plot_molvqe27_three_krylov_renyi as validated  # noqa: E402
 
 
 DEFAULT_OUTPUT_PREFIX = BENCHMARK_ROOT / "plots" / "overlap_gap_iterations"
+MF_METHOD = "QRTE dt=pi/W_MF"
 
 POINT_FIELDNAMES = [
     "case_id",
@@ -44,7 +47,109 @@ POINT_FIELDNAMES = [
     "h0.25",
     "qkud_only_hit",
     "source_name",
+    "summary_path", "history_path", "hamiltonian_cache_path", "hamiltonian_sha256",
+    "reference_energy_hartree", "delta_t", "epsilon", "trotter_order", "trotter_steps",
+    "descriptor_path", "descriptor_hamiltonian_cache_path", "descriptor_hamiltonian_sha256",
 ]
+
+
+def _corrected_co_descriptors(fingerprints):
+    """Diagonalize the complete 225-determinant sector of the matching cache."""
+    from pyscf import fci, lib
+    from scipy.linalg import eigh
+
+    lib.num_threads(1)
+    reference_path = validated.CO_ROOT / "reference/reference.json"
+    reference = json.loads(reference_path.read_text())
+    cache_path = Path(reference["case"]["hamiltonian_cache_path"])
+    if validated.sha(cache_path) != reference["case"]["hamiltonian_sha256"]:
+        raise ValueError("Corrected CO cache checksum changed")
+    with np.load(cache_path, allow_pickle=False) as cache:
+        norb, electrons = int(cache["ncas"]), tuple(int(n) for n in cache["nelecas"])
+        if (norb, electrons) != (6, (4, 2)):
+            raise ValueError("Unexpected corrected CO sector")
+        addresses, matrix = fci.direct_spin1.pspace(
+            cache["h1ecas"], np.swapaxes(cache["two_mo"], 1, 3), norb, electrons, np=225)
+        if not np.array_equal(np.sort(addresses), np.arange(225)):
+            raise ValueError("Incomplete corrected CO sector")
+        energies, vectors = eigh(matrix)
+        energies += float(cache["ecore"])
+        if abs(energies[0] - float(cache["reference_energy"])) > 1e-8:
+            raise ValueError("Corrected CO ground energy disagrees with reference")
+    # The spin-resolved HF determinant occupies the lowest orbitals of each spin.
+    alpha = fci.cistring.str2addr(norb, electrons[0], (1 << electrons[0]) - 1)
+    beta = fci.cistring.str2addr(norb, electrons[1], (1 << electrons[1]) - 1)
+    position = int(np.flatnonzero(addresses == alpha * 15 + beta)[0])
+    weight = float(abs(vectors[position, 0]) ** 2)
+    probabilities = abs(vectors[:, 0]) ** 2
+    gap = float(energies[1] - energies[0])
+    descriptor = {
+        "case_id": validated.CO, "status": "completed", "solver": "complete-sector PySCF pspace / scipy eigh",
+        "hamiltonian_cache_path": validated.relative(cache_path), "hamiltonian_sha256": validated.sha(cache_path),
+        "sector_dim": 225, "n_alpha": 4, "n_beta": 2,
+        "sector_ground_energy_hartree": float(energies[0]), "first_excited_energy_hartree": float(energies[1]),
+        "gap_hartree": gap, "gap_millihartree": gap * 1000, "gap_ev": gap * 27.211386245988,
+        "overlap_weight": weight, "h0.25": float(np.log(np.sum(probabilities ** .25)) / .75),
+        "reference_energy_hartree": reference["case"]["local_reference_energy_hartree"],
+    }
+    path = validated.CO_ROOT / "reference/sector_gap.json"
+    path.write_text(json.dumps(descriptor, indent=2) + "\n")
+    for source in (reference_path, cache_path, path):
+        fingerprints[validated.relative(source)] = validated.sha(source)
+    return descriptor, path
+
+
+def _validated_points(rows):
+    fingerprints, points, runs = {}, [], []
+    corrected_co, corrected_path = _corrected_co_descriptors(fingerprints)
+    caches = {r["case_id"]: r for r in gap_data._read_manifest(
+        BENCHMARK_ROOT / "hamiltonian_cache/correct_27_systems/manifest.csv")}
+    for row in rows:
+        cid = row["case_id"]
+        descriptor_path = corrected_path if cid == validated.CO else BENCHMARK_ROOT / row["gap_path"]
+        descriptor = corrected_co if cid == validated.CO else json.loads(descriptor_path.read_text())
+        descriptor_cache = BENCHMARK_ROOT / descriptor["hamiltonian_cache_path"]
+        fingerprints[validated.relative(descriptor_path)] = validated.sha(descriptor_path)
+        selected = {}
+        for series, method, old_key in (("qrte_fixed", "QRTE dt=0.05", "qrte_summary_path"),
+                                         ("qkud", "QKUD eps=0.05", "qkud_summary_path"),
+                                         ("qrte_mf", MF_METHOD, None)):
+            path = (validated.selected_path(cid, series) if cid == validated.CO or series == "qrte_mf"
+                    else BENCHMARK_ROOT / row[old_key])
+            summary = json.loads(path.read_text())
+            if series == "qrte_mf" and cid != validated.CO:
+                cached = caches[cid]
+            else:
+                cache = BENCHMARK_ROOT / summary.get("hamiltonian_cache_path", descriptor["hamiltonian_cache_path"])
+                cached = {"case_id": cid, "consolidated_cache_path": validated.relative(cache), "sha256": validated.sha(cache)}
+            result = validated.validate_run(path, series, cached, fingerprints)
+            if cid == validated.CO and (result["hamiltonian_sha256"] != corrected_co["hamiltonian_sha256"]
+                                       or abs(result["reference_energy_hartree"] - corrected_co["reference_energy_hartree"]) > 1e-12):
+                raise ValueError("CO result does not match the corrected descriptor/reference")
+            selected[series] = result
+            runs.append({"case_id": cid, "method": method, **result})
+            if result["hit_chemical_accuracy"]:
+                points.append({
+                    "case_id": cid, "method": method, "iteration_to_chemical_accuracy": result["iteration"],
+                    "overlap_weight": descriptor["overlap_weight"], "gap_ev": descriptor["gap_ev"],
+                    "gap_millihartree": descriptor["gap_millihartree"],
+                    "h0.25": corrected_co["h0.25"] if cid == validated.CO else row["h0.25"],
+                    "qkud_only_hit": "false", "source_name": row["source_name"],
+                    **{key: result[key] for key in ("summary_path", "hamiltonian_cache_path", "hamiltonian_sha256",
+                       "reference_energy_hartree", "delta_t", "epsilon", "trotter_order", "trotter_steps")},
+                    "history_path": validated.relative(path.parent / "min_energy_history.csv"),
+                    "descriptor_path": validated.relative(descriptor_path),
+                    "descriptor_hamiltonian_cache_path": validated.relative(descriptor_cache),
+                    "descriptor_hamiltonian_sha256": validated.sha(descriptor_cache),
+                })
+        for point in points:
+            if point["case_id"] == cid and point["method"] == "QKUD eps=0.05":
+                point["qkud_only_hit"] = str(not selected["qrte_fixed"]["hit_chemical_accuracy"]).lower()
+    points.sort(key=lambda p: (float(p["overlap_weight"]), p["method"], p["case_id"]))
+    return points, {"runs": runs, "source_sha256": fingerprints, "corrected_co_descriptors": corrected_co,
+                    "chemical_accuracy_hartree": .0016,
+                    "source_selection": "Existing fixed-dt QRTE/QKUD sources and coordinates retained except corrected CO; mean-field QRTE uses second-order Trotter, one slice.",
+                    "plot_script_sha256": validated.sha(Path(__file__))}
 
 
 def _positive_number(value: Any) -> float | None:
@@ -104,9 +209,11 @@ def _points_for_method(points: list[dict[str, Any]], method: str) -> tuple[np.nd
 
 
 def _method_label(method: str) -> str:
+    if method == MF_METHOD:
+        return r"QRTE $\delta t=\pi/W_{\mathrm{MF}}$"
     if method.startswith("QRTE"):
-        return r"QRTE $\Delta t=0.05$"
-    return r"QKUD $\epsilon=0.05$"
+        return r"QRTE $\delta t=0.05$ a.u."
+    return r"QKUD $\epsilon=0.05$ a.u."
 
 
 def _suffixed_path(prefix: Path, slug: str, suffix: str) -> Path:
@@ -230,8 +337,8 @@ def _plot_method(
         )
 
     ax.set_yscale("log")
-    ax.set_xlabel(r"$|\langle\Phi_\mathrm{ref}|\Psi_0\rangle|^2$")
-    ax.set_ylabel(r"Fixed-sector gap, $E_1 - E_0$ (eV)")
+    ax.set_xlabel(r"Initial overlap, $|\langle\Phi_\mathrm{ref}|\Psi_0\rangle|^2$")
+    ax.set_ylabel(r"Spectral gap, $E_1 - E_0$ (eV)")
     ax.set_title(f"{_method_label(method)}")
     ax.grid(True, which="major", color="#D8D8D8", alpha=0.55, linewidth=0.7)
     ax.grid(True, which="minor", color="#E8E8E8", alpha=0.35, linewidth=0.45)
@@ -239,7 +346,7 @@ def _plot_method(
     ax.spines["right"].set_visible(False)
 
     colorbar = fig.colorbar(scatter, ax=ax, pad=0.015)
-    colorbar.set_label("Iterations to chemical accuracy")
+    colorbar.set_label(r"$N_{\mathrm{QKrylov}}$ to $E_{\mathrm{chem}}$ (1.6 mHa)")
     colorbar.ax.yaxis.set_major_formatter(ScalarFormatter())
 
     if method.startswith("QKUD") and qkud_only_points:
@@ -270,7 +377,7 @@ def _plot_iteration_drivers(
     png_path: Path,
     pdf_path: Path,
 ) -> None:
-    methods = ("QRTE dt=0.05", "QKUD eps=0.05")
+    methods = ("QRTE dt=0.05", "QKUD eps=0.05", MF_METHOD)
     by_case_method = {(point["case_id"], point["method"]): point for point in points}
     cases = sorted({point["case_id"] for point in points})
     qkud_only_points = [point for point in points if point["qkud_only_hit"] == "true"]
@@ -303,14 +410,14 @@ def _plot_iteration_drivers(
         (
             axes[0],
             "overlap_weight",
-            r"$|\langle\Phi_\mathrm{ref}|\Psi_0\rangle|^2$",
+            r"Initial overlap, $|\langle\Phi_\mathrm{ref}|\Psi_0\rangle|^2$",
             "(a) Initial overlap",
             "linear",
         ),
         (
             axes[1],
             "gap_ev",
-            r"Fixed-sector gap, $E_1 - E_0$ (eV)",
+            r"Spectral gap, $E_1 - E_0$ (eV)",
             "(b) Spectral gap",
             "log",
         ),
@@ -332,6 +439,10 @@ def _plot_iteration_drivers(
             "linewidth": 0.35,
             "s": 54,
             "zorder": 6,
+        },
+        MF_METHOD: {
+            "marker": "D", "facecolors": "none", "edgecolors": "#009E73",
+            "linewidths": 1.1, "s": 46, "zorder": 7,
         },
     }
 
@@ -392,15 +503,17 @@ def _plot_iteration_drivers(
 
     axes[0].set_xlim(0.43, 1.005)
     axes[1].set_xlim(0.09, 13.0)
-    axes[0].set_ylabel("Iterations to chemical accuracy")
+    axes[0].set_ylabel(r"$N_{\mathrm{QKrylov}}$ to $E_{\mathrm{chem}}$ (1.6 mHa)")
 
     legend_handles = [
         Line2D([0], [0], marker="s", linestyle="none", markerfacecolor="none", markeredgecolor="#D55E00", markeredgewidth=1.25, markersize=6.4),
         Line2D([0], [0], marker="^", linestyle="none", markerfacecolor="#0072B2", markeredgecolor="#333333", markeredgewidth=0.35, markersize=6.4),
+        Line2D([0], [0], marker="D", linestyle="none", markerfacecolor="none", markeredgecolor="#009E73", markeredgewidth=1.1, markersize=6.0),
     ]
     legend_labels = [
-        "QRTE",
-        "QKUD",
+        r"QRTE $\delta t=0.05$ a.u.",
+        r"QKUD $\epsilon=0.05$ a.u.",
+        r"QRTE $\delta t=\pi/W_{\mathrm{MF}}$",
     ]
     legend = axes[0].legend(
         legend_handles,
@@ -449,7 +562,9 @@ def main() -> None:
             f"Missing or invalid sector gap JSON for {len(missing)} target systems:\n  {missing_text}\n"
             "Rerun with --allow-missing for a preview plot."
         )
-    points = _build_point_rows(rows)
+    points, audit = _validated_points(rows)
+    for path in (args.manifest, BENCHMARK_ROOT / "hamiltonian_cache/correct_27_systems/manifest.csv"):
+        audit["source_sha256"][validated.relative(path)] = validated.sha(path)
     if not points:
         raise SystemExit("No valid method points found.")
 
@@ -476,6 +591,7 @@ def main() -> None:
         ),
     }
     _write_points(points, csv_path)
+    args.output_prefix.with_suffix(".json").write_text(json.dumps(audit, indent=2) + "\n")
     _plot_combined(points, combined_png_path, combined_pdf_path, iteration_norm=iteration_norm)
     _plot_iteration_drivers(points, drivers_png_path, drivers_pdf_path)
     for method, (png_path, pdf_path) in method_paths.items():
@@ -495,6 +611,7 @@ def main() -> None:
     print(f"Included {len(rows)} systems and {len(points)} method points.")
     print(f"QKUD points: {qkud_count}")
     print(f"QRTE points: {qrte_count}")
+    print(f"Mean-field timestep QRTE points: {sum(point['method'] == MF_METHOD for point in points)}")
     print(f"Highlighted QKUD-only hits: {', '.join(qkud_only) if qkud_only else 'none'}")
     if missing:
         print(f"Missing or invalid sector-gap rows skipped: {', '.join(missing)}")

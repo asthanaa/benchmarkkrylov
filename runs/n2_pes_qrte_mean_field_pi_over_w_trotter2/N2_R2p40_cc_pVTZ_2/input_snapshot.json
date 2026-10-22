@@ -1,0 +1,70 @@
+{
+  "active_electrons": 6,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": null,
+  "active_orbitals": 6,
+  "basis": "cc-pVTZ",
+  "bond_length_angstrom": 2.4,
+  "cached_scf_energy_hartree": -108.38666568783651,
+  "case_id": "N2_R2p40_cc_pVTZ_2",
+  "charge": 0,
+  "dataset_casscf_energy_hartree": null,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.4
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      4.535342699101848
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/casscf_natorb_n2_pes/154424173404efef6cffc82d01857a6838bf7fed17888614e902ddbe1c2e1af3.npz",
+  "hamiltonian_sha256": "fec39731439aa4a8b3e7bed463d0f09b4fb6c91cdefdbd4aec1be82790d4a645",
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -108.79269919564368,
+  "nelecas": [
+    4,
+    2
+  ],
+  "reference_settings": {
+    "geometry_unit": "Angstrom",
+    "molecule_symmetry": false,
+    "reference_scf": "ROHF",
+    "scf_conv_tol": null,
+    "scf_diis_space": 12,
+    "scf_level_shift": 0.5,
+    "scf_max_cycle": 100,
+    "scf_newton_if_not_converged": true
+  },
+  "reference_source": "CASSCF/natorb energy in the original geometry-specific N2 PES cache",
+  "source_file_sha256": {
+    "input_snapshot.json": "08ea8415fd6c3196e34d8badf27b7788b3142d46c40f580e708a89a08ede1078",
+    "run_config.json": "140fddb763e16d59e8025d7267e454e0231779e7f9e6731eb0ea741fae53b1f3",
+    "summary.json": "111d9178aabf12a6b7022fa9c35168e6f0c23488efff97e550eec58af5e1ab85"
+  },
+  "source_json_path": null,
+  "source_run_dir": "/home/mushir.kolathingal/benchmarkkrylov/runs/n2_pes_qrte_natorb_dt0.05/N2_R2p40_cc_pVTZ_2",
+  "spin": 2,
+  "symbols": [
+    "N",
+    "N"
+  ],
+  "task_index": 15
+}

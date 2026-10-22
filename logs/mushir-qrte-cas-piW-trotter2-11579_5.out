@@ -1,0 +1,3 @@
+REFERENCE BeH2_equi_cc_pVTZ_2 spectrum_source=interacting_casscf_natorb_active_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_2 W=2.5399497644 Eh dt=1.23687196402 au (Emax - E0 of the interacting CASSCF/natorb active-space Hamiltonian)
+DONE BeH2_equi_cc_pVTZ_2 iterations=3 chemical_accuracy_hit=3

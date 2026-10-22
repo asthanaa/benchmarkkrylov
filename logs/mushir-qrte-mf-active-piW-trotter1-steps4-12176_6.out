@@ -1,0 +1,3 @@
+REFERENCE N2_equi_cc_pVTZ_0 spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_0 W=4.81005531531 Eh dt=0.653130254779 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE N2_equi_cc_pVTZ_0 iterations=5 chemical_accuracy_hit=5

@@ -1,0 +1,27 @@
+{
+  "comparison": "Same timestep, cached Hamiltonian, saved HF spectrum, initial determinant and energy reference; propagation changes to order-2 Trotter, one slice",
+  "evolution_mode": "trotter",
+  "exact_plan_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_mean_field_active_dt_scan_upto12_exact/scan_plan.json",
+  "exact_plan_sha256": "9e40b9af7065fe6a7fbe78f9966ee13209cc5e727a1d7add931f0052a343d3a9",
+  "matched_fields": [
+    "task_index",
+    "case_id",
+    "dt_scale_factor",
+    "delta_t",
+    "mean_field_active_bandwidth_hartree",
+    "unscaled_mean_field_delta_t",
+    "cached_reference_energy_hartree",
+    "dataset_casscf_energy_hartree",
+    "hamiltonian_sha256",
+    "mean_field_reference_sha256"
+  ],
+  "matched_stopping_settings": {
+    "max_workers": 18,
+    "n_steps": 100,
+    "overlap_tol": 1e-10
+  },
+  "new_molecular_calculations": false,
+  "task_count": 88,
+  "trotter_order": 2,
+  "trotter_steps": 1
+}

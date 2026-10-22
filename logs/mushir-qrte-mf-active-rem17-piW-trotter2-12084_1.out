@@ -1,0 +1,3 @@
+REFERENCE cyclobutadiene_ceo spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+cyclobutadiene_ceo W=2.15731221552 Eh dt=1.45625312414 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE cyclobutadiene_ceo iterations=3 chemical_accuracy_hit=3

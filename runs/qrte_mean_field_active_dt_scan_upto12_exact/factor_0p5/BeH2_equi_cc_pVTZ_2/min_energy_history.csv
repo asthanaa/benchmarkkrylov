@@ -1,0 +1,3 @@
+iteration,min_energy_hartree,error_vs_local_reference_hartree,error_vs_molvqe_casscf_hartree,within_chemical_accuracy
+1,-15.570029914638688,0.007474382359179188,0.0074743823545073695,false
+2,-15.576149348326918,0.0013549486709489855,0.001354948666277167,true

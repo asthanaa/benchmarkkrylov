@@ -1,0 +1,80 @@
+{
+  "active_electrons": 11,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": [
+    "Fe 3d",
+    "N 2p",
+    "O 2p"
+  ],
+  "active_orbitals": 9,
+  "basis": "cc-pvtz",
+  "cached_scf_energy_hartree": null,
+  "case_id": "feno_2plus",
+  "charge": 2,
+  "dataset_casscf_energy_hartree": -1398.4787643264515,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.706999999945162
+    ],
+    [
+      0.6581699999788561,
+      0.0,
+      2.682776999913815
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      3.2257624946325607
+    ],
+    [
+      1.2437610434049868,
+      0.0,
+      5.069713783282284
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/d05ff05948743c30710e6737104a6b7f861c578e089df5d59733ebcba4156039.npz",
+  "hamiltonian_sha256": "123f18d3a2777d93176e8c05d7dd40e285f8017c853035842e0b0019fc73d7f2",
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -1398.4787643620946,
+  "nelecas": [
+    7,
+    4
+  ],
+  "previous_reference_source": "local sfX2C1eROHF CASSCF/natorb",
+  "reference_settings": {
+    "geometry_unit": "Angstrom",
+    "molecule_symmetry": false,
+    "reference_scf": "sfX2C1eROHF",
+    "scf_conv_tol": null,
+    "scf_diis_space": 12,
+    "scf_level_shift": 0.5,
+    "scf_max_cycle": 100,
+    "scf_newton_if_not_converged": true
+  },
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "source_cache_path": "hamiltonian_cache/casscf_natorb_sfx2c1erohf/d05ff05948743c30710e6737104a6b7f861c578e089df5d59733ebcba4156039.npz",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/feno_2plus.json",
+  "source_summary_path": "runs/qkud_fe_eps0.05/feno_2plus/summary.json",
+  "spin": 3,
+  "symbols": [
+    "Fe",
+    "N",
+    "O"
+  ]
+}

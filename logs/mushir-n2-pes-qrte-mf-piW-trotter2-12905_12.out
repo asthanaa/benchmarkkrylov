@@ -1,0 +1,4 @@
+REFERENCE N2_R2p00_cc_pVTZ_0 spectrum_source=geometry_specific_molecular_hf_active_window_fixed_nalpha_nbeta
+output file: /home/mushir.kolathingal/benchmarkkrylov/runs/n2_pes_qrte_mean_field_pi_over_w_trotter2/N2_R2p00_cc_pVTZ_0/fock_scf.log
+N2_R2p00_cc_pVTZ_0 W=2.29598867914 Eh dt=1.36829622991 au (pi / W_MF; geometry-specific molecular HF active-window determinant orbital-energy sums)
+DONE N2_R2p00_cc_pVTZ_0 iterations=8 chemical_accuracy_hit=8

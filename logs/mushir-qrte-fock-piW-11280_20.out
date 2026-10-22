@@ -1,0 +1,4 @@
+SCF H7_near_equi_sto3g_1 ROHF
+output file: runs/qrte_fock_pi_over_w/H7_near_equi_sto3g_1/fock_scf.log
+H7_near_equi_sto3g_1 W=1.75619198129 Eh dt=1.7888663011 au (full SCF orbital spectrum)
+DONE H7_near_equi_sto3g_1 iterations=100 chemical_accuracy_hit=None

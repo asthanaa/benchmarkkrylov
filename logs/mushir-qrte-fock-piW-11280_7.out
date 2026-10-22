@@ -1,0 +1,4 @@
+SCF CO_equi_cc_pVTZ_2 ROHF
+output file: runs/qrte_fock_pi_over_w/CO_equi_cc_pVTZ_2/fock_scf.log
+CO_equi_cc_pVTZ_2 W=32.4809810573 Eh dt=0.0967209902941 au (full SCF orbital spectrum)
+DONE CO_equi_cc_pVTZ_2 iterations=5 chemical_accuracy_hit=5

@@ -1,0 +1,4 @@
+SCF H6_near_equi_sto3g_0 spectrum_source=full_system_frozen_uhf_fock_determinants
+output file: runs/qrte_uhf_determinant_pi_over_w_small10/H6_near_equi_sto3g_0/fock_scf.log
+H6_near_equi_sto3g_0 W=6.81122864334 Eh dt=0.461237291845 au (highest minus lowest frozen UHF Fock determinant energy at fixed full-system Nalpha/Nbeta)
+DONE H6_near_equi_sto3g_0 iterations=100 chemical_accuracy_hit=None

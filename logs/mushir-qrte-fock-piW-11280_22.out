@@ -1,0 +1,3 @@
+SCF feno_2plus sfX2C1eROHF
+output file: runs/qrte_fock_pi_over_w/feno_2plus/fock_scf.log
+feno_2plus W=277.32208152 Eh dt=0.0113283177321 au (full SCF orbital spectrum)

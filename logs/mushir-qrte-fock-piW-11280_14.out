@@ -1,0 +1,4 @@
+SCF hexatriene_equi_cc_pVTZ_2 ROHF
+output file: runs/qrte_fock_pi_over_w/hexatriene_equi_cc_pVTZ_2/fock_scf.log
+hexatriene_equi_cc_pVTZ_2 W=26.6503236763 Eh dt=0.117881969906 au (full SCF orbital spectrum)
+DONE hexatriene_equi_cc_pVTZ_2 iterations=4 chemical_accuracy_hit=4

@@ -1,0 +1,69 @@
+{
+  "active_electrons": 6,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": null,
+  "active_orbitals": 6,
+  "basis": "cc-pVTZ",
+  "cached_scf_energy_hartree": null,
+  "case_id": "N2_equi_cc_pVTZ_2",
+  "charge": 0,
+  "dataset_casscf_energy_hartree": -108.87152580010415,
+  "dt_scale_factor": 0.5,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.1999999999614492
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.267671349478074
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/714f53e508f35490aeff6ceeae04ee73e476bfcbf6363801f21319a8d13ded08.npz",
+  "hamiltonian_sha256": "be5c8eb1556f4d40f75de62971aa1da614b3d8e985fe83fdf68fa24c2847567c",
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -108.87152580012282,
+  "mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/N2_equi_cc_pVTZ_2/fock_reference.json",
+  "mean_field_reference_sha256": "bb260d993130e92177c4a6867de47ec420093f04b079aa5975d23d12172bea66",
+  "nelecas": [
+    4,
+    2
+  ],
+  "previous_reference_source": "",
+  "reference_settings": {
+    "geometry_unit": "Angstrom",
+    "molecule_symmetry": false,
+    "reference_scf": "ROHF",
+    "scf_conv_tol": null,
+    "scf_diis_space": 12,
+    "scf_level_shift": 0.5,
+    "scf_max_cycle": 100,
+    "scf_newton_if_not_converged": true
+  },
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "source_cache_path": "hamiltonian_cache/casscf_natorb/714f53e508f35490aeff6ceeae04ee73e476bfcbf6363801f21319a8d13ded08.npz",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/N2 equi._cc-pVTZ_2.json",
+  "source_summary_path": "runs/qkud_natorb_eps0.05/N2_equi_cc_pVTZ_2/summary.json",
+  "spin": 2,
+  "symbols": [
+    "N",
+    "N"
+  ],
+  "unscaled_mean_field_delta_t": 0.932280660321566
+}

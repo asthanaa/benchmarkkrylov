@@ -1,0 +1,209 @@
+{
+  "case_id": "CO_equi_cc_pVTZ_2",
+  "pyscf_version": "2.13.1",
+  "threads": 1,
+  "dataset_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/CO equi._cc-pVTZ_2.json",
+  "dataset_sha256": "7ba1d326d082767626aea90f7baafdf318930a248954d2b51297e1b4b4541225",
+  "cache_path": "hamiltonian_cache/correct_27_systems/21f38681ebfab2f9340a3a4893b46d76362cb576d6427ed10be9fc76fc9c5956.npz",
+  "cache_sha256": "6dbd1158e5030cd2c950db9fe1e76e2bf864954558505ebb5ad3ce38b63225d9",
+  "dataset_scf_energy_hartree": -112.57764559460357,
+  "dataset_casscf_energy_hartree": -112.60166830789687,
+  "cached_reference_energy_hartree": -112.65639016965865,
+  "cached_ground_energy_hartree": -112.65639016965987,
+  "cached_ground_spin_square": 2.0,
+  "cached_natural_occupations": [
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    1.9754004846206379,
+    1.91810926747904,
+    1.003757646780945,
+    0.9999999999463767,
+    0.08303843076728631,
+    0.019694170405705078,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "calculations": [
+    {
+      "starting_orbitals": "canonical",
+      "energy_hartree": -112.65639016967377,
+      "converged": true,
+      "spin_square": 1.9999999999999978,
+      "natural_occupations": [
+        1.9754004357535129,
+        1.918109674307277,
+        1.0037576642930013,
+        0.9999999999771971,
+        0.08303803433577625,
+        0.019694191333234867
+      ],
+      "minus_dataset_mha": -54.72186177689764,
+      "minus_cache_mha": -1.5120349416974932e-08,
+      "elapsed_seconds": 7.576257470995188
+    },
+    {
+      "starting_orbitals": "avas",
+      "energy_hartree": -112.65639016964433,
+      "converged": true,
+      "spin_square": 2.0000000000000204,
+      "natural_occupations": [
+        1.9754004552592401,
+        1.9181091328004443,
+        1.0037576493635676,
+        0.999999999938601,
+        0.08303856758934555,
+        0.01969419504880264
+      ],
+      "minus_dataset_mha": -54.72186174745275,
+      "minus_cache_mha": 1.432454155292362e-08,
+      "elapsed_seconds": 5.4860792809631675
+    },
+    {
+      "starting_orbitals": "full_avas_cropped_canonicalize_True",
+      "energy_hartree": -112.60166830822226,
+      "converged": true,
+      "spin_square": 2.000000000000003,
+      "natural_occupations": [
+        1.98013570551439,
+        1.484892476847386,
+        1.4847168770476893,
+        0.5151637610613158,
+        0.514988119499378,
+        0.02010306002984419
+      ],
+      "minus_dataset_mha": -3.253859404139803e-07,
+      "minus_cache_mha": 54.72186143639135,
+      "elapsed_seconds": 3.228983075998258
+    },
+    {
+      "starting_orbitals": "full_avas_cropped_canonicalize_False",
+      "energy_hartree": -112.60166830790772,
+      "converged": true,
+      "spin_square": 1.9999999999999998,
+      "natural_occupations": [
+        1.9801357303613645,
+        1.484988018444132,
+        1.4846213787405411,
+        0.5152592811280674,
+        0.5148925565530945,
+        0.020103034772795837
+      ],
+      "minus_dataset_mha": -1.0842882147699129e-08,
+      "minus_cache_mha": 54.72186175093441,
+      "elapsed_seconds": 2.176799031032715
+    }
+  ],
+  "dataset_ci_norm_squared": 0.9999999999999996,
+  "dataset_ci_diagonal_occupations": [
+    1.9801356367726468,
+    1.4849892240161082,
+    1.4846201222277342,
+    0.51526053876937,
+    0.5148913489080017,
+    0.02010312930613402
+  ],
+  "recomputed_scf_energy_hartree": -112.57764559458133,
+  "recomputed_scf_spin_square": 2.0,
+  "avas": {
+    "ncas": 6,
+    "nelec": 6,
+    "builder_falls_back_to_canonical": false
+  },
+  "full_space_avas": [
+    {
+      "ncas": 7,
+      "nelec": 8,
+      "canonicalize": true
+    },
+    {
+      "ncas": 7,
+      "nelec": 8,
+      "canonicalize": false
+    }
+  ],
+  "final_active_space_overlaps_with_local_avas_solution": {
+    "canonical": [
+      0.9999999999806365,
+      0.9999999999056969,
+      0.9999999972122758,
+      0.9999999784970331,
+      0.999999978059408,
+      0.9999997249568966
+    ],
+    "avas": [
+      1.000000000000006,
+      1.0000000000000049,
+      1.0000000000000024,
+      1.0000000000000016,
+      1.0000000000000002,
+      0.999999999999997
+    ],
+    "full_avas_cropped_canonicalize_True": [
+      0.9999198071466824,
+      0.9892804199161335,
+      0.9857102608414704,
+      0.983118877094368,
+      0.9777164690669069,
+      5.713641884172909e-05
+    ],
+    "full_avas_cropped_canonicalize_False": [
+      0.9999197267088767,
+      0.9892754737691221,
+      0.9857100439516783,
+      0.9831130814318895,
+      0.9777164707192718,
+      3.870913428720308e-05
+    ]
+  },
+  "interpretation": "Both starts from canonical orbitals and AVAS with ncore=4 reproduce the local cache. AVAS with ncore=0 recommends CAS(8e,7o); passing its orbital order to CAS(6e,6o) reproduces the dataset reference, for both canonicalization choices. This establishes a reproducible preparation-dependent CASSCF solution difference, but does not prove which settings the dataset authors actually used."
+}

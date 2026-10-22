@@ -1,0 +1,656 @@
+#INFO: **** input file is /home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_fock_pi_over_w.py ****
+#!/usr/bin/env python
+"""Run cached MolVQE QRTE with dt = pi / the full SCF orbital bandwidth.
+
+Only the mean-field reference is recomputed. QRTE uses the explicit, validated
+Hamiltonian cache path, including the earlier orbital and relativistic fixes.
+"""
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import csv
+import hashlib
+import json
+import math
+import os
+import sys
+import time
+import traceback
+from pathlib import Path
+
+for _var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+             "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
+import numpy as np
+
+from compute_initial_overlap import _payload_from_cache_path
+
+ROOT = Path(__file__).resolve().parents[2]
+CHEMICAL_ACCURACY = 1.6e-3
+DEFAULT_CACHE_MANIFEST = ROOT / "hamiltonian_cache/correct_27_systems/manifest.csv"
+DEFAULT_MANIFEST = ROOT / "manifests/molvqe21_fig1b_manifest.csv"
+DEFAULT_OUTDIR = ROOT / "runs/qrte_fock_pi_over_w"
+
+
+def resolve_path(value):
+    path = Path(value)
+    return path if path.is_absolute() else ROOT / path
+
+
+def load_json(path):
+    with Path(path).open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def write_json(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True, allow_nan=False)
+        handle.write("\n")
+    temporary.replace(path)
+
+
+def load_cases(args):
+    with args.manifest.open(newline="", encoding="utf-8") as handle:
+        by_case = {row["case_id"]: row for row in csv.DictReader(handle)}
+    with args.cache_manifest.open(newline="", encoding="utf-8") as handle:
+        cache_rows = list(csv.DictReader(handle))
+    overrides = load_json(args.active_orbital_overrides)
+    cases = []
+    seen = set()
+    for cache_row in cache_rows:
+        case_id = cache_row["case_id"]
+        if case_id == "Ferrocene_ceo":
+            continue
+        if case_id in seen:
+            raise ValueError(f"Duplicate cache mapping for {case_id}")
+        seen.add(case_id)
+        row = by_case[case_id]
+        cache_path = resolve_path(cache_row["consolidated_cache_path"])
+        digest = hashlib.sha256(cache_path.read_bytes()).hexdigest()
+        if digest != cache_row["sha256"]:
+            raise ValueError(f"Hamiltonian checksum mismatch: {cache_path}")
+        run_dir = resolve_path(cache_row["summary_path"]).parent
+        summary = load_json(run_dir / "summary.json")
+        config = load_json(run_dir / "run_config.json")
+        snapshot = load_json(run_dir / "input_snapshot.json")
+        if summary.get("status") != "completed" or summary.get("case_id") != case_id:
+            raise ValueError(f"Invalid source summary for {case_id}")
+        with np.load(cache_path, allow_pickle=False) as cache:
+            norb = int(cache["ncas"])
+            occupations = np.asarray(cache["nelecas"], dtype=int).tolist()
+            reference = float(cache["reference_energy"])
+            reference_converged = bool(cache["reference_converged"])
+            indices = (np.asarray(cache["active_orbital_indices"], dtype=int).tolist()
+                       if "active_orbital_indices" in cache.files else [])
+            index_base = int(cache["active_orbital_index_base"]) if "active_orbital_index_base" in cache.files else 0
+            scf_energy = float(cache["scf_energy"]) if "scf_energy" in cache.files else None
+            source = str(cache["hamiltonian_source"].item())
+        if (norb != int(row["active_orbitals"]) or len(occupations) != 2
+                or sum(occupations) != int(row["active_electrons"])
+                or occupations[0] - occupations[1] != int(row["spin"])
+                or any(n < 0 or n > norb for n in occupations)):
+            raise ValueError(f"Cache active-space/spin mismatch for {case_id}")
+        if not math.isfinite(reference):
+            raise ValueError(f"Nonfinite cached reference for {case_id}")
+        summary_reference = summary.get("local_reference_energy_hartree")
+        if summary_reference is not None and abs(reference - float(summary_reference)) > 1e-6:
+            raise ValueError(f"Cache/source reference energy mismatch for {case_id}")
+        if not reference_converged and case_id != "fenoco3_minus":
+            raise ValueError(f"Unvalidated unconverged CASSCF reference for {case_id}")
+        if case_id in overrides:
+            override = overrides[case_id]
+            if (indices != override["active_orbital_indices"]
+                    or index_base != int(override.get("active_orbital_index_base", 0))):
+                raise ValueError(f"Corrected active orbital mismatch for {case_id}")
+        reference_scf = config.get("reference_scf", "RHF" if int(row["spin"]) == 0 else "ROHF")
+        if case_id in {"feno_2plus", "fenoco3_minus"} and reference_scf != "sfX2C1eROHF":
+            raise ValueError(f"Missing sfX2C1eROHF provenance for {case_id}")
+        if case_id == "FeO" and reference_scf != "ROHF":
+            raise ValueError("FeO must use the validated ROHF reference")
+        labels = config.get("active_orbital_labels") or snapshot.get("active_orbital_labels")
+        if config.get("use_avas_labels") is False:
+            labels = None
+        settings = {
+            "reference_scf": reference_scf,
+            "geometry_unit": config.get("geometry_unit", "Angstrom"),
+            "molecule_symmetry": bool(snapshot.get("symmetry", False)) if case_id == "FeO" else False,
+            "scf_conv_tol": config.get("scf_conv_tol"),
+            "scf_diis_space": int(config.get("scf_diis_space", 12)),
+            "scf_level_shift": float(config.get("scf_level_shift", 0.5)),
+            "scf_max_cycle": int(config.get("scf_max_cycle", 100)),
+            "scf_newton_if_not_converged": bool(config.get("scf_newton_if_not_converged",
+                                                         config.get("newton_if_not_converged", True))),
+        }
+        cases.append({
+            "case_id": case_id,
+            "symbols": json.loads(row["symbols"]),
+            "geometry_angstrom": json.loads(row["geometry_angstrom"]),
+            "geometry_bohr": json.loads(row["geometry_bohr"]),
+            "basis": row["basis"], "charge": int(row["charge"]), "spin": int(row["spin"]),
+            "active_electrons": sum(occupations), "active_orbitals": norb,
+            "nelecas": occupations, "active_orbital_indices": indices,
+            "active_orbital_index_base": index_base, "active_orbital_labels": labels,
+            "reference_settings": settings,
+            "hamiltonian_cache_path": str(cache_path), "hamiltonian_sha256": digest,
+            "source_cache_path": cache_row["source_cache_path"],
+            "source_summary_path": cache_row["summary_path"], "hamiltonian_source": source,
+            "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+            "previous_reference_source": summary.get("reference_source", ""),
+            "local_reference_energy_hartree": reference,
+            "local_reference_converged": reference_converged,
+            "cached_scf_energy_hartree": scf_energy if scf_energy is not None and math.isfinite(scf_energy) else None,
+            "dataset_casscf_energy_hartree": float(row["casscf_energy_hartree"]),
+            "source_json_path": row["source_json_path"],
+        })
+    if args.case_id is not None:
+        requested = set(args.case_id)
+        missing = requested - {case["case_id"] for case in cases}
+        if missing:
+            raise ValueError(f"Cases absent from validated cache manifest: {sorted(missing)}")
+        cases = [case for case in cases if case["case_id"] in requested]
+    if args.case_index is not None:
+        if not 0 <= args.case_index < len(cases):
+            raise ValueError(f"--case-index must be in [0, {len(cases) - 1}]")
+        cases = [cases[args.case_index]]
+    return cases
+
+
+def fock_bandwidth(orbital_energies):
+    energies = np.asarray(orbital_energies, dtype=float)
+    if energies.ndim != 1 or not energies.size or not np.all(np.isfinite(energies)):
+        raise ValueError("Invalid full-space SCF orbital energies")
+    energies = np.sort(energies)
+    minimum, maximum = float(energies[0]), float(energies[-1])
+    width = maximum - minimum
+    if not math.isfinite(width) or width <= 0:
+        raise ValueError(f"Fock bandwidth must be positive, got {width}")
+    return {
+        "width_definition": "full SCF one-electron orbital energy range, including core and virtual orbitals",
+        "fock_spectral_min_hartree": minimum,
+        "fock_spectral_max_hartree": maximum,
+        "fock_bandwidth_hartree": width,
+        "delta_t": math.pi / width,
+        "delta_t_units": "atomic units of time",
+        "delta_t_rule": "pi / (max(full_scf_mo_energy) - min(full_scf_mo_energy))",
+    }
+
+
+def compute_fock_spectrum(case, case_dir, args):
+    from pyscf import gto, scf
+
+    settings = case["reference_settings"]
+    unit = settings["geometry_unit"]
+    geometry = case["geometry_bohr"] if unit == "Bohr" else case["geometry_angstrom"]
+    mol = gto.M(atom=list(zip(case["symbols"], geometry)), unit=unit, basis=case["basis"],
+                charge=case["charge"], spin=case["spin"], symmetry=settings["molecule_symmetry"],
+                verbose=4, output=str(case_dir / "fock_scf.log"))
+    method = settings["reference_scf"]
+    if method == "RHF":
+        mf = scf.RHF(mol)
+    elif method in {"ROHF", "sfX2C1eROHF"}:
+        mf = scf.ROHF(mol)
+        if method == "sfX2C1eROHF":
+            mf = scf.sfx2c1e(mf)
+    else:
+        raise ValueError(f"Unsupported reference SCF method: {method}")
+    if settings["scf_conv_tol"] is not None:
+        mf.conv_tol = float(settings["scf_conv_tol"])
+    mf.diis_space = settings["scf_diis_space"]
+    mf.level_shift = settings["scf_level_shift"]
+    mf.max_cycle = settings["scf_max_cycle"]
+    mf.kernel()
+    used_newton = False
+    if not mf.converged and settings["scf_newton_if_not_converged"]:
+        mf = scf.newton(mf).run()
+        used_newton = True
+    if not mf.converged:
+        raise RuntimeError(f"{case['case_id']}: mean-field calculation did not converge")
+    cached_energy = case["cached_scf_energy_hartree"]
+    scf_difference = None if cached_energy is None else float(mf.e_tot) - cached_energy
+    if scf_difference is not None and abs(scf_difference) > args.scf_match_tolerance:
+        raise RuntimeError(f"{case['case_id']}: SCF energy differs from cached reference "
+                           f"by {scf_difference:.12g} Eh")
+    # ROHF reports the effective Roothaan orbital energies in mo_energy.
+    # Include every orbital; the subsequent QRTE active-space selection does
+    # not restrict this mean-field spectrum.
+    spectrum = np.asarray(mf.mo_energy, dtype=float)
+    fock_bandwidth(spectrum)
+    return {
+        "full_scf_orbital_energies_hartree": spectrum.tolist(),
+        "full_scf_orbital_occupations": np.asarray(mf.mo_occ, dtype=float).tolist(),
+        "n_scf_spatial_orbitals": int(spectrum.size),
+        "fock_operator": "restricted spatial Fock" if method == "RHF" else "ROHF effective Roothaan spatial Fock",
+        "spectrum_scope": "full mean-field orbital space, including core and virtual orbitals",
+        "reference_scf": method,
+        "scf_energy_hartree": float(mf.e_tot), "scf_converged": bool(mf.converged),
+        "scf_minus_cached_energy_hartree": scf_difference,
+        "used_newton_scf": used_newton,
+        "nelecas": case["nelecas"],
+    }
+
+
+@contextlib.contextmanager
+def cached_hamiltonian(qa, payload):
+    original = qa._build_hamiltonian_payload
+    qa._build_hamiltonian_payload = lambda *args, **kwargs: payload
+    try:
+        yield
+    finally:
+        qa._build_hamiltonian_payload = original
+
+
+def run_case(case, args):
+    case_dir = args.outdir / case["case_id"]
+    summary_path = case_dir / "summary.json"
+    fock_profile = {"case": case, "scf_match_tolerance": args.scf_match_tolerance}
+    run_profile = {
+        "fock_profile": fock_profile, "spectrum_scope": "full_scf_orbitals",
+        "n_steps": args.n_steps, "overlap_tol": args.overlap_tol,
+        "evolution_mode": args.evolution_mode, "trotter_steps": args.trotter_steps,
+        "max_workers": args.max_workers, "chemical_accuracy_hartree": CHEMICAL_ACCURACY,
+        "qcant_root": str(args.qcant_root.resolve()),
+    }
+    if summary_path.exists() and not args.force and not args.reference_only:
+        summary = load_json(summary_path)
+        if summary.get("status") == "completed" and summary.get("run_profile") == run_profile:
+            print(f"SKIP completed {case['case_id']}", flush=True)
+            return
+    case_dir.mkdir(parents=True, exist_ok=True)
+    write_json(case_dir / "input_snapshot.json", case)
+    start = time.perf_counter()
+    try:
+        fock_path = case_dir / "fock_reference.json"
+        fock_result = load_json(fock_path) if fock_path.exists() and not args.force else {}
+        if fock_result.get("status") != "completed" or fock_result.get("fock_profile") != fock_profile:
+            print(f"SCF {case['case_id']} {case['reference_settings']['reference_scf']}", flush=True)
+            fock_result = compute_fock_spectrum(case, case_dir, args)
+            fock_result.update(status="completed", fock_profile=fock_profile)
+            write_json(fock_path, fock_result)
+        width = fock_bandwidth(fock_result["full_scf_orbital_energies_hartree"])
+        reference = case["local_reference_energy_hartree"]
+        early_stop_energy = reference + CHEMICAL_ACCURACY
+        config = {**run_profile, **width, "method": "qrte", "early_stop_chemical_accuracy": True,
+                  "early_stop_energy_hartree": early_stop_energy,
+                  "hamiltonian_cache_path": case["hamiltonian_cache_path"],
+                  "reference_source": case["reference_source"]}
+        write_json(case_dir / "run_config.json", config)
+        print(f"{case['case_id']} W={width['fock_bandwidth_hartree']:.12g} Eh "
+              f"dt={width['delta_t']:.12g} au (full SCF orbital spectrum)", flush=True)
+        if args.reference_only:
+            return
+        sys.path.insert(0, str(args.qcant_root.resolve()))
+        from QCANT import qulacs_accel as qa
+
+        payload = _payload_from_cache_path(Path(case["hamiltonian_cache_path"]),
+                                           hamiltonian_cutoff=1e-20, qa=qa)
+        # Pin the builder during this one-process run so QRTE cannot rebuild a
+        # different Hamiltonian through its geometry/settings-based cache key.
+        with cached_hamiltonian(qa, payload):
+            energies, _states, _times, history = qa.qrte_qulacs(
+                symbols=case["symbols"], geometry=np.asarray(case["geometry_angstrom"]),
+                basis=case["basis"], charge=case["charge"], spin=case["spin"],
+                active_electrons=case["active_electrons"], active_orbitals=case["active_orbitals"],
+                delta_t=width["delta_t"], n_steps=args.n_steps, overlap_tol=args.overlap_tol,
+                evolution_mode=args.evolution_mode, trotter_steps=args.trotter_steps,
+                max_workers=args.max_workers, early_stop_energy=early_stop_energy,
+                return_min_energy_history=True, hamiltonian_source=case["hamiltonian_source"],
+                allow_unconverged_casscf=not case["local_reference_converged"],
+            )
+        history = np.asarray(history, dtype=float)
+        if not history.size or not np.all(np.isfinite(history)):
+            raise RuntimeError("QRTE returned an empty or nonfinite convergence history")
+        errors = history - reference
+        hit = next((i for i, error in enumerate(errors, 1) if abs(error) <= CHEMICAL_ACCURACY), None)
+        with (case_dir / "min_energy_history.csv").open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle, lineterminator="\n")
+            writer.writerow(["iteration", "min_energy_hartree", "error_vs_local_reference_hartree",
+                             "error_vs_molvqe_casscf_hartree", "within_chemical_accuracy"])
+            for i, (energy, error) in enumerate(zip(history, errors), 1):
+                writer.writerow([i, float(energy), float(error),
+                                 float(energy) - case["dataset_casscf_energy_hartree"],
+                                 str(abs(error) <= CHEMICAL_ACCURACY).lower()])
+        if np.min(errors) < -CHEMICAL_ACCURACY:
+            raise RuntimeError("Projected QRTE energy fell below the cached reference by more than chemical accuracy")
+        write_json(summary_path, {
+            **case, **width, "run_profile": run_profile, "status": "completed", "method": "qrte",
+            "chemical_accuracy_hartree": CHEMICAL_ACCURACY,
+            "casscf_energy_hartree": reference, "early_stop_energy_hartree": early_stop_energy,
+            "n_steps_requested": args.n_steps, "n_steps_completed": int(history.size),
+            "n_steps": int(history.size), "hit_iteration": hit, "hit_chemical_accuracy": hit is not None,
+            "stopped_early": history.size < args.n_steps and hit is not None,
+            "final_min_history_energy_hartree": float(history[-1]),
+            "final_projected_ground_energy_hartree": float(np.min(energies)),
+            "final_error_vs_local_reference_hartree": float(errors[-1]),
+            "overlap_tol": args.overlap_tol, "evolution_mode": args.evolution_mode,
+            "trotter_steps": args.trotter_steps, "elapsed_seconds": time.perf_counter() - start,
+        })
+        print(f"DONE {case['case_id']} iterations={history.size} chemical_accuracy_hit={hit}", flush=True)
+    except Exception as exc:
+        failure_path = case_dir / "fock_reference_failure.json" if args.reference_only else summary_path
+        write_json(failure_path, {"status": "failed", "case_id": case["case_id"],
+                                 "run_profile": run_profile, "error": repr(exc),
+                                 "traceback": traceback.format_exc()})
+        raise
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--cache-manifest", type=Path, default=DEFAULT_CACHE_MANIFEST)
+    parser.add_argument("--active-orbital-overrides", type=Path,
+                        default=ROOT / "manifests/molvqe21_active_orbital_overrides.json")
+    parser.add_argument("--qcant-root", type=Path, default=ROOT / "vendor/QCANT")
+    parser.add_argument("--outdir", type=Path, default=DEFAULT_OUTDIR)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--case-id", action="append")
+    selection.add_argument("--case-index", type=int)
+    parser.add_argument("--n-steps", type=int, default=100)
+    parser.add_argument("--overlap-tol", type=float, default=1e-10)
+    parser.add_argument("--evolution-mode", choices=("trotter", "sparse"), default="trotter")
+    parser.add_argument("--trotter-steps", type=int, default=1)
+    parser.add_argument("--max-workers", type=int, default=18)
+    parser.add_argument("--scf-match-tolerance", type=float, default=1e-6)
+    parser.add_argument("--dry-run", action="store_true", help="Validate caches and references; do no SCF or QRTE work")
+    parser.add_argument("--reference-only", action="store_true", help="Compute Fock spectrum and dt without QRTE")
+    parser.add_argument("--count-cases", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    args = parser.parse_args()
+    for name in ("n_steps", "trotter_steps", "max_workers", "overlap_tol", "scf_match_tolerance"):
+        value = getattr(args, name)
+        if not math.isfinite(value) or value <= 0:
+            parser.error(f"--{name.replace('_', '-')} must be positive and finite")
+    return args
+
+
+def main():
+    args = parse_args()
+    cases = load_cases(args)
+    if not cases:
+        raise SystemExit("No validated cases selected")
+    if args.count_cases:
+        print(len(cases))
+        return
+    if args.dry_run:
+        for i, case in enumerate(cases):
+            print(f"{i:2d} {case['case_id']:32s} SCF={case['reference_settings']['reference_scf']:14s} "
+                  f"CAS={case['active_electrons']}e{case['active_orbitals']}o "
+                  f"indices={case['active_orbital_indices']} labels={case['active_orbital_labels']}")
+        print(f"Validated {len(cases)} cases; W=max(full SCF orbital energy)-min(full SCF orbital energy); "
+              f"max_iterations={args.n_steps}; overlap_tol={args.overlap_tol:g}; "
+              f"early_stop=chemical_accuracy; outdir={args.outdir}")
+        return
+    failures = 0
+    for case in cases:
+        try:
+            run_case(case, args)
+        except Exception as exc:
+            failures += 1
+            print(f"FAIL {case['case_id']}: {exc!r}", flush=True)
+    if failures:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='medora09.cm.cluster', release='6.8.0-111-generic-64k', version='#111-Ubuntu SMP PREEMPT_DYNAMIC Sun Apr 12 00:17:58 UTC 2026', machine='aarch64')  Threads 1
+Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:39:32) [GCC 14.3.0]
+numpy 2.4.6  scipy 1.17.1  h5py 3.16.0
+Date: Wed Oct  7 12:58:58 2026
+PySCF version 2.13.1
+PySCF path  /home/mushir.kolathingal/miniforge3/envs/expk/lib/python3.12/site-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 9
+[INPUT] num. electrons = 84
+[INPUT] charge = -1
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = Angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Fe     0.000486825571   0.000000000000   0.199969289769 AA    0.000919967000   0.000000000000   0.377887190988 Bohr   0.0
+[INPUT]  2 N      0.000326097519   0.000000000000   1.860296433535 AA    0.000616235000   0.000000000000   3.515450769887 Bohr   0.0
+[INPUT]  3 O     -0.000128768924   0.000000000000   3.055717607832 AA   -0.000243338000   0.000000000000   5.774469392814 Bohr   0.0
+[INPUT]  4 C      1.586765492060   0.000000000000  -0.597471376030 AA    2.998552203904   0.000000000000  -1.129057267964 Bohr   0.0
+[INPUT]  5 O      2.646414315720   0.000000000000  -1.103855740161 AA    5.000998268839   0.000000000000  -2.085985029933 Bohr   0.0
+[INPUT]  6 C     -0.793236109437  -1.373319725108  -0.597589330689 AA   -1.498998998952  -2.595198161917  -1.129280169964 Bohr   0.0
+[INPUT]  7 C     -0.793236109437   1.373319725108  -0.597589330689 AA   -1.498998998952   2.595198161917  -1.129280169964 Bohr   0.0
+[INPUT]  8 O     -1.323696371343  -2.290502187378  -1.104215776989 AA   -2.501423613920  -4.328421821861  -2.086665400933 Bohr   0.0
+[INPUT]  9 O     -1.323696371343   2.290502187378  -1.104215776989 AA   -2.501423613920   4.328421821861  -2.086665400933 Bohr   0.0
+
+nuclear repulsion = 606.317054366791
+number of shells = 103
+number of NR pGTOs = 460
+number of NR cGTOs = 293
+basis = def2-TZVP
+ecp = {}
+CPU time:         0.76
+
+
+******** <class 'pyscf.x2c.sfx2c1e.sfX2C1eROHF'> ********
+method = sfX2C1eROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.5
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 12
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 100
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp5vpfalrw
+max_memory 4000 MB (current use 140 MB)
+num. doubly occ = 42  num. singly occ = 0
+
+
+******** <class 'pyscf.x2c.sfx2c1e.SpinFreeX2CHelper'> ********
+approx = 1e
+xuncontract = 1
+Set gradient conv threshold to 3.16228e-05
+init E= -1737.03538177721
+  HOMO = 0.235244396690622  LUMO = 0.429612045058783
+cycle= 1 E= -1732.81235364916  delta_E= 4.22  |g|= 5.87  |ddm|= 2.42
+  HOMO = -0.29432212943572  LUMO = -0.0478414496430539
+cycle= 2 E= -1720.19558907754  delta_E= 12.6  |g|= 12.3  |ddm|= 3.49
+  HOMO = -0.204161555372177  LUMO = 0.442531145088149
+cycle= 3 E= -1731.66642148624  delta_E= -11.5  |g|= 6.79  |ddm|= 1.48
+  HOMO = -0.114272720417174  LUMO = 0.631511617777159
+cycle= 4 E= -1735.5925503486  delta_E= -3.93  |g|= 3.82  |ddm|= 0.781
+  HOMO = -0.137011538956805  LUMO = 0.719448446787814
+cycle= 5 E= -1736.97238939183  delta_E= -1.38  |g|= 1.78  |ddm|= 0.487
+  HOMO = -0.114312764800156  LUMO = 0.736681908421019
+cycle= 6 E= -1737.37466864597  delta_E= -0.402  |g|= 0.593  |ddm|= 0.337
+  HOMO = -0.110307701589075  LUMO = 0.737249645532465
+cycle= 7 E= -1737.43981686712  delta_E= -0.0651  |g|= 0.111  |ddm|= 0.191
+  HOMO = -0.121077956053671  LUMO = 0.735908661003003
+cycle= 8 E= -1737.4488077798  delta_E= -0.00899  |g|= 0.111  |ddm|=  0.1
+  HOMO = -0.11888498528088  LUMO = 0.73445830045212
+cycle= 9 E= -1737.45555763655  delta_E= -0.00675  |g|= 0.0756  |ddm|= 0.0908
+  HOMO = -0.116121372698991  LUMO = 0.7339368932534
+cycle= 10 E= -1737.46028239002  delta_E= -0.00472  |g|= 0.0456  |ddm|= 0.0773
+  HOMO = -0.110194279732463  LUMO = 0.733667777591949
+cycle= 11 E= -1737.46359845458  delta_E= -0.00332  |g|= 0.0378  |ddm|= 0.0665
+  HOMO = -0.0999544332881209  LUMO = 0.733268212266231
+cycle= 12 E= -1737.46644864682  delta_E= -0.00285  |g|= 0.0302  |ddm|= 0.0758
+  HOMO = -0.0992484735622451  LUMO = 0.733256908286452
+cycle= 13 E= -1737.46771000606  delta_E= -0.00126  |g|= 0.0236  |ddm|= 0.0446
+  HOMO = -0.0952011665002512  LUMO = 0.732956560500175
+cycle= 14 E= -1737.46863024824  delta_E= -0.00092  |g|= 0.0168  |ddm|= 0.0474
+  HOMO = -0.0952619142188481  LUMO = 0.732949088038114
+cycle= 15 E= -1737.46901623873  delta_E= -0.000386  |g|= 0.0109  |ddm|= 0.0276
+  HOMO = -0.0944470764250286  LUMO = 0.73291515906521
+cycle= 16 E= -1737.46920743074  delta_E= -0.000191  |g|= 0.00805  |ddm|= 0.0199
+  HOMO = -0.0945529818238913  LUMO = 0.732921845521426
+cycle= 17 E= -1737.46930971807  delta_E= -0.000102  |g|= 0.00566  |ddm|= 0.0153
+  HOMO = -0.0946705650710349  LUMO = 0.7329269160737
+cycle= 18 E= -1737.46934930136  delta_E= -3.96e-05  |g|= 0.00391  |ddm|= 0.00926
+  HOMO = -0.0945888211691206  LUMO = 0.732920045454036
+cycle= 19 E= -1737.46936837293  delta_E= -1.91e-05  |g|= 0.00287  |ddm|= 0.00711
+  HOMO = -0.0945909051238172  LUMO = 0.732924542556403
+cycle= 20 E= -1737.46937604144  delta_E= -7.67e-06  |g|= 0.00187  |ddm|= 0.00441
+  HOMO = -0.0946958825674812  LUMO = 0.732921648012294
+cycle= 21 E= -1737.46937924681  delta_E= -3.21e-06  |g|= 0.00142  |ddm|= 0.00276
+  HOMO = -0.094662514696263  LUMO = 0.732926419974382
+cycle= 22 E= -1737.46938071399  delta_E= -1.47e-06  |g|= 0.000819  |ddm|= 0.0017
+  HOMO = -0.094663025231062  LUMO = 0.732926824803883
+cycle= 23 E= -1737.46938138422  delta_E= -6.7e-07  |g|= 0.000591  |ddm|= 0.00113
+  HOMO = -0.0946571642594835  LUMO = 0.732924515346456
+cycle= 24 E= -1737.46938174065  delta_E= -3.56e-07  |g|= 0.000403  |ddm|= 0.000766
+  HOMO = -0.0946607250353747  LUMO = 0.732925657283221
+cycle= 25 E= -1737.46938193785  delta_E= -1.97e-07  |g|= 0.000273  |ddm|= 0.000548
+  HOMO = -0.0946438939544533  LUMO = 0.732924013959381
+cycle= 26 E= -1737.4693820721  delta_E= -1.34e-07  |g|= 0.000208  |ddm|= 0.000481
+  HOMO = -0.0946208441989458  LUMO = 0.732923194179604
+cycle= 27 E= -1737.46938216616  delta_E= -9.41e-08  |g|= 0.000165  |ddm|= 0.000433
+  HOMO = -0.094615047563215  LUMO = 0.732922894270554
+cycle= 28 E= -1737.46938222097  delta_E= -5.48e-08  |g|= 0.000142  |ddm|= 0.000303
+  HOMO = -0.0946115571521352  LUMO = 0.73292308137353
+cycle= 29 E= -1737.46938226945  delta_E= -4.85e-08  |g|= 0.000129  |ddm|= 0.000287
+  HOMO = -0.0946074156940997  LUMO = 0.732922787488254
+cycle= 30 E= -1737.46938230547  delta_E= -3.6e-08  |g|= 0.000124  |ddm|= 0.000225
+  HOMO = -0.0946066165035339  LUMO = 0.732922708298581
+cycle= 31 E= -1737.46938232403  delta_E= -1.86e-08  |g|= 0.000123  |ddm|= 0.000127
+  HOMO = -0.0946076741299404  LUMO = 0.732922732120778
+cycle= 32 E= -1737.46938232877  delta_E= -4.74e-09  |g|= 0.000126  |ddm|= 5.37e-05
+  HOMO = -0.0946083206652808  LUMO = 0.732922693771083
+cycle= 33 E= -1737.46938232887  delta_E= -1e-10  |g|= 0.000129  |ddm|= 2.88e-05
+  HOMO = -0.0946079504638745  LUMO = 0.732922813530721
+cycle= 34 E= -1737.46938232925  delta_E= -3.77e-10  |g|= 0.000129  |ddm|= 2.16e-05
+  HOMO = -0.0946092364050438  LUMO = 0.732922854658815
+cycle= 35 E= -1737.46938232885  delta_E= 3.95e-10  |g|= 0.000129  |ddm|= 1.86e-05
+  HOMO = -0.0946091241223565  LUMO = 0.73292284662284
+cycle= 36 E= -1737.46938232888  delta_E= -3e-11  |g|= 0.000129  |ddm|= 1.15e-05
+  HOMO = -0.0946090239434666  LUMO = 0.732922824991256
+cycle= 37 E= -1737.4693823283  delta_E= 5.86e-10  |g|= 0.000129  |ddm|= 5.24e-06
+  HOMO = -0.0946091257251884  LUMO = 0.73292275987379
+cycle= 38 E= -1737.46938232358  delta_E= 4.72e-09  |g|= 0.000132  |ddm|= 2.72e-05
+  HOMO = -0.094608536067425  LUMO = 0.732922732668215
+cycle= 39 E= -1737.46938231534  delta_E= 8.24e-09  |g|= 0.000131  |ddm|= 5.11e-05
+  HOMO = -0.0946073421208592  LUMO = 0.732922782628116
+cycle= 40 E= -1737.46938231501  delta_E= 3.26e-10  |g|= 0.000128  |ddm|= 1.75e-05
+  HOMO = -0.0946085132872642  LUMO = 0.732922867631538
+cycle= 41 E= -1737.46938231562  delta_E= -6.09e-10  |g|= 0.000127  |ddm|= 1.36e-05
+  HOMO = -0.0946100034078095  LUMO = 0.732922868631757
+cycle= 42 E= -1737.46938231499  delta_E= 6.28e-10  |g|= 0.000128  |ddm|= 1.74e-05
+  HOMO = -0.0946083652136949  LUMO = 0.732922783987672
+cycle= 43 E= -1737.46938231813  delta_E= -3.14e-09  |g|= 0.000126  |ddm|= 2.05e-05
+  HOMO = -0.0946098234460751  LUMO = 0.732922742078583
+cycle= 44 E= -1737.46938232092  delta_E= -2.79e-09  |g|= 0.000127  |ddm|= 1.85e-05
+  HOMO = -0.0946057015778256  LUMO = 0.732922739247152
+cycle= 45 E= -1737.46938233528  delta_E= -1.44e-08  |g|= 0.000125  |ddm|= 8.5e-05
+  HOMO = -0.0946060919753355  LUMO = 0.73292263019722
+cycle= 46 E= -1737.46938234042  delta_E= -5.14e-09  |g|= 0.000128  |ddm|= 3.65e-05
+  HOMO = -0.0946082426105606  LUMO = 0.732922612823378
+cycle= 47 E= -1737.46938233847  delta_E= 1.95e-09  |g|= 0.000132  |ddm|= 1.91e-05
+  HOMO = -0.0946081545552193  LUMO = 0.732922760019175
+cycle= 48 E= -1737.46938234149  delta_E= -3.03e-09  |g|= 0.00013  |ddm|= 2.95e-05
+  HOMO = -0.0946076021305383  LUMO = 0.732922818143849
+cycle= 49 E= -1737.46938234725  delta_E= -5.76e-09  |g|= 0.00013  |ddm|= 3.46e-05
+  HOMO = -0.0946077883128843  LUMO = 0.732922807089359
+cycle= 50 E= -1737.4693823481  delta_E= -8.48e-10  |g|= 0.000132  |ddm|= 1.55e-05
+  HOMO = -0.0946088821996127  LUMO = 0.732922997608516
+cycle= 51 E= -1737.46938233966  delta_E= 8.44e-09  |g|= 0.000134  |ddm|= 5.38e-05
+  HOMO = -0.0946079132235128  LUMO = 0.732922944116
+cycle= 52 E= -1737.46938233457  delta_E= 5.09e-09  |g|= 0.000133  |ddm|= 3.7e-05
+  HOMO = -0.0946081432788871  LUMO = 0.73292287322031
+cycle= 53 E= -1737.46938232793  delta_E= 6.64e-09  |g|= 0.000133  |ddm|= 4.49e-05
+  HOMO = -0.0946075412153373  LUMO = 0.732922863567854
+cycle= 54 E= -1737.46938232539  delta_E= 2.54e-09  |g|= 0.000131  |ddm|= 2.58e-05
+  HOMO = -0.0946082026558854  LUMO = 0.732922946165358
+cycle= 55 E= -1737.46938231981  delta_E= 5.58e-09  |g|= 0.000132  |ddm|= 3.75e-05
+  HOMO = -0.0946075152985854  LUMO = 0.732922899046515
+cycle= 56 E= -1737.46938231922  delta_E= 5.9e-10  |g|= 0.000129  |ddm|= 1.88e-05
+  HOMO = -0.0946075841046322  LUMO = 0.732922870534651
+cycle= 57 E= -1737.46938231867  delta_E= 5.43e-10  |g|= 0.000129  |ddm|= 2.1e-05
+  HOMO = -0.0946074757214517  LUMO = 0.732922855065606
+cycle= 58 E= -1737.46938231855  delta_E= 1.22e-10  |g|= 0.000128  |ddm|= 9.28e-06
+  HOMO = -0.0946067707623361  LUMO = 0.732922883090222
+cycle= 59 E= -1737.46938231666  delta_E= 1.89e-09  |g|= 0.000129  |ddm|= 2.24e-05
+  HOMO = -0.0946065000565289  LUMO = 0.732922905098576
+cycle= 60 E= -1737.46938231843  delta_E= -1.77e-09  |g|= 0.000128  |ddm|= 1.35e-05
+  HOMO = -0.0946046588508842  LUMO = 0.732922885232283
+cycle= 61 E= -1737.4693823184  delta_E= 2.77e-11  |g|= 0.000127  |ddm|= 1.37e-05
+  HOMO = -0.094602026053887  LUMO = 0.732922815707766
+cycle= 62 E= -1737.46938232676  delta_E= -8.36e-09  |g|= 0.000126  |ddm|= 5.32e-05
+  HOMO = -0.094603763141868  LUMO = 0.732922752652622
+cycle= 63 E= -1737.46938232794  delta_E= -1.17e-09  |g|= 0.00013  |ddm|= 2.25e-05
+  HOMO = -0.0946057566554008  LUMO = 0.732922736949093
+cycle= 64 E= -1737.46938232193  delta_E= 6.01e-09  |g|= 0.000134  |ddm|= 3.77e-05
+  HOMO = -0.094604924519646  LUMO = 0.732922727478541
+cycle= 65 E= -1737.46938232285  delta_E= -9.24e-10  |g|= 0.000132  |ddm|= 6.51e-06
+  HOMO = -0.0946080922999671  LUMO = 0.732923088046876
+cycle= 66 E= -1737.46938232053  delta_E= 2.32e-09  |g|= 0.000131  |ddm|= 3.86e-05
+  HOMO = -0.0946064931238274  LUMO = 0.732922971619366
+cycle= 67 E= -1737.46938231944  delta_E= 1.09e-09  |g|= 0.00013  |ddm|= 2.22e-05
+  HOMO = -0.0946066641687634  LUMO = 0.732923028700682
+cycle= 68 E= -1737.4693823179  delta_E= 1.54e-09  |g|= 0.00013  |ddm|= 1.23e-05
+  HOMO = -0.094607346177638  LUMO = 0.732922853070005
+cycle= 69 E= -1737.46938231681  delta_E= 1.09e-09  |g|= 0.000129  |ddm|= 2.75e-05
+  HOMO = -0.0946067977662483  LUMO = 0.732922783486918
+cycle= 70 E= -1737.46938231684  delta_E= -3.5e-11  |g|= 0.000128  |ddm|= 2.34e-05
+  HOMO = -0.0946073476293443  LUMO = 0.732922767618693
+cycle= 71 E= -1737.46938231406  delta_E= 2.78e-09  |g|= 0.000129  |ddm|= 1.76e-05
+  HOMO = -0.0946068725327136  LUMO = 0.732922833115203
+cycle= 72 E= -1737.46938231022  delta_E= 3.84e-09  |g|= 0.000128  |ddm|= 2.55e-05
+  HOMO = -0.0946066367446665  LUMO = 0.732922764384649
+cycle= 73 E= -1737.46938231575  delta_E= -5.53e-09  |g|= 0.000125  |ddm|= 3.7e-05
+  HOMO = -0.0946057764252701  LUMO = 0.732922648392032
+cycle= 74 E= -1737.46938231602  delta_E= -2.63e-10  |g|= 0.000126  |ddm|= 1.69e-05
+  HOMO = -0.0946069156532537  LUMO = 0.732922843951192
+cycle= 75 E= -1737.46938232068  delta_E= -4.67e-09  |g|= 0.000126  |ddm|= 3.04e-05
+  HOMO = -0.0946070366728532  LUMO = 0.732922844537921
+cycle= 76 E= -1737.46938232217  delta_E= -1.48e-09  |g|= 0.000127  |ddm|= 1.19e-05
+  HOMO = -0.0946034913236422  LUMO = 0.73292220719308
+cycle= 77 E= -1737.46938231219  delta_E= 9.97e-09  |g|= 0.000131  |ddm|= 8.45e-05
+  HOMO = -0.0946034822323975  LUMO = 0.732922202770845
+cycle= 78 E= -1737.46938228733  delta_E= 2.49e-08  |g|= 0.000137  |ddm|= 0.000156
+  HOMO = -0.0946018733716723  LUMO = 0.732922143491603
+cycle= 79 E= -1737.4693822752  delta_E= 1.21e-08  |g|= 0.000129  |ddm|= 9.04e-05
+  HOMO = -0.0946032806386324  LUMO = 0.732922094737184
+cycle= 80 E= -1737.46938224568  delta_E= 2.95e-08  |g|= 0.000136  |ddm|= 0.0002
+  HOMO = -0.0946033400701115  LUMO = 0.732922047699134
+cycle= 81 E= -1737.46938222375  delta_E= 2.19e-08  |g|= 0.000128  |ddm|= 0.000171
+  HOMO = -0.0946087042504381  LUMO = 0.732922433125706
+cycle= 82 E= -1737.46938219902  delta_E= 2.47e-08  |g|= 0.000126  |ddm|= 0.000193
+  HOMO = -0.0946144708709648  LUMO = 0.732922191346162
+cycle= 83 E= -1737.46938218109  delta_E= 1.79e-08  |g|= 0.000118  |ddm|= 0.000165
+  HOMO = -0.094613896654505  LUMO = 0.732922437325412
+cycle= 84 E= -1737.46938215727  delta_E= 2.38e-08  |g|= 0.000118  |ddm|= 0.000214
+  HOMO = -0.0946122624361173  LUMO = 0.732922582479512
+cycle= 85 E= -1737.46938213491  delta_E= 2.24e-08  |g|= 0.000115  |ddm|= 0.000223
+  HOMO = -0.0946102505535494  LUMO = 0.732922672209429
+cycle= 86 E= -1737.46938211721  delta_E= 1.77e-08  |g|= 0.000105  |ddm|= 0.000204
+  HOMO = -0.0946008160024136  LUMO = 0.732922576245603
+cycle= 87 E= -1737.46938209082  delta_E= 2.64e-08  |g|= 0.000114  |ddm|= 0.000331
+  HOMO = -0.0946008890140465  LUMO = 0.73292260541724
+cycle= 88 E= -1737.4693820771  delta_E= 1.37e-08  |g|= 9.46e-05  |ddm|= 0.000237
+  HOMO = -0.0946034308268183  LUMO = 0.732922990759933
+cycle= 89 E= -1737.46938206288  delta_E= 1.42e-08  |g|= 9.23e-05  |ddm|= 0.000288
+  HOMO = -0.0946004991236378  LUMO = 0.732922911121399
+cycle= 90 E= -1737.46938205345  delta_E= 9.43e-09  |g|= 8.09e-05  |ddm|= 0.000259
+  HOMO = -0.0946019872625407  LUMO = 0.732922870881759
+cycle= 91 E= -1737.46938204909  delta_E= 4.35e-09  |g|= 6.26e-05  |ddm|= 0.000179
+  HOMO = -0.094600257556714  LUMO = 0.732922911962794
+cycle= 92 E= -1737.46938204523  delta_E= 3.87e-09  |g|= 5.43e-05  |ddm|= 0.000169
+  HOMO = -0.0945985697566966  LUMO = 0.732922963489906
+cycle= 93 E= -1737.46938204226  delta_E= 2.97e-09  |g|= 5.03e-05  |ddm|= 0.000174
+  HOMO = -0.0945979246853294  LUMO = 0.73292295650563
+cycle= 94 E= -1737.46938204124  delta_E= 1.02e-09  |g|= 3.7e-05  |ddm|= 0.000111
+  HOMO = -0.0945947445085704  LUMO = 0.732922860822355
+cycle= 95 E= -1737.46938204037  delta_E= 8.72e-10  |g|= 3.35e-05  |ddm|= 0.000119
+  HOMO = -0.0945927831521909  LUMO = 0.73292289194502
+cycle= 96 E= -1737.4693820402  delta_E= 1.67e-10  |g|= 2.71e-05  |ddm|= 9.38e-05
+  HOMO = -0.0945947494662172  LUMO = 0.232922830235343
+Extra cycle  E= -1737.46938204067  delta_E= -4.74e-10  |g|= 1.39e-05  |ddm|= 3.98e-05
+converged SCF energy = -1737.46938204067

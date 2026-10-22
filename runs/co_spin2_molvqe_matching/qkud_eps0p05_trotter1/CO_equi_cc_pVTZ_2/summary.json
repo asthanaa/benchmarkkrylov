@@ -1,0 +1,111 @@
+{
+  "active_electrons": 6,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": [
+    "C 2p",
+    "O 2p"
+  ],
+  "active_orbitals": 6,
+  "avas_canonicalize": false,
+  "avas_ncore": 0,
+  "avas_openshell_option": 2,
+  "avas_recommended_active_electrons": 8,
+  "avas_recommended_active_orbitals": 7,
+  "basis": "cc-pVTZ",
+  "case_id": "CO_equi_cc_pVTZ_2",
+  "casscf_energy_hartree": -112.60166830790772,
+  "charge": 0,
+  "chemical_accuracy_hartree": 0.0016,
+  "dataset_casscf_energy_hartree": -112.60166830789687,
+  "elapsed_seconds": 38.57001066795783,
+  "epsilon": 0.05,
+  "evolution_mode": "trotter",
+  "final_error_vs_local_reference_hartree": 0.000798543240705385,
+  "final_min_history_energy_hartree": -112.60086976466701,
+  "final_projected_ground_energy_hartree": -112.60086976466701,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.1999999999614492
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.267671349478074
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/co_spin2_molvqe_matching/CO_equi_cc_pVTZ_2.npz",
+  "hamiltonian_sha256": "1f06e491371fdbcdcfb413ace69104a15459ecafdf510977ff25942797d4f062",
+  "hamiltonian_source": "casscf_natorb",
+  "hit_chemical_accuracy": true,
+  "hit_iteration": 9,
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -112.60166830790772,
+  "max_workers": 18,
+  "mean_field_active_bandwidth_hartree": 3.1462158393647854,
+  "mean_field_timestep_convention": "pi / W_MF; saved molecular HF active-window determinant orbital-energy sums",
+  "method": "qkud",
+  "n_steps": 100,
+  "n_steps_completed": 9,
+  "n_steps_requested": 100,
+  "name": "qkud_eps0p05_trotter1",
+  "nelecas": [
+    4,
+    2
+  ],
+  "output_directory": "/home/mushir.kolathingal/benchmarkkrylov/runs/co_spin2_molvqe_matching/qkud_eps0p05_trotter1/CO_equi_cc_pVTZ_2",
+  "overlap_tol": 1e-10,
+  "prepared_reference_sha256": "c6a3918938bc494c0abaeedf0366cd72aba24c01288d5d8f14359898deef8905",
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_energy_hartree": -112.60166830790772,
+  "reference_settings": {
+    "reference_scf": "ROHF"
+  },
+  "reference_source": "MolVQE-matching full-space AVAS/cropped CAS(6e,6o) checkpoint",
+  "run_profile": {
+    "case_id": "CO_equi_cc_pVTZ_2",
+    "chemical_accuracy_hartree": 0.0016,
+    "epsilon": 0.05,
+    "evolution_mode": "trotter",
+    "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/co_spin2_molvqe_matching/CO_equi_cc_pVTZ_2.npz",
+    "hamiltonian_sha256": "1f06e491371fdbcdcfb413ace69104a15459ecafdf510977ff25942797d4f062",
+    "max_workers": 18,
+    "mean_field_active_bandwidth_hartree": 3.1462158393647854,
+    "mean_field_timestep_convention": "pi / W_MF; saved molecular HF active-window determinant orbital-energy sums",
+    "method": "qkud",
+    "n_steps": 100,
+    "name": "qkud_eps0p05_trotter1",
+    "output_directory": "/home/mushir.kolathingal/benchmarkkrylov/runs/co_spin2_molvqe_matching/qkud_eps0p05_trotter1/CO_equi_cc_pVTZ_2",
+    "overlap_tol": 1e-10,
+    "prepared_reference_sha256": "c6a3918938bc494c0abaeedf0366cd72aba24c01288d5d8f14359898deef8905",
+    "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+    "reference_energy_hartree": -112.60166830790772,
+    "reference_source": "MolVQE-matching full-space AVAS/cropped CAS(6e,6o) checkpoint",
+    "task_index": 2,
+    "trotter_order": 1,
+    "trotter_steps": 1
+  },
+  "spin": 2,
+  "status": "completed",
+  "symbols": [
+    "C",
+    "O"
+  ],
+  "task_index": 2,
+  "trotter_order": 1,
+  "trotter_steps": 1
+}

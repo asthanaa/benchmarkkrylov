@@ -1,0 +1,168 @@
+{
+  "active_orbital_indices_zero_based": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "active_spin_occupations": [
+    3,
+    1
+  ],
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.042949472117567236,
+  "delta_t_rule": "dt_scale_factor * pi/W_MF; saved HF active-window determinant sums",
+  "delta_t_units": "atomic units of time",
+  "dt_scale_factor": 0.025,
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -15.575904296997868,
+  "evolution_mode": "trotter",
+  "fock_bandwidth_hartree": 1.8286561502957426,
+  "fock_profile": {
+    "case": {
+      "active_electrons": 4,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [],
+      "active_orbital_labels": null,
+      "active_orbitals": 6,
+      "basis": "cc-pVTZ",
+      "cached_scf_energy_hartree": null,
+      "case_id": "BeH2_equi_cc_pVTZ_2",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -15.577504296993196,
+      "dt_scale_factor": 0.025,
+      "geometry_angstrom": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.299999999958237
+        ],
+        [
+          0.0,
+          0.0,
+          -1.299999999958237
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          2.4566439619345806
+        ],
+        [
+          0.0,
+          0.0,
+          -2.4566439619345806
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+      "hamiltonian_sha256": "abe766306735a5f36b88c1c3e3c55797c04d97be3ea245e60c0c300762ad28f7",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -15.577504296997867,
+      "mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/BeH2_equi_cc_pVTZ_2/fock_reference.json",
+      "mean_field_reference_sha256": "d770f36b03e53d790df26e6b70cb475b54cf950e90b02fc37402a6ba27d44b77",
+      "nelecas": [
+        3,
+        1
+      ],
+      "previous_reference_source": "",
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "ROHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_natorb/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/BeH2 equi._cc-pVTZ_2.json",
+      "source_summary_path": "runs/qkud_natorb_eps0.05/BeH2_equi_cc_pVTZ_2/summary.json",
+      "spin": 2,
+      "symbols": [
+        "Be",
+        "H",
+        "H"
+      ],
+      "unscaled_mean_field_delta_t": 1.7179788847026893
+    },
+    "scf_match_tolerance": 1e-06,
+    "spectrum_scope": "scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta"
+  },
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/6bcffedad55754936cf6fa342b5c68576372dd4f6a7c673828b11fbff0563644.npz",
+  "highest_determinant_orbital_sum_hartree": 0.3980592910461427,
+  "lowest_determinant_orbital_sum_hartree": -1.4305968592496,
+  "max_workers": 18,
+  "mean_field_active_bandwidth_hartree": 1.8286561502957426,
+  "mean_field_active_estimate": {
+    "active_orbital_indices_zero_based": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "active_selection": "contiguous canonical HF window after the frozen-core orbitals",
+    "active_spin_occupations": [
+      3,
+      1
+    ],
+    "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+    "alpha_orbital_energies_hartree": [
+      -0.5148187654966527,
+      -0.35751084270011635,
+      -0.043448485556178085,
+      0.05127936187636628,
+      0.09928968243880387,
+      0.12374512336548626
+    ],
+    "beta_orbital_energies_hartree": [
+      -0.5148187654966527,
+      -0.35751084270011635,
+      -0.043448485556178085,
+      0.05127936187636628,
+      0.09928968243880387,
+      0.12374512336548626
+    ],
+    "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+    "delta_t_pi_over_estimated_w": 1.7179788847026893,
+    "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+    "determinant_width_hartree": 1.8286561502957426,
+    "fock_operator": "ROHF effective Roothaan spatial Fock",
+    "highest_determinant_orbital_sum_hartree": 0.3980592910461427,
+    "lowest_determinant_orbital_sum_hartree": -1.4305968592496,
+    "ncore": 1,
+    "one_electron_range_hartree": 0.638563888862139,
+    "open_shell_caveat": "Uses the saved effective Roothaan spatial energies for both spins, not separate physical alpha/beta Fock spectra.",
+    "reference_method": "ROHF"
+  },
+  "method": "qrte",
+  "n_steps": 100,
+  "overlap_tol": 1e-10,
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "source_mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/BeH2_equi_cc_pVTZ_2/fock_reference.json",
+  "source_mean_field_reference_sha256": "d770f36b03e53d790df26e6b70cb475b54cf950e90b02fc37402a6ba27d44b77",
+  "spectrum_scope": "scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta",
+  "trotter_order": 2,
+  "trotter_steps": 1,
+  "unscaled_mean_field_delta_t": 1.7179788847026893,
+  "width_definition": "highest minus lowest frozen molecular HF orbital-energy sum at fixed active Nalpha/Nbeta",
+  "width_reference_method": "ROHF"
+}

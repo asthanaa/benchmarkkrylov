@@ -1,0 +1,3 @@
+REFERENCE H10_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H10_near_equi_sto3g_0 W=11.7650293111 Eh dt=0.066757008642 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H10_near_equi_sto3g_0 iterations=17 chemical_accuracy_hit=17

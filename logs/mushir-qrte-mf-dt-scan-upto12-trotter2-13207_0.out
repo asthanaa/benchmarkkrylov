@@ -1,0 +1,67 @@
+Worker 0/4: 22 conditions, task indices [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84]
+REFERENCE N2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_0 W=4.81005531531 Eh dt=0.00653130254779 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_0 iterations=43 chemical_accuracy_hit=43
+REFERENCE N2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_0 W=4.81005531531 Eh dt=0.163282563695 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_0 iterations=4 chemical_accuracy_hit=4
+REFERENCE N2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_0 W=4.81005531531 Eh dt=0.816412818474 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_0 iterations=5 chemical_accuracy_hit=5
+REFERENCE N2_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_2 W=3.36979279663 Eh dt=0.023307016508 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_2 iterations=100 chemical_accuracy_hit=None
+REFERENCE N2_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_2 W=3.36979279663 Eh dt=0.466140330161 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_2 iterations=8 chemical_accuracy_hit=8
+REFERENCE N2_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+N2_equi_cc_pVTZ_2 W=3.36979279663 Eh dt=1.39842099048 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE N2_equi_cc_pVTZ_2 iterations=12 chemical_accuracy_hit=12
+REFERENCE BeH2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_0 W=2.36726807331 Eh dt=0.0663548139944 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE BeH2_equi_cc_pVTZ_0 iterations=1 chemical_accuracy_hit=1
+REFERENCE BeH2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_0 W=2.36726807331 Eh dt=0.995322209915 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE BeH2_equi_cc_pVTZ_0 iterations=2 chemical_accuracy_hit=2
+REFERENCE BeH2_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_0 W=2.36726807331 Eh dt=2.65419255977 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE BeH2_equi_cc_pVTZ_0 iterations=20 chemical_accuracy_hit=20
+REFERENCE BeH2_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_2 W=1.8286561503 Eh dt=0.17179788847 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE BeH2_equi_cc_pVTZ_2 iterations=2 chemical_accuracy_hit=2
+REFERENCE BeH2_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+BeH2_equi_cc_pVTZ_2 W=1.8286561503 Eh dt=1.7179788847 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE BeH2_equi_cc_pVTZ_2 iterations=10 chemical_accuracy_hit=10
+REFERENCE H4_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H4_near_equi_sto3g_0 W=4.33648032339 Eh dt=0.00724456798904 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H4_near_equi_sto3g_0 iterations=24 chemical_accuracy_hit=24
+REFERENCE H4_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H4_near_equi_sto3g_0 W=4.33648032339 Eh dt=0.181114199726 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H4_near_equi_sto3g_0 iterations=3 chemical_accuracy_hit=3
+REFERENCE H4_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H4_near_equi_sto3g_0 W=4.33648032339 Eh dt=0.90557099863 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H4_near_equi_sto3g_0 iterations=3 chemical_accuracy_hit=3
+REFERENCE H6_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_sto3g_0 W=6.81122769607 Eh dt=0.0115309338998 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_sto3g_0 iterations=35 chemical_accuracy_hit=35
+REFERENCE H6_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_sto3g_0 W=6.81122769607 Eh dt=0.230618677996 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_sto3g_0 iterations=4 chemical_accuracy_hit=4
+REFERENCE H6_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_sto3g_0 W=6.81122769607 Eh dt=0.691856033987 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_sto3g_0 iterations=4 chemical_accuracy_hit=4
+REFERENCE H6_near_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_cc_pVTZ_0 W=4.49426198689 Eh dt=0.0349511517436 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_cc_pVTZ_0 iterations=5 chemical_accuracy_hit=5
+REFERENCE H6_near_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_cc_pVTZ_0 W=4.49426198689 Eh dt=0.524267276155 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_cc_pVTZ_0 iterations=4 chemical_accuracy_hit=4
+REFERENCE H6_near_equi_cc_pVTZ_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_cc_pVTZ_0 W=4.49426198689 Eh dt=1.39804606975 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_cc_pVTZ_0 iterations=17 chemical_accuracy_hit=17
+REFERENCE H6_near_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_cc_pVTZ_2 W=3.53856619883 Eh dt=0.0887815142366 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_cc_pVTZ_2 iterations=3 chemical_accuracy_hit=3
+REFERENCE H6_near_equi_cc_pVTZ_2 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H6_near_equi_cc_pVTZ_2 W=3.53856619883 Eh dt=0.887815142366 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H6_near_equi_cc_pVTZ_2 iterations=3 chemical_accuracy_hit=3

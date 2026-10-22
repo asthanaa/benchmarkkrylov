@@ -23,7 +23,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import cm, colors as mcolors
 from matplotlib.lines import Line2D
-from matplotlib.ticker import ScalarFormatter
+from matplotlib.ticker import (
+    FixedLocator, LogFormatterMathtext, LogLocator, NullFormatter, NullLocator,
+    ScalarFormatter, StrMethodFormatter,
+)
 
 
 BENCHMARK_ROOT = Path(__file__).resolve().parents[2]
@@ -271,7 +274,9 @@ def _method_spin_label(method_key: str, spin: int) -> str:
     return rf"{method}, spin {spin}"
 
 
-def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
+def _plot(rows: list[dict[str, Any]], output_prefix: Path, *, title: str | None = None,
+          highlight_equilibrium: bool = False, y_major_ticks=None, colorbar_ticks=None,
+          y_log_power_labels: bool = False) -> None:
     points = _hit_rows(rows)
     if not points:
         raise SystemExit("No N2 PES methods hit chemical accuracy; no iteration plot can be made.")
@@ -300,19 +305,21 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
     norm = mcolors.Normalize(vmin=min(unique_bonds), vmax=max(unique_bonds))
 
     fig, axes = plt.subplots(1, 2, figsize=(8.0, 3.85), sharey=True, constrained_layout=True)
+    if title:
+        fig.suptitle(title, fontsize=11)
     panels = (
         (
             axes[0],
             "overlap_weight",
-            r"$|\langle\Phi_\mathrm{ref}|\Psi_0\rangle|^2$",
-            "(a) Initial overlap",
+            r"Initial overlap, $|\langle\Phi_\mathrm{ref}|\Psi_0\rangle|^2$",
+            "",
             "linear",
         ),
         (
             axes[1],
             "gap_ev",
-            r"Fixed-sector gap, $E_1 - E_0$ (eV)",
-            "(b) Spectral gap",
+            r"Spectral gap, $E_1 - E_0$ (eV)",
+            "",
             "log",
         ),
     )
@@ -371,6 +378,12 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
                         zorder=5,
                     )
 
+        if highlight_equilibrium:
+            equilibrium = [row for row in display_rows if row["point_kind"] == "equilibrium"]
+            ax.scatter([float(row[x_key]) for row in equilibrium],
+                       [float(_plot_y(row)) for row in equilibrium], marker="D", s=150,
+                       facecolors="none", edgecolors="black", linewidths=.8, zorder=6)
+
         if miss_rows:
             panel_misses = [row for row in miss_rows if _plot_y(row) is not None]
             ax.scatter(
@@ -403,6 +416,21 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
         ymax = ymin + 1.0
     axes[0].set_ylim(ymin, ymax)
     axes[0].set_ylabel("Iterations to chemical accuracy")
+    if y_major_ticks is not None:
+        axes[0].yaxis.set_major_locator(FixedLocator(y_major_ticks))
+        axes[0].yaxis.set_major_formatter(LogFormatterMathtext() if y_log_power_labels
+                                        else StrMethodFormatter("{x:g}"))
+        if y_log_power_labels:
+            axes[0].set_ylim(ymin, max(ymax, max(y_major_ticks) * 1.1))
+            axes[0].yaxis.set_minor_locator(LogLocator(base=10, subs=range(2, 10)))
+            axes[0].yaxis.set_minor_formatter(NullFormatter())
+            for ax in axes:
+                ax.yaxis.grid(True, which="minor", color="#D8D8D8", alpha=.52, linewidth=.5)
+                ax.tick_params(axis="y", which="minor", length=2.5, width=.6)
+        else:
+            axes[0].yaxis.set_minor_locator(NullLocator())
+            for ax in axes:
+                ax.yaxis.grid(False, which="minor")
 
     overlap_values = np.asarray([float(row["overlap_weight"]) for row in points], dtype=float)
     overlap_pad = max(0.005, 0.04 * float(overlap_values.max() - overlap_values.min()))
@@ -423,6 +451,10 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
         _method_spin_label("qkud", 0),
         _method_spin_label("qkud", 2),
     ]
+    if highlight_equilibrium:
+        legend_handles.append(Line2D([0], [0], marker="D", linestyle="none",
+                                     markerfacecolor="none", markeredgecolor="black", markersize=8))
+        legend_labels.append("1.20 Å equilibrium")
     if miss_rows:
         legend_handles.append(
             Line2D([0], [0], marker="X", linestyle="none", markerfacecolor="#4B5563", markeredgecolor="black", markersize=6.8)
@@ -451,8 +483,10 @@ def _plot(rows: list[dict[str, Any]], output_prefix: Path) -> None:
     sm.set_array([])
     colorbar = fig.colorbar(sm, ax=axes, shrink=0.92, pad=0.018, aspect=28)
     colorbar.set_label(r"N-N bond distance, $R$ ($\AA$)")
-    colorbar.set_ticks(unique_bonds)
-    colorbar.set_ticklabels([f"{value:.2f}" for value in unique_bonds])
+    colorbar_ticks = unique_bonds if colorbar_ticks is None else colorbar_ticks
+    colorbar.set_ticks(colorbar_ticks)
+    colorbar.set_ticklabels([f"{value:.2f}" for value in colorbar_ticks])
+    colorbar.minorticks_off()
     colorbar.outline.set_linewidth(0.65)
 
     output_prefix.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,4 @@
+SCF m_Benzyne_equi_cc_pVTZ_2 ROHF
+output file: runs/qrte_fock_pi_over_w/m_Benzyne_equi_cc_pVTZ_2/fock_scf.log
+m_Benzyne_equi_cc_pVTZ_2 W=26.5683355512 Eh dt=0.118245745863 au (full SCF orbital spectrum)
+DONE m_Benzyne_equi_cc_pVTZ_2 iterations=4 chemical_accuracy_hit=4

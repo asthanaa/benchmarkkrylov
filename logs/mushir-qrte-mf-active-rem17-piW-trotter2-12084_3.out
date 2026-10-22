@@ -1,0 +1,3 @@
+REFERENCE CH2O_equi_cc_pVTZ_0 spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+CH2O_equi_cc_pVTZ_0 W=4.20292478524 Eh dt=0.747477724233 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE CH2O_equi_cc_pVTZ_0 iterations=6 chemical_accuracy_hit=6

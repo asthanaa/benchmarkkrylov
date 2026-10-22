@@ -1,0 +1,153 @@
+{
+  "alpha_beta_orbital_energy_max_difference_hartree": 0.5237303611942824,
+  "fock_profile": {
+    "case": {
+      "active_electrons": 5,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [],
+      "active_orbital_labels": null,
+      "active_orbitals": 5,
+      "basis": "sto-3g",
+      "cached_scf_energy_hartree": null,
+      "case_id": "H5_near_equi_sto3g_1",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -2.6545169682127527,
+      "geometry_angstrom": [
+        [
+          -1.999999999935749,
+          0.0,
+          0.0
+        ],
+        [
+          -0.9999999999678745,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9999999999678745,
+          0.0,
+          0.0
+        ],
+        [
+          1.999999999935749,
+          0.0,
+          0.0
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          -3.7794522491301237,
+          0.0,
+          0.0
+        ],
+        [
+          -1.8897261245650618,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.8897261245650618,
+          0.0,
+          0.0
+        ],
+        [
+          3.7794522491301237,
+          0.0,
+          0.0
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/c508cd3bc1189229881e58a0b84d52a5320a7210318d33be2de6f89d67c8108a.npz",
+      "hamiltonian_sha256": "4eb768aa5167a4b724c4aae2c127496a9d0a5dfe9dbda034cc8a1a2cb3a52d67",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -2.654516968217046,
+      "nelecas": [
+        3,
+        2
+      ],
+      "previous_reference_source": "",
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "ROHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_natorb/c508cd3bc1189229881e58a0b84d52a5320a7210318d33be2de6f89d67c8108a.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/H5 near equi._sto3g_1.json",
+      "source_summary_path": "runs/qkud_natorb_eps0.05/H5_near_equi_sto3g_1/summary.json",
+      "spin": 1,
+      "symbols": [
+        "H",
+        "H",
+        "H",
+        "H",
+        "H"
+      ]
+    },
+    "scf_match_tolerance": 1e-06,
+    "spectrum_scope": "full_system_frozen_uhf_fock_determinants"
+  },
+  "full_system_spin_occupations": [
+    3,
+    2
+  ],
+  "full_uhf_alpha_orbital_energies_hartree": [
+    -0.6837469144726259,
+    -0.5308164447447425,
+    -0.3263674868128128,
+    0.445096698942883,
+    0.9418395669498458
+  ],
+  "full_uhf_beta_orbital_energies_hartree": [
+    -0.614351235013071,
+    -0.43980063390854585,
+    0.19736287438146963,
+    0.532086206770384,
+    1.0105151717788918
+  ],
+  "full_uhf_orbital_occupations": [
+    [
+      1.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "initial_guess": "minao",
+  "initial_guess_breaksym": 1,
+  "n_scf_spatial_orbitals_per_spin": 5,
+  "reference_scf": "UHF",
+  "scf_converged": true,
+  "scf_energy_hartree": -2.5986882394345017,
+  "spectrum_scope": "full_system_frozen_uhf_fock_determinants",
+  "status": "completed",
+  "uhf_effective_multiplicity": 2.1224713362761634,
+  "uhf_fock_constant_offset_hartree": -0.0036055244827037924,
+  "uhf_reference_occupied_orbital_sum_hartree": -2.595082714951798,
+  "uhf_spin_squared": 0.8762211433284808,
+  "used_newton_scf": false,
+  "width_scf_method": "UHF"
+}

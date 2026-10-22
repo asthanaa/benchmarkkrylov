@@ -1,0 +1,133 @@
+{
+  "active_electrons": 8,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": null,
+  "active_orbitals": 8,
+  "basis": "sto-3g",
+  "cached_scf_energy_hartree": null,
+  "case_id": "H8_near_equi_sto3g_0",
+  "charge": 0,
+  "dataset_casscf_energy_hartree": -4.307571601993609,
+  "geometry_angstrom": [
+    [
+      -3.4999999998875606,
+      0.0,
+      0.0
+    ],
+    [
+      -2.4999999999196865,
+      0.0,
+      0.0
+    ],
+    [
+      -1.4999999999518117,
+      0.0,
+      0.0
+    ],
+    [
+      -0.49999999998393724,
+      0.0,
+      0.0
+    ],
+    [
+      0.49999999998393724,
+      0.0,
+      0.0
+    ],
+    [
+      1.4999999999518117,
+      0.0,
+      0.0
+    ],
+    [
+      2.4999999999196865,
+      0.0,
+      0.0
+    ],
+    [
+      3.4999999998875606,
+      0.0,
+      0.0
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      -6.614041435977716,
+      0.0,
+      0.0
+    ],
+    [
+      -4.724315311412655,
+      0.0,
+      0.0
+    ],
+    [
+      -2.8345891868475928,
+      0.0,
+      0.0
+    ],
+    [
+      -0.9448630622825309,
+      0.0,
+      0.0
+    ],
+    [
+      0.9448630622825309,
+      0.0,
+      0.0
+    ],
+    [
+      2.8345891868475928,
+      0.0,
+      0.0
+    ],
+    [
+      4.724315311412655,
+      0.0,
+      0.0
+    ],
+    [
+      6.614041435977716,
+      0.0,
+      0.0
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/3a22435c192ab637af46c933d60b0970a7511f5206874c018a9900f972fa2a6a.npz",
+  "hamiltonian_sha256": "9c429f00245aa31d357eb1900f43f5be3a6328ed6e3c5f47a97ca8bba9f69033",
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -4.307571602002263,
+  "mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/H8_near_equi_sto3g_0/fock_reference.json",
+  "mean_field_reference_sha256": "eb6999f33358871f03b8a0944197312f9d0a464d251f891016e5b96482557154",
+  "nelecas": [
+    4,
+    4
+  ],
+  "previous_reference_source": "",
+  "reference_settings": {
+    "geometry_unit": "Angstrom",
+    "molecule_symmetry": false,
+    "reference_scf": "RHF",
+    "scf_conv_tol": null,
+    "scf_diis_space": 12,
+    "scf_level_shift": 0.5,
+    "scf_max_cycle": 100,
+    "scf_newton_if_not_converged": true
+  },
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "source_cache_path": "hamiltonian_cache/casscf_natorb/3a22435c192ab637af46c933d60b0970a7511f5206874c018a9900f972fa2a6a.npz",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/H8 near equi._sto3g_0.json",
+  "source_summary_path": "runs/qkud_natorb_eps0.05/H8_near_equi_sto3g_0/summary.json",
+  "spin": 0,
+  "symbols": [
+    "H",
+    "H",
+    "H",
+    "H",
+    "H",
+    "H",
+    "H",
+    "H"
+  ]
+}

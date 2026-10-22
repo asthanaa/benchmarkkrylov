@@ -1116,20 +1116,30 @@ def _project_hamiltonian_energies(basis_states, h_qulacs, overlap_tol: float, np
     return energies, basis_array
 
 
-def _build_time_evolution_circuit(qubits: int, pauli_terms, time_step: float, trotter_steps: int, qg, QuantumCircuit, np):
+def _build_time_evolution_circuit(qubits: int, pauli_terms, time_step: float, trotter_steps: int, qg, QuantumCircuit, np, *, trotter_order: int = 1):
+    if trotter_order not in {1, 2}:
+        raise ValueError("trotter_order must be one of {1, 2}")
+    if trotter_steps < 1:
+        raise ValueError("trotter_steps must be >= 1")
     circuit = QuantumCircuit(int(qubits))
     if abs(float(time_step)) < 1e-15:
         return circuit
 
     scaled_time = float(time_step) / float(trotter_steps)
+    terms = list(pauli_terms)
+    if trotter_order == 2:
+        scaled_time *= 0.5
     for _ in range(int(trotter_steps)):
-        for term in pauli_terms:
-            if len(term["indices"]) == 0:
-                continue
-            angle = -2.0 * float(np.real(term["coeff"])) * scaled_time
-            if abs(angle) < 1e-15:
-                continue
-            circuit.add_gate(qg.PauliRotation(term["indices"], term["pauli_ids"], angle))
+        # A palindromic sequence of half steps gives symmetric second order.
+        sweeps = (terms,) if trotter_order == 1 else (terms, reversed(terms))
+        for sweep in sweeps:
+            for term in sweep:
+                if len(term["indices"]) == 0:
+                    continue
+                angle = -2.0 * float(np.real(term["coeff"])) * scaled_time
+                if abs(angle) < 1e-15:
+                    continue
+                circuit.add_gate(qg.PauliRotation(term["indices"], term["pauli_ids"], angle))
     return circuit
 
 
@@ -1897,6 +1907,7 @@ def qrte_qulacs(
     return_min_energy_history: bool = False,
     evolution_mode: str = "sparse",
     trotter_steps: int = 1,
+    trotter_order: int = 1,
     max_workers: Optional[int] = None,
     early_stop_energy: Optional[float] = None,
     hamiltonian_source: str = "casci",
@@ -1917,6 +1928,9 @@ def qrte_qulacs(
 ):
     """Qulacs-backed QRTE using exact sparse or Trotterized evolution.
 
+    ``trotter_order=2`` selects a symmetric second-order product formula;
+    ``trotter_steps`` sets the number of slices per QRTE time step.
+
     For larger qubit counts, prefer ``evolution_mode="trotter"`` to avoid
     materializing the Hamiltonian matrix.
     """
@@ -1930,6 +1944,8 @@ def qrte_qulacs(
         raise ValueError("overlap_tol must be > 0")
     if trotter_steps < 1:
         raise ValueError("trotter_steps must be >= 1")
+    if trotter_order not in {1, 2}:
+        raise ValueError("trotter_order must be one of {1, 2}")
     if evolution_mode not in {"sparse", "trotter"}:
         raise ValueError("evolution_mode must be one of {'sparse', 'trotter'}")
 
@@ -1997,6 +2013,7 @@ def qrte_qulacs(
             qg,
             QuantumCircuit,
             np,
+            trotter_order=trotter_order,
         )
 
     for _ in range(int(n_steps)):

@@ -1,0 +1,3 @@
+REFERENCE magnesium_porphyrin_ceo spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+magnesium_porphyrin_ceo W=0.979816435279 Eh dt=3.20630736582 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE magnesium_porphyrin_ceo iterations=2 chemical_accuracy_hit=2

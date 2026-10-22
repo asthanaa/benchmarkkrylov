@@ -1,0 +1,23 @@
+{
+  "case_id": "CO_equi_cc_pVTZ_2",
+  "chemical_accuracy_hartree": 0.0016,
+  "epsilon": 0.05,
+  "evolution_mode": "trotter",
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/co_spin2_molvqe_matching/CO_equi_cc_pVTZ_2.npz",
+  "hamiltonian_sha256": "1f06e491371fdbcdcfb413ace69104a15459ecafdf510977ff25942797d4f062",
+  "max_workers": 18,
+  "mean_field_active_bandwidth_hartree": 3.1462158393647854,
+  "mean_field_timestep_convention": "pi / W_MF; saved molecular HF active-window determinant orbital-energy sums",
+  "method": "qkud",
+  "n_steps": 100,
+  "name": "qkud_eps0p05_trotter1",
+  "output_directory": "/home/mushir.kolathingal/benchmarkkrylov/runs/co_spin2_molvqe_matching/qkud_eps0p05_trotter1/CO_equi_cc_pVTZ_2",
+  "overlap_tol": 1e-10,
+  "prepared_reference_sha256": "c6a3918938bc494c0abaeedf0366cd72aba24c01288d5d8f14359898deef8905",
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_energy_hartree": -112.60166830790772,
+  "reference_source": "MolVQE-matching full-space AVAS/cropped CAS(6e,6o) checkpoint",
+  "task_index": 2,
+  "trotter_order": 1,
+  "trotter_steps": 1
+}

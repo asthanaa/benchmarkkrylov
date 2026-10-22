@@ -1,0 +1,80 @@
+{
+  "active_electrons": 4,
+  "active_orbital_index_base": 0,
+  "active_orbital_indices": [],
+  "active_orbital_labels": null,
+  "active_orbitals": 6,
+  "basis": "cc-pVTZ",
+  "cached_scf_energy_hartree": null,
+  "case_id": "BeH2_equi_cc_pVTZ_0",
+  "charge": 0,
+  "dataset_casscf_energy_hartree": -15.803244181133712,
+  "dt_scale_factor": 0.75,
+  "geometry_angstrom": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.299999999958237
+    ],
+    [
+      0.0,
+      0.0,
+      -1.299999999958237
+    ]
+  ],
+  "geometry_bohr": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      2.4566439619345806
+    ],
+    [
+      0.0,
+      0.0,
+      -2.4566439619345806
+    ]
+  ],
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/e3e0bf93f4fe7154aa460e5a8e6779a390a3c4673de1e5db48743ce98f1283f8.npz",
+  "hamiltonian_sha256": "0a2127441b655207ab95136f2f6a1064418b282e888b40928970904a3693020e",
+  "hamiltonian_source": "casscf_natorb",
+  "local_reference_converged": true,
+  "local_reference_energy_hartree": -15.803244181147063,
+  "mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/BeH2_equi_cc_pVTZ_0/fock_reference.json",
+  "mean_field_reference_sha256": "47af4a58964b5ea5c827e1dcebe6a087b2ca8567370bf97064b93337d9ef1da0",
+  "nelecas": [
+    2,
+    2
+  ],
+  "previous_reference_source": "",
+  "reference_settings": {
+    "geometry_unit": "Angstrom",
+    "molecule_symmetry": false,
+    "reference_scf": "RHF",
+    "scf_conv_tol": null,
+    "scf_diis_space": 12,
+    "scf_level_shift": 0.5,
+    "scf_max_cycle": 100,
+    "scf_newton_if_not_converged": true
+  },
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "source_cache_path": "hamiltonian_cache/casscf_natorb/e3e0bf93f4fe7154aa460e5a8e6779a390a3c4673de1e5db48743ce98f1283f8.npz",
+  "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/BeH2 equi._cc-pVTZ_0.json",
+  "source_summary_path": "runs/qkud_natorb_eps0.05/BeH2_equi_cc_pVTZ_0/summary.json",
+  "spin": 0,
+  "symbols": [
+    "Be",
+    "H",
+    "H"
+  ],
+  "unscaled_mean_field_delta_t": 1.3270962798872248
+}

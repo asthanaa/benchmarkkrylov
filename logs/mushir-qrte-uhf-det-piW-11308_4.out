@@ -1,0 +1,4 @@
+SCF BeH2_equi_cc_pVTZ_0 spectrum_source=full_system_frozen_uhf_fock_determinants
+output file: runs/qrte_uhf_determinant_pi_over_w_small10/BeH2_equi_cc_pVTZ_0/fock_scf.log
+BeH2_equi_cc_pVTZ_0 W=39.9702445434 Eh dt=0.0785982845359 au (highest minus lowest frozen UHF Fock determinant energy at fixed full-system Nalpha/Nbeta)
+DONE BeH2_equi_cc_pVTZ_0 iterations=1 chemical_accuracy_hit=1

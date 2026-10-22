@@ -1,0 +1,4 @@
+SCF CH2O_equi_cc_pVTZ_0 RHF
+output file: runs/qrte_fock_pi_over_w/CH2O_equi_cc_pVTZ_0/fock_scf.log
+CH2O_equi_cc_pVTZ_0 W=34.1034140744 Eh dt=0.0921195938545 au (full SCF orbital spectrum)
+DONE CH2O_equi_cc_pVTZ_0 iterations=93 chemical_accuracy_hit=93

@@ -1,0 +1,4 @@
+SCF N2_equi_cc_pVTZ_2 ROHF
+output file: runs/qrte_fock_pi_over_w/N2_equi_cc_pVTZ_2/fock_scf.log
+N2_equi_cc_pVTZ_2 W=29.1395694131 Eh dt=0.107811910638 au (full SCF orbital spectrum)
+DONE N2_equi_cc_pVTZ_2 iterations=27 chemical_accuracy_hit=27

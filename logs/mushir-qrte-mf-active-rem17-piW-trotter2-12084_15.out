@@ -1,0 +1,3 @@
+REFERENCE H9_near_equi_sto3g_1 spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H9_near_equi_sto3g_1 W=10.1593025416 Eh dt=0.309233103425 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE H9_near_equi_sto3g_1 iterations=5 chemical_accuracy_hit=5

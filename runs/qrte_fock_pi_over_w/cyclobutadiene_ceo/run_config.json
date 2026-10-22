@@ -1,0 +1,161 @@
+{
+  "chemical_accuracy_hartree": 0.0016,
+  "delta_t": 0.20944643589515652,
+  "delta_t_rule": "pi / (max(full_scf_mo_energy) - min(full_scf_mo_energy))",
+  "delta_t_units": "atomic units of time",
+  "early_stop_chemical_accuracy": true,
+  "early_stop_energy_hartree": -153.72068958245737,
+  "evolution_mode": "trotter",
+  "fock_bandwidth_hartree": 14.999504002839148,
+  "fock_profile": {
+    "case": {
+      "active_electrons": 4,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [
+        11,
+        13,
+        14,
+        19
+      ],
+      "active_orbital_labels": null,
+      "active_orbitals": 4,
+      "basis": "cc-pvdz",
+      "cached_scf_energy_hartree": -153.65140584417833,
+      "case_id": "cyclobutadiene_ceo",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -153.72228958240802,
+      "geometry_angstrom": [
+        [
+          1.5531999999501027,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.3656999999561261,
+          0.0
+        ],
+        [
+          1.5531999999501027,
+          1.3656999999561261,
+          0.0
+        ],
+        [
+          2.308318999925844,
+          -0.7551189999757414,
+          0.0
+        ],
+        [
+          -0.7551189999757414,
+          -0.7551189999757414,
+          0.0
+        ],
+        [
+          -0.7551189999757414,
+          2.1208189999318674,
+          0.0
+        ],
+        [
+          2.308318999925844,
+          2.1208189999318674,
+          0.0
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          2.935122616674454,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          2.5807989683185046,
+          0.0
+        ],
+        [
+          2.935122616674454,
+          2.5807989683185046,
+          0.0
+        ],
+        [
+          4.362090718129899,
+          -1.426968101455445,
+          0.0
+        ],
+        [
+          -1.426968101455445,
+          -1.426968101455445,
+          0.0
+        ],
+        [
+          -1.426968101455445,
+          4.00776706977395,
+          0.0
+        ],
+        [
+          4.362090718129899,
+          4.00776706977395,
+          0.0
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/ae485c01a500fed77cbfd2ceafbd62994bcd63222507ad81e2550ff98699f5da.npz",
+      "hamiltonian_sha256": "31faab046ade8af89770854364c30fd9df3f2c2d2c2fd4df0bbb5587b3b468f4",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -153.72228958245736,
+      "nelecas": [
+        2,
+        2
+      ],
+      "previous_reference_source": "local corrected CASSCF/natorb Hamiltonian reference",
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "RHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_natorb_corrected_active_space_dt0p05/ae485c01a500fed77cbfd2ceafbd62994bcd63222507ad81e2550ff98699f5da.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/cyclobutadiene_ceo.json",
+      "source_summary_path": "runs/qkud_corrected_active_space_eps0.05/cyclobutadiene_ceo/summary.json",
+      "spin": 0,
+      "symbols": [
+        "C",
+        "C",
+        "C",
+        "C",
+        "H",
+        "H",
+        "H",
+        "H"
+      ]
+    },
+    "scf_match_tolerance": 1e-06
+  },
+  "fock_spectral_max_hartree": 3.751965922299332,
+  "fock_spectral_min_hartree": -11.247538080539815,
+  "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/ae485c01a500fed77cbfd2ceafbd62994bcd63222507ad81e2550ff98699f5da.npz",
+  "max_workers": 18,
+  "method": "qrte",
+  "n_steps": 100,
+  "overlap_tol": 1e-10,
+  "qcant_root": "/home/mushir.kolathingal/benchmarkkrylov/vendor/QCANT",
+  "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+  "spectrum_scope": "full_scf_orbitals",
+  "trotter_steps": 1,
+  "width_definition": "full SCF one-electron orbital energy range, including core and virtual orbitals"
+}

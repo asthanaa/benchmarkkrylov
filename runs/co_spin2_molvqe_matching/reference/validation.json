@@ -1,0 +1,50 @@
+{
+  "hamiltonian_sha256": "1f06e491371fdbcdcfb413ace69104a15459ecafdf510977ff25942797d4f062",
+  "mapped_sector_ground_energy_hartree": -112.60166830799066,
+  "smoke_checks": [
+    {
+      "circuits": [
+        {
+          "time_step": 0.05,
+          "trotter_order": 1,
+          "trotter_steps": 1
+        }
+      ],
+      "final_energy_hartree": -112.5780128186322,
+      "iterations": 1,
+      "name": "qrte_dt0p05_trotter1",
+      "status": "passed"
+    },
+    {
+      "circuits": [
+        {
+          "time_step": 0.9985305567033425,
+          "trotter_order": 2,
+          "trotter_steps": 1
+        }
+      ],
+      "final_energy_hartree": -112.57374732219046,
+      "iterations": 1,
+      "name": "qrte_pi_over_wmf_trotter2",
+      "status": "passed"
+    },
+    {
+      "circuits": [
+        {
+          "time_step": 0.05,
+          "trotter_order": 1,
+          "trotter_steps": 1
+        },
+        {
+          "time_step": -0.05,
+          "trotter_order": 1,
+          "trotter_steps": 1
+        }
+      ],
+      "final_energy_hartree": -112.57801181277767,
+      "iterations": 1,
+      "name": "qkud_eps0p05_trotter1",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+REFERENCE m_Benzyne_equi_cc_pVTZ_2 spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+m_Benzyne_equi_cc_pVTZ_2 W=2.74240234269 Eh dt=1.14556227024 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE m_Benzyne_equi_cc_pVTZ_2 iterations=3 chemical_accuracy_hit=3

@@ -1,0 +1,259 @@
+#!/usr/bin/env python
+"""Repeat the saved 16-point N2 PES with geometry-specific HF-window dt=pi/W.
+
+No CASSCF or CAS diagonalization is performed. The old PES caches are pinned.
+SCF and QRTE run only in normal execution, never during preparation/dry-run.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import math
+from pathlib import Path
+
+import numpy as np
+
+import run_n2_pes_qrte_qkud_cumulants as old
+import run_qrte_mean_field_active_pi_over_w_small10 as mf
+
+qrte = mf.qrte
+SOURCE_ROOT = old.DEFAULT_QRTE_OUTDIR
+CACHE_ROOT = old.DEFAULT_CACHE_DIR
+DEFAULT_OUTDIR = qrte.ROOT / "runs/n2_pes_qrte_mean_field_pi_over_w_trotter2"
+CASES = tuple(old.Case(old._case_id(r, s), r, s)
+              for r in old.DEFAULT_DISTANCES_ANGSTROM for s in old.DEFAULT_SPINS)
+SPECTRUM_SCOPE = "geometry_specific_molecular_hf_active_window_fixed_nalpha_nbeta"
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--outdir", type=Path, default=DEFAULT_OUTDIR)
+    parser.add_argument("--qcant-root", type=Path, default=qrte.ROOT / "vendor/QCANT")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--case-index", type=int)
+    selection.add_argument("--case-id", action="append")
+    for flag in ("dry-run", "count-cases", "prepare-only", "reference-only", "force"):
+        parser.add_argument(f"--{flag}", action="store_true")
+    parser.add_argument("--n-steps", type=int, default=100)
+    parser.add_argument("--overlap-tol", type=float, default=1e-10)
+    parser.add_argument("--max-workers", type=int, default=18)
+    parser.add_argument("--scf-match-tolerance", type=float, default=1e-6)
+    parser.add_argument("--evolution-mode", choices=("trotter",), default="trotter")
+    parser.add_argument("--trotter-order", type=int, choices=(2,), default=2)
+    parser.add_argument("--trotter-steps", type=int, choices=(1,), default=1)
+    args = parser.parse_args(argv)
+    for key in ("n_steps", "overlap_tol", "max_workers", "scf_match_tolerance"):
+        value = getattr(args, key)
+        if not math.isfinite(value) or value <= 0:
+            parser.error(f"--{key.replace('_', '-')} must be positive and finite")
+    args.outdir = qrte.resolve_path(args.outdir).resolve()
+    args.qcant_root = qrte.resolve_path(args.qcant_root).resolve()
+    for protected in (SOURCE_ROOT, CACHE_ROOT, old.DEFAULT_QKUD_OUTDIR):
+        if args.outdir == protected.resolve() or protected.resolve() in args.outdir.parents:
+            parser.error("Use a separate output directory; preserve the earlier PES results and caches")
+    if args.prepare_only and (args.case_index is not None or args.case_id):
+        parser.error("Prepare the complete PES plan without a case selection")
+    args.delta_t = None
+    return args
+
+
+def load_cases(args):
+    """Read and verify old results/caches; never invoke a molecular builder."""
+    cases = []
+    for index, point in enumerate(CASES):
+        source = SOURCE_ROOT / point.case_id
+        snapshot = qrte.load_json(source / "input_snapshot.json")
+        config = qrte.load_json(source / "run_config.json")
+        summary = qrte.load_json(source / "summary.json")
+        expected = {"case_id": point.case_id, "symbols": point.symbols,
+                    "geometry_angstrom": point.geometry_angstrom, "basis": "cc-pVTZ",
+                    "spin": point.spin, "charge": 0, "active_electrons": 6, "active_orbitals": 6}
+        for field, value in expected.items():
+            if snapshot[field] != value:
+                raise ValueError(f"{point.case_id}: source snapshot differs for {field}")
+        if (summary["status"] != "completed" or summary["method"] != "qrte"
+                or summary["case_id"] != point.case_id
+                or summary["bond_length_angstrom"] != point.bond_length_angstrom
+                or summary["spin"] != point.spin or summary["delta_t"] != 0.05
+                or config["hamiltonian_source"] != "casscf_natorb"):
+            raise ValueError(f"{point.case_id}: invalid original QRTE PES provenance")
+        path = qrte.resolve_path(snapshot["hamiltonian_cache_path"]).resolve()
+        if path.parent != CACHE_ROOT.resolve() or path != qrte.resolve_path(summary["hamiltonian_cache_path"]).resolve():
+            raise ValueError(f"{point.case_id}: original PES cache mapping differs")
+        with np.load(path, allow_pickle=False) as cache:
+            occupations = np.asarray(cache["nelecas"], dtype=int).tolist()
+            reference = float(cache["reference_energy"])
+            scf_energy = float(cache["scf_energy"])
+            indices = np.asarray(cache["active_orbital_indices"], dtype=int).tolist()
+            if (int(cache["ncas"]) != 6 or occupations != [3 + point.spin // 2, 3 - point.spin // 2]
+                    or int(cache["effective_active_electrons"]) != 6 or indices
+                    or str(cache["active_space_selection"].item()) != "default"
+                    or str(cache["hamiltonian_source"].item()) != "casscf_natorb"
+                    or not bool(cache["reference_converged"]) or not bool(cache["scf_converged"])
+                    or not math.isfinite(reference) or not math.isfinite(scf_energy)):
+                raise ValueError(f"{point.case_id}: invalid cached active space/reference")
+            for saved in (snapshot, summary):
+                if (abs(reference - float(saved["local_reference_energy_hartree"])) > 1e-9
+                        or abs(scf_energy - float(saved["scf_energy_hartree"])) > 1e-9):
+                    raise ValueError(f"{point.case_id}: cached and saved reference energies differ")
+            for key in ("h1ecas", "two_mo", "ecore"):
+                if not np.all(np.isfinite(cache[key])):
+                    raise ValueError(f"{point.case_id}: nonfinite cached integrals")
+            index_base = int(cache["active_orbital_index_base"])
+        settings = {key: config[key] for key in ("scf_conv_tol", "scf_diis_space", "scf_level_shift",
+                                                "scf_max_cycle", "scf_newton_if_not_converged")}
+        settings.update(reference_scf="RHF" if point.spin == 0 else "ROHF",
+                        geometry_unit="Angstrom", molecule_symmetry=False)
+        cases.append({**expected, "task_index": index, "bond_length_angstrom": point.bond_length_angstrom,
+                      "geometry_bohr": point.geometry_bohr, "nelecas": occupations,
+                      "active_orbital_indices": indices, "active_orbital_index_base": index_base,
+                      "active_orbital_labels": None, "reference_settings": settings,
+                      "hamiltonian_cache_path": str(path), "hamiltonian_sha256": sha256(path),
+                      "hamiltonian_source": "casscf_natorb", "local_reference_converged": True,
+                      "local_reference_energy_hartree": reference, "cached_scf_energy_hartree": scf_energy,
+                      "dataset_casscf_energy_hartree": None, "source_json_path": None,
+                      "reference_source": "CASSCF/natorb energy in the original geometry-specific N2 PES cache",
+                      "source_run_dir": str(source),
+                      "source_file_sha256": {name: sha256(source / name) for name in
+                                             ("input_snapshot.json", "run_config.json", "summary.json")}})
+    if args.case_id:
+        missing = set(args.case_id) - {c["case_id"] for c in cases}
+        if missing:
+            raise ValueError(f"Cases absent from original N2 PES: {sorted(missing)}")
+        cases = [c for c in cases if c["case_id"] in args.case_id]
+    if args.case_index is not None:
+        if not 0 <= args.case_index < len(cases):
+            raise ValueError("--case-index must be in [0, 15]")
+        cases = [cases[args.case_index]]
+    return cases
+
+
+def plan_payload(cases, args):
+    return {"task_count": len(cases), "cases": cases, "outdir": str(args.outdir),
+            "n_steps": args.n_steps, "overlap_tol": args.overlap_tol, "max_workers": args.max_workers,
+            "scf_match_tolerance": args.scf_match_tolerance, "qcant_root": str(args.qcant_root),
+            "evolution_mode": "trotter", "trotter_order": 2, "trotter_steps": 1,
+            "spectrum_scope": SPECTRUM_SCOPE, "delta_t_rule": "pi / W_MF at each geometry",
+            "chemical_accuracy_hartree": qrte.CHEMICAL_ACCURACY}
+
+
+def check_plan(cases, args, *, write=False):
+    plan = plan_payload(cases, args)
+    path = args.outdir / "pes_plan.json"
+    if path.exists():
+        if qrte.load_json(path) != plan:
+            raise ValueError("Existing PES plan differs; use a separate output directory")
+    elif not write:
+        raise ValueError("Prepare the PES plan with --prepare-only before running calculations")
+    if write:
+        qrte.write_json(path, plan)
+        with (args.outdir / "pes_plan.csv").open("w", newline="", encoding="utf-8") as handle:
+            fields = ("task_index", "case_id", "bond_length_angstrom", "spin", "hamiltonian_sha256",
+                      "local_reference_energy_hartree", "cached_scf_energy_hartree")
+            writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore", lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(cases)
+
+
+def raw_profile(case, args):
+    return {"case": case, "scf_match_tolerance": args.scf_match_tolerance}
+
+
+def read_raw(case, args, path):
+    result = qrte.load_json(path)
+    if (result.get("status") != "completed" or result.get("scf_converged") is not True
+            or result.get("fock_profile") != raw_profile(case, args)
+            or result.get("reference_scf") != case["reference_settings"]["reference_scf"]
+            or result.get("nelecas") != case["nelecas"]):
+        raise ValueError(f"{case['case_id']}: saved geometry-specific HF provenance differs")
+    energy = float(result["scf_energy_hartree"])
+    if not math.isfinite(energy) or abs(energy - case["cached_scf_energy_hartree"]) > args.scf_match_tolerance:
+        raise ValueError(f"{case['case_id']}: SCF energy differs from the original PES reference")
+    estimate = mf.canonical_window(case, result)
+    if estimate["ncore"] != 4 or estimate["active_orbital_indices_zero_based"] != list(range(4, 10)):
+        raise ValueError("N2 must have a four-orbital closed core and six-orbital HF window")
+    return result
+
+
+def compute_spectrum(case, case_dir, args):
+    raw_path = case_dir / "fock_reference.json"
+    if not raw_path.exists() or args.force:
+        result = qrte.compute_fock_spectrum(case, case_dir, args)
+        result.update(status="completed", fock_profile=raw_profile(case, args))
+        qrte.write_json(raw_path, result)
+    result = read_raw(case, args, raw_path)
+    return {"spectrum_scope": SPECTRUM_SCOPE, "reference_scf": result["reference_scf"],
+            "source_mean_field_reference_path": str(raw_path),
+            "source_mean_field_reference_sha256": sha256(raw_path),
+            "source_scf_energy_hartree": result["scf_energy_hartree"], "source_scf_converged": True,
+            "active_orbital_estimate": mf.canonical_window(case, result),
+            "mean_field_policy": "RHF/ROHF at this geometry; match SCF energy in the original PES cache"}
+
+
+def width_from_reference(result):
+    return {**mf.width_from_reference(result), "spectrum_scope": SPECTRUM_SCOPE,
+            "delta_t_rule": "pi / W_MF; geometry-specific molecular HF active-window determinant orbital-energy sums"}
+
+
+def validate_saved_spectrum(case, args):
+    case_dir = args.outdir / case["case_id"]
+    raw_path = case_dir / "fock_reference.json"
+    active_path = case_dir / mf.SPECTRUM_FILENAME
+    if raw_path.exists():
+        read_raw(case, args, raw_path)
+    if active_path.exists():
+        active = qrte.load_json(active_path)
+        if (active.get("fock_profile", {}).get("case") != case
+                or not raw_path.exists()
+                or active.get("source_mean_field_reference_sha256") != sha256(raw_path)):
+            raise ValueError(f"{case['case_id']}: saved active-window spectrum provenance differs")
+
+
+def run_case(case, args):
+    if sha256(case["hamiltonian_cache_path"]) != case["hamiltonian_sha256"]:
+        raise ValueError("PES Hamiltonian changed after input validation")
+    if not args.force:
+        validate_saved_spectrum(case, args)
+    qrte.run_case(case, args, spectrum_builder=compute_spectrum, width_builder=width_from_reference,
+                  spectrum_scope=SPECTRUM_SCOPE, spectrum_filename=mf.SPECTRUM_FILENAME)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    cases = load_cases(args)
+    if args.count_cases:
+        print(len(cases))
+        return
+    if args.dry_run or args.prepare_only:
+        for case in cases:
+            validate_saved_spectrum(case, args)
+            raw = args.outdir / case["case_id"] / "fock_reference.json"
+            state = "saved HF spectrum" if raw.exists() else "HF spectrum to compute in job"
+            print(f"{case['task_index']:2d} {case['case_id']:26s} R={case['bond_length_angstrom']:.2f} A "
+                  f"{case['reference_settings']['reference_scf']:4s} {state}")
+        if args.prepare_only:
+            check_plan(cases, args, write=True)
+        print("Validated cached 6e/6o Hamiltonians; order 2, one slice; no molecular calculations or submissions.")
+        return
+    # Compare the entire immutable plan before starting an individual array task.
+    all_args = argparse.Namespace(**{**vars(args), "case_id": None, "case_index": None})
+    check_plan(load_cases(all_args), args)
+    failures = 0
+    for case in cases:
+        try:
+            run_case(case, args)
+        except Exception as exc:
+            failures += 1
+            print(f"FAIL {case['case_id']}: {exc!r}", flush=True)
+    if failures:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()

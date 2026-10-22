@@ -1,0 +1,3 @@
+SCF fenoco3_minus sfX2C1eROHF
+output file: runs/qrte_fock_pi_over_w/fenoco3_minus/fock_scf.log
+fenoco3_minus W=308.650918159 Eh dt=0.0101784652783 au (full SCF orbital spectrum)

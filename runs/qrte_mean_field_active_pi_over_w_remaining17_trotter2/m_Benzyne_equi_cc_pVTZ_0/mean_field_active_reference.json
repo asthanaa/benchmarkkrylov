@@ -1,0 +1,218 @@
+{
+  "active_orbital_estimate": {
+    "active_orbital_indices_zero_based": [
+      15,
+      18,
+      19,
+      20,
+      24,
+      27
+    ],
+    "active_selection": "recorded initial canonical HF active orbital indices",
+    "active_spin_occupations": [
+      3,
+      3
+    ],
+    "active_subspace_matches_optimized_casscf": "not established from saved orbital energies",
+    "alpha_orbital_energies_hartree": [
+      -0.5545480017926547,
+      -0.37502599490366584,
+      -0.31098471073375755,
+      0.1032184434995127,
+      0.1920932425250619,
+      0.26394085919944443
+    ],
+    "beta_orbital_energies_hartree": [
+      -0.5545480017926547,
+      -0.37502599490366584,
+      -0.31098471073375755,
+      0.1032184434995127,
+      0.1920932425250619,
+      0.26394085919944443
+    ],
+    "caveat": "CASSCF can rotate active orbitals into inactive/virtual space. Saved scalar HF orbital energies cannot reconstruct that optimized subspace.",
+    "delta_t_pi_over_estimated_w": 0.8727561428891596,
+    "determinant_energy_definition": "fixed active Nalpha/Nbeta orbital-energy sums of one frozen Fock operator; no relaxation of extremal determinants",
+    "determinant_width_hartree": 3.5996225053081945,
+    "fock_operator": "restricted spatial Fock",
+    "highest_determinant_orbital_sum_hartree": 1.118505090448038,
+    "lowest_determinant_orbital_sum_hartree": -2.4811174148601562,
+    "ncore": 17,
+    "one_electron_range_hartree": 0.8184888609920992,
+    "reference_method": "RHF"
+  },
+  "fock_profile": {
+    "case": {
+      "active_electrons": 6,
+      "active_orbital_index_base": 0,
+      "active_orbital_indices": [
+        15,
+        18,
+        19,
+        20,
+        24,
+        27
+      ],
+      "active_orbital_labels": null,
+      "active_orbitals": 6,
+      "basis": "cc-pVTZ",
+      "cached_scf_energy_hartree": -229.45091659636228,
+      "case_id": "m_Benzyne_equi_cc_pVTZ_0",
+      "charge": 0,
+      "dataset_casscf_energy_hartree": -229.51416071300352,
+      "geometry_angstrom": [
+        [
+          0.9299670344283467,
+          0.10157344892398723,
+          5.1330189457591e-05
+        ],
+        [
+          0.8341801383055839,
+          1.4448469354471694,
+          -3.8100759185016e-05
+        ],
+        [
+          -0.3770154789711077,
+          0.8561589845832291,
+          5.29177210903e-05
+        ],
+        [
+          -1.397377622920327,
+          -0.07801712538064019,
+          0.00018309531497243798
+        ],
+        [
+          -0.7797733125438028,
+          -1.3506052367802435,
+          0.000144994555787422
+        ],
+        [
+          0.6311242589378847,
+          -1.2491725489943561,
+          0.000180449428917923
+        ],
+        [
+          1.370682749339114,
+          2.3740921721598447,
+          -0.000151344682318258
+        ],
+        [
+          -2.4516309213418284,
+          0.11389322357101997,
+          -0.00012171075850768999
+        ],
+        [
+          -1.3181063475498465,
+          -2.2830250075811254,
+          -0.000181507783339729
+        ],
+        [
+          1.3244490655997299,
+          -2.066229571109541,
+          -0.000120652404085884
+        ]
+      ],
+      "geometry_bohr": [
+        [
+          1.757383,
+          0.191946,
+          9.7e-05
+        ],
+        [
+          1.576372,
+          2.730365,
+          -7.2e-05
+        ],
+        [
+          -0.712456,
+          1.617906,
+          0.0001
+        ],
+        [
+          -2.640661,
+          -0.147431,
+          0.000346
+        ],
+        [
+          -1.473558,
+          -2.552274,
+          0.000274
+        ],
+        [
+          1.192652,
+          -2.360594,
+          0.000341
+        ],
+        [
+          2.590215,
+          4.486384,
+          -0.000286
+        ],
+        [
+          -4.632911,
+          0.215227,
+          -0.00023
+        ],
+        [
+          -2.49086,
+          -4.314292,
+          -0.000343
+        ],
+        [
+          2.502846,
+          -3.904608,
+          -0.000228
+        ]
+      ],
+      "hamiltonian_cache_path": "/home/mushir.kolathingal/benchmarkkrylov/hamiltonian_cache/correct_27_systems/07ff62eef137d7b341ea3d16258906731d235cd057ed1c8d66aa644b819407f9.npz",
+      "hamiltonian_sha256": "bfab941c5a4eaefe93db2181a79cf52c348d9c83bd7f9fc5e4984a371172d02b",
+      "hamiltonian_source": "casscf_natorb",
+      "local_reference_converged": true,
+      "local_reference_energy_hartree": -229.51416071303908,
+      "mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/m_Benzyne_equi_cc_pVTZ_0/fock_reference.json",
+      "mean_field_reference_sha256": "e9e80660d6daa03691ab22f776b309efc3f0a8f28700e071bf108101739139cc",
+      "nelecas": [
+        3,
+        3
+      ],
+      "previous_reference_source": "local corrected CASSCF/natorb Hamiltonian reference",
+      "reference_settings": {
+        "geometry_unit": "Angstrom",
+        "molecule_symmetry": false,
+        "reference_scf": "RHF",
+        "scf_conv_tol": null,
+        "scf_diis_space": 12,
+        "scf_level_shift": 0.5,
+        "scf_max_cycle": 100,
+        "scf_newton_if_not_converged": true
+      },
+      "reference_source": "CASSCF/natorb energy stored in the exact Hamiltonian cache used by QRTE",
+      "source_cache_path": "hamiltonian_cache/casscf_natorb_corrected_active_space_dt0p05/07ff62eef137d7b341ea3d16258906731d235cd057ed1c8d66aa644b819407f9.npz",
+      "source_json_path": "dataset/zenodo_19051536/extracted/data_repository/MolVQE-21/m-Benzyne equi._cc-pVTZ_0.json",
+      "source_summary_path": "runs/qkud_corrected_active_space_eps0.05/m_Benzyne_equi_cc_pVTZ_0/summary.json",
+      "spin": 0,
+      "symbols": [
+        "C",
+        "C",
+        "C",
+        "C",
+        "C",
+        "C",
+        "H",
+        "H",
+        "H",
+        "H"
+      ]
+    },
+    "scf_match_tolerance": 1e-06,
+    "spectrum_scope": "saved_molecular_hf_active_window_fixed_nalpha_nbeta"
+  },
+  "new_reference_calculation": false,
+  "reference_scf": "RHF",
+  "source_mean_field_reference_path": "/home/mushir.kolathingal/benchmarkkrylov/runs/qrte_fock_pi_over_w/m_Benzyne_equi_cc_pVTZ_0/fock_reference.json",
+  "source_mean_field_reference_sha256": "e9e80660d6daa03691ab22f776b309efc3f0a8f28700e071bf108101739139cc",
+  "source_scf_converged": true,
+  "source_scf_energy_hartree": -229.45091659636228,
+  "spectrum_scope": "saved_molecular_hf_active_window_fixed_nalpha_nbeta",
+  "status": "completed"
+}

@@ -1,0 +1,3 @@
+REFERENCE H4_near_equi_sto3g_0 spectrum_source=scaled_saved_molecular_hf_active_window_fixed_nalpha_nbeta
+H4_near_equi_sto3g_0 W=4.33648032339 Eh dt=1.08668519836 au (dt_scale_factor * pi/W_MF; saved HF active-window determinant sums)
+DONE H4_near_equi_sto3g_0 iterations=3 chemical_accuracy_hit=3

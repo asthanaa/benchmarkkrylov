@@ -1,0 +1,3 @@
+REFERENCE FeO spectrum_source=saved_molecular_hf_active_window_fixed_nalpha_nbeta
+FeO W=2.73309169118 Eh dt=1.14946478515 au (pi / W_MF; saved molecular HF active-window determinant orbital-energy sums)
+DONE FeO iterations=100 chemical_accuracy_hit=None

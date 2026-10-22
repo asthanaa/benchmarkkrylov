@@ -1,0 +1,325 @@
+#INFO: **** input file is /home/mushir.kolathingal/benchmarkkrylov/scripts/Mushir_script/run_qrte_uhf_determinant_pi_over_w_small10.py ****
+#!/usr/bin/env python
+"""Run ten small MolVQE cases with dt = pi / the full UHF determinant bandwidth.
+
+W is the spectral range of the frozen many-electron UHF Fock operator at fixed
+full-system Nalpha and Nbeta, including core and virtual orbitals. Only W uses
+UHF; the QRTE reference determinant, Hamiltonian, and accuracy target are the
+same as in the earlier cached-Hamiltonian runs.
+"""
+
+from __future__ import annotations
+
+import argparse
+import math
+
+import run_qrte_fock_pi_over_w as qrte
+
+np = qrte.np
+DEFAULT_OUTDIR = qrte.ROOT / "runs/qrte_uhf_determinant_pi_over_w_small10"
+SPECTRUM_SCOPE = "full_system_frozen_uhf_fock_determinants"
+CASE_IDS = (
+    "H4_near_equi_sto3g_0",
+    "H5_near_equi_sto3g_1",
+    "H6_near_equi_sto3g_0",
+    "H6_near_equi_cc_pVTZ_0",
+    "BeH2_equi_cc_pVTZ_0",
+    "BeH2_equi_cc_pVTZ_2",
+    "N2_equi_cc_pVTZ_0",
+    "N2_equi_cc_pVTZ_2",
+    "CO_equi_cc_pVTZ_0",
+    "CO_equi_cc_pVTZ_2",
+)
+
+
+def load_cases(args):
+    selection = argparse.Namespace(**vars(args))
+    selection.case_id = list(CASE_IDS)
+    selection.case_index = None
+    by_id = {case["case_id"]: case for case in qrte.load_cases(selection)}
+    cases = [by_id[case_id] for case_id in CASE_IDS]
+    if args.case_id is not None:
+        requested = set(args.case_id)
+        missing = requested - set(CASE_IDS)
+        if missing:
+            raise ValueError(f"Cases outside the ten-system subset: {sorted(missing)}")
+        cases = [case for case in cases if case["case_id"] in requested]
+    if args.case_index is not None:
+        if not 0 <= args.case_index < len(cases):
+            raise ValueError(f"--case-index must be in [0, {len(cases) - 1}]")
+        cases = [cases[args.case_index]]
+    return cases
+
+
+def determinant_bandwidth(alpha_energies, beta_energies, occupations):
+    if len(occupations) != 2:
+        raise ValueError("UHF determinant spectrum needs Nalpha and Nbeta")
+    minimum, maximum = 0.0, 0.0
+    min_indices, max_indices = [], []
+    for energies, count in zip((alpha_energies, beta_energies), occupations):
+        values = np.asarray(energies, dtype=float)
+        if values.ndim != 1 or not values.size or not np.all(np.isfinite(values)):
+            raise ValueError("Invalid unrestricted spin orbital energies")
+        if int(count) != count or not 0 <= count <= values.size:
+            raise ValueError("Full-system spin occupation exceeds the orbital space")
+        count = int(count)
+        order = np.argsort(values)
+        low = order[:count]
+        high = order[-count:] if count else order[:0]
+        minimum += float(values[low].sum())
+        maximum += float(values[high].sum())
+        min_indices.append(low.tolist())
+        max_indices.append(high.tolist())
+    width = maximum - minimum
+    if not math.isfinite(width) or width <= 0:
+        raise ValueError(f"UHF determinant bandwidth must be positive, got {width}")
+    return {
+        "width_definition": "highest minus lowest frozen UHF Fock determinant energy at fixed full-system Nalpha/Nbeta",
+        "width_scf_method": "UHF",
+        "spectrum_scope": SPECTRUM_SCOPE,
+        "full_system_spin_occupations": [int(n) for n in occupations],
+        "lowest_determinant_orbital_sum_hartree": minimum,
+        "highest_determinant_orbital_sum_hartree": maximum,
+        "lowest_determinant_alpha_orbital_indices": min_indices[0],
+        "lowest_determinant_beta_orbital_indices": min_indices[1],
+        "highest_determinant_alpha_orbital_indices": max_indices[0],
+        "highest_determinant_beta_orbital_indices": max_indices[1],
+        "fock_bandwidth_hartree": width,
+        "delta_t": math.pi / width,
+        "delta_t_units": "atomic units of time",
+        "delta_t_rule": "pi / (Emax_det - Emin_det); full frozen UHF Fock operator",
+    }
+
+
+def width_from_reference(result):
+    width = determinant_bandwidth(
+        result["full_uhf_alpha_orbital_energies_hartree"],
+        result["full_uhf_beta_orbital_energies_hartree"],
+        result["full_system_spin_occupations"],
+    )
+    # A common offset makes the occupied reference determinant reproduce E_UHF.
+    # It cancels in W; orbital sums alone are not total interacting HF energies.
+    offset = float(result["uhf_fock_constant_offset_hartree"])
+    width.update({
+        "uhf_fock_constant_offset_hartree": offset,
+        "fock_spectral_min_hartree": width["lowest_determinant_orbital_sum_hartree"] + offset,
+        "fock_spectral_max_hartree": width["highest_determinant_orbital_sum_hartree"] + offset,
+        "determinant_energy_definition": "frozen UHF Fock eigenvalues with a common reference-energy offset; no excited-determinant SCF relaxation",
+    })
+    return width
+
+
+def compute_uhf_spectrum(case, case_dir, args):
+    from pyscf import gto, scf
+
+    settings = case["reference_settings"]
+    unit = settings["geometry_unit"]
+    geometry = case["geometry_bohr"] if unit == "Bohr" else case["geometry_angstrom"]
+    mol = gto.M(atom=list(zip(case["symbols"], geometry)), unit=unit,
+                basis=case["basis"], charge=case["charge"], spin=case["spin"],
+                symmetry=settings["molecule_symmetry"], verbose=4,
+                output=str(case_dir / "fock_scf.log"))
+    mf = scf.UHF(mol)
+    if settings["scf_conv_tol"] is not None:
+        mf.conv_tol = float(settings["scf_conv_tol"])
+    mf.diis_space = settings["scf_diis_space"]
+    mf.level_shift = settings["scf_level_shift"]
+    mf.max_cycle = settings["scf_max_cycle"]
+    guess = str(mf.init_guess)
+    breaksym = int(mf.init_guess_breaksym)
+    mf.kernel()
+    used_newton = False
+    if not mf.converged and settings["scf_newton_if_not_converged"]:
+        mf = scf.newton(mf).run()
+        used_newton = True
+    if not mf.converged or not math.isfinite(float(mf.e_tot)):
+        raise RuntimeError(f"{case['case_id']}: UHF did not converge to a finite energy")
+    alpha, beta = (np.asarray(values, dtype=float) for values in mf.mo_energy)
+    occupations = [int(n) for n in mol.nelec]
+    determinant_bandwidth(alpha, beta, occupations)
+    mo_occ = np.asarray(mf.mo_occ, dtype=float)
+    if (mo_occ.shape != (2, alpha.size) or beta.size != alpha.size
+            or not np.all(np.isfinite(mo_occ))
+            or not np.allclose(mo_occ.sum(axis=1), occupations)
+            or not np.all((mo_occ == 0) | (mo_occ == 1))):
+        raise RuntimeError("UHF orbital occupations do not match full-system Nalpha/Nbeta")
+    occupied_sum = float(np.dot(alpha, mo_occ[0]) + np.dot(beta, mo_occ[1]))
+    spin_squared, multiplicity = mf.spin_square()
+    return {
+        "reference_scf": "UHF", "width_scf_method": "UHF", "spectrum_scope": SPECTRUM_SCOPE,
+        "full_uhf_alpha_orbital_energies_hartree": alpha.tolist(),
+        "full_uhf_beta_orbital_energies_hartree": beta.tolist(),
+        "full_uhf_orbital_occupations": mo_occ.tolist(),
+        "n_scf_spatial_orbitals_per_spin": int(alpha.size),
+        "full_system_spin_occupations": occupations,
+        "scf_energy_hartree": float(mf.e_tot), "scf_converged": True,
+        "uhf_reference_occupied_orbital_sum_hartree": occupied_sum,
+        "uhf_fock_constant_offset_hartree": float(mf.e_tot) - occupied_sum,
+        "uhf_spin_squared": float(spin_squared), "uhf_effective_multiplicity": float(multiplicity),
+        "used_newton_scf": used_newton, "initial_guess": guess, "initial_guess_breaksym": breaksym,
+        "alpha_beta_orbital_energy_max_difference_hartree": float(np.max(np.abs(alpha - beta))),
+    }
+
+
+def parse_args():
+    return qrte.parse_args(default_outdir=DEFAULT_OUTDIR, description=__doc__)
+
+
+def main():
+    args = parse_args()
+    cases = load_cases(args)
+    if args.count_cases:
+        print(len(cases))
+        return
+    if args.dry_run:
+        for i, case in enumerate(cases):
+            print(f"{i:2d} {case['case_id']:30s} W_source=UHF "
+                  f"QRTE_CAS={case['active_electrons']}e{case['active_orbitals']}o")
+        print(f"Validated {len(cases)} cases; W=frozen full-system UHF determinant energy range; "
+              f"max_iterations={args.n_steps}; overlap_tol={args.overlap_tol:g}; "
+              f"early_stop=chemical_accuracy; outdir={args.outdir}")
+        return
+    failures = 0
+    for case in cases:
+        try:
+            qrte.run_case(case, args, spectrum_builder=compute_uhf_spectrum,
+                          width_builder=width_from_reference, spectrum_scope=SPECTRUM_SCOPE)
+        except Exception as exc:
+            failures += 1
+            print(f"FAIL {case['case_id']}: {exc!r}", flush=True)
+    if failures:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='medora10.cm.cluster', release='6.8.0-111-generic-64k', version='#111-Ubuntu SMP PREEMPT_DYNAMIC Sun Apr 12 00:17:58 UTC 2026', machine='aarch64')  Threads 1
+Python 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 16:39:32) [GCC 14.3.0]
+numpy 2.4.6  scipy 1.17.1  h5py 3.16.0
+Date: Wed Oct  7 14:23:45 2026
+PySCF version 2.13.1
+PySCF path  /home/mushir.kolathingal/miniforge3/envs/expk/lib/python3.12/site-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 3
+[INPUT] num. electrons = 6
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 2
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = Angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Be     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 H      0.000000000000   0.000000000000   1.299999999958 AA    0.000000000000   0.000000000000   2.456643961856 Bohr   0.0
+[INPUT]  3 H      0.000000000000   0.000000000000  -1.299999999958 AA    0.000000000000   0.000000000000  -2.456643961856 Bohr   0.0
+
+nuclear repulsion = 3.46000484074192
+number of shells = 21
+number of NR pGTOs = 75
+number of NR cGTOs = 58
+basis = cc-pVTZ
+ecp = {}
+CPU time:         0.78
+
+
+******** <class 'pyscf.scf.uhf.UHF'> ********
+method = UHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.5
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 12
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 100
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpep3mjlxu
+max_memory 4000 MB (current use 134 MB)
+number electrons alpha = 4  beta = 2
+Set gradient conv threshold to 3.16228e-05
+init E= -15.575674858499
+  alpha nocc = 4  HOMO = 0.537002262700059  LUMO = 0.540549424675345
+  beta  nocc = 2  HOMO = -0.762722352632319  LUMO = -0.0548814996574958
+
+WARN: system HOMO 0.537002262700059 >= system LUMO -0.0548814996574958
+
+cycle= 1 E= -15.4282454010422  delta_E= 0.147  |g|= 0.151  |ddm|=  5.2
+  alpha nocc = 4  HOMO = -0.119491103106828  LUMO = 0.485328760145582
+  beta  nocc = 2  HOMO = -0.47696249391278  LUMO = 0.31852200174936
+cycle= 2 E= -15.4489494722948  delta_E= -0.0207  |g|= 0.0741  |ddm|= 0.453
+  alpha nocc = 4  HOMO = -0.109529183220433  LUMO = 0.501170229004083
+  beta  nocc = 2  HOMO = -0.448976723117704  LUMO = 0.355361148451847
+cycle= 3 E= -15.4554622608922  delta_E= -0.00651  |g|= 0.0313  |ddm|= 0.236
+  alpha nocc = 4  HOMO = -0.10997093591645  LUMO = 0.499954216198291
+  beta  nocc = 2  HOMO = -0.450396660743277  LUMO = 0.354851759340251
+cycle= 4 E= -15.4570078552564  delta_E= -0.00155  |g|= 0.0149  |ddm|= 0.129
+  alpha nocc = 4  HOMO = -0.109731885028535  LUMO = 0.499658552327948
+  beta  nocc = 2  HOMO = -0.451401178207002  LUMO = 0.354743620759606
+cycle= 5 E= -15.4575322737844  delta_E= -0.000524  |g|= 0.00944  |ddm|= 0.098
+  alpha nocc = 4  HOMO = -0.109770238581285  LUMO = 0.498039234569239
+  beta  nocc = 2  HOMO = -0.454905383239758  LUMO = 0.351785128798046
+cycle= 6 E= -15.4578779019465  delta_E= -0.000346  |g|= 0.007  |ddm|= 0.107
+  alpha nocc = 4  HOMO = -0.109531516459162  LUMO = 0.496395897256654
+  beta  nocc = 2  HOMO = -0.458924425663405  LUMO = 0.348330470643068
+cycle= 7 E= -15.4581498892636  delta_E= -0.000272  |g|= 0.00539  |ddm|= 0.121
+  alpha nocc = 4  HOMO = -0.109743893097465  LUMO = 0.496066124153998
+  beta  nocc = 2  HOMO = -0.459611617668067  LUMO = 0.34753672902159
+cycle= 8 E= -15.4582909930392  delta_E= -0.000141  |g|= 0.00425  |ddm|= 0.0908
+  alpha nocc = 4  HOMO = -0.109560600858497  LUMO = 0.494720635395228
+  beta  nocc = 2  HOMO = -0.462363656486375  LUMO = 0.344924584233198
+cycle= 9 E= -15.4583928554322  delta_E= -0.000102  |g|= 0.00321  |ddm|= 0.0939
+  alpha nocc = 4  HOMO = -0.109641049791891  LUMO = 0.494590262797994
+  beta  nocc = 2  HOMO = -0.462606324692473  LUMO = 0.344621318911692
+cycle= 10 E= -15.4584395689828  delta_E= -4.67e-05  |g|= 0.00233  |ddm|= 0.0657
+  alpha nocc = 4  HOMO = -0.109592017557281  LUMO = 0.494466463529041
+  beta  nocc = 2  HOMO = -0.46287395364807  LUMO = 0.344447330904202
+cycle= 11 E= -15.4584615182458  delta_E= -2.19e-05  |g|= 0.0016  |ddm|= 0.0465
+  alpha nocc = 4  HOMO = -0.109704835968443  LUMO = 0.494436008292084
+  beta  nocc = 2  HOMO = -0.462976294657176  LUMO = 0.344427267517341
+cycle= 12 E= -15.4584709880777  delta_E= -9.47e-06  |g|= 0.00106  |ddm|= 0.0301
+  alpha nocc = 4  HOMO = -0.109659661426808  LUMO = 0.494443002143466
+  beta  nocc = 2  HOMO = -0.462993101695011  LUMO = 0.344447022655024
+cycle= 13 E= -15.4584749901389  delta_E= -4e-06  |g|= 0.000682  |ddm|= 0.0196
+  alpha nocc = 4  HOMO = -0.109694599821126  LUMO = 0.494428167074065
+  beta  nocc = 2  HOMO = -0.463020517998086  LUMO = 0.344421375538389
+cycle= 14 E= -15.4584766281848  delta_E= -1.64e-06  |g|= 0.000441  |ddm|= 0.0126
+  alpha nocc = 4  HOMO = -0.109678009135879  LUMO = 0.494433157356392
+  beta  nocc = 2  HOMO = -0.463007697293321  LUMO = 0.344431058738591
+cycle= 15 E= -15.4584773024265  delta_E= -6.74e-07  |g|= 0.000283  |ddm|= 0.00808
+  alpha nocc = 4  HOMO = -0.109683348680981  LUMO = 0.494432078776618
+  beta  nocc = 2  HOMO = -0.463005118362043  LUMO = 0.344430832340366
+cycle= 16 E= -15.4584775786388  delta_E= -2.76e-07  |g|= 0.000182  |ddm|= 0.00515
+  alpha nocc = 4  HOMO = -0.109679822119423  LUMO = 0.494431985144791
+  beta  nocc = 2  HOMO = -0.463002928475565  LUMO = 0.344429325591673
+cycle= 17 E= -15.4584776919454  delta_E= -1.13e-07  |g|= 0.000116  |ddm|= 0.00329
+  alpha nocc = 4  HOMO = -0.109681395973729  LUMO = 0.494431358093591
+  beta  nocc = 2  HOMO = -0.463003642891369  LUMO = 0.344428121939361
+cycle= 18 E= -15.4584777383823  delta_E= -4.64e-08  |g|= 7.47e-05  |ddm|= 0.00211
+  alpha nocc = 4  HOMO = -0.109680985355984  LUMO = 0.494431453315456
+  beta  nocc = 2  HOMO = -0.463003177603605  LUMO = 0.344428251866971
+cycle= 19 E= -15.458477757368  delta_E= -1.9e-08  |g|= 4.78e-05  |ddm|= 0.00135
+  alpha nocc = 4  HOMO = -0.109681276760893  LUMO = 0.494431425829737
+  beta  nocc = 2  HOMO = -0.463003177782787  LUMO = 0.344428248140414
+cycle= 20 E= -15.4584777651376  delta_E= -7.77e-09  |g|= 3.06e-05  |ddm|= 0.000863
+  alpha nocc = 4  HOMO = -0.109681287348647  LUMO = 0.494431423010437
+  beta  nocc = 2  HOMO = -0.463003199688456  LUMO = 0.344428223202599
+cycle= 21 E= -15.4584777683189  delta_E= -3.18e-09  |g|= 1.96e-05  |ddm|= 0.000553
+  alpha nocc = 4  HOMO = -0.109681141562475  LUMO = 0.494431398307351
+  beta  nocc = 2  HOMO = -0.463003334741201  LUMO = 0.344428092394996
+cycle= 22 E= -15.4584777696235  delta_E= -1.3e-09  |g|= 1.25e-05  |ddm|= 0.000356
+  alpha nocc = 4  HOMO = -0.109681156005089  LUMO = 0.494431388381025
+  beta  nocc = 2  HOMO = -0.463003363826927  LUMO = 0.344428063549445
+cycle= 23 E= -15.4584777701574  delta_E= -5.34e-10  |g|= 7.99e-06  |ddm|= 0.000228
+  alpha nocc = 4  HOMO = -0.109681153976099  LUMO = -0.00556471724631526
+  beta  nocc = 2  HOMO = -0.462995202201563  LUMO = -0.155564378285529
+
+WARN: system HOMO 0.0300646082760307 >= system LUMO -0.155564378285529
+
+Extra cycle  E= -15.4584777703743  delta_E= -2.17e-10  |g|= 3.57e-06  |ddm|= 0.000153
+converged SCF energy = -15.4584777703743  <S^2> = 2.0304494  2S+1 = 3.0202314
