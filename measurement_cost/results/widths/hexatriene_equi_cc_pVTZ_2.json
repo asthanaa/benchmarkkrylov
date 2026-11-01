@@ -1,0 +1,8 @@
+{
+ "W": 2.0466522487055556,
+ "E_max": -229.81897986398286,
+ "E_ref": -231.86563211268842,
+ "W_MF": 2.3016789673234053,
+ "method": "scipy eigsh LA, tol 1e-9, (N_alpha, N_beta) sector",
+ "hamiltonian_cache": "hamiltonian_cache/correct_27_systems/644610caf9b1979087cea06803f18d0931df48c061a216eb9ea55846ab9e606e.npz"
+}

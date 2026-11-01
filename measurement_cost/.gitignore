@@ -1,0 +1,5 @@
+work/
+__pycache__/
+results/*.png
+results/*.pdf
+results/measurement_crosscheck.xlsx
