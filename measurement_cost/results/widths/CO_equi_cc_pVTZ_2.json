@@ -1,0 +1,8 @@
+{
+ "W": 4.7085792963264765,
+ "E_max": -107.89308901158124,
+ "E_ref": -112.60166830790772,
+ "W_MF": 3.1462158393647854,
+ "method": "scipy eigsh LA, tol 1e-9, (N_alpha, N_beta) sector",
+ "hamiltonian_cache": "hamiltonian_cache/co_spin2_molvqe_matching/CO_equi_cc_pVTZ_2.npz"
+}
