@@ -46,6 +46,11 @@ repository root.
 - `hamiltonian_cache/casscf_natorb` stores cached Hamiltonian arrays for repeated benchmark runs.
 - `provenance/` records restarts, source status, patch snapshots, and recovery notes.
 
+## Measurement-Cost Analysis
+
+- `measurement_cost/README.md` explains how the shots (paper Fig. 6), two-qubit-gate executions (Fig. S4) and Table S3 are computed, and how to reproduce them.
+- `measurement_cost/results/` holds the stored results; `python measurement_cost/build_figures.py` rebuilds the figures and table from them.
+
 ## Vendored Package
 
 `vendor/QCANT` is a vendored copy of the QCANT package. The benchmark drivers add
