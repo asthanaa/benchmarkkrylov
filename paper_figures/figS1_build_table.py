@@ -38,7 +38,7 @@ for cid in CASES:
                              "n_steps_completed": n, "dt_mf": pts[("dt_mf", cid)]})
 rows.sort(key=lambda r: (CASES.index(r["case_id"]), SERIES.index(r["series"]), r["dt_scale_factor"]))
 with out_csv.open("w", newline="") as h:
-    w = csv.DictWriter(h, fieldnames=list(rows[0].keys()))
+    w = csv.DictWriter(h, fieldnames=list(rows[0].keys()), lineterminator="\n")
     w.writeheader()
     w.writerows(rows)
 print(f"wrote {len(rows)} rows to {out_csv}")
