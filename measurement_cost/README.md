@@ -1,4 +1,4 @@
-# Measurement-cost analysis (Fig. 6, Fig. S4, Table S3)
+# Measurement-cost analysis (Fig. 6, Fig. S4, Tables S3 and S4)
 
 This folder contains the code and the stored results behind the measurement-cost comparison of QRTE-T2 and
 ADAPT-VQE in the paper:
@@ -8,6 +8,7 @@ ADAPT-VQE in the paper:
 | Fig. 6 | shots to chemical accuracy vs. Rényi entropy | `build_figures.py` | `results/fig6_shots.pdf` (generated) |
 | Fig. S4 | two-qubit-gate executions (CNOTs × shots) | `build_figures.py` | `results/figS4_gates.pdf` (generated) |
 | Table S3 | per-system shots, gate executions, iterations | `build_figures.py` | `results/table_s3.tex` |
+| Table S4 | STO-3G hydrogen chains H4–H9 ordered by qubit count, with power-law fits | `table_s4_hchains.py` | `results/table_s4.tex` |
 | all numbers | one row per system | `build_figures.py` | `results/measurement.csv` |
 
 ## Quick start: rebuild the figures and the table (seconds)
@@ -15,6 +16,7 @@ ADAPT-VQE in the paper:
 ```bash
 cd measurement_cost
 python build_figures.py
+python table_s4_hchains.py
 ```
 
 This needs only the files in `results/` (no quantum simulation). The full pipeline below regenerates those files.
@@ -22,7 +24,8 @@ This needs only the files in `results/` (no quantum simulation). The full pipeli
 ## Full pipeline
 
 Run from `measurement_cost/`, in the benchmark environment (Qulacs, NumPy, SciPy, Matplotlib; `openpyxl` for the
-optional workbook). The vendored QCANT package and the cached Hamiltonians of the repository are used directly.
+optional workbook). The vendored QCANT package and the cached Hamiltonians of the repository are used directly (QCANT's
+`_version.py`, generated on installation and not in git, is supplied by `paths.py`; alternatively run `pip install -e ../vendor/QCANT`).
 
 | Step | Command | Output | Run time |
 |---|---|---|---|
@@ -34,6 +37,7 @@ optional workbook). The vendored QCANT package and the cached Hamiltonians of th
 | 4 | `python adapt_lower_bound.py` | `results/adapt_lb.csv`: ADAPT-VQE evaluations E_A and CNOT-weighted evaluations G_A | seconds |
 | 5 | `python gate_volume.py` | `results/gate_volume.csv`: CNOTs per shot and gate executions of the Fig. 6 estimate | seconds |
 | 6 | `python build_figures.py` | Fig. 6, Fig. S4, Table S3, `results/measurement.csv` | seconds |
+| 7 | `python table_s4_hchains.py` | `results/table_s4.tex` (Table S4) | seconds |
 
 `work/` (Krylov matrices, about 6 MB) is not committed; steps 2–3 regenerate it.
 
@@ -100,5 +104,6 @@ selected through the Fig. 5 data table `plots/molvqe27_adapt_qrte_dt005_qrte_wmf
 | `results/alloc_W.csv`, `results/alloc_MF.csv` | Monte Carlo results; `mc_*` = shot-optimal estimate of Fig. 6 (`mc_shots`), `mcg_*` = gate-weighted variant (not used in the paper) |
 | `results/adapt_lb.csv` | ADAPT-VQE K_A, E_A, G_A (and their pool / optimization parts) |
 | `results/gate_volume.csv` | circuits, CNOTs per shot, gate executions GK of the Fig. 6 estimate |
-| `results/measurement.csv` | everything plotted in Fig. 6 and Fig. S4 and listed in Table S3 |
+| `results/measurement.csv` | everything plotted in Fig. 6 and Fig. S4 and listed in Tables S3 and S4 |
+| `results/table_s4.tex` | Table S4 (hydrogen chains), from `measurement.csv` |
 | `results/circuits_H4_near_equi_sto3g_0.csv` | every circuit and shot weight of the H4 estimate |
