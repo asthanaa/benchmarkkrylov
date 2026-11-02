@@ -5,6 +5,7 @@ All scripts in measurement_cost/ can be run from any working directory.
 import csv
 import json
 import sys
+import types
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -25,6 +26,12 @@ def add_qcant():
     for p in (REPO / "vendor/QCANT", REPO / "scripts/Mushir_script"):
         if str(p) not in sys.path:
             sys.path.insert(0, str(p))
+    # QCANT/_version.py is generated when QCANT is installed and is git-ignored, so a fresh clone
+    # imports the vendored copy with a placeholder version (or run: pip install -e vendor/QCANT).
+    if not (REPO / "vendor/QCANT/QCANT/_version.py").exists() and "QCANT._version" not in sys.modules:
+        stub = types.ModuleType("QCANT._version")
+        stub.__version__ = "vendored"
+        sys.modules["QCANT._version"] = stub
 
 
 def fig5_rows(series="qrte_mf"):

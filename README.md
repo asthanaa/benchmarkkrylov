@@ -19,7 +19,7 @@ The main benchmark entry point is:
 python scripts/run_krylov_benchmark.py --help
 ```
 
-## Measurement-cost analysis (paper Fig. 6, Fig. S4, Table S3)
+## Measurement-cost analysis (paper Fig. 6, Fig. S4, Tables S3–S4)
 
 The shot and gate-execution comparison of QRTE-T2 and ADAPT-VQE lives in
 `measurement_cost/`. Start with `measurement_cost/README.md`; the figures and
@@ -28,6 +28,16 @@ the table rebuild in seconds from the stored results:
 ```bash
 cd measurement_cost
 python build_figures.py
+```
+
+## Paper figures (Figs. 3–5, S1–S3)
+
+The scripts that draw Figs. 3–5 and S1–S3 from the data tables in `plots/`, and the stored
+QRTE-T1/QKUD-T1 runs of the Fig. S1 scan, are in `paper_figures/`. Start with
+`paper_figures/README.md`; for example:
+
+```bash
+python paper_figures/fig5_figS3.py   # Fig. 5 and Fig. S3 -> paper_figures/output/
 ```
 
 The Slurm launch point for the full benchmark is:

@@ -1,0 +1,16 @@
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+ & & & & \multicolumn{4}{c}{QRTE-T2, $\delta t=\pi/W$} & \multicolumn{4}{c}{ADAPT-VQE (lower bound)} & \\
+\cmidrule(lr){5-8}\cmidrule(lr){9-12}
+Molecule & $N$ & $h_{0.25}$ & $\lambda$ (Ha) & $K$ & Shots & CNOTs/shot & Gate exec. & $K_A$ & Shots & CNOTs/shot & Gate exec. & Ratio \\
+\midrule
+H$_4$ & 8 & 1.8 & 7.1 & 3 & $6.6\times10^{7}$ & $3.8\times10^{4}$ & $2.5\times10^{12}$ & 3 & $2.6\times10^{9}$ & 26 & $6.8\times10^{10}$ & 0.03 \\
+H$_5$ & 10 & 2.7 & 11.6 & 3 & $1.6\times10^{8}$ & $1.2\times10^{5}$ & $1.9\times10^{13}$ & 10 & $4.5\times10^{10}$ & 108 & $4.9\times10^{12}$ & 0.25 \\
+H$_6$ & 12 & 3.6 & 17.6 & 4 & $4.6\times10^{8}$ & $3.3\times10^{5}$ & $1.5\times10^{14}$ & 11 & $1.5\times10^{11}$ & 220 & $3.2\times10^{13}$ & 0.21 \\
+H$_7$ & 14 & 4.7 & 24.7 & 4 & $8.1\times10^{8}$ & $5.6\times10^{5}$ & $4.5\times10^{14}$ & 29 & $1.8\times10^{12}$ & 586 & $1.1\times10^{15}$ & 2.3 \\
+H$_8$ & 16 & 5.7 & 33.4 & 5 & $1.5\times10^{9}$ & $2.3\times10^{6}$ & $3.4\times10^{15}$ & 55 & $1.4\times10^{13}$ & $1.7\times10^{3}$ & $2.4\times10^{16}$ & 7.0 \\
+H$_9$ & 18 & 6.7 & 43.3 & 5 & $2.6\times10^{9}$ & $5.6\times10^{6}$ & $1.4\times10^{16}$ & 142 & $1.6\times10^{14}$ & $4.4\times10^{3}$ & $7.0\times10^{17}$ & 49 \\
+\midrule
+Fit & & & & & $N^{4.5}$ & & $N^{10.6}$ & & $N^{13.1}$ & & $N^{19.3}$ & \\
+\bottomrule
+\end{tabular}
