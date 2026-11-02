@@ -51,6 +51,12 @@ repository root.
 - `measurement_cost/README.md` explains how the shots (paper Fig. 6), two-qubit-gate executions (Fig. S4) and Table S3 are computed, and how to reproduce them.
 - `measurement_cost/results/` holds the stored results; `python measurement_cost/build_figures.py` rebuilds the figures and table from them.
 
+## Paper Figures
+
+- `paper_figures/README.md` maps Figs. 3–5 and S1–S3 to their scripts and input tables; each script runs from the repository root without arguments and writes to `paper_figures/output/`.
+- `paper_figures/data/` holds the Fig. S1 data: the QRTE-T1/QKUD-T1 scan runs and the merged table.
+- `measurement_cost/table_s4_hchains.py` writes Table S4 (hydrogen chains) from `measurement_cost/results/measurement.csv`.
+
 ## Vendored Package
 
 `vendor/QCANT` is a vendored copy of the QCANT package. The benchmark drivers add
