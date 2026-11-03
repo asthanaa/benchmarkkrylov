@@ -1,4 +1,5 @@
-"""Fig. 4 (iterations vs internuclear distance along the two N2 curves) and Fig. S2
+"""Fig. 4 (iterations vs internuclear distance along the two N2 curves; combined figure and the two
+separate panels fig4a/fig4b used in the paper) and Fig. S2
 (iterations vs squared initial overlap / fixed-sector gap along the same curves),
 both from plots/n2_pes_mean_field_pi_over_w_trotter2_vs_qkud_eps0p05_overlap_gap_iterations.csv.
 
@@ -69,6 +70,34 @@ axes[0].set_ylim(1.6, 500)
 axes[0].legend(handles=handles, loc="upper left", handlelength=1.2, borderaxespad=0.4)
 st.save(fig, out / "fig4_n2pes_distance")
 plt.close(fig)
+
+# Fig. 4 as two separate panels (used in the paper with (a)/(b) subcaptions, like Fig. 3) -------------
+W2 = st.TEXTWIDTH / 2
+for spin, name in ((0, "fig4a_n2pes_singlet"), (2, "fig4b_n2pes_triplet")):
+    fig, ax = plt.subplots(figsize=(W2, 3.0))
+    fig.subplots_adjust(left=0.165, right=0.965, bottom=0.165, top=0.93)
+    for key in SERIES:
+        sel = sorted([r for r in rows if r["series_key"] == key and r["spin"] == spin], key=lambda r: r["R"])
+        ax.plot([r["R"] for r in sel], [r["y"] for r in sel], color=st.COLORS[key], ls="-", lw=1.1, marker="none", zorder=3)
+        ax.plot([r["R"] for r in sel if r["hit"]], [r["y"] for r in sel if r["hit"]], ls="none",
+                marker=st.MARKERS[key], ms=st.MS, color=st.COLORS[key], mec="white", mew=0.5, zorder=5, label=st.LABELS[key])
+        for r in sel:
+            if not r["hit"]:
+                ax.plot(r["R"], r["y"], ls="none", marker=st.MARKERS[key], ms=st.MS, mfc="white", mec=st.COLORS[key], mew=0.9, zorder=6)
+                st.no_hit_arrow(ax, r["R"], r["y"], st.COLORS[key])
+    y_axis(ax)
+    ax.set_ylim(1.6, 500)
+    ax.set_xlim(0.8, 2.5)
+    ax.set_xlabel(r"Internuclear distance, $R$ (Å)")
+    ax.set_ylabel(st.YLABEL)
+    st.grid(ax)
+    ax.text(0.0, 1.02, r"N$_2$/cc-pVTZ, " + ("$2S=0$ (singlet)" if spin == 0 else "$2S=2$ (triplet)"),
+            transform=ax.transAxes, ha="left", va="bottom", fontsize=9)
+    if spin == 0:
+        handles = [st.series_handle(k) for k in SERIES] + [st.no_hit_handle("Could not find solution\nin 100 iterations")]
+        ax.legend(handles=handles, loc="upper left", handlelength=1.2, borderaxespad=0.4)
+    st.save(fig, out / name)
+    plt.close(fig)
 
 # Fig. S2 --------------------------------------------------------------------
 fig = plt.figure(figsize=(st.TEXTWIDTH, 3.5))

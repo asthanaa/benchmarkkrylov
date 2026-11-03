@@ -6,7 +6,7 @@ from the repository root without arguments and writes PDF and PNG files to `pape
 | Paper figure | Script | Input data (in this repository) | Output |
 |---|---|---|---|
 | Fig. 3(a), 3(b): iterations vs. squared overlap and gap | `fig3_overlap_gap.py` | `plots/molvqe27_adapt_qrte_dt005_qrte_wmf_qkud_eps005_renyi.csv`, `plots/overlap_gap_iterations.csv` | `fig3a_overlap`, `fig3b_gap` |
-| Fig. 4: iterations along the N2 curves | `fig4_figS2_n2pes.py` | `plots/n2_pes_mean_field_pi_over_w_trotter2_vs_qkud_eps0p05_overlap_gap_iterations.csv` | `fig4_n2pes_distance` |
+| Fig. 4: iterations along the N2 curves | `fig4_figS2_n2pes.py` | `plots/n2_pes_mean_field_pi_over_w_trotter2_vs_qkud_eps0p05_overlap_gap_iterations.csv` | `fig4a_n2pes_singlet`, `fig4b_n2pes_triplet` (panels used in the paper) and `fig4_n2pes_distance` (combined) |
 | Fig. 5: iterations vs. Rényi entropy | `fig5_figS3.py` | `plots/molvqe27_adapt_qrte_dt005_qrte_wmf_qkud_eps005_renyi.csv` | `fig5_molvqe27_renyi` |
 | Fig. S1: δt and ε scans | `figS1_dt_scan.py` | `paper_figures/data/figS1_dt_eps_scan.csv` (built below) | `figS1_dt_eps_scan` |
 | Fig. S2: N2 curves vs. overlap and gap | `fig4_figS2_n2pes.py` | as Fig. 4 | `figS2_n2pes_overlap_gap` |
