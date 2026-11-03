@@ -43,15 +43,27 @@ for label, cid in CHAINS:
 
 
 def expo(y):
-    return np.polyfit(np.log(N), np.log(y), 1)[0]
+    """Least-squares fit of log(y) against log(N): exponent, its standard error, and R^2."""
+    x, yy = np.log(np.asarray(N, float)), np.log(np.asarray(y, float))
+    (slope, icpt), res = np.polyfit(x, yy, 1), None
+    r = yy - (slope * x + icpt)
+    se = np.sqrt((r @ r) / (len(x) - 2) / np.sum((x - x.mean()) ** 2))
+    r2 = 1.0 - (r @ r) / np.sum((yy - yy.mean()) ** 2)
+    return slope, se, r2
 
 
-fit = (f"Fit & & & & & & $N^{{{expo(NK):.1f}}}$ & $N^{{{expo(DK):.1f}}}$ & & $N^{{{expo(NA):.1f}}}$ & "
-       f"$N^{{{expo(DA):.1f}}}$ & \\\\")
+def fit_cell(y):
+    slope, se, _ = expo(y)
+    return f"$\\propto N^{{{slope:.1f}\\pm{se:.1f}}}$"
+
+
+fit = (f"Fit & & & & & & {fit_cell(NK)} & {fit_cell(DK)} & & {fit_cell(NA)} & {fit_cell(DA)} & \\\\")
+r2 = ", ".join(f"{expo(y)[2]:.3f}" for y in (NK, DK, NA, DA))
+print("R^2 of the four fits (QRTE shots, QRTE CNOTs, ADAPT shots, ADAPT CNOTs):", r2)
 body = "\n".join(lines)
 tex = rf"""\begin{{tabular}}{{lrrrrrrrrrrr}}
 \toprule
- & & & & \multicolumn{{4}}{{c}}{{QRTE-T2, $\delta t=\pi/W$}} & \multicolumn{{3}}{{c}}{{ADAPT-VQE}} & \\
+ & & & & \multicolumn{{4}}{{c}}{{QRTE-T2, $\delta t=\pi/W$}} & \multicolumn{{3}}{{c}}{{TETRIS-CEO-ADAPT-VQE}} & \\
 \cmidrule(lr){{5-8}}\cmidrule(lr){{9-11}}
 Molecule & $N$ & $h_{{0.25}}$ & $\lambda$ (Ha) & $K$ & $k$ & Shots & CNOTs & $K_A$ & Shots & CNOTs & Ratio \\
 \midrule
