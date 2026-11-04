@@ -13,7 +13,8 @@ Table S3 for comparison.
 H10 is omitted because ADAPT-VQE did not reach chemical accuracy in the data of Hagelueken et al.
 
 usage:  python build_figures.py
-output: results/fig6_shots.pdf/.png, results/figS4_gates.pdf/.png, results/table_s3.tex, results/measurement.csv
+output: results/fig6_shots.pdf/.png, results/measurement.csv
+(Fig. S4 and Table S3 are written by circuit_depth.py, step 7)
 """
 import csv
 import json
@@ -69,8 +70,7 @@ def fit(pts):
 
 st.apply()
 fits = {}
-for name, kq, ka, ylim, ylabel in (("fig6_shots", "NK", "NA", (1e6, 1e15), "Shots to chemical accuracy"),
-                                   ("figS4_gates", "GK", "GA", (1e9, 1e21), r"CNOTs $\times$ shots")):
+for name, kq, ka, ylim, ylabel in (("fig6_shots", "NK", "NA", (1e6, 1e15), "Shots to chemical accuracy"),):
     fig, ax = plt.subplots(figsize=(st.COLUMNWIDTH, 2.75))
     fig.subplots_adjust(left=0.17, right=0.97, bottom=0.155, top=0.97)
     A = [(r["h_adapt"], r[ka]) for r in rows]
@@ -113,50 +113,4 @@ for r in rows:
           f"ratio={r['NA']/r['NK']:.3g} GK={r['GK']:.2e} GA={r['GA']:.2e} NK_MF={r.get('NK_MF', float('nan')):.2e}")
 
 
-# Table S3 ------------------------------------------------------------------------------------------------------
-NAMES = {
-    "H4_near_equi_sto3g_0": ("H$_4$", 1), "cyclobutadiene_ceo": ("C$_4$H$_4$", 1),
-    "magnesium_porphyrin_ceo": ("C$_{20}$H$_{12}$MgN$_4$", 1), "H5_near_equi_sto3g_1": ("H$_5$", 2),
-    "N2_equi_cc_pVTZ_2": ("N$_2$", 3), "CO_equi_cc_pVTZ_2": ("CO", 3), "N2_equi_cc_pVTZ_0": ("N$_2$", 1),
-    "CO_equi_cc_pVTZ_0": ("CO", 1), "BeH2_equi_cc_pVTZ_2": ("BeH$_2$", 3), "BeH2_equi_cc_pVTZ_0": ("BeH$_2$", 1),
-    "CH2O_equi_cc_pVTZ_2": ("CH$_2$O", 3), "CH2O_equi_cc_pVTZ_0": ("CH$_2$O", 1),
-    "H6_near_equi_cc_pVTZ_2": ("H$_6$ (cc-pVTZ)", 3), "H6_near_equi_cc_pVTZ_0": ("H$_6$ (cc-pVTZ)", 1),
-    "H6_near_equi_sto3g_0": ("H$_6$ (STO-3G)", 1), "m_Benzyne_equi_cc_pVTZ_2": ("m-C$_6$H$_4$", 3),
-    "m_Benzyne_equi_cc_pVTZ_0": ("m-C$_6$H$_4$", 1), "hexatriene_equi_cc_pVTZ_2": ("C$_6$H$_8$", 3),
-    "hexatriene_equi_cc_pVTZ_0": ("C$_6$H$_8$", 1), "H7_near_equi_sto3g_1": ("H$_7$", 2),
-    "H8_near_equi_sto3g_0": ("H$_8$", 1), "fenoco3_minus": ("FeNO(CO)$_3^-$", 1), "FeO": ("FeO", 5),
-    "Al3_minus": ("Al$_3^-$", 1), "feno_2plus": ("FeNO$^{2+}$", 4), "H9_near_equi_sto3g_1": ("H$_9$", 2),
-}
-
-
-def sci(x):
-    m, e = f"{x:.1e}".split("e")
-    return f"${m}\\times10^{{{int(e)}}}$"
-
-
-lines = []
-for r in rows:
-    name, mult = NAMES[r["case_id"]]
-    kmf = str(r["K_MF"]) if r["K_MF"] else "--"
-    nmf = sci(r["NK_MF"]) if "NK_MF" in r else "--"
-    lines.append(f"{name} & {mult} & {r['h']:.1f} & {r['lam']:.1f} & {r['K']} & {sci(r['NK'])} & {sci(r['GK'])} & "
-                 f"{kmf} & {nmf} & {r['KA']} & {sci(r['NA'])} & {sci(r['GA'])} \\\\")
-HEAD = r"""\begin{table}[!htbp]
-\centering
-\color{red}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{0.90}
-\caption{Measurement cost to chemical accuracy: shots and two-qubit-gate executions (CNOTs $\times$ shots), for Pauli-term sampling with probabilities $|c_k|/\lambda$, $\lambda=\sum_k|c_k|$ (identity excluded), in which one energy evaluation with standard deviation $\sigma=1.6$~mHa requires $\lambda^2/\sigma^2$ shots. QRTE-T2 with $\delta t=\pi/W$, where $W$ is the exact spectral width of the symmetry sector, and, for comparison, with $\delta t=\pi/W_{MF}$ as in Fig.~5 of the main text (``--'': chemical accuracy not reached within 100 iterations). $K$: QRTE-T2 iterations to chemical accuracy. $K_A$: ADAPT-VQE iterations. Gate executions are for the listed shots. ADAPT-VQE values are lower bounds. H$_{10}$ is omitted because ADAPT-VQE did not reach chemical accuracy in the data of Hagelueken \emph{et al.}}
-\label{tab:shots}
-\begin{tabular}{lrrrrrrrrrrr}
-\toprule
- & & & & \multicolumn{3}{c}{QRTE-T2, $\delta t=\pi/W$} & \multicolumn{2}{c}{$\delta t=\pi/W_{MF}$} & \multicolumn{3}{c}{ADAPT-VQE (lower bound)} \\
-\cmidrule(lr){5-7}\cmidrule(lr){8-9}\cmidrule(lr){10-12}
-Molecule & Mult. & $h_{0.25}$ & $\lambda$ (Ha) & $K$ & Shots & Gate exec. & $K$ & Shots & $K_A$ & Shots & Gate exec. \\
-\midrule"""
-TAIL = r"""\bottomrule
-\end{tabular}
-\end{table}"""
-(out / "table_s3.tex").write_text(HEAD + "\n" + "\n".join(lines) + "\n" + TAIL + "\n")
-print("table rows", len(lines))
+# Table S3 is written by circuit_depth.py (step 7).

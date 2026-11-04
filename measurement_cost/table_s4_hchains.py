@@ -1,8 +1,8 @@
-"""Table S4 of the SI: the STO-3G hydrogen chains H4-H9 from results/measurement.csv, ordered by
-qubit count N, with shots, CNOTs per shot (gate executions / shots), gate executions (CNOTs x shots)
-for QRTE-T2 (dt = pi/W) and the ADAPT-VQE lower bound, their ratio, and power-law fits in N.
+"""Table I of the main text (file name kept from its earlier place as Table S4 of the SI): the STO-3G hydrogen chains H4-H9 from results/depth.csv (step 7), ordered by qubit
+count N, with iterations, shots, and CNOT count of the deepest circuit for QRTE-T2 (dt = pi/W) and ADAPT-VQE,
+their depth ratio, and power-law fits in N.
 
-usage: python measurement_cost/table_s4_hchains.py      (writes results/table_s4.tex)
+usage: python measurement_cost/table_s4_hchains.py      (writes results/table_s4.tex; run circuit_depth.py first)
 """
 import csv
 import math
@@ -24,37 +24,48 @@ def sci(x):
 
 
 def small(x):
-    """CNOTs per shot below 1000 are printed as integers."""
-    return f"{x:.0f}" if x < 1000 else sci(x)
+    """CNOT counts below 10000 are printed as integers."""
+    return f"{x:.0f}" if x < 1e4 else sci(x)
 
 
 def ratio(x):
     return f"{x:.2f}" if x < 1 else (f"{x:.1f}" if x < 10 else f"{x:.0f}")
 
 
-M = {r["case_id"]: r for r in csv.DictReader((paths.RESULTS / "measurement.csv").open())}
-lines, N, NK, NA, GK, GA = [], [], [], [], [], []
+M = {r["case_id"]: r for r in csv.DictReader((paths.RESULTS / "depth.csv").open())}
+lines, N, NK, DK, NA, DA = [], [], [], [], [], []
 for label, cid in CHAINS:
     r = M[cid]
-    n, nk, na, gk, ga = int(r["N"]), float(r["NK"]), float(r["NA"]), float(r["GK"]), float(r["GA"])
-    N.append(n); NK.append(nk); NA.append(na); GK.append(gk); GA.append(ga)
-    lines.append(f"{label} & {n} & {float(r['h']):.1f} & {float(r['lam']):.1f} & {int(float(r['K']))} & {sci(nk)} & "
-                 f"{small(gk / nk)} & {sci(gk)} & {int(float(r['KA']))} & {sci(na)} & {small(ga / na)} & {sci(ga)} & "
-                 f"{ratio(ga / gk)} \\\\")
+    n, nk, dk, na, da = int(r["N"]), float(r["NK"]), float(r["depth_qrte_fig6"]), float(r["NA"]), float(r["depth_adapt"])
+    N.append(n); NK.append(nk); DK.append(dk); NA.append(na); DA.append(da)
+    lines.append(f"{label} & {n} & {float(r['h']):.1f} & {float(r['lam']):.1f} & {r['K']} & {r['k_fig6']} & {sci(nk)} & "
+                 f"{small(dk)} & {r['KA']} & {sci(na)} & {small(da)} & {ratio(dk / da)} \\\\")
 
 
 def expo(y):
-    return np.polyfit(np.log(N), np.log(y), 1)[0]
+    """Least-squares fit of log(y) against log(N): exponent, its standard error, and R^2."""
+    x, yy = np.log(np.asarray(N, float)), np.log(np.asarray(y, float))
+    (slope, icpt), res = np.polyfit(x, yy, 1), None
+    r = yy - (slope * x + icpt)
+    se = np.sqrt((r @ r) / (len(x) - 2) / np.sum((x - x.mean()) ** 2))
+    r2 = 1.0 - (r @ r) / np.sum((yy - yy.mean()) ** 2)
+    return slope, se, r2
 
 
-fit = (f"Fit & & & & & $N^{{{expo(NK):.1f}}}$ & & $N^{{{expo(GK):.1f}}}$ & & $N^{{{expo(NA):.1f}}}$ & & "
-       f"$N^{{{expo(GA):.1f}}}$ & \\\\")
+def fit_cell(y):
+    slope, se, _ = expo(y)
+    return f"$\\propto N^{{{slope:.1f}\\pm{se:.1f}}}$"
+
+
+fit = (f"Fit & & & & & & {fit_cell(NK)} & {fit_cell(DK)} & & {fit_cell(NA)} & {fit_cell(DA)} & \\\\")
+r2 = ", ".join(f"{expo(y)[2]:.3f}" for y in (NK, DK, NA, DA))
+print("R^2 of the four fits (QRTE shots, QRTE CNOTs, ADAPT shots, ADAPT CNOTs):", r2)
 body = "\n".join(lines)
-tex = rf"""\begin{{tabular}}{{lrrrrrrrrrrrr}}
+tex = rf"""\begin{{tabular}}{{lrrrrrrrrrrr}}
 \toprule
- & & & & \multicolumn{{4}}{{c}}{{QRTE-T2, $\delta t=\pi/W$}} & \multicolumn{{4}}{{c}}{{ADAPT-VQE (lower bound)}} & \\
-\cmidrule(lr){{5-8}}\cmidrule(lr){{9-12}}
-Molecule & $N$ & $h_{{0.25}}$ & $\lambda$ (Ha) & $K$ & Shots & CNOTs/shot & Gate exec. & $K_A$ & Shots & CNOTs/shot & Gate exec. & Ratio \\
+ & & & & \multicolumn{{4}}{{c}}{{QRTE-T2, $\delta t=\pi/W$}} & \multicolumn{{3}}{{c}}{{TETRIS-CEO-ADAPT-VQE}} & \\
+\cmidrule(lr){{5-8}}\cmidrule(lr){{9-11}}
+Molecule & $N$ & $h_{{0.25}}$ & $\lambda$ (Ha) & $K$ & $k$ & Shots & CNOTs & $K_A$ & Shots & CNOTs & Ratio \\
 \midrule
 {body}
 \midrule
